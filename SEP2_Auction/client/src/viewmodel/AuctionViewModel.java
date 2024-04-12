@@ -27,6 +27,7 @@ public class AuctionViewModel
     reservePriceProperty=new SimpleIntegerProperty();
     timeProperty=new SimpleIntegerProperty();
     titleProperty=new SimpleStringProperty();
+    pathProperty=new SimpleStringProperty();
   }
   public void startAuction()
   {
@@ -35,6 +36,8 @@ public class AuctionViewModel
       model.startAuction(idProperty.get(), titleProperty.get(), descriptionProperty.get(),
           reservePriceProperty.get(), buyoutPriceProperty.get(),
           incrementProperty.get(), timeProperty.get(), pathProperty.get());
+
+      state.setAuction(model.getAuction(idProperty.get()));
     }
     catch(IllegalArgumentException e)
     {
@@ -56,8 +59,20 @@ public class AuctionViewModel
       }
 
     }
-
-
+  }
+  public void wipe()
+  {
+    bidProperty.set(0);
+    buyoutPriceProperty.set(0);
+    descriptionProperty.set("");
+    errorProperty.set("");
+    headerProperty=new SimpleStringProperty("Auction ID: ");
+    incrementProperty.set(1);
+    ratingProperty.set(0);
+    reasonProperty.set("");
+    reservePriceProperty.set(0);
+    timeProperty.set(0);
+    titleProperty.set("");
   }
   public IntegerProperty getIdProperty()
   {

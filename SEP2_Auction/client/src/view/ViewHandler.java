@@ -13,21 +13,18 @@ public class ViewHandler
   private Scene currentScene;
   private ViewModelFactory viewModelFactory;
   private FixedPaneViewController fixedPaneViewController;
-  private String id;
 
 
   public ViewHandler(ViewModelFactory viewModelFactory)
   {
     this.viewModelFactory = viewModelFactory;
     currentScene = new Scene(new Region());
-    ///////////////////////
-    id="startAuction";
   }
 
   public void start(Stage primaryStage)
   {
     this.primaryStage = primaryStage;
-    openView("startAuction");
+    openView("displayAuction");
   }
 
   public void openView(String id)
@@ -36,7 +33,7 @@ public class ViewHandler
     switch (id)
     {
       case "startAuction", "displayAuction":
-        root = loadFixedPaneView("FixedPaneView.fxml", id, viewModelFactory.getAuctionViewModel());
+        root = loadFixedPaneView("FixedPaneView.fxml", id);
         break;
       //case "login":
       //case "createAccount":
@@ -59,7 +56,7 @@ public class ViewHandler
     primaryStage.close();
   }
 
-  private Region loadFixedPaneView(String fxmlFile, String id, Object auctionViewModel)
+  private Region loadFixedPaneView(String fxmlFile, String id)
   {
     if (fixedPaneViewController == null)
     {
@@ -78,7 +75,7 @@ public class ViewHandler
     }
     else
     {
-      fixedPaneViewController.reset();
+      fixedPaneViewController.reset(id);
     }
     return fixedPaneViewController.getRoot();
   }

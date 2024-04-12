@@ -5,10 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import utility.IntStringConverter;
 import viewmodel.AuctionViewModel;
+
+import java.util.Optional;
 
 public class AuctionViewController
 {
@@ -47,6 +49,7 @@ public class AuctionViewController
   @FXML private Label timerCountdownLabel;
   @FXML private TextArea titleTextArea;
   @FXML private Label idLabel;
+  @FXML private AnchorPane anchorPane;
   
   private Region root;
   private AuctionViewModel auctionViewModel;
@@ -74,23 +77,36 @@ public class AuctionViewController
 
 
     //auctionViewModel.addListener(this);
+
+    errorLabel.setText("");
+    reset(id);
+  }
+  public void reset(String id)
+  {
+    auctionViewModel.reset();
     switch (id)
     {
       case "displayAuction":
         setForDisplay();
         break;
       case "startAuction":
+        wipe();
         setForStart();
         break;
     }
-    reset();
   }
-  public void reset()
+  private void setForStart()
   {
-    auctionViewModel.reset();
-  }
-  public void setForStart()
-  {
+    anchorPane.setPrefHeight(690);
+    startAuctionButton.setLayoutY(625);
+    cancelButton.setLayoutY(625);
+
+    titleTextArea.setDisable(false);
+    descriptionTextArea.setDisable(false);
+    reservePriceTextField.setDisable(false);
+    buyoutPriceTextField.setDisable(false);
+    incrementTextField.setDisable(false);
+
     importButton.setVisible(true);
     timeLabel.setVisible(true);
     timeTextField.setVisible(true);
@@ -114,8 +130,24 @@ public class AuctionViewController
     reasonTextArea.setVisible(false);
 
   }
-  public void setForDisplay()
+  private void setForDisplay()
   {
+    anchorPane.setPrefHeight(960);
+    sellerRateLabel.setLayoutY(sellerRateLabel.getLayoutY()-100);
+    ratingLabel.setLayoutY(ratingLabel.getLayoutY()-100);
+
+    somethingWrongLabel.setLayoutY(somethingWrongLabel.getLayoutY()-100);
+    reasonTextArea.setLayoutY(reasonTextArea.getLayoutY()-100);
+    deleteButton.setLayoutY(deleteButton.getLayoutY()-100);
+
+
+    titleTextArea.setDisable(true);
+    descriptionTextArea.setDisable(true);
+    reservePriceTextField.setDisable(true);
+    buyoutPriceTextField.setDisable(true);
+    incrementTextField.setDisable(true);
+
+
     timerCountdownLabel.setVisible(true);
     currentBidderLabel.setVisible(true);
     currentBidLabel.setVisible(true);
@@ -128,6 +160,7 @@ public class AuctionViewController
     sellerRateLabel.setVisible(true);
     ratingLabel.setVisible(true);
     //////////////////////////////////////////////
+    //should be only visible for moderator
     somethingWrongLabel.setVisible(true);
     deleteButton.setVisible(true);
     reasonTextArea.setVisible(true);
@@ -142,26 +175,49 @@ public class AuctionViewController
 
   }
 
+  private void wipe()
+  {
+    auctionViewModel.wipe();
+  }
   public Region getRoot()
   {
     return root;
   }
 
-  @FXML void backButtonPressed(ActionEvent event)
+  @FXML void startAuctionButtonPressed(ActionEvent event)
   {
-    //auctionViewModel.back();
+    auctionViewModel.startAuction();
+    if(errorLabel.getText().isEmpty())
+    {
+      viewHandler.openView("displayAuction");
+    }
   }
 
-  @FXML void buyNowButtonPressed(ActionEvent event)
+  @FXML void backButtonPressed(ActionEvent event)
   {
-
+    cancelButtonPressed(event);
   }
 
   @FXML void cancelButtonPressed(ActionEvent event)
   {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Confirmation");
+    alert.setHeaderText("Are you sure you want to leave?");
+    Optional<ButtonType> result = alert.showAndWait();
+    ////////////////////////////////////////////////////////
+    if (result.isPresent() && result.get() == ButtonType.OK)
+    {
+      //viewHandler.openView("allAuctions");
+      wipe();
+      //sprint 1 focus
+      viewHandler.openView("startAuction");
+    }
+    ////////////////////////////////////////////////////////
+  }
+  @FXML void buyNowButtonPressed(ActionEvent event)
+  {
 
   }
-
   @FXML void importButtonPressed(ActionEvent event)
   {
 
@@ -177,16 +233,6 @@ public class AuctionViewController
 
   }
 
-  @FXML void report_deleteButtonPressed(ActionEvent event)
-  {
-
-  }
-
-  @FXML
-  void startAuctionButtonPressed(ActionEvent event)
-  {
-    auctionViewModel.startAuction();
-  }
 
   public void deleteButtonPressed(ActionEvent actionEvent)
   {
