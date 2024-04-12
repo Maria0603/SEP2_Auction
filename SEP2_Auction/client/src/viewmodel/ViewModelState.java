@@ -29,4 +29,8 @@ public class ViewModelState
   {
     this.displayAuction=display;
   }
+  public void wipeAuction()
+  {
+    selectedAuction=null;
+  }
 }

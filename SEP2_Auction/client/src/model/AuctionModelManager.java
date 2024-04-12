@@ -4,11 +4,11 @@ import java.beans.PropertyChangeListener;
 
 public class AuctionModelManager implements AuctionModel
 {
-  @Override public void startAuction(int ID, String title, String description,
+  @Override public Auction startAuction(int ID, String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       String imagePath)
   {
-
+    return new Auction();
   }
 
   @Override public int generateID()

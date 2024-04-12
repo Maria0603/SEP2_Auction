@@ -56,11 +56,11 @@ public class AuctionViewController
   private ViewHandler viewHandler;
 
   //initializations and bindings
-  public void init(ViewHandler viewHandler, Object auctionViewModel, Region root, String id)
+  public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel, Region root, String id)
   {
     this.root = root;
     this.viewHandler = viewHandler;
-    this.auctionViewModel=(AuctionViewModel) auctionViewModel;
+    this.auctionViewModel=auctionViewModel;
 
     Bindings.bindBidirectional(idLabel.textProperty(), this.auctionViewModel.getIdProperty(), new IntStringConverter());
     headerLabel.textProperty().bindBidirectional(this.auctionViewModel.getHeaderProperty());
@@ -83,14 +83,13 @@ public class AuctionViewController
   }
   public void reset(String id)
   {
-    auctionViewModel.reset();
+    auctionViewModel.reset(id);
     switch (id)
     {
       case "displayAuction":
         setForDisplay();
         break;
       case "startAuction":
-        wipe();
         setForStart();
         break;
     }
@@ -175,10 +174,6 @@ public class AuctionViewController
 
   }
 
-  private void wipe()
-  {
-    auctionViewModel.wipe();
-  }
   public Region getRoot()
   {
     return root;
@@ -208,7 +203,7 @@ public class AuctionViewController
     if (result.isPresent() && result.get() == ButtonType.OK)
     {
       //viewHandler.openView("allAuctions");
-      wipe();
+      reset("");
       //sprint 1 focus
       viewHandler.openView("startAuction");
     }

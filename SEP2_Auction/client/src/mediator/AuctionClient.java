@@ -39,18 +39,19 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
 
   }
 
-  @Override public void startAuction(int ID, String title, String description,
+  @Override public Auction startAuction(int ID, String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       String imagePath)
   {
     try
     {
-      server.startAuction(title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
+      return server.startAuction(title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
     }
     catch (RemoteException e)
     {
       e.printStackTrace();
     }
+    return null;
   }
 
 

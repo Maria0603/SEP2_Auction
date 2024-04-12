@@ -27,7 +27,6 @@ public class FixedPaneViewController
   private ViewHandler viewHandler;
   private FixedPaneViewModel fixedPaneViewModel;
   private AuctionViewController auctionViewController;
-  private String id;
   private Region root;
 
   //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
@@ -35,15 +34,12 @@ public class FixedPaneViewController
   private ViewModelFactory viewModelFactory;
   public void init(ViewHandler viewHandler, FixedPaneViewModel fixedPaneViewModel, ViewModelFactory viewModelFactory, Region root, String id)
   {
-    this.id=id;
     this.root=root;
     this.viewModelFactory=viewModelFactory;
     this.fixedPaneViewModel=fixedPaneViewModel;
     this.viewHandler=viewHandler;
-
     emailLabel.textProperty().bindBidirectional(fixedPaneViewModel.getEmailProperty());
     reset(id);
-
   }
   public Region getRoot()
   {

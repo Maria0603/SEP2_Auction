@@ -28,39 +28,53 @@ public class AuctionViewModel
     timeProperty=new SimpleIntegerProperty();
     titleProperty=new SimpleStringProperty();
     pathProperty=new SimpleStringProperty();
+    ////////////////////////////////////
+    reset("displayAuction");
   }
   public void startAuction()
   {
     try
     {
-      model.startAuction(idProperty.get(), titleProperty.get(), descriptionProperty.get(),
+      state.setAuction(model.startAuction(idProperty.get(), titleProperty.get(), descriptionProperty.get(),
           reservePriceProperty.get(), buyoutPriceProperty.get(),
-          incrementProperty.get(), timeProperty.get(), pathProperty.get());
-
-      state.setAuction(model.getAuction(idProperty.get()));
+          incrementProperty.get(), timeProperty.get(), pathProperty.get()));
     }
     catch(IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
   }
-  public void reset()
+  public void reset(String id)
   {
     Auction selectedAuction=state.getSelectedAuction();
     if(selectedAuction!=null)
     {
-      if(state.getDisplayAuction())
+      if(id.equals("displayAuction"))
       {
+        /*
+        titleProperty.set(state.getSelectedAuction().getTitle());
+        descriptionProperty.set(state.getSelectedAuction().getDescription());
+        reservePriceProperty.set(state.getSelectedAuction().getReservePrice());
+        buyoutPriceProperty.set(state.getSelectedAuction().getBuyoutPrice());
+        incrementProperty.set(state.getSelectedAuction().getMinimumIncrement());
+        //timeProperty.set(state.getSelectedAuction().getTitle());
+         */
 
+        titleProperty.set("iphone 7 ");
+        descriptionProperty.set("used phone, it dies when it's cold outside, but people will worship you");
+        reservePriceProperty.set(300);
+        buyoutPriceProperty.set(999999999);
+        incrementProperty.set(20);
+        //timeProperty.set(state.getSelectedAuction().getTitle());
       }
-      else
+      else if(id.equals("startAuction"))
       {
-
+        wipe();
       }
 
     }
   }
-  public void wipe()
+  private void wipe()
   {
     bidProperty.set(0);
     buyoutPriceProperty.set(0);
