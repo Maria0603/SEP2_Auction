@@ -4,12 +4,15 @@ import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 import utility.IntStringConverter;
 import viewmodel.AuctionViewModel;
 
+import java.io.File;
 import java.util.Optional;
 
 public class AuctionViewController
@@ -50,6 +53,8 @@ public class AuctionViewController
   @FXML private TextArea titleTextArea;
   @FXML private Label idLabel;
   @FXML private AnchorPane anchorPane;
+  private Image image;
+  private String imagePath;
   
   private Region root;
   private AuctionViewModel auctionViewModel;
@@ -73,11 +78,12 @@ public class AuctionViewController
     errorLabel.textProperty().bindBidirectional(this.auctionViewModel.getErrorProperty());
     Bindings.bindBidirectional(timeTextField.textProperty(), this.auctionViewModel.getTimeProperty(), new IntStringConverter());
     Bindings.bindBidirectional(buyoutPriceTextField.textProperty(), this.auctionViewModel.getBuyoutPriceProperty(), new IntStringConverter());
+
     //other bindings to be inserted
 
 
     //auctionViewModel.addListener(this);
-
+    imagePath="";
     errorLabel.setText("");
     reset(id);
   }
@@ -100,7 +106,10 @@ public class AuctionViewController
     startAuctionButton.setLayoutY(625);
     cancelButton.setLayoutY(625);
 
+
     titleTextArea.setDisable(false);
+    titleTextArea.requestFocus();
+
     descriptionTextArea.setDisable(false);
     reservePriceTextField.setDisable(false);
     buyoutPriceTextField.setDisable(false);
@@ -139,7 +148,6 @@ public class AuctionViewController
     reasonTextArea.setLayoutY(reasonTextArea.getLayoutY()-100);
     deleteButton.setLayoutY(deleteButton.getLayoutY()-100);
 
-
     titleTextArea.setDisable(true);
     descriptionTextArea.setDisable(true);
     reservePriceTextField.setDisable(true);
@@ -154,6 +162,7 @@ public class AuctionViewController
     currentBidTextLabel.setVisible(true);
     bidLabel.setVisible(true);
     bidTextField.setVisible(true);
+    bidTextField.requestFocus();
     placeBidButton.setVisible(true);
     buyNowButton.setVisible(true);
     sellerRateLabel.setVisible(true);
@@ -209,15 +218,27 @@ public class AuctionViewController
     }
     ////////////////////////////////////////////////////////
   }
+
+  @FXML void importButtonPressed(ActionEvent event)
+  {
+    FileChooser openFile = new FileChooser();
+    openFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
+
+    File file = openFile.showOpenDialog(anchorPane.getScene().getWindow());
+
+    if (file != null)
+    {
+
+      imagePath = file.getAbsolutePath();
+      image = new Image(file.toURI().toString(), 120, 127, false, true);
+      imageImageView.setImage(image);
+    }
+  }
+
   @FXML void buyNowButtonPressed(ActionEvent event)
   {
 
   }
-  @FXML void importButtonPressed(ActionEvent event)
-  {
-
-  }
-
   @FXML void onEnter(ActionEvent event)
   {
 

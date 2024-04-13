@@ -1,13 +1,18 @@
 package viewmodel;
 
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import model.Auction;
 import model.AuctionModel;
 
-public class AuctionViewModel
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class AuctionViewModel implements PropertyChangeListener
 {
-  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty,  titleProperty, pathProperty;
+  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty,  titleProperty, pathProperty, timerProperty;
   private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty;
+  private BooleanProperty end;
   private AuctionModel model;
   private ViewModelState state;
 
@@ -26,8 +31,11 @@ public class AuctionViewModel
     reasonProperty=new SimpleStringProperty();
     reservePriceProperty=new SimpleIntegerProperty();
     timeProperty=new SimpleIntegerProperty();
+    timerProperty=new SimpleStringProperty();
     titleProperty=new SimpleStringProperty();
     pathProperty=new SimpleStringProperty();
+    //to be used when the placeBid() method is called;
+    end=new SimpleBooleanProperty();
     ////////////////////////////////////
     reset("displayAuction");
   }
@@ -60,12 +68,13 @@ public class AuctionViewModel
         //timeProperty.set(state.getSelectedAuction().getTitle());
          */
 
+        /*
         titleProperty.set("iphone 7 ");
         descriptionProperty.set("used phone, it dies when it's cold outside, but people will worship you");
         reservePriceProperty.set(300);
         buyoutPriceProperty.set(999999999);
         incrementProperty.set(20);
-        //timeProperty.set(state.getSelectedAuction().getTitle());
+         */
       }
       else if(id.equals("startAuction"))
       {
@@ -87,6 +96,7 @@ public class AuctionViewModel
     reservePriceProperty.set(0);
     timeProperty.set(0);
     titleProperty.set("");
+    end.set(false);
   }
   public IntegerProperty getIdProperty()
   {
@@ -112,6 +122,10 @@ public class AuctionViewModel
   public IntegerProperty getTimeProperty()
   {
     return timeProperty;
+  }
+  public StringProperty getTimerProperty()
+  {
+    return timerProperty;
   }
   public StringProperty getTitleProperty()
   {
@@ -141,5 +155,22 @@ public class AuctionViewModel
   public IntegerProperty getIncrementProperty()
   {
     return incrementProperty;
+  }
+
+  @Override public void propertyChange(PropertyChangeEvent event)
+  {
+    switch (event.getPropertyName())
+    {
+      case "time":
+        Platform.runLater(()->timerProperty.set((String)event.getNewValue()));
+        break;
+      case "end":
+        Platform.runLater(()->end.set(true));
+        Platform.runLater(()->errorProperty.set("Auction closed."));
+        //Platform.runLater(()->currentBidTitle.set("Final bid: "));
+        //property.firePropertyChange("The end is here", null, null);
+        break;
+
+    }
   }
 }

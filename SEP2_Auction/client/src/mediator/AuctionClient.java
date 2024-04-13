@@ -29,7 +29,7 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
     try
     {
       UnicastRemoteObject.exportObject(this, 0);
-      server=(AuctionRemote) Naming.lookup("rmi://localhost:1099/Auction");
+      server=(AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
       server.addListener(this, "Auction");
     }
     catch(Exception e)
@@ -45,7 +45,7 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   {
     try
     {
-      return server.startAuction(title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
+      return server.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
     }
     catch (RemoteException e)
     {

@@ -48,11 +48,14 @@ public class FixedPaneViewController
   public void reset(String id)
   {
     fixedPaneViewModel.reset();
+    sellItemButton.setText("Sell item");
 
     ///////////////////////////
     //sprint 1 focus
     if(id.equals("startAuction"))
+    {
       sellItemButtonPressed();
+    }
     else if(id.equals("displayAuction"))
     {
       try
@@ -73,6 +76,7 @@ public class FixedPaneViewController
 
   @FXML Region sellItemButtonPressed()
   {
+    sellItemButton.setText("Clear");
     //the logic we would have in the ViewHandler - kind of
     if (auctionViewController == null)
     {
