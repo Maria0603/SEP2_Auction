@@ -96,6 +96,7 @@ public class AuctionViewController
         setForDisplay();
         break;
       case "startAuction":
+        auctionViewModel.reset(id);
         setForStart();
         break;
     }
@@ -105,7 +106,6 @@ public class AuctionViewController
     anchorPane.setPrefHeight(690);
     startAuctionButton.setLayoutY(625);
     cancelButton.setLayoutY(625);
-
 
     titleTextArea.setDisable(false);
     titleTextArea.requestFocus();
@@ -214,7 +214,7 @@ public class AuctionViewController
       //viewHandler.openView("allAuctions");
       reset("");
       //sprint 1 focus
-      viewHandler.openView("startAuction");
+      viewHandler.openView("displayAuction");
     }
     ////////////////////////////////////////////////////////
   }

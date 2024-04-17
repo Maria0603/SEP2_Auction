@@ -23,4 +23,5 @@ public class ViewModelFactory
   {
     return fixedPaneViewModel;
   }
+
 }

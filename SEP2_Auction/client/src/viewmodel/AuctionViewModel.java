@@ -76,7 +76,8 @@ public class AuctionViewModel implements PropertyChangeListener
         incrementProperty.set(20);
          */
       }
-      else if(id.equals("startAuction"))
+      //else if(id.equals("startAuction"))
+      else
       {
         wipe();
       }
@@ -161,10 +162,10 @@ public class AuctionViewModel implements PropertyChangeListener
   {
     switch (event.getPropertyName())
     {
-      case "time":
+      case "Time":
         Platform.runLater(()->timerProperty.set((String)event.getNewValue()));
         break;
-      case "end":
+      case "End":
         Platform.runLater(()->end.set(true));
         Platform.runLater(()->errorProperty.set("Auction closed."));
         //Platform.runLater(()->currentBidTitle.set("Final bid: "));

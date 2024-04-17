@@ -19,7 +19,7 @@ public class FixedPaneViewController
   @FXML private Button logOutButton;
   @FXML private Button moderatorInfoButton;
   @FXML private Button myAuctions_allAccountsButton;
-  @FXML private Button myBids_bannedUsersButton;
+  @FXML private Button myBidsButton;
   @FXML private Button myProfile_settingsButton;
   @FXML private Label emailLabel;
   @FXML private Button notificationsButton;
@@ -48,7 +48,6 @@ public class FixedPaneViewController
   public void reset(String id)
   {
     fixedPaneViewModel.reset();
-    sellItemButton.setText("Sell item");
 
     ///////////////////////////
     //sprint 1 focus
@@ -65,18 +64,41 @@ public class FixedPaneViewController
         borderPane.setCenter(root);
         auctionViewController = loader.getController();
         auctionViewController.init(viewHandler, viewModelFactory.getAuctionViewModel(), root, id);
+
+        allAuctionsButton.setDisable(false);
+        myAuctions_allAccountsButton.setDisable(false);
+        myBidsButton.setDisable(false);
+        myProfile_settingsButton.setDisable(false);
+        notificationsButton.setDisable(false);
+        logOutButton.setDisable(false);
+        moderatorInfoButton.setDisable(false);
+        sellItemButton.setDisable(false);
       }
       catch (Exception e)
       {
         e.printStackTrace();
       }
     }
+    else if(id.equals("allAuctions"))
+    {
+      allAuctionsButtonPressed();
+    }
 
   }
 
   @FXML Region sellItemButtonPressed()
   {
-    sellItemButton.setText("Clear");
+    //to prevent leaving the auction creation, we disable the buttons
+    //the user can still leave by pressing the Cancel button
+    allAuctionsButton.setDisable(true);
+    myAuctions_allAccountsButton.setDisable(true);
+    myBidsButton.setDisable(true);
+    myProfile_settingsButton.setDisable(true);
+    notificationsButton.setDisable(true);
+    logOutButton.setDisable(true);
+    moderatorInfoButton.setDisable(true);
+    sellItemButton.setDisable(true);
+
     //the logic we would have in the ViewHandler - kind of
     if (auctionViewController == null)
     {
@@ -99,8 +121,10 @@ public class FixedPaneViewController
     }
     return auctionViewController.getRoot();
   }
-  @FXML void allAuctionsButtonPressed(ActionEvent event)
+
+  @FXML void allAuctionsButtonPressed()
   {
+
   }
 
   @FXML
