@@ -20,7 +20,7 @@ public class AuctionViewModel implements PropertyChangeListener
   {
     this.model=model;
     this.state=state;
-    idProperty=new SimpleIntegerProperty(model.generateID());
+    idProperty=new SimpleIntegerProperty();
     bidProperty=new SimpleIntegerProperty();
     buyoutPriceProperty=new SimpleIntegerProperty();
     descriptionProperty=new SimpleStringProperty();
@@ -37,10 +37,11 @@ public class AuctionViewModel implements PropertyChangeListener
     //to be used when the placeBid() method is called;
     end=new SimpleBooleanProperty();
     ////////////////////////////////////
-    reset("displayAuction");
+    reset("startAuction");
   }
   public void startAuction()
   {
+    errorProperty.set("");
     try
     {
       state.setAuction(model.startAuction(idProperty.get(), titleProperty.get(), descriptionProperty.get(),
@@ -59,14 +60,11 @@ public class AuctionViewModel implements PropertyChangeListener
     {
       if(id.equals("displayAuction"))
       {
-        /*
         titleProperty.set(state.getSelectedAuction().getTitle());
         descriptionProperty.set(state.getSelectedAuction().getDescription());
         reservePriceProperty.set(state.getSelectedAuction().getReservePrice());
         buyoutPriceProperty.set(state.getSelectedAuction().getBuyoutPrice());
         incrementProperty.set(state.getSelectedAuction().getMinimumIncrement());
-        //timeProperty.set(state.getSelectedAuction().getTitle());
-         */
 
         /*
         titleProperty.set("iphone 7 ");
@@ -83,6 +81,7 @@ public class AuctionViewModel implements PropertyChangeListener
       }
 
     }
+
   }
   private void wipe()
   {
@@ -164,6 +163,7 @@ public class AuctionViewModel implements PropertyChangeListener
     {
       case "Time":
         Platform.runLater(()->timerProperty.set((String)event.getNewValue()));
+        System.out.println(event.getNewValue());
         break;
       case "End":
         Platform.runLater(()->end.set(true));
@@ -171,6 +171,8 @@ public class AuctionViewModel implements PropertyChangeListener
         //Platform.runLater(()->currentBidTitle.set("Final bid: "));
         //property.firePropertyChange("The end is here", null, null);
         break;
+      case "Auction":
+        //add auction to the list of auctions
 
     }
   }

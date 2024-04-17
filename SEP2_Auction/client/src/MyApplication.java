@@ -12,18 +12,18 @@ public class MyApplication extends Application
 {
   @Override public void start(Stage primaryStage) throws Exception
   {
-    //try
-    //{
+    try
+    {
       AuctionModel model = new AuctionModelManager();
       ViewModelFactory viewModelFactory = new ViewModelFactory(model);
       ViewHandler view = new ViewHandler(viewModelFactory);
-      //AuctionClient client = new AuctionClient();
+      AuctionClient client = new AuctionClient();
       view.start(primaryStage);
-   /* }
+    }
     catch(IOException e)
     {
       e.printStackTrace();
     }
-*/
+
   }
 }

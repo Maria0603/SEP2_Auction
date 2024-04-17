@@ -1,4 +1,6 @@
-package model;
+package mediator;
+
+import model.Auction;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

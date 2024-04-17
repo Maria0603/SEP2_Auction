@@ -6,12 +6,10 @@ public class ViewModelState
 {
   private Auction selectedAuction;
   private boolean displayAuction;
-  //private Account account;
   public ViewModelState()
   {
     selectedAuction=null;
     displayAuction=false;
-    //account=null;
   }
   public void setAuction(Auction auction)
   {

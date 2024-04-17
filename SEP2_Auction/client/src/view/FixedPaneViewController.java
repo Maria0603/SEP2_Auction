@@ -88,7 +88,7 @@ public class FixedPaneViewController
 
   @FXML Region sellItemButtonPressed()
   {
-    //to prevent leaving the auction creation, we disable the buttons
+    //to prevent leaving the auction creation, we disable the buttons;
     //the user can still leave by pressing the Cancel button
     allAuctionsButton.setDisable(true);
     myAuctions_allAccountsButton.setDisable(true);

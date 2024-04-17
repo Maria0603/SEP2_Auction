@@ -27,7 +27,9 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
     property=new PropertyChangeHandler<>(this, true);
 
     ///////////////////////////////////////////////////////
-    //model.addListener("Auction", this);
+    model.addListener("Auction", this);
+    model.addListener("Time", this);
+    model.addListener("End", this);
     startRegistry();
     startServer();
   }
@@ -62,10 +64,6 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
     return model.getAuction(id);
   }
 
-  @Override public int generateID() throws RemoteException
-  {
-    return model.generateID();
-  }
 
   @Override public boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException

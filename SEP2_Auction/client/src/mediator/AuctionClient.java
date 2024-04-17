@@ -3,6 +3,7 @@ package mediator;
 import model.Auction;
 import model.AuctionModel;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -36,7 +37,6 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
     {
       e.printStackTrace();
     }
-
   }
 
   @Override public Auction startAuction(int ID, String title, String description,
@@ -54,19 +54,6 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
     return null;
   }
 
-
-  @Override public int generateID()
-  {
-    try
-    {
-      return server.generateID();
-    }
-    catch (RemoteException e)
-    {
-      e.printStackTrace();
-    }
-    return 0;
-  }
 
   @Override public Auction getAuction(int ID)
   {
@@ -98,4 +85,5 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   {
     property.firePropertyChange(event.getPropertyName(), event.getValue1(), event.getValue2());
   }
+
 }

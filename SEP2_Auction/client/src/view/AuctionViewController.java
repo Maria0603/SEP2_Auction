@@ -24,7 +24,6 @@ public class AuctionViewController
   @FXML private Button buyNowButton;
   @FXML private TextField buyoutPriceTextField;
   @FXML private Button cancelButton;
-  @FXML private SplitMenuButton categorySplitMenuButton;
   @FXML private Label currentBidLabel;
   @FXML private Label currentBidTextLabel;
   @FXML private Label currentBidderLabel;
@@ -77,8 +76,8 @@ public class AuctionViewController
     Bindings.bindBidirectional(reservePriceTextField.textProperty(), this.auctionViewModel.getReservePriceProperty(), new IntStringConverter());
     errorLabel.textProperty().bindBidirectional(this.auctionViewModel.getErrorProperty());
     Bindings.bindBidirectional(timeTextField.textProperty(), this.auctionViewModel.getTimeProperty(), new IntStringConverter());
+    timerCountdownLabel.textProperty().bindBidirectional(this.auctionViewModel.getTimerProperty());
     Bindings.bindBidirectional(buyoutPriceTextField.textProperty(), this.auctionViewModel.getBuyoutPriceProperty(), new IntStringConverter());
-
     //other bindings to be inserted
 
 
@@ -211,7 +210,6 @@ public class AuctionViewController
     ////////////////////////////////////////////////////////
     if (result.isPresent() && result.get() == ButtonType.OK)
     {
-      //viewHandler.openView("allAuctions");
       reset("");
       //sprint 1 focus
       viewHandler.openView("displayAuction");
