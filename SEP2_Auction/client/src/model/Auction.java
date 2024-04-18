@@ -30,7 +30,6 @@ public class Auction
       int buyoutPrice, int minimumIncrement, int auctionTime,
       String imagePath) {
     property = new PropertyChangeSupport(this);
-
     setID(ID);
     setTitle(title);
     setDescription(description);
@@ -40,9 +39,9 @@ public class Auction
     setAuctionTime(auctionTime);
     setImagePath(imagePath);
 
-    this.timer = new Timer(this.auctionTime);
-    this.timer.addListener("Time", this);
-    this.timer.addListener("End", this);
+    this.timer = new Timer(this.auctionTime, ID);
+    this.timer.addListener("Time"+ID, this);
+    this.timer.addListener("End"+ID, this);
     Thread t = new Thread(timer);
     t.start();
 
@@ -130,7 +129,13 @@ public class Auction
     //to be updated when the moderator adds the time interval
     if (auctionTime <= 0 || auctionTime > 24)
       throw new IllegalArgumentException("The auction time is out of bounds");
-    this.auctionTime = auctionTime * 3600;
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //correct line:
+    //this.auctionTime = auctionTime * 3600;
+    ////////////////////////////////////////////////////////////////////////////////
+    //for testing purposes:
+    this.auctionTime=auctionTime;
   }
 
   public String getImagePath()

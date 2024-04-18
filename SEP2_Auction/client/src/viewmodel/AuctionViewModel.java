@@ -52,8 +52,8 @@ public class AuctionViewModel implements PropertyChangeListener,
       state.setAuction(model.startAuction(idProperty.get(), titleProperty.get(), descriptionProperty.get(),
           reservePriceProperty.get(), buyoutPriceProperty.get(),
           incrementProperty.get(), timeProperty.get(), pathProperty.get()));
-      model.addListener("Time", this);
-      model.addListener("End", this);
+      model.addListener("Time"+state.getSelectedAuction().getID(), this);
+      model.addListener("End"+state.getSelectedAuction().getID(), this);
     }
     catch(IllegalArgumentException e)
     {
@@ -165,33 +165,41 @@ public class AuctionViewModel implements PropertyChangeListener,
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {
-    switch (event.getPropertyName())
+    int id;
+    if(event.getPropertyName().contains("Time"))
     {
-      case "Time":
+      id=Integer.parseInt(event.getPropertyName().replace("Time", ""));
+      model.getAuction(id);
+      if(idProperty.get()==id)
         Platform.runLater(()->timerProperty.set((String)event.getNewValue()));
-        //System.out.println(event.getNewValue());
-        break;
-      case "End":
+    }
+    else if (event.getPropertyName().contains("End"))
+    {
+      id=Integer.parseInt(event.getPropertyName().replace("End", ""));
+      if(idProperty.get()==id)
+      {
         Platform.runLater(()->errorProperty.set("Auction closed."));
         property.firePropertyChange(event);
-        model.removeListener("Time", this);
-        model.removeListener("End", this);
-        break;
-      case "Auction":
-        //add auction to the list of auctions
+      }
 
     }
+    else if(event.getPropertyName().contains("Auction"))
+    {
+      //add the auction to the list
+      //id=Integer.parseInt(event.getPropertyName().replace("Time", ""));
+    }
+
   }
 
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {
-    property.addPropertyChangeListener(propertyName, listener);
+      property.addPropertyChangeListener(propertyName, listener);
   }
 
   @Override public void removeListener(String propertyName,
       PropertyChangeListener listener)
   {
-    property.removePropertyChangeListener(propertyName, listener);
+      property.removePropertyChangeListener(propertyName, listener);
   }
 }

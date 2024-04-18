@@ -30,8 +30,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     ////////////////////////////////////////////////////////////////////////////
     property.firePropertyChange("Auction", null, auction);
 
-    auction.addListener("Time", this);
-    auction.addListener("End", this);
+    auction.addListener("Time"+auction.getID(), this);
+    auction.addListener("End"+auction.getID(), this);
     return auction;
   }
 

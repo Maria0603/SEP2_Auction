@@ -68,7 +68,6 @@ public class AuctionViewController implements PropertyChangeListener
     this.root = root;
     this.viewHandler = viewHandler;
     this.auctionViewModel=auctionViewModel;
-    auctionViewModel.addListener("End", this);
 
     Bindings.bindBidirectional(idLabel.textProperty(), this.auctionViewModel.getIdProperty(), new IntStringConverter());
     headerLabel.textProperty().bindBidirectional(this.auctionViewModel.getHeaderProperty());
@@ -211,6 +210,7 @@ public class AuctionViewController implements PropertyChangeListener
     auctionViewModel.startAuction();
     if(errorLabel.getText().isEmpty())
     {
+      auctionViewModel.addListener("End"+idLabel, this);
       viewHandler.openView("displayAuction");
     }
   }
@@ -274,6 +274,5 @@ public class AuctionViewController implements PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     setForAuctionClosed();
-    System.out.println("Fired");
   }
 }

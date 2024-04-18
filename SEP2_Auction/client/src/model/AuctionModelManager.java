@@ -19,8 +19,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       property = new PropertyChangeSupport(this);
       client = new AuctionClient();
       client.addListener("Auction", this);
-      client.addListener("Time", this);
-      client.addListener("End", this);
+      //client.addListener("Time", this);
+      //client.addListener("End", this);
     }
     catch(IOException e)
     {
@@ -33,6 +33,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, String imagePath)
   {
+    client.addListener("Time"+ID, this);
+    client.addListener("End"+ID, this);
     return client.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
   }
 

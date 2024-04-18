@@ -12,12 +12,22 @@ import java.time.format.DateTimeFormatter;
 public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
 {
   private int timerSeconds;
+  private int id;
   private PropertyChangeSupport property;
+  ///////////////////////////////////////////////////////////////////
+  //do not change this number
+  private static final long serialVersionUID = 6529685098267757690L;
+  //////////////////////////////////////////////////////////////////
 
-  public Timer(int timerSeconds)
+  public Timer(int timerSeconds, int id)
   {
     this.timerSeconds = timerSeconds;
+    this.id=id;
     property = new PropertyChangeSupport(this);
+  }
+  public int getId()
+  {
+    return id;
   }
 
   public int getTimerSeconds()
@@ -31,7 +41,7 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     while (timerSeconds >= 0)
     {
-      property.firePropertyChange("Time", timerSeconds, time.format(timeFormatter));
+      property.firePropertyChange("Time"+id, timerSeconds, time.format(timeFormatter));
       try
       {
         Thread.sleep(1000);
@@ -43,12 +53,12 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
       time = time.minusSeconds(1);
       timerSeconds--;
     }
-    property.firePropertyChange("End", null, 0);
+    property.firePropertyChange("End"+id, null, 0);
     PropertyChangeListener[] listeners = property.getPropertyChangeListeners();
     for (int i=0; i<listeners.length; i++)
     {
-      removeListener("Time", listeners[i]);
-      removeListener("End", listeners[i]);
+      removeListener("Time"+id, listeners[i]);
+      removeListener("End"+id, listeners[i]);
     }
   }
 

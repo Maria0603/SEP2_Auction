@@ -30,7 +30,6 @@ public class Auction
       int buyoutPrice, int minimumIncrement, int auctionTime,
       String imagePath) {
     property = new PropertyChangeSupport(this);
-
     setID(ID);
     setTitle(title);
     setDescription(description);
@@ -40,9 +39,9 @@ public class Auction
     setAuctionTime(auctionTime);
     setImagePath(imagePath);
 
-    this.timer = new Timer(this.auctionTime);
-    this.timer.addListener("Time", this);
-    this.timer.addListener("End", this);
+    this.timer = new Timer(this.auctionTime, ID);
+    this.timer.addListener("Time"+ID, this);
+    this.timer.addListener("End"+ID, this);
     Thread t = new Thread(timer);
     t.start();
 

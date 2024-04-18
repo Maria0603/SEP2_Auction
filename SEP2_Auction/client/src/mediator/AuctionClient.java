@@ -33,8 +33,8 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
       server=(AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
 
       server.addListener(this, "Auction");
-      server.addListener(this, "Time");
-      server.addListener(this, "End");
+      //server.addListener(this, "Time");
+      //server.addListener(this, "End");
     }
     catch(Exception e)
     {
@@ -48,6 +48,8 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   {
     try
     {
+      server.addListener(this, "Time"+ID);
+      server.addListener(this, "End"+ID);
       return server.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
     }
     catch (RemoteException e)

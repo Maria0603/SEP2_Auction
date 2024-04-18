@@ -27,8 +27,7 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
     property=new PropertyChangeHandler<>(this, true);
 
     model.addListener("Auction", this);
-    model.addListener("Time", this);
-    model.addListener("End", this);
+
     startRegistry();
     startServer();
   }
@@ -55,6 +54,10 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       String imagePath) throws RemoteException
   {
+    ////////////////////////////////////////////////////////////////////
+    model.addListener("Time"+id, this);
+    model.addListener("End"+id, this);
+    /////////////////////////////////////////////////////////////////////
     return model.startAuction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
   }
 
