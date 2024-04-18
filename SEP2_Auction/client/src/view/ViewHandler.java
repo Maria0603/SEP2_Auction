@@ -34,7 +34,6 @@ public class ViewHandler
     {
       case "startAuction", "displayAuction":
         root = loadFixedPaneView("FixedPaneView.fxml", id);
-        System.out.println("3. Open view");
 
         break;
       //case "login":
@@ -68,7 +67,6 @@ public class ViewHandler
         loader.setLocation(getClass().getResource(fxmlFile));
         Region root = loader.load();
         fixedPaneViewController = loader.getController();
-        System.out.println("4. loadFixed");
 
         fixedPaneViewController.init(this, viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root, id);
       }

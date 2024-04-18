@@ -87,7 +87,6 @@ public class AuctionViewController implements PropertyChangeListener
     //auctionViewModel.addListener(this);
     imagePath="";
     errorLabel.setText("");
-    System.out.println("8. auction init");
 
     reset(id);
   }
@@ -100,8 +99,6 @@ public class AuctionViewController implements PropertyChangeListener
         setForDisplay();
         break;
       case "startAuction":
-        System.out.println("9. auction reset");
-
         auctionViewModel.reset(id);
         setForStart();
         break;
@@ -206,7 +203,6 @@ public class AuctionViewController implements PropertyChangeListener
 
   @FXML void startAuctionButtonPressed(ActionEvent event)
   {
-    System.out.println("1. Start pressed");
     auctionViewModel.startAuction();
     if(errorLabel.getText().isEmpty())
     {

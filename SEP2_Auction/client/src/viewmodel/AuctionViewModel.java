@@ -44,7 +44,6 @@ public class AuctionViewModel implements PropertyChangeListener,
   }
   public void startAuction()
   {
-    System.out.println("2. Start auction in view model");
 
     errorProperty.set("");
     try
@@ -88,7 +87,6 @@ public class AuctionViewModel implements PropertyChangeListener,
   }
   private void wipe()
   {
-    System.out.println("10. wiped");
 
     state.setAuction(null);
     headerProperty.set("Start auction");
@@ -187,6 +185,7 @@ public class AuctionViewModel implements PropertyChangeListener,
     {
       //add the auction to the list
       //id=Integer.parseInt(event.getPropertyName().replace("Time", ""));
+      Platform.runLater(()->{
       headerProperty.set("Auction ID:");
       idProperty.set(((Auction) event.getNewValue()).getID());
       titleProperty.set(((Auction) event.getNewValue()).getTitle());
@@ -194,6 +193,7 @@ public class AuctionViewModel implements PropertyChangeListener,
       reservePriceProperty.set(((Auction) event.getNewValue()).getReservePrice());
       buyoutPriceProperty.set(((Auction) event.getNewValue()).getBuyoutPrice());
       incrementProperty.set(((Auction) event.getNewValue()).getMinimumIncrement());
+      });
     }
 
   }
