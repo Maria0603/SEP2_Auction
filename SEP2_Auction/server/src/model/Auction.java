@@ -14,10 +14,9 @@ public class Auction
     implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
 {
   private int ID;
-  private String title;
-  String description;
-  int reservePrice, buyoutPrice, minimumIncrement, auctionTime;
-  String imagePath;
+  private String title, description, currentBidder, imagePath, status;
+  int reservePrice, buyoutPrice, minimumIncrement, auctionTime, currentBid;
+
   ///////////////////////////////////////////////////////////////////
   //do not change this number
   private static final long serialVersionUID = 6529685098267757690L;
@@ -27,8 +26,9 @@ public class Auction
   private PropertyChangeSupport property;
 
   public Auction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, int auctionTime,
-      String imagePath) {
+      int buyoutPrice, int minimumIncrement, int auctionTime, int currentBid, String currentBidder,
+      String imagePath, String status)
+  {
     property = new PropertyChangeSupport(this);
     setID(ID);
     setTitle(title);
@@ -38,6 +38,7 @@ public class Auction
     setBuyoutPrice(buyoutPrice);
     setAuctionTime(auctionTime);
     setImagePath(imagePath);
+    this.status=status;
 
     this.timer = new Timer(this.auctionTime, ID);
     this.timer.addListener("Time"+ID, this);
@@ -45,6 +46,24 @@ public class Auction
     Thread t = new Thread(timer);
     t.start();
 
+  }
+  public int getCurrentBid()
+  {
+    return currentBid;
+  }
+  public void setCurrentBid(int bid)
+  {
+    //logic for bid
+    this.currentBid=bid;
+  }
+  public String getCurrentBidder()
+  {
+    return currentBidder;
+  }
+  public void setCurrentBidder(String bidder)
+  {
+    //logic for bidder
+    this.currentBidder=bidder;
   }
 
 
@@ -55,6 +74,14 @@ public class Auction
   public void setID(int ID)
   {
     this.ID = ID;
+  }
+  public String getStatus()
+  {
+    return status;
+  }
+  public void setStatus(String status)
+  {
+    this.status=status;
   }
 
   public String getTitle()
@@ -132,10 +159,10 @@ public class Auction
 
     /////////////////////////////////////////////////////////////////////////////////
     //correct line:
-    //this.auctionTime = auctionTime * 3600;
+    this.auctionTime = auctionTime * 3600;
     ////////////////////////////////////////////////////////////////////////////////
     //for testing purposes:
-    this.auctionTime=auctionTime;
+    //this.auctionTime=auctionTime;
   }
 
   public String getImagePath()

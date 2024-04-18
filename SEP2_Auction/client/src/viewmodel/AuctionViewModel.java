@@ -187,6 +187,13 @@ public class AuctionViewModel implements PropertyChangeListener,
     {
       //add the auction to the list
       //id=Integer.parseInt(event.getPropertyName().replace("Time", ""));
+      headerProperty.set("Auction ID:");
+      idProperty.set(((Auction) event.getNewValue()).getID());
+      titleProperty.set(((Auction) event.getNewValue()).getTitle());
+      descriptionProperty.set(((Auction) event.getNewValue()).getDescription());
+      reservePriceProperty.set(((Auction) event.getNewValue()).getReservePrice());
+      buyoutPriceProperty.set(((Auction) event.getNewValue()).getBuyoutPrice());
+      incrementProperty.set(((Auction) event.getNewValue()).getMinimumIncrement());
     }
 
   }

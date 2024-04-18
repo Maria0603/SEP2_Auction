@@ -37,7 +37,7 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
 
   @Override public void run()
   {
-    LocalTime time = LocalTime.ofSecondOfDay(timerSeconds);
+    LocalTime time = LocalTime.ofSecondOfDay(timerSeconds-1);
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     while (timerSeconds >= 0)
     {
