@@ -15,4 +15,6 @@ public interface AuctionRemote extends Remote
   boolean removeListener(
       GeneralListener<String, Object> listener, String... propertyNames)
       throws RemoteException;
+
+
 }

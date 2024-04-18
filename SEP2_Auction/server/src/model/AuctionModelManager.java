@@ -29,6 +29,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     auction = new Auction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
     ////////////////////////////////////////////////////////////////////////////
     property.firePropertyChange("Auction", null, auction);
+
     auction.addListener("Time", this);
     auction.addListener("End", this);
     return auction;
@@ -57,7 +58,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     //model manager property fires auction events further
-    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+    property.firePropertyChange(evt);
+    //System.out.println(evt.getNewValue());
+
     //System.out.println((String) evt.getNewValue());
   }
 }

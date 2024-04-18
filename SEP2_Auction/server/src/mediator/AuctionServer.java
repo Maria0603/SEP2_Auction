@@ -26,7 +26,6 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
     this.model=model;
     property=new PropertyChangeHandler<>(this, true);
 
-    ///////////////////////////////////////////////////////
     model.addListener("Auction", this);
     model.addListener("Time", this);
     model.addListener("End", this);
@@ -79,6 +78,8 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
   }
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    property.firePropertyChange(evt.getPropertyName(), (String) evt.getOldValue(), evt.getNewValue());
+    property.firePropertyChange(evt.getPropertyName(), String.valueOf(evt.getOldValue()), evt.getNewValue());
+    //System.out.println(evt.getNewValue());
+
   }
 }

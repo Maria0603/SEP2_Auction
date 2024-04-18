@@ -1,5 +1,6 @@
 package view;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,10 +13,12 @@ import javafx.stage.FileChooser;
 import utility.IntStringConverter;
 import viewmodel.AuctionViewModel;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Optional;
 
-public class AuctionViewController
+public class AuctionViewController implements PropertyChangeListener
 {
   @FXML private ScrollPane auctionScrollPane;
   @FXML private Button backButton;
@@ -65,6 +68,7 @@ public class AuctionViewController
     this.root = root;
     this.viewHandler = viewHandler;
     this.auctionViewModel=auctionViewModel;
+    auctionViewModel.addListener("End", this);
 
     Bindings.bindBidirectional(idLabel.textProperty(), this.auctionViewModel.getIdProperty(), new IntStringConverter());
     headerLabel.textProperty().bindBidirectional(this.auctionViewModel.getHeaderProperty());
@@ -84,6 +88,8 @@ public class AuctionViewController
     //auctionViewModel.addListener(this);
     imagePath="";
     errorLabel.setText("");
+    System.out.println("8. auction init");
+
     reset(id);
   }
   public void reset(String id)
@@ -95,6 +101,8 @@ public class AuctionViewController
         setForDisplay();
         break;
       case "startAuction":
+        System.out.println("9. auction reset");
+
         auctionViewModel.reset(id);
         setForStart();
         break;
@@ -181,6 +189,16 @@ public class AuctionViewController
     cancelButton.setVisible(false);
 
   }
+  private void setForAuctionClosed()
+  {
+    Platform.runLater(()->{
+    timerCountdownLabel.setStyle("-fx-background-color:RED");
+    placeBidButton.setDisable(true);
+    buyNowButton.setDisable(true);
+    currentBidderTextLabel.setText("Final bidder:");
+    currentBidTextLabel.setText("Final bid:");
+    });
+  }
 
   public Region getRoot()
   {
@@ -189,6 +207,7 @@ public class AuctionViewController
 
   @FXML void startAuctionButtonPressed(ActionEvent event)
   {
+    System.out.println("1. Start pressed");
     auctionViewModel.startAuction();
     if(errorLabel.getText().isEmpty())
     {
@@ -212,7 +231,7 @@ public class AuctionViewController
     {
       reset("");
       //sprint 1 focus
-      viewHandler.openView("displayAuction");
+      viewHandler.openView("startAuction");
     }
     ////////////////////////////////////////////////////////
   }
@@ -250,5 +269,11 @@ public class AuctionViewController
 
   public void deleteButtonPressed(ActionEvent actionEvent)
   {
+  }
+
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
+    setForAuctionClosed();
+    System.out.println("Fired");
   }
 }

@@ -9,7 +9,6 @@ import java.io.IOException;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
-  //private Auction auction;
   private PropertyChangeSupport property;
   private AuctionClient client;
 
@@ -20,7 +19,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       property = new PropertyChangeSupport(this);
       client = new AuctionClient();
       client.addListener("Auction", this);
-      //this.auction = auction;
+      client.addListener("Time", this);
+      client.addListener("End", this);
     }
     catch(IOException e)
     {
@@ -38,7 +38,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public Auction getAuction(int ID)
   {
-    //TODO:change when ArrayList is used
     return client.getAuction(ID);
   }
 

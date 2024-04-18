@@ -31,7 +31,10 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
     {
       UnicastRemoteObject.exportObject(this, 0);
       server=(AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
+
       server.addListener(this, "Auction");
+      server.addListener(this, "Time");
+      server.addListener(this, "End");
     }
     catch(Exception e)
     {
@@ -84,6 +87,7 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
       throws RemoteException
   {
     property.firePropertyChange(event.getPropertyName(), event.getValue1(), event.getValue2());
+    //System.out.println(event.getValue2());
   }
 
 }

@@ -41,15 +41,15 @@ public class Auction
     setImagePath(imagePath);
 
     this.timer = new Timer(this.auctionTime);
-    this.timer.addListener("time", this);
-    this.timer.addListener("end", this);
+    this.timer.addListener("Time", this);
+    this.timer.addListener("End", this);
     Thread t = new Thread(timer);
     t.start();
 
   }
 
 
-  public long getID() {
+  public int getID() {
     return ID;
   }
 
@@ -65,7 +65,7 @@ public class Auction
 
   public void setTitle(String title)
   {
-    int maxTitleLength = 50;
+    int maxTitleLength = 80;
     int minTitleLength=5;
     if (title.length() > maxTitleLength)
       throw new IllegalArgumentException("The title is too long!");
@@ -81,7 +81,7 @@ public class Auction
 
   public void setDescription(String description)
   {
-    int maxDescriptionLength = 700, minDescriptionLength=20;
+    int maxDescriptionLength = 1400, minDescriptionLength=20;
     if (description.length() > maxDescriptionLength)
       throw new IllegalArgumentException("The description is too long!");
     else if(description.length()<minDescriptionLength)
@@ -129,8 +129,14 @@ public class Auction
   {
     //to be updated when the moderator adds the time interval
     if (auctionTime <= 0 || auctionTime > 24)
-      throw new IllegalArgumentException("The auction is out of bounds");
-    this.auctionTime = auctionTime * 3600;
+      throw new IllegalArgumentException("The auction time is out of bounds");
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //correct line:
+    //this.auctionTime = auctionTime * 3600;
+    ////////////////////////////////////////////////////////////////////////////////
+    //for testing purposes:
+    this.auctionTime=auctionTime;
   }
 
   public String getImagePath()
@@ -184,7 +190,8 @@ public class Auction
   {
     //auction property fires timer events further
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
-    //System.out.println((String) evt.getNewValue());
+
+    //System.out.println(evt.getNewValue());
   }
 
 }

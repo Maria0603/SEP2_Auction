@@ -24,7 +24,7 @@ public class ViewHandler
   public void start(Stage primaryStage)
   {
     this.primaryStage = primaryStage;
-    openView("displayAuction");
+    openView("startAuction");
   }
 
   public void openView(String id)
@@ -34,6 +34,8 @@ public class ViewHandler
     {
       case "startAuction", "displayAuction":
         root = loadFixedPaneView("FixedPaneView.fxml", id);
+        System.out.println("3. Open view");
+
         break;
       //case "login":
       //case "createAccount":
@@ -66,6 +68,8 @@ public class ViewHandler
         loader.setLocation(getClass().getResource(fxmlFile));
         Region root = loader.load();
         fixedPaneViewController = loader.getController();
+        System.out.println("4. loadFixed");
+
         fixedPaneViewController.init(this, viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root, id);
       }
       catch (Exception e)

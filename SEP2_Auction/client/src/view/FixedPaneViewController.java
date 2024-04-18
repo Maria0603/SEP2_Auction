@@ -34,6 +34,8 @@ public class FixedPaneViewController
   private ViewModelFactory viewModelFactory;
   public void init(ViewHandler viewHandler, FixedPaneViewModel fixedPaneViewModel, ViewModelFactory viewModelFactory, Region root, String id)
   {
+    System.out.println("5. Fixed init");
+
     this.root=root;
     this.viewModelFactory=viewModelFactory;
     this.fixedPaneViewModel=fixedPaneViewModel;
@@ -53,6 +55,8 @@ public class FixedPaneViewController
     //sprint 1 focus
     if(id.equals("startAuction"))
     {
+      System.out.println("6. sell item pressed");
+
       sellItemButtonPressed();
     }
     else if(id.equals("displayAuction"))
@@ -108,6 +112,8 @@ public class FixedPaneViewController
         Region root = loader.load();
         borderPane.setCenter(root);
         auctionViewController = loader.getController();
+        System.out.println("7. auction loader");
+
         auctionViewController.init(viewHandler, viewModelFactory.getAuctionViewModel(), root, "startAuction");
       }
       catch (Exception e)
