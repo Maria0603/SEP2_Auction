@@ -20,7 +20,7 @@ public class MyApplication extends Application
       AuctionClient client = new AuctionClient();
       view.start(primaryStage);
     }
-    catch(IOException e)
+    catch (IOException e)
     {
       e.printStackTrace();
     }

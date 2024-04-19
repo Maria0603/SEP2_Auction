@@ -16,16 +16,18 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
-public class AuctionServer implements AuctionRemote, RemoteSubject<String, Object>,
+public class AuctionServer
+    implements AuctionRemote, RemoteSubject<String, Object>,
     PropertyChangeListener
 {
   private AuctionModel model;
   private PropertyChangeHandler<String, Object> property;
 
-  public AuctionServer(AuctionModel model) throws MalformedURLException, RemoteException
+  public AuctionServer(AuctionModel model)
+      throws MalformedURLException, RemoteException
   {
-    this.model=model;
-    property=new PropertyChangeHandler<>(this, true);
+    this.model = model;
+    property = new PropertyChangeHandler<>(this, true);
 
     model.addListener("Auction", this);
     model.addListener("Time", this);
@@ -34,37 +36,40 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
     startRegistry();
     startServer();
   }
+
   private void startRegistry()
   {
     try
     {
-      Registry reg= LocateRegistry.createRegistry(1099);
+      Registry reg = LocateRegistry.createRegistry(1099);
       System.out.println("Registry started...");
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
   }
+
   private void startServer() throws RemoteException, MalformedURLException
   {
     UnicastRemoteObject.exportObject(this, 0);
     Naming.rebind("Connect", this);
   }
 
-
-  @Override public Auction startAuction(int id, String title, String description,
-      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws RemoteException, SQLException
+  @Override public Auction startAuction(int id, String title,
+      String description, int reservePrice, int buyoutPrice,
+      int minimumIncrement, int auctionTime, byte[] imageData)
+      throws RemoteException, SQLException
   {
-    return model.startAuction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+    return model.startAuction(id, title, description, reservePrice, buyoutPrice,
+        minimumIncrement, auctionTime, imageData);
   }
 
-  @Override public Auction getAuction(int id) throws RemoteException, SQLException
+  @Override public Auction getAuction(int id)
+      throws RemoteException, SQLException
   {
     return model.getAuction(id);
   }
-
 
   @Override public boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException
@@ -78,11 +83,10 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
   {
     return property.removeListener(listener, propertyNames);
   }
+
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     property.firePropertyChange(evt.getPropertyName(),
         String.valueOf(evt.getOldValue()), evt.getNewValue());
-    //System.out.println(evt.getPropertyName() +  "                       " + evt.getNewValue());
-
   }
 }

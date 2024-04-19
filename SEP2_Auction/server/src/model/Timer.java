@@ -1,6 +1,5 @@
 package model;
 
-
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.beans.PropertyChangeListener;
@@ -22,9 +21,10 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
   public Timer(int timerSeconds, int id)
   {
     this.timerSeconds = timerSeconds;
-    this.id=id;
+    this.id = id;
     property = new PropertyChangeSupport(this);
   }
+
   public int getId()
   {
     return id;
@@ -37,6 +37,7 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
 
   @Override public void run()
   {
+    //timerSeconds=timerSeconds/3600;
     while (timerSeconds >= 0)
     {
       property.firePropertyChange("Time", id, timerSeconds);
@@ -52,19 +53,21 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
     }
     property.firePropertyChange("End", null, 0);
     PropertyChangeListener[] listeners = property.getPropertyChangeListeners();
-    for (int i=0; i<listeners.length; i++)
+    for (int i = 0; i < listeners.length; i++)
     {
       removeListener("Time", listeners[i]);
       removeListener("End", listeners[i]);
     }
   }
 
-  @Override public void addListener(String propertyName, PropertyChangeListener listener)
+  @Override public void addListener(String propertyName,
+      PropertyChangeListener listener)
   {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override public void removeListener(String propertyName, PropertyChangeListener listener)
+  @Override public void removeListener(String propertyName,
+      PropertyChangeListener listener)
   {
     property.removePropertyChangeListener(propertyName, listener);
   }

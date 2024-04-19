@@ -11,9 +11,10 @@ public class ViewModelFactory
   public ViewModelFactory(AuctionModel model)
   {
     viewModelState = new ViewModelState();
-    auctionViewModel=new AuctionViewModel(model, viewModelState);
-    fixedPaneViewModel=new FixedPaneViewModel(model, viewModelState);
+    auctionViewModel = new AuctionViewModel(model, viewModelState);
+    fixedPaneViewModel = new FixedPaneViewModel(model, viewModelState);
   }
+
   public AuctionViewModel getAuctionViewModel()
   {
     return auctionViewModel;

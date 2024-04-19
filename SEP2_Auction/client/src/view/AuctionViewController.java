@@ -59,7 +59,7 @@ public class AuctionViewController implements PropertyChangeListener
   @FXML private TextArea titleTextArea;
   @FXML private Label idLabel;
   @FXML private AnchorPane anchorPane;
-  
+
   private Region root;
   private AuctionViewModel auctionViewModel;
   private ViewHandler viewHandler;
@@ -67,38 +67,50 @@ public class AuctionViewController implements PropertyChangeListener
   private File file;
 
   //initializations and bindings
-  public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel, Region root, String id)
+  public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel,
+      Region root, String id)
   {
     this.root = root;
     this.viewHandler = viewHandler;
-    this.auctionViewModel=auctionViewModel;
+    this.auctionViewModel = auctionViewModel;
 
-    Bindings.bindBidirectional(idLabel.textProperty(), this.auctionViewModel.getIdProperty(), new IntStringConverter());
-    headerLabel.textProperty().bindBidirectional(this.auctionViewModel.getHeaderProperty());
-    titleTextArea.textProperty().bindBidirectional(this.auctionViewModel.getTitleProperty());
-    descriptionTextArea.textProperty().bindBidirectional(this.auctionViewModel.getDescriptionProperty());
-    errorLabel.textProperty().bindBidirectional(this.auctionViewModel.getErrorProperty());
-    Bindings.bindBidirectional(incrementTextField.textProperty(), this.auctionViewModel.getIncrementProperty(), new IntStringConverter());
-    reasonTextArea.textProperty().bindBidirectional(this.auctionViewModel.getReasonProperty());
-    Bindings.bindBidirectional(reservePriceTextField.textProperty(), this.auctionViewModel.getReservePriceProperty(), new IntStringConverter());
-    errorLabel.textProperty().bindBidirectional(this.auctionViewModel.getErrorProperty());
-    Bindings.bindBidirectional(timeTextField.textProperty(), this.auctionViewModel.getTimeProperty(), new IntStringConverter());
-    timerCountdownLabel.textProperty().bindBidirectional(this.auctionViewModel.getTimerProperty());
-    Bindings.bindBidirectional(buyoutPriceTextField.textProperty(), this.auctionViewModel.getBuyoutPriceProperty(), new IntStringConverter());
+    Bindings.bindBidirectional(idLabel.textProperty(),
+        this.auctionViewModel.getIdProperty(), new IntStringConverter());
+    headerLabel.textProperty()
+        .bindBidirectional(this.auctionViewModel.getHeaderProperty());
+    titleTextArea.textProperty()
+        .bindBidirectional(this.auctionViewModel.getTitleProperty());
+    descriptionTextArea.textProperty()
+        .bindBidirectional(this.auctionViewModel.getDescriptionProperty());
+    errorLabel.textProperty()
+        .bindBidirectional(this.auctionViewModel.getErrorProperty());
+    Bindings.bindBidirectional(incrementTextField.textProperty(),
+        this.auctionViewModel.getIncrementProperty(), new IntStringConverter());
+    reasonTextArea.textProperty()
+        .bindBidirectional(this.auctionViewModel.getReasonProperty());
+    Bindings.bindBidirectional(reservePriceTextField.textProperty(),
+        this.auctionViewModel.getReservePriceProperty(),
+        new IntStringConverter());
+    errorLabel.textProperty()
+        .bindBidirectional(this.auctionViewModel.getErrorProperty());
+    Bindings.bindBidirectional(timeTextField.textProperty(),
+        this.auctionViewModel.getTimeProperty(), new IntStringConverter());
+    timerCountdownLabel.textProperty()
+        .bindBidirectional(this.auctionViewModel.getTimerProperty());
+    Bindings.bindBidirectional(buyoutPriceTextField.textProperty(),
+        this.auctionViewModel.getBuyoutPriceProperty(),
+        new IntStringConverter());
 
     //other bindings to be inserted
 
-
-    //auctionViewModel.addListener(this);
-    //imagePath="";
     errorLabel.setText("");
-    //////////////////////////////////////////////////////
-    fileChooser=new FileChooser();
+    fileChooser = new FileChooser();
     auctionViewModel.addListener("End", this);
     auctionViewModel.addListener("Time", this);
     auctionViewModel.addListener("Auction", this);
     reset(id);
   }
+
   public void reset(String id)
   {
     auctionViewModel.reset(id);
@@ -114,6 +126,7 @@ public class AuctionViewController implements PropertyChangeListener
         break;
     }
   }
+
   private void setForStart()
   {
     anchorPane.setPrefHeight(690);
@@ -151,22 +164,22 @@ public class AuctionViewController implements PropertyChangeListener
     reasonTextArea.setVisible(false);
 
   }
+
   private void setForDisplay()
   {
     anchorPane.setPrefHeight(960);
-    sellerRateLabel.setLayoutY(sellerRateLabel.getLayoutY()-100);
-    ratingLabel.setLayoutY(ratingLabel.getLayoutY()-100);
+    sellerRateLabel.setLayoutY(sellerRateLabel.getLayoutY() - 100);
+    ratingLabel.setLayoutY(ratingLabel.getLayoutY() - 100);
 
-    somethingWrongLabel.setLayoutY(somethingWrongLabel.getLayoutY()-100);
-    reasonTextArea.setLayoutY(reasonTextArea.getLayoutY()-100);
-    deleteButton.setLayoutY(deleteButton.getLayoutY()-100);
+    somethingWrongLabel.setLayoutY(somethingWrongLabel.getLayoutY() - 100);
+    reasonTextArea.setLayoutY(reasonTextArea.getLayoutY() - 100);
+    deleteButton.setLayoutY(deleteButton.getLayoutY() - 100);
 
     titleTextArea.setDisable(true);
     descriptionTextArea.setDisable(true);
     reservePriceTextField.setDisable(true);
     buyoutPriceTextField.setDisable(true);
     incrementTextField.setDisable(true);
-
 
     timerCountdownLabel.setVisible(true);
     currentBidderLabel.setVisible(true);
@@ -195,14 +208,15 @@ public class AuctionViewController implements PropertyChangeListener
     cancelButton.setVisible(false);
 
   }
+
   private void setForAuctionClosed()
   {
-    Platform.runLater(()->{
-    timerCountdownLabel.setStyle("-fx-background-color:RED");
-    placeBidButton.setDisable(true);
-    buyNowButton.setDisable(true);
-    currentBidderTextLabel.setText("Final bidder:");
-    currentBidTextLabel.setText("Final bid:");
+    Platform.runLater(() -> {
+      timerCountdownLabel.setStyle("-fx-background-color:RED");
+      placeBidButton.setDisable(true);
+      buyNowButton.setDisable(true);
+      currentBidderTextLabel.setText("Final bidder:");
+      currentBidTextLabel.setText("Final bid:");
     });
   }
 
@@ -217,11 +231,11 @@ public class AuctionViewController implements PropertyChangeListener
     {
       auctionViewModel.startAuction(convertImageToByteArray(file));
     }
-    catch(IOException e)
+    catch (IOException e)
     {
       e.printStackTrace();
     }
-    if(errorLabel.getText().isEmpty())
+    if (errorLabel.getText().isEmpty())
     {
       viewHandler.openView("displayAuction");
     }
@@ -243,28 +257,28 @@ public class AuctionViewController implements PropertyChangeListener
     {
       reset("");
       //sprint 1 focus
-      viewHandler.openView("startAuction");
+      viewHandler.openView("displayAuction");
     }
     ////////////////////////////////////////////////////////
   }
 
   @FXML void importButtonPressed(ActionEvent event)
   {
-    //FileChooser openFile = new FileChooser();
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
+    fileChooser.getExtensionFilters().add(
+        new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
 
     file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 
     if (file != null)
     {
-      //String imagePath = file.getAbsolutePath();
       Image image = new Image(file.toURI().toString(), 120, 127, true, true);
       imageImageView.setImage(image);
     }
   }
+
   public byte[] convertImageToByteArray(File file) throws IOException
   {
-    if(file==null)
+    if (file == null)
     {
       errorLabel.setText("Please upload an image.");
       return null;
@@ -276,6 +290,7 @@ public class AuctionViewController implements PropertyChangeListener
   {
 
   }
+
   @FXML void onEnter(ActionEvent event)
   {
 
@@ -286,18 +301,19 @@ public class AuctionViewController implements PropertyChangeListener
 
   }
 
-
   public void deleteButtonPressed(ActionEvent actionEvent)
   {
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    if(evt.getPropertyName().equals("End"))
+    //for things that cannot be done from the view model
+    if (evt.getPropertyName().equals("End"))
       setForAuctionClosed();
-    else if(evt.getPropertyName().equals("Auction"))
+    else if (evt.getPropertyName().equals("Auction"))
     {
-      imageImageView.setImage(new Image(new ByteArrayInputStream((byte[])evt.getNewValue())));
+      imageImageView.setImage(
+          new Image(new ByteArrayInputStream((byte[]) evt.getNewValue())));
     }
   }
 }

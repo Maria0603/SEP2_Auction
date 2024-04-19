@@ -30,42 +30,51 @@ public class FixedPaneViewController
   private Region root;
 
   //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
-  //we pass the id to pass it to the right controller; that controller will set the scene for displaying or starting an auction, depending on the id
+  //we pass the id to pass it to the right controller;
+  //that controller will set the scene for displaying or starting an auction, depending on the id
   private ViewModelFactory viewModelFactory;
-  public void init(ViewHandler viewHandler, FixedPaneViewModel fixedPaneViewModel, ViewModelFactory viewModelFactory, Region root, String id)
+
+  public void init(ViewHandler viewHandler,
+      FixedPaneViewModel fixedPaneViewModel, ViewModelFactory viewModelFactory,
+      Region root, String id)
   {
 
-    this.root=root;
-    this.viewModelFactory=viewModelFactory;
-    this.fixedPaneViewModel=fixedPaneViewModel;
-    this.viewHandler=viewHandler;
-    emailLabel.textProperty().bindBidirectional(fixedPaneViewModel.getEmailProperty());
+    this.root = root;
+    this.viewModelFactory = viewModelFactory;
+    this.fixedPaneViewModel = fixedPaneViewModel;
+    this.viewHandler = viewHandler;
+    emailLabel.textProperty()
+        .bindBidirectional(fixedPaneViewModel.getEmailProperty());
     reset(id);
   }
+
   public Region getRoot()
   {
     return root;
   }
+
   public void reset(String id)
   {
     fixedPaneViewModel.reset();
 
     ///////////////////////////
     //sprint 1 focus
-    if(id.equals("startAuction"))
+    if (id.equals("startAuction"))
     {
 
       sellItemButtonPressed();
     }
-    else if(id.equals("displayAuction"))
+    else if (id.equals("displayAuction"))
     {
       try
       {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("AuctionView.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("AuctionView.fxml"));
         Region root = loader.load();
         borderPane.setCenter(root);
         auctionViewController = loader.getController();
-        auctionViewController.init(viewHandler, viewModelFactory.getAuctionViewModel(), root, id);
+        auctionViewController.init(viewHandler,
+            viewModelFactory.getAuctionViewModel(), root, id);
 
         allAuctionsButton.setDisable(false);
         myAuctions_allAccountsButton.setDisable(false);
@@ -81,7 +90,7 @@ public class FixedPaneViewController
         e.printStackTrace();
       }
     }
-    else if(id.equals("allAuctions"))
+    else if (id.equals("allAuctions"))
     {
       allAuctionsButtonPressed();
     }
@@ -106,12 +115,14 @@ public class FixedPaneViewController
     {
       try
       {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("AuctionView.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("AuctionView.fxml"));
         Region root = loader.load();
         borderPane.setCenter(root);
         auctionViewController = loader.getController();
 
-        auctionViewController.init(viewHandler, viewModelFactory.getAuctionViewModel(), root, "startAuction");
+        auctionViewController.init(viewHandler,
+            viewModelFactory.getAuctionViewModel(), root, "startAuction");
       }
       catch (Exception e)
       {
@@ -130,36 +141,30 @@ public class FixedPaneViewController
 
   }
 
-  @FXML
-  void logOutButtonPressed(ActionEvent event)
+  @FXML void logOutButtonPressed(ActionEvent event)
   {
 
   }
 
-  @FXML
-  void moderatorInfoButtonPressed(ActionEvent event)
+  @FXML void moderatorInfoButtonPressed(ActionEvent event)
   {
 
   }
 
-  @FXML
-  void myAuctions_allAccountsButtonPressed(ActionEvent event)
+  @FXML void myAuctions_allAccountsButtonPressed(ActionEvent event)
   {
 
   }
 
-  @FXML
-  void myProfile_settingsButtonPressed(ActionEvent event)
+  @FXML void myProfile_settingsButtonPressed(ActionEvent event)
   {
 
   }
 
-  @FXML
-  void notificationsButtonPressed(ActionEvent event)
+  @FXML void notificationsButtonPressed(ActionEvent event)
   {
 
   }
-
 
   public void myBidsButtonPressed(ActionEvent actionEvent)
   {

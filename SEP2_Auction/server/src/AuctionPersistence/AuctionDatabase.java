@@ -14,32 +14,40 @@ public class AuctionDatabase implements AuctionPersistence
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
   private static final String PASSWORD = "344692StupidPass";
-  private  AuctionDatabase() throws SQLException
+
+  private AuctionDatabase() throws SQLException
   {
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
+
   public static synchronized AuctionDatabase getInstance() throws SQLException
   {
-    if(instance==null)
+    if (instance == null)
     {
-      instance=new AuctionDatabase();
+      instance = new AuctionDatabase();
     }
     return instance;
   }
 
   private Connection getConnection() throws SQLException
   {
-   return DriverManager.getConnection(URL, USER, PASSWORD);
+    return DriverManager.getConnection(URL, USER, PASSWORD);
   }
-  @Override public synchronized Auction saveAuction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData) throws SQLException
-  {
-    try(Connection connection=getConnection())
-    {
-      String sql="INSERT INTO auction1(title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status) \n"
-          + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-      PreparedStatement statement=connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
+  @Override public synchronized Auction saveAuction(int ID, String title,
+      String description, int reservePrice, int buyoutPrice,
+      int minimumIncrement, int auctionTime, byte[] imageData)
+      throws SQLException
+  {
+    try (Connection connection = getConnection())
+    {
+      String sql =
+          "INSERT INTO auction1(title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status) \n"
+              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+      PreparedStatement statement = connection.prepareStatement(sql,
+          PreparedStatement.RETURN_GENERATED_KEYS);
+
+      //google says it is a good idea to have the validation logic in both database and model
       statement.setString(1, checkTitle(title));
       statement.setString(2, checkDescription(description));
       statement.setInt(3, checkReservePrice(reservePrice));
@@ -52,15 +60,16 @@ public class AuctionDatabase implements AuctionPersistence
       statement.setString(10, "ON SALE");
 
       statement.executeUpdate();
-      ResultSet keys=statement.getGeneratedKeys();
-      if(keys.next())
+      ResultSet keys = statement.getGeneratedKeys();
+      //we extract the generated id
+      if (keys.next())
       {
-        int id=keys.getInt("id");
+        int id = keys.getInt("id");
         keys.close();
         statement.close();
-        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
-
-        //return new Auction(keys.getInt(1), title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
+        //and we create the auction with it
+        return new Auction(id, title, description, reservePrice, buyoutPrice,
+            minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
       }
       else
       {
@@ -70,30 +79,34 @@ public class AuctionDatabase implements AuctionPersistence
 
   }
 
-  @Override public synchronized Auction getAuctionById(int id) throws SQLException
+  @Override public synchronized Auction getAuctionById(int id)
+      throws SQLException
   {
-    try(Connection connection=getConnection())
+    try (Connection connection = getConnection())
     {
-      String sql="SELECT ID, title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status\n"
-          + "FROM sprint1database.auction1\n" + "WHERE id='?';";
-      PreparedStatement statement=connection.prepareStatement(sql);
+      String sql =
+          "SELECT ID, title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status\n"
+              + "FROM sprint1database.auction1\n" + "WHERE id='?';";
+      PreparedStatement statement = connection.prepareStatement(sql);
       statement.setInt(1, id);
-      ResultSet resultSet=statement.executeQuery();
-      if(resultSet.next())
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next())
       {
-        String title=resultSet.getString("title");
-        String description=resultSet.getString("description");
-        int reservePrice=resultSet.getInt("reserve_price");
-        int buyoutPrice=resultSet.getInt("buyout_price");
-        int minimumIncrement=resultSet.getInt("minimum_bid_increment");
-        int auctionTime=resultSet.getInt("auction_time");
-        int currentBid=resultSet.getInt("current_bid");
-        String currentBidder=resultSet.getString("current_bidder");
-        byte[] imageData=resultSet.getBytes("image_data");
-        String status=resultSet.getString("status");
+        String title = resultSet.getString("title");
+        String description = resultSet.getString("description");
+        int reservePrice = resultSet.getInt("reserve_price");
+        int buyoutPrice = resultSet.getInt("buyout_price");
+        int minimumIncrement = resultSet.getInt("minimum_bid_increment");
+        int auctionTime = resultSet.getInt("auction_time");
+        int currentBid = resultSet.getInt("current_bid");
+        String currentBidder = resultSet.getString("current_bidder");
+        byte[] imageData = resultSet.getBytes("image_data");
+        String status = resultSet.getString("status");
         resultSet.close();
         statement.close();
-        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, currentBid, currentBidder, imageData, status);
+        return new Auction(id, title, description, reservePrice, buyoutPrice,
+            minimumIncrement, auctionTime, currentBid, currentBidder, imageData,
+            status);
       }
       else
       {
@@ -101,7 +114,6 @@ public class AuctionDatabase implements AuctionPersistence
       }
     }
   }
-
 
   private byte[] checkImageData(byte[] imageData) throws SQLException
   {
@@ -122,10 +134,10 @@ public class AuctionDatabase implements AuctionPersistence
     return bidder;
   }
 
-
   private String checkStatus(String status) throws SQLException
   {
-    if(status.equals("ON SALE") || status.equals("SOLD") || status.equals("UNSOLD"))
+    if (status.equals("ON SALE") || status.equals("SOLD") || status.equals(
+        "UNSOLD"))
       return status;
     throw new SQLException("Invalid status");
   }
@@ -154,8 +166,7 @@ public class AuctionDatabase implements AuctionPersistence
   private int checkReservePrice(int reservePrice) throws SQLException
   {
     if (reservePrice <= 0)
-      throw new SQLException(
-          "The reserve price must be a positive number!");
+      throw new SQLException("The reserve price must be a positive number!");
     return reservePrice;
   }
 
@@ -171,8 +182,7 @@ public class AuctionDatabase implements AuctionPersistence
   private int checkMinimumIncrement(int minimumIncrement) throws SQLException
   {
     if (minimumIncrement < 1)
-      throw new SQLException(
-          "The minimum bid increment must be at least 1!");
+      throw new SQLException("The minimum bid increment must be at least 1!");
     return minimumIncrement;
   }
 
@@ -180,8 +190,7 @@ public class AuctionDatabase implements AuctionPersistence
   {
     //to be updated when the moderator adds the time interval
     if (auctionTime <= 0 || auctionTime > 24 * 3600)
-      throw new SQLException(
-          "The auction time can be at most 24 hours!");
+      throw new SQLException("The auction time can be at most 24 hours!");
 
     /////////////////////////////////////////////////////////////////////////////////
     //correct line:
@@ -193,20 +202,22 @@ public class AuctionDatabase implements AuctionPersistence
 
   @Override public ArrayList<Auction> loadOngoingAuctions() throws SQLException
   {
-    try(Connection connection=getConnection())
+    try (Connection connection = getConnection())
     {
-      String sql = "SELECT auction.ID, auction.title, auction.description, auction.reserve_price, "
-          + "auction.buyout_price, auction.auction_time, auction.current_bid, auction.current_bidder, auction.status"
-          + "FROM sprint1database.auction"
-          + "WHERE auction.status='ON SALE';";
+      String sql =
+          "SELECT auction.ID, auction.title, auction.description, auction.reserve_price, "
+              + "auction.buyout_price, auction.auction_time, auction.current_bid, auction.current_bidder, auction.status"
+              + "FROM sprint1database.auction"
+              + "WHERE auction.status='ON SALE';";
 
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       //e.printStackTrace();
     }
     return null;
   }
+
   @Override public ArrayList<Auction> loadClosedAuctions() throws SQLException
   {
     return null;

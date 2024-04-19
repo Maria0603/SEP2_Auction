@@ -15,7 +15,8 @@ import java.sql.SQLException;
 import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
 
-public class AuctionClient implements RemoteListener<String, Object>, AuctionModel
+public class AuctionClient
+    implements RemoteListener<String, Object>, AuctionModel
 {
   private AuctionRemote server;
   private PropertyChangeSupport property;
@@ -23,33 +24,36 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   public AuctionClient() throws IOException
   {
     start();
-    property=new PropertyChangeSupport(this);
+    property = new PropertyChangeSupport(this);
   }
+
   //establish server connection
   private void start()
   {
     try
     {
       UnicastRemoteObject.exportObject(this, 0);
-      server=(AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
+      server = (AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
 
       server.addListener(this, "Auction");
       server.addListener(this, "Time");
       server.addListener(this, "End");
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       e.printStackTrace();
     }
   }
 
-  @Override public Auction startAuction(int ID, String title, String description,
-      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws SQLException
+  @Override public Auction startAuction(int ID, String title,
+      String description, int reservePrice, int buyoutPrice,
+      int minimumIncrement, int auctionTime, byte[] imageData)
+      throws SQLException
   {
     try
     {
-      return server.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+      return server.startAuction(ID, title, description, reservePrice,
+          buyoutPrice, minimumIncrement, auctionTime, imageData);
     }
     catch (RemoteException e)
     {
@@ -58,14 +62,13 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
     return null;
   }
 
-
-  @Override public Auction getAuction(int ID)  throws SQLException
+  @Override public Auction getAuction(int ID) throws SQLException
   {
     try
     {
       return server.getAuction(ID);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -87,9 +90,8 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   @Override public void propertyChange(ObserverEvent<String, Object> event)
       throws RemoteException
   {
-    property.firePropertyChange(event.getPropertyName(), event.getValue1(), event.getValue2());
-    //System.out.println(event.getValue2());
-
+    property.firePropertyChange(event.getPropertyName(), event.getValue1(),
+        event.getValue2());
   }
 
 }

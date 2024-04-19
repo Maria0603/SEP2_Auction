@@ -23,19 +23,19 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       client.addListener("Time", this);
       client.addListener("End", this);
     }
-    catch(IOException e)
+    catch (IOException e)
     {
       e.printStackTrace();
     }
   }
-
 
   @Override public Auction startAuction(int ID, String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException
   {
-    return client.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+    return client.startAuction(ID, title, description, reservePrice,
+        buyoutPrice, minimumIncrement, auctionTime, imageData);
   }
 
   @Override public Auction getAuction(int ID) throws SQLException
@@ -59,6 +59,5 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     //model manager property fires auction events further
     property.firePropertyChange(evt);
-    //System.out.println((String) evt.getNewValue());
   }
 }

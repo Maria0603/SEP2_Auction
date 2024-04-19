@@ -16,7 +16,7 @@ public class MyApplication extends Application
     AuctionModel model = new AuctionModelManager();
     try
     {
-      server=new AuctionServer(model);
+      server = new AuctionServer(model);
     }
     catch (MalformedURLException | RemoteException e)
     {

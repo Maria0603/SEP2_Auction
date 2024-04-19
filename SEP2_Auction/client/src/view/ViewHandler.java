@@ -14,7 +14,6 @@ public class ViewHandler
   private ViewModelFactory viewModelFactory;
   private FixedPaneViewController fixedPaneViewController;
 
-
   public ViewHandler(ViewModelFactory viewModelFactory)
   {
     this.viewModelFactory = viewModelFactory;
@@ -68,7 +67,9 @@ public class ViewHandler
         Region root = loader.load();
         fixedPaneViewController = loader.getController();
 
-        fixedPaneViewController.init(this, viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root, id);
+        fixedPaneViewController.init(this,
+            viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root,
+            id);
       }
       catch (Exception e)
       {
@@ -81,6 +82,5 @@ public class ViewHandler
     }
     return fixedPaneViewController.getRoot();
   }
-
 
 }
