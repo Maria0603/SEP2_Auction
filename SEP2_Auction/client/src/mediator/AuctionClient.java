@@ -33,8 +33,8 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
       server=(AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
 
       server.addListener(this, "Auction");
-      //server.addListener(this, "Time");
-      //server.addListener(this, "End");
+      server.addListener(this, "Time");
+      server.addListener(this, "End");
     }
     catch(Exception e)
     {
@@ -44,13 +44,11 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
 
   @Override public Auction startAuction(int ID, String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      String imagePath)
+      byte[] imageData)
   {
     try
     {
-      server.addListener(this, "Time"+ID);
-      server.addListener(this, "End"+ID);
-      return server.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
+      return server.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
     }
     catch (RemoteException e)
     {
@@ -90,6 +88,7 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   {
     property.firePropertyChange(event.getPropertyName(), event.getValue1(), event.getValue2());
     //System.out.println(event.getValue2());
+
   }
 
 }

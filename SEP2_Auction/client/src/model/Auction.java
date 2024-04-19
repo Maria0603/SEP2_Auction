@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -14,8 +15,9 @@ public class Auction
     implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
 {
   private int ID;
-  private String title, description, currentBidder, imagePath, status;
+  private String title, description, currentBidder, status;
   int reservePrice, buyoutPrice, minimumIncrement, auctionTime, currentBid;
+  byte[] imageData;
 
   ///////////////////////////////////////////////////////////////////
   //do not change this number
@@ -27,7 +29,7 @@ public class Auction
 
   public Auction(int ID, String title, String description, int reservePrice,
       int buyoutPrice, int minimumIncrement, int auctionTime, int currentBid, String currentBidder,
-      String imagePath, String status)
+      byte[] imageData, String status)
   {
     property = new PropertyChangeSupport(this);
     setID(ID);
@@ -37,15 +39,23 @@ public class Auction
     setMinimumIncrement(minimumIncrement);
     setBuyoutPrice(buyoutPrice);
     setAuctionTime(auctionTime);
-    setImagePath(imagePath);
+    this.imageData=imageData;
     this.status=status;
 
     this.timer = new Timer(this.auctionTime, ID);
-    this.timer.addListener("Time"+ID, this);
-    this.timer.addListener("End"+ID, this);
+    this.timer.addListener("Time", this);
+    this.timer.addListener("End", this);
     Thread t = new Thread(timer);
     t.start();
 
+  }
+  public byte[] getImageData()
+  {
+    return imageData;
+  }
+  public int getAuctionTime()
+  {
+    return auctionTime;
   }
   public int getCurrentBid()
   {
@@ -154,34 +164,25 @@ public class Auction
   public void setAuctionTime(int auctionTime)
   {
     //to be updated when the moderator adds the time interval
-    if (auctionTime <= 0 || auctionTime > 24)
-      throw new IllegalArgumentException("The auction time is out of bounds");
+    if (auctionTime <= 0 || auctionTime > 24*3600)
+      throw new IllegalArgumentException("The auction time can be at most 24 hours!");
 
     /////////////////////////////////////////////////////////////////////////////////
     //correct line:
-    this.auctionTime = auctionTime * 3600;
+    this.auctionTime = auctionTime;
     ////////////////////////////////////////////////////////////////////////////////
     //for testing purposes:
-    //this.auctionTime=auctionTime;
+    //this.auctionTime=auctionTime/3600;
   }
 
-  public String getImagePath()
-  {
-    return imagePath;
-  }
-
-  public void setImagePath(String imagePath)
-  {
-    this.imagePath = imagePath;
-  }
 
   @Override public String toString()
   {
     return "ID=" + ID + ", title='" + title + '\''
         + ", description='" + description + '\'' + ", reservePrice="
         + reservePrice + ", buyoutPrice=" + buyoutPrice + ", minimumIncrement="
-        + minimumIncrement + ", auctionTime=" + auctionTime + ", imagePath='"
-        + imagePath + '\'' + ", timer=" + timer + ", property=" + property
+        + minimumIncrement + ", auctionTime=" + auctionTime + ", imageData='"
+        + Arrays.toString(imageData) + '\'' + ", timer=" + timer + ", property=" + property
         + '}';
   }
 
@@ -196,7 +197,7 @@ public class Auction
         && minimumIncrement == auction.minimumIncrement
         && auctionTime == auction.auctionTime && Objects.equals(title,
         auction.title) && Objects.equals(description, auction.description)
-        && Objects.equals(imagePath, auction.imagePath);
+        && Arrays.equals(imageData, auction.getImageData());
   }
 
   @Override synchronized public void addListener(String propertyName,
@@ -217,7 +218,6 @@ public class Auction
     //auction property fires timer events further
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
 
-    //System.out.println(evt.getNewValue());
   }
 
 }

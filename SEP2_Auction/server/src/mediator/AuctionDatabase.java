@@ -1,7 +1,9 @@
 package mediator;
 
+import javafx.scene.image.Image;
 import model.Auction;
 
+import java.io.ByteArrayInputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -30,8 +32,7 @@ public class AuctionDatabase implements AuctionPersistence
    return DriverManager.getConnection(URL, USER, PASSWORD);
   }
   @Override public synchronized Auction saveAuction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, int auctionTime,
-      String imagePath) throws SQLException
+      int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData) throws SQLException
   {
     try(Connection connection=getConnection())
     {
@@ -45,10 +46,11 @@ public class AuctionDatabase implements AuctionPersistence
       statement.setInt(4, buyoutPrice);
       statement.setInt(5, auctionTime);
       statement.setInt(6, minimumIncrement);
-      statement.setString(7, null);
+      statement.setInt(7, 0);
       statement.setString(8, null);
-      imagePath=imagePath.replace("\\", "\\\\");
-      statement.setString(9, imagePath);
+      //imagePath=imagePath.replace("\\", "\\\\");
+      //statement.setString(9, imagePath);
+      statement.setBytes(9, imageData);
       statement.setString(10, "ON SALE");
 
       statement.executeUpdate();
@@ -56,10 +58,9 @@ public class AuctionDatabase implements AuctionPersistence
       if(keys.next())
       {
         int id=keys.getInt("id");
-        //statement.setInt(1, keys.getInt(1));
         keys.close();
         statement.close();
-        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
+        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
 
         //return new Auction(keys.getInt(1), title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
       }
@@ -70,6 +71,28 @@ public class AuctionDatabase implements AuctionPersistence
     }
 
   }
+
+  public Image retrieveImage(int auctionId) throws SQLException
+  {
+    try (Connection connection = getConnection())
+    {
+      String sql =
+          "SELECT image_data FROM auction1\n" + "WHERE ID='?';";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setInt(1, auctionId);
+      ResultSet resultSet=statement.executeQuery();
+      if(resultSet.next())
+      {
+        byte[] imageData=resultSet.getBytes("image_data");
+        return new Image (new ByteArrayInputStream(imageData));
+      }
+    }
+    return null;
+  }
+
+
+
+
   @Override public Auction getAuctionById(int id) throws SQLException
   {
     try(Connection connection=getConnection())
@@ -89,11 +112,11 @@ public class AuctionDatabase implements AuctionPersistence
         int auctionTime=resultSet.getInt("auction_time");
         int currentBid=resultSet.getInt("current_bid");
         String currentBidder=resultSet.getString("current_bidder");
-        String imagePath=resultSet.getString("image_path");
+        //Byte[] imagePath=resultSet.getByte("image_path");
         String status=resultSet.getString("status");
         resultSet.close();
         statement.close();
-        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, currentBid, currentBidder, imagePath, status);
+        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, currentBid, currentBidder, null, status);
       }
       else
       {

@@ -15,7 +15,11 @@ import viewmodel.AuctionViewModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 public class AuctionViewController implements PropertyChangeListener
@@ -55,12 +59,12 @@ public class AuctionViewController implements PropertyChangeListener
   @FXML private TextArea titleTextArea;
   @FXML private Label idLabel;
   @FXML private AnchorPane anchorPane;
-  private Image image;
-  private String imagePath;
   
   private Region root;
   private AuctionViewModel auctionViewModel;
   private ViewHandler viewHandler;
+  private FileChooser fileChooser;
+  private File file;
 
   //initializations and bindings
   public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel, Region root, String id)
@@ -82,20 +86,17 @@ public class AuctionViewController implements PropertyChangeListener
     timerCountdownLabel.textProperty().bindBidirectional(this.auctionViewModel.getTimerProperty());
     Bindings.bindBidirectional(buyoutPriceTextField.textProperty(), this.auctionViewModel.getBuyoutPriceProperty(), new IntStringConverter());
 
-    /*
-    this.auctionViewModel.getPathProperty().addListener((observable, oldValue, newValue) ->
-    {
-      // Update the ImageView with the new image path
-      imageImageView.setImage(new Image(newValue)); // You may need to import javafx.scene.image.Image
-    });
-     */
     //other bindings to be inserted
 
 
     //auctionViewModel.addListener(this);
     //imagePath="";
     errorLabel.setText("");
-
+    //////////////////////////////////////////////////////
+    fileChooser=new FileChooser();
+    auctionViewModel.addListener("End", this);
+    auctionViewModel.addListener("Time", this);
+    auctionViewModel.addListener("Auction", this);
     reset(id);
   }
   public void reset(String id)
@@ -211,10 +212,16 @@ public class AuctionViewController implements PropertyChangeListener
 
   @FXML void startAuctionButtonPressed(ActionEvent event)
   {
-    auctionViewModel.startAuction(imagePath);
+    try
+    {
+      auctionViewModel.startAuction(convertImageToByteArray(file));
+    }
+    catch(IOException e)
+    {
+      e.printStackTrace();
+    }
     if(errorLabel.getText().isEmpty())
     {
-      auctionViewModel.addListener("End"+idLabel, this);
       viewHandler.openView("displayAuction");
     }
   }
@@ -242,18 +249,21 @@ public class AuctionViewController implements PropertyChangeListener
 
   @FXML void importButtonPressed(ActionEvent event)
   {
-    FileChooser openFile = new FileChooser();
-    openFile.getExtensionFilters().add(new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
+    //FileChooser openFile = new FileChooser();
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
 
-    File file = openFile.showOpenDialog(anchorPane.getScene().getWindow());
+    file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 
     if (file != null)
     {
-      imagePath = file.getAbsolutePath();
-      image = new Image(file.toURI().toString(), 120, 127, false, true);
+      //String imagePath = file.getAbsolutePath();
+      Image image = new Image(file.toURI().toString(), 120, 127, true, true);
       imageImageView.setImage(image);
-      System.out.println(imagePath);
     }
+  }
+  public byte[] convertImageToByteArray(File file) throws IOException
+  {
+    return Files.readAllBytes(file.toPath());
   }
 
   @FXML void buyNowButtonPressed(ActionEvent event)
@@ -277,6 +287,11 @@ public class AuctionViewController implements PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    setForAuctionClosed();
+    if(evt.getPropertyName().equals("End"))
+      setForAuctionClosed();
+    else if(evt.getPropertyName().equals("Auction"))
+    {
+      imageImageView.setImage(new Image(new ByteArrayInputStream((byte[])evt.getNewValue())));
+    }
   }
 }

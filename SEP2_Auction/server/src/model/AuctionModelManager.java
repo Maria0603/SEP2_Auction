@@ -18,8 +18,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   public AuctionModelManager(Auction auction)
   {
     property = new PropertyChangeSupport(this);
-
     this.auction = auction;
+
   }
 
   public AuctionModelManager()
@@ -30,15 +30,16 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public Auction startAuction(int ID, String title,
       String description, int reservePrice, int buyoutPrice,
-      int minimumIncrement, int auctionTime, String imagePath)
+      int minimumIncrement, int auctionTime, byte[] imageData)
   {
 
-    auction = new Auction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
+    auction = new Auction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
     ////////////////////////////////////////////////////////////////////////////
     property.firePropertyChange("Auction", null, auction);
 
-    auction.addListener("Time" + auction.getID(), this);
-    auction.addListener("End" + auction.getID(), this);
+
+    auction.addListener("Time", this);
+    auction.addListener("End", this);
     return auction;
     /*
     try
@@ -49,8 +50,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       ////////////////////////////////////////////////////////////////////////////
       property.firePropertyChange("Auction", null, auction);
 
-      auction.addListener("Time" + auction.getID(), this);
-      auction.addListener("End" + auction.getID(), this);
+      auction.addListener("Time", this);
+      auction.addListener("End", this);
+
       return auction;
     }
     catch(SQLException e)

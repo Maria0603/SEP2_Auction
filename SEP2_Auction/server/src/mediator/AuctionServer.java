@@ -27,6 +27,8 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
     property=new PropertyChangeHandler<>(this, true);
 
     model.addListener("Auction", this);
+    model.addListener("Time", this);
+    model.addListener("End", this);
 
     startRegistry();
     startServer();
@@ -52,13 +54,9 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
 
   @Override public Auction startAuction(int id, String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      String imagePath) throws RemoteException
+      byte[] imageData) throws RemoteException
   {
-    ////////////////////////////////////////////////////////////////////
-    model.addListener("Time"+id, this);
-    model.addListener("End"+id, this);
-    /////////////////////////////////////////////////////////////////////
-    return model.startAuction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
+    return model.startAuction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
   }
 
   @Override public Auction getAuction(int id) throws RemoteException
@@ -81,8 +79,9 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
   }
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    property.firePropertyChange(evt.getPropertyName(), String.valueOf(evt.getOldValue()), evt.getNewValue());
-    //System.out.println(evt.getNewValue());
+    property.firePropertyChange(evt.getPropertyName(),
+        String.valueOf(evt.getOldValue()), evt.getNewValue());
+    //System.out.println(evt.getPropertyName() +  "                       " + evt.getNewValue());
 
   }
 }

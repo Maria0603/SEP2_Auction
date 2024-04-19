@@ -2,6 +2,7 @@ package viewmodel;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
@@ -9,11 +10,18 @@ import utility.observer.javaobserver.NamedPropertyChangeSubject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.ByteArrayInputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class AuctionViewModel implements PropertyChangeListener,
     NamedPropertyChangeSubject
 {
-  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty,  titleProperty, pathProperty, timerProperty;
+  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty,  titleProperty, timerProperty;
   private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty;
   private AuctionModel model;
   private ViewModelState state;
@@ -37,22 +45,26 @@ public class AuctionViewModel implements PropertyChangeListener,
     timeProperty=new SimpleIntegerProperty();
     timerProperty=new SimpleStringProperty();
     titleProperty=new SimpleStringProperty();
-    pathProperty=new SimpleStringProperty();
+    //pathProperty=new SimpleStringProperty();
 
     model.addListener("Auction", this);
+    model.addListener("Time", this);
+    model.addListener("End", this);
     reset("startAuction");
   }
-  public void startAuction(String path)
+  public void startAuction(byte[] imageData)
   {
-    pathProperty.set(path);
+    //pathProperty.set(path);
     errorProperty.set("");
     try
     {
+      /*
+      we pass the entered time*3600 to convert the time to seconds; we only fire events with the time
+      in seconds, and we convert it into a timer string here, in the view model (see the propertyChange() method)
+       */
       state.setAuction(model.startAuction(idProperty.get(), titleProperty.get(), descriptionProperty.get(),
           reservePriceProperty.get(), buyoutPriceProperty.get(),
-          incrementProperty.get(), timeProperty.get(), pathProperty.get()));
-      model.addListener("Time"+state.getSelectedAuction().getID(), this);
-      model.addListener("End"+state.getSelectedAuction().getID(), this);
+          incrementProperty.get(), timeProperty.get()*3600-1, imageData));
     }
     catch(IllegalArgumentException e)
     {
@@ -73,6 +85,7 @@ public class AuctionViewModel implements PropertyChangeListener,
         reservePriceProperty.set(state.getSelectedAuction().getReservePrice());
         buyoutPriceProperty.set(state.getSelectedAuction().getBuyoutPrice());
         incrementProperty.set(state.getSelectedAuction().getMinimumIncrement());
+
       }
       //else if(id.equals("startAuction"))
       else
@@ -106,10 +119,6 @@ public class AuctionViewModel implements PropertyChangeListener,
     return idProperty;
   }
 
-  public StringProperty getPathProperty()
-  {
-    return pathProperty;
-  }
   public IntegerProperty getRatingProperty()
   {
     return ratingProperty;
@@ -162,40 +171,39 @@ public class AuctionViewModel implements PropertyChangeListener,
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {
-    int id;
-    if(event.getPropertyName().contains("Time"))
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    //System.out.println(event.getPropertyName() +  "                       " + event.getNewValue());
+
+    switch(event.getPropertyName())
     {
-      id=Integer.parseInt(event.getPropertyName().replace("Time", ""));
-      model.getAuction(id);
-      if(idProperty.get()==id)
-        Platform.runLater(()->timerProperty.set((String)event.getNewValue()));
-    }
-    else if (event.getPropertyName().contains("End"))
-    {
-      id=Integer.parseInt(event.getPropertyName().replace("End", ""));
-      if(idProperty.get()==id)
-      {
+      case "Time":
+        //if(idProperty.get()==(int)event.getOldValue())
+        LocalTime time = LocalTime.ofSecondOfDay((int)event.getNewValue());
+        Platform.runLater(()->timerProperty.set(time.format(timeFormatter)));
+        break;
+        //System.out.println("i");
+      case "End":
         Platform.runLater(()->errorProperty.set("Auction closed."));
         property.firePropertyChange(event);
-      }
-
+        break;
+      case "Auction":
+        //System.out.println(event.getNewValue());
+        Platform.runLater(()->{
+          headerProperty.set("Auction ID:");
+          //idProperty.set(((Auction) event.getNewValue()).getID());
+          titleProperty.set(((Auction) event.getNewValue()).getTitle());
+          descriptionProperty.set(((Auction) event.getNewValue()).getDescription());
+          reservePriceProperty.set(((Auction) event.getNewValue()).getReservePrice());
+          buyoutPriceProperty.set(((Auction) event.getNewValue()).getBuyoutPrice());
+          incrementProperty.set(((Auction) event.getNewValue()).getMinimumIncrement());
+          LocalTime timeAuction = LocalTime.ofSecondOfDay(((Auction)event.getNewValue()).getAuctionTime());
+          timerProperty.set(timeAuction.format(timeFormatter));
+          //pathProperty.set(((Auction) event.getNewValue()).getImagePath());
+          byte[] imageData=((Auction) event.getNewValue()).getImageData();
+          property.firePropertyChange("Auction", null, imageData);
+        });
+          break;
     }
-    else if(event.getPropertyName().contains("Auction"))
-    {
-      //add the auction to the list
-      //id=Integer.parseInt(event.getPropertyName().replace("Time", ""));
-      Platform.runLater(()->{
-      headerProperty.set("Auction ID:");
-      idProperty.set(((Auction) event.getNewValue()).getID());
-      titleProperty.set(((Auction) event.getNewValue()).getTitle());
-      descriptionProperty.set(((Auction) event.getNewValue()).getDescription());
-      reservePriceProperty.set(((Auction) event.getNewValue()).getReservePrice());
-      buyoutPriceProperty.set(((Auction) event.getNewValue()).getBuyoutPrice());
-      incrementProperty.set(((Auction) event.getNewValue()).getMinimumIncrement());
-      pathProperty.set(((Auction) event.getNewValue()).getImagePath());
-      });
-    }
-
   }
 
   @Override public void addListener(String propertyName,

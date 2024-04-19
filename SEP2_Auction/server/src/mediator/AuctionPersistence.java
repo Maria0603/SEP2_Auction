@@ -11,7 +11,7 @@ public interface AuctionPersistence
   ArrayList<Auction> loadClosedAuctions() throws SQLException;
   Auction saveAuction(int ID, String title, String description, int reservePrice,
       int buyoutPrice, int minimumIncrement, int auctionTime,
-      String imagePath) throws SQLException;
+      byte[] imageData) throws SQLException;
   Auction getAuctionById(int id) throws SQLException;
   void removeAuction(Auction auction) throws SQLException;
   void clear() throws SQLException;

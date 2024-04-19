@@ -37,11 +37,9 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
 
   @Override public void run()
   {
-    LocalTime time = LocalTime.ofSecondOfDay(timerSeconds-1);
-    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     while (timerSeconds >= 0)
     {
-      property.firePropertyChange("Time"+id, timerSeconds, time.format(timeFormatter));
+      property.firePropertyChange("Time", id, timerSeconds);
       try
       {
         Thread.sleep(1000);
@@ -50,15 +48,14 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
       {
         //
       }
-      time = time.minusSeconds(1);
       timerSeconds--;
     }
-    property.firePropertyChange("End"+id, null, 0);
+    property.firePropertyChange("End", id, 0);
     PropertyChangeListener[] listeners = property.getPropertyChangeListeners();
     for (int i=0; i<listeners.length; i++)
     {
-      removeListener("Time"+id, listeners[i]);
-      removeListener("End"+id, listeners[i]);
+      //removeListener("Time", listeners[i]);
+      //removeListener("End", listeners[i]);
     }
   }
 
