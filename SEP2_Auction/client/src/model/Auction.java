@@ -134,7 +134,7 @@ public class Auction
 
   public void setBuyoutPrice(int buyoutPrice)
   {
-    if (buyoutPrice < reservePrice)
+    if (buyoutPrice <= reservePrice)
       throw new IllegalArgumentException("Th buyout price must be greater than the reserve price!");
     this.buyoutPrice = buyoutPrice;
   }

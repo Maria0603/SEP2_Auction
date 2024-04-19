@@ -42,9 +42,9 @@ public class AuctionViewModel implements PropertyChangeListener,
     model.addListener("Auction", this);
     reset("startAuction");
   }
-  public void startAuction()
+  public void startAuction(String path)
   {
-
+    pathProperty.set(path);
     errorProperty.set("");
     try
     {
@@ -73,7 +73,6 @@ public class AuctionViewModel implements PropertyChangeListener,
         reservePriceProperty.set(state.getSelectedAuction().getReservePrice());
         buyoutPriceProperty.set(state.getSelectedAuction().getBuyoutPrice());
         incrementProperty.set(state.getSelectedAuction().getMinimumIncrement());
-
       }
       //else if(id.equals("startAuction"))
       else
@@ -193,6 +192,7 @@ public class AuctionViewModel implements PropertyChangeListener,
       reservePriceProperty.set(((Auction) event.getNewValue()).getReservePrice());
       buyoutPriceProperty.set(((Auction) event.getNewValue()).getBuyoutPrice());
       incrementProperty.set(((Auction) event.getNewValue()).getMinimumIncrement());
+      pathProperty.set(((Auction) event.getNewValue()).getImagePath());
       });
     }
 

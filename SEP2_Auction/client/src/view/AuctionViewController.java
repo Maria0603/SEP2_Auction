@@ -81,11 +81,19 @@ public class AuctionViewController implements PropertyChangeListener
     Bindings.bindBidirectional(timeTextField.textProperty(), this.auctionViewModel.getTimeProperty(), new IntStringConverter());
     timerCountdownLabel.textProperty().bindBidirectional(this.auctionViewModel.getTimerProperty());
     Bindings.bindBidirectional(buyoutPriceTextField.textProperty(), this.auctionViewModel.getBuyoutPriceProperty(), new IntStringConverter());
+
+    /*
+    this.auctionViewModel.getPathProperty().addListener((observable, oldValue, newValue) ->
+    {
+      // Update the ImageView with the new image path
+      imageImageView.setImage(new Image(newValue)); // You may need to import javafx.scene.image.Image
+    });
+     */
     //other bindings to be inserted
 
 
     //auctionViewModel.addListener(this);
-    imagePath="";
+    //imagePath="";
     errorLabel.setText("");
 
     reset(id);
@@ -203,7 +211,7 @@ public class AuctionViewController implements PropertyChangeListener
 
   @FXML void startAuctionButtonPressed(ActionEvent event)
   {
-    auctionViewModel.startAuction();
+    auctionViewModel.startAuction(imagePath);
     if(errorLabel.getText().isEmpty())
     {
       auctionViewModel.addListener("End"+idLabel, this);
@@ -241,10 +249,10 @@ public class AuctionViewController implements PropertyChangeListener
 
     if (file != null)
     {
-
       imagePath = file.getAbsolutePath();
       image = new Image(file.toURI().toString(), 120, 127, false, true);
       imageImageView.setImage(image);
+      System.out.println(imagePath);
     }
   }
 

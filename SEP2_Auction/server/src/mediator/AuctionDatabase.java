@@ -35,29 +35,33 @@ public class AuctionDatabase implements AuctionPersistence
   {
     try(Connection connection=getConnection())
     {
-      String sql="INSERT INTO auction(ID, title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_path, status) \n"
-          + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+      String sql="INSERT INTO auction1(title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_path, status) \n"
+          + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
       PreparedStatement statement=connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-      //statement.setInt(1, ID);
-      statement.setString(2, title);
-      statement.setString(3, description);
-      statement.setInt(4, reservePrice);
-      statement.setInt(5, buyoutPrice);
-      statement.setInt(6, auctionTime);
-      statement.setInt(7, minimumIncrement);
+
+      statement.setString(1, title);
+      statement.setString(2, description);
+      statement.setInt(3, reservePrice);
+      statement.setInt(4, buyoutPrice);
+      statement.setInt(5, auctionTime);
+      statement.setInt(6, minimumIncrement);
+      statement.setString(7, null);
       statement.setString(8, null);
-      statement.setString(9, null);
-      statement.setString(10, imagePath);
-      statement.setString(11, "ON SALE");
+      imagePath=imagePath.replace("\\", "\\\\");
+      statement.setString(9, imagePath);
+      statement.setString(10, "ON SALE");
 
       statement.executeUpdate();
       ResultSet keys=statement.getGeneratedKeys();
       if(keys.next())
       {
-        statement.setInt(1, keys.getInt(1));
+        int id=keys.getInt("id");
+        //statement.setInt(1, keys.getInt(1));
         keys.close();
         statement.close();
-        return new Auction(keys.getInt(1), title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
+        return new Auction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
+
+        //return new Auction(keys.getInt(1), title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imagePath, "ON SALE");
       }
       else
       {
@@ -71,7 +75,7 @@ public class AuctionDatabase implements AuctionPersistence
     try(Connection connection=getConnection())
     {
       String sql="SELECT ID, title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, status\n"
-          + "FROM sprint1database.auction\n" + "WHERE id='?';";
+          + "FROM sprint1database.auction1\n" + "WHERE id='?';";
       PreparedStatement statement=connection.prepareStatement(sql);
       statement.setInt(1, id);
       ResultSet resultSet=statement.executeQuery();

@@ -40,12 +40,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     auction.addListener("Time" + auction.getID(), this);
     auction.addListener("End" + auction.getID(), this);
     return auction;
-
-/*
+    /*
     try
     {
 
       auction = AuctionDatabase.getInstance().saveAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
+      System.out.println(auction.toString());
       ////////////////////////////////////////////////////////////////////////////
       property.firePropertyChange("Auction", null, auction);
 
@@ -58,8 +58,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       e.printStackTrace();
     }
     return null;
-
-       */
+*/
   }
 
 
