@@ -10,6 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -153,7 +154,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="timeTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="timeTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="1 - 24">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -188,7 +189,11 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ImageView fx:id="imageImageView" fitHeight="427.0" fitWidth="362.0" layoutX="702.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true" />
+            <StackPane layoutX="702.0" layoutY="84.0" style="-fx-border-color: BLACK; -fx-border-width: 3; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);">
+               <children>
+                  <ImageView fx:id="imageImageView" fitHeight="427.0" fitWidth="362.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
             <Label id="errorLabel" fx:id="timerCountdownLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="779.0" layoutY="32.0" prefHeight="38.0" prefWidth="206.0" text="00:00:00">
                <font>
                   <Font name="System Bold" size="26.0" />
@@ -300,7 +305,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="importButton" alignment="CENTER" contentDisplay="CENTER" layoutX="804.0" layoutY="521.0" mnemonicParsing="false" onAction="#importButtonPressed" prefHeight="40.0" prefWidth="157.0" text="Import" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="importButton" alignment="CENTER" contentDisplay="CENTER" layoutX="804.0" layoutY="521.0" mnemonicParsing="false" onAction="#importButtonPressed" prefHeight="40.0" prefWidth="157.0" text="Import image" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

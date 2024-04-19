@@ -39,7 +39,7 @@ public class Auction
     setMinimumIncrement(minimumIncrement);
     setBuyoutPrice(buyoutPrice);
     setAuctionTime(auctionTime);
-    this.imageData=imageData;
+    setImageData(imageData);
     this.status=status;
 
     this.timer = new Timer(this.auctionTime, ID);
@@ -52,6 +52,12 @@ public class Auction
   public byte[] getImageData()
   {
     return imageData;
+  }
+  public void setImageData(byte[] imageData)
+  {
+    if(imageData==null)
+      throw new IllegalArgumentException("Please upload an image.");
+    this.imageData=imageData;
   }
   public int getAuctionTime()
   {
@@ -145,7 +151,7 @@ public class Auction
   public void setBuyoutPrice(int buyoutPrice)
   {
     if (buyoutPrice <= reservePrice)
-      throw new IllegalArgumentException("Th buyout price must be greater than the reserve price!");
+      throw new IllegalArgumentException("The buyout price must be greater than the reserve price!");
     this.buyoutPrice = buyoutPrice;
   }
 

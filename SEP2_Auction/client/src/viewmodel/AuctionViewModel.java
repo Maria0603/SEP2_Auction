@@ -99,7 +99,6 @@ public class AuctionViewModel implements PropertyChangeListener,
   }
   private void wipe()
   {
-
     state.setAuction(null);
     headerProperty.set("Start auction");
     idProperty.set(0);

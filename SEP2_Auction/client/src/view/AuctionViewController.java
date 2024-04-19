@@ -110,6 +110,7 @@ public class AuctionViewController implements PropertyChangeListener
       case "startAuction":
         auctionViewModel.reset(id);
         setForStart();
+        imageImageView.setImage(null);
         break;
     }
   }
@@ -263,6 +264,11 @@ public class AuctionViewController implements PropertyChangeListener
   }
   public byte[] convertImageToByteArray(File file) throws IOException
   {
+    if(file==null)
+    {
+      errorLabel.setText("Please upload an image.");
+      return null;
+    }
     return Files.readAllBytes(file.toPath());
   }
 
