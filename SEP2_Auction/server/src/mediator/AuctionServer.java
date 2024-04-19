@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 
 public class AuctionServer implements AuctionRemote, RemoteSubject<String, Object>,
     PropertyChangeListener
@@ -54,12 +55,12 @@ public class AuctionServer implements AuctionRemote, RemoteSubject<String, Objec
 
   @Override public Auction startAuction(int id, String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws RemoteException
+      byte[] imageData) throws RemoteException, SQLException
   {
     return model.startAuction(id, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
   }
 
-  @Override public Auction getAuction(int id) throws RemoteException
+  @Override public Auction getAuction(int id) throws RemoteException, SQLException
   {
     return model.getAuction(id);
   }

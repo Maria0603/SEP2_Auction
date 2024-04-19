@@ -1,19 +1,16 @@
 package model;
 
-import mediator.AuctionDatabase;
-import mediator.AuctionPersistence;
+import AuctionPersistence.AuctionDatabase;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
   private Auction auction;
   private PropertyChangeSupport property;
-  private AuctionPersistence database;
 
   public AuctionModelManager(Auction auction)
   {
@@ -31,8 +28,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public Auction startAuction(int ID, String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
+      throws SQLException
   {
-
+    /*
+    //without database
     auction = new Auction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
     ////////////////////////////////////////////////////////////////////////////
     property.firePropertyChange("Auction", null, auction);
@@ -41,31 +40,22 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     auction.addListener("Time", this);
     auction.addListener("End", this);
     return auction;
-    /*
-    try
-    {
+     */
 
-      auction = AuctionDatabase.getInstance().saveAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imagePath);
-      System.out.println(auction.toString());
-      ////////////////////////////////////////////////////////////////////////////
+    //with database
+
+      auction = AuctionDatabase.getInstance().saveAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+      //System.out.println(auction.toString());
       property.firePropertyChange("Auction", null, auction);
 
       auction.addListener("Time", this);
       auction.addListener("End", this);
-
       return auction;
-    }
-    catch(SQLException e)
-    {
-      e.printStackTrace();
-    }
-    return null;
-*/
   }
 
 
 
-  @Override public Auction getAuction(int ID)
+  @Override public Auction getAuction(int ID) throws SQLException
   {
     //TODO:change when ArrayList is used
     /*
@@ -79,7 +69,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     }
     return null;
      */
-    return this.auction;
+    return AuctionDatabase.getInstance().getAuctionById(ID);
   }
 
   @Override public void addListener(String propertyName,

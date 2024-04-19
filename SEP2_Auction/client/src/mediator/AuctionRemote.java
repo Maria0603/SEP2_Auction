@@ -5,11 +5,13 @@ import utility.observer.listener.GeneralListener;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 public interface AuctionRemote extends Remote
 {
-  model.Auction startAuction(int ID, String title, String description, int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData) throws RemoteException;
-  Auction getAuction(int ID) throws RemoteException;
+  model.Auction startAuction(int ID, String title, String description, int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData)
+      throws RemoteException, SQLException;
+  Auction getAuction(int ID) throws RemoteException, SQLException;
   boolean addListener(GeneralListener<String, Object> listener, String... propertyNames)
       throws RemoteException;
   boolean removeListener(

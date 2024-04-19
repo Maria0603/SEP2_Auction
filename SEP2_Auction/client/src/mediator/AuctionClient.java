@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 
 import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
@@ -44,7 +45,7 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
 
   @Override public Auction startAuction(int ID, String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData)
+      byte[] imageData) throws SQLException
   {
     try
     {
@@ -58,7 +59,7 @@ public class AuctionClient implements RemoteListener<String, Object>, AuctionMod
   }
 
 
-  @Override public Auction getAuction(int ID)
+  @Override public Auction getAuction(int ID)  throws SQLException
   {
     try
     {

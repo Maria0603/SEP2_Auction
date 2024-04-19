@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -32,11 +33,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public Auction startAuction(int ID, String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
+      throws SQLException
   {
     return client.startAuction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
   }
 
-  @Override public Auction getAuction(int ID)
+  @Override public Auction getAuction(int ID) throws SQLException
   {
     return client.getAuction(ID);
   }

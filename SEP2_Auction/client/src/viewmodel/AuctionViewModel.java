@@ -66,7 +66,7 @@ public class AuctionViewModel implements PropertyChangeListener,
           reservePriceProperty.get(), buyoutPriceProperty.get(),
           incrementProperty.get(), timeProperty.get()*3600-1, imageData));
     }
-    catch(IllegalArgumentException e)
+    catch(IllegalArgumentException | SQLException e)
     {
       errorProperty.set(e.getMessage());
     }

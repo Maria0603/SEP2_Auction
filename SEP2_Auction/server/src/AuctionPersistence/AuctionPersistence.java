@@ -1,4 +1,4 @@
-package mediator;
+package AuctionPersistence;
 
 import model.Auction;
 
