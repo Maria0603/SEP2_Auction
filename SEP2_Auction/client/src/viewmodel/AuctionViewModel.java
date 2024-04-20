@@ -61,14 +61,16 @@ public class AuctionViewModel
       we pass the entered time *3600 to convert the time to seconds; we only fire events with the time
       in seconds, and we convert it into a timer string here, in the view model (see the propertyChange() method)
        */
-      state.setAuction(model.startAuction(idProperty.get(), titleProperty.get(),
-          descriptionProperty.get(), reservePriceProperty.get(),
+      state.setAuction(model.startAuction(idProperty.get(), titleProperty.get().trim(),
+          descriptionProperty.get().trim(), reservePriceProperty.get(),
           buyoutPriceProperty.get(), incrementProperty.get(),
           timeProperty.get() * 3600 - 1, imageData));
     }
     catch (IllegalArgumentException | SQLException e)
     {
       errorProperty.set(e.getMessage());
+      titleProperty.set(titleProperty.get().trim());
+      descriptionProperty.set(descriptionProperty.get().trim());
     }
   }
 

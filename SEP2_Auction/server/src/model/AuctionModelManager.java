@@ -1,6 +1,6 @@
 package model;
 
-import AuctionPersistence.AuctionDatabase;
+import persistence.AuctionDatabase;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -60,8 +60,30 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
+    //update the time and status in the database
+    if(evt.getPropertyName().equals("Time") && (int)evt.getNewValue()%5==0)
+    {
+      try
+      {
+        AuctionDatabase.getInstance().updateTime((int)evt.getOldValue(), (int)evt.getNewValue());
+      }
+      catch(SQLException e)
+      {
+        e.printStackTrace();
+      }
+    }
+    else if(evt.getPropertyName().equals("End"))
+    {
+      try
+      {
+        AuctionDatabase.getInstance().markAsClosed((int)evt.getOldValue());
+      }
+      catch(SQLException e)
+      {
+        e.printStackTrace();
+      }
+    }
     //model manager property fires auction events further
-    //if(evt.getPropertyName().equals("Time") && (int)evt.getNewValue()%1000==0)
     property.firePropertyChange(evt);
   }
 }

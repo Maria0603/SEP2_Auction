@@ -51,7 +51,7 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
       }
       timerSeconds--;
     }
-    property.firePropertyChange("End", null, 0);
+    property.firePropertyChange("End", id, 0);
     PropertyChangeListener[] listeners = property.getPropertyChangeListeners();
     for (int i = 0; i < listeners.length; i++)
     {

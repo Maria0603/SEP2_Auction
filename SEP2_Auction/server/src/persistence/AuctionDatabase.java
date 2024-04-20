@@ -1,9 +1,7 @@
-package AuctionPersistence;
+package persistence;
 
-import javafx.scene.image.Image;
 import model.Auction;
 
-import java.io.ByteArrayInputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -11,6 +9,7 @@ public class AuctionDatabase implements AuctionPersistence
 {
   private static AuctionDatabase instance;
   //link the database; to be changed as the database is expanding
+  private static final String DRIVER = "org.postgresql.Driver";
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
   private static final String PASSWORD = "344692StupidPass";
@@ -86,7 +85,8 @@ public class AuctionDatabase implements AuctionPersistence
     {
       String sql =
           "SELECT ID, title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status\n"
-              + "FROM sprint1database.auction1\n" + "WHERE id='?';";
+              + "FROM sprint1database.auction1\n"
+              + "WHERE id=?;";
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setInt(1, id);
       ResultSet resultSet = statement.executeQuery();
@@ -115,6 +115,28 @@ public class AuctionDatabase implements AuctionPersistence
     }
   }
 
+  @Override public void updateTime(int id, int seconds) throws SQLException
+  {
+    try (Connection connection = getConnection())
+    {
+      String sql = "UPDATE auction1 SET auction_time=?\n" + "WHERE ID=?;";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setInt(1, seconds);
+      statement.setInt(2, id);
+      statement.executeUpdate();
+    }
+  }
+  @Override public void markAsClosed(int id) throws SQLException
+  {
+    try (Connection connection = getConnection())
+    {
+      String sql = "UPDATE auction1 SET status='CLOSED'\n" + "WHERE ID=?;";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setInt(1, id);
+      statement.executeUpdate();
+    }
+  }
+
   private byte[] checkImageData(byte[] imageData) throws SQLException
   {
     if (imageData == null)
@@ -136,8 +158,7 @@ public class AuctionDatabase implements AuctionPersistence
 
   private String checkStatus(String status) throws SQLException
   {
-    if (status.equals("ON SALE") || status.equals("SOLD") || status.equals(
-        "UNSOLD"))
+    if (status.equals("ON SALE") || status.equals("CLOSED"))
       return status;
     throw new SQLException("Invalid status");
   }
@@ -200,36 +221,4 @@ public class AuctionDatabase implements AuctionPersistence
     //this.auctionTime=auctionTime/3600;
   }
 
-  @Override public ArrayList<Auction> loadOngoingAuctions() throws SQLException
-  {
-    try (Connection connection = getConnection())
-    {
-      String sql =
-          "SELECT auction.ID, auction.title, auction.description, auction.reserve_price, "
-              + "auction.buyout_price, auction.auction_time, auction.current_bid, auction.current_bidder, auction.status"
-              + "FROM sprint1database.auction"
-              + "WHERE auction.status='ON SALE';";
-
-    }
-    catch (Exception e)
-    {
-      //e.printStackTrace();
-    }
-    return null;
-  }
-
-  @Override public ArrayList<Auction> loadClosedAuctions() throws SQLException
-  {
-    return null;
-  }
-
-  @Override public void removeAuction(Auction auction) throws SQLException
-  {
-
-  }
-
-  @Override public void clear() throws SQLException
-  {
-
-  }
 }
