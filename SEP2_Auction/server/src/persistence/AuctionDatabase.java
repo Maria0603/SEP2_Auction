@@ -12,6 +12,8 @@ public class AuctionDatabase implements AuctionPersistence
   private static final String DRIVER = "org.postgresql.Driver";
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
+
+  // private static final String PASSWORD = "1706"; - Maria's password
   private static final String PASSWORD = "344692StupidPass";
 
   private AuctionDatabase() throws SQLException
