@@ -27,6 +27,8 @@ public class FixedPaneViewController
   private ViewHandler viewHandler;
   private FixedPaneViewModel fixedPaneViewModel;
   private AuctionViewController auctionViewController;
+
+  //private AllAuctionsViewController allAuctionsViewController;
   private Region root;
 
   //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
@@ -38,7 +40,6 @@ public class FixedPaneViewController
       FixedPaneViewModel fixedPaneViewModel, ViewModelFactory viewModelFactory,
       Region root, String id)
   {
-
     this.root = root;
     this.viewModelFactory = viewModelFactory;
     this.fixedPaneViewModel = fixedPaneViewModel;
@@ -61,7 +62,6 @@ public class FixedPaneViewController
     //sprint 1 focus
     if (id.equals("startAuction"))
     {
-
       sellItemButtonPressed();
     }
     else if (id.equals("displayAuction"))
@@ -100,7 +100,7 @@ public class FixedPaneViewController
   @FXML Region sellItemButtonPressed()
   {
     //to prevent leaving the auction creation, we disable the buttons;
-    //the user can still leave by pressing the Cancel button
+    //the user can still leave by pressing the Cancel or Back button
     allAuctionsButton.setDisable(true);
     myAuctions_allAccountsButton.setDisable(true);
     myBidsButton.setDisable(true);

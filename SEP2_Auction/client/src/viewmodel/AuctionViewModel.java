@@ -2,7 +2,6 @@ package viewmodel;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
-import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
@@ -10,10 +9,6 @@ import utility.observer.javaobserver.NamedPropertyChangeSubject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.ByteArrayInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -81,11 +76,11 @@ public class AuctionViewModel
       {
         headerProperty.set("Auction ID:");
         idProperty.set(state.getSelectedAuction().getID());
-        titleProperty.set(state.getSelectedAuction().getTitle());
-        descriptionProperty.set(state.getSelectedAuction().getDescription());
-        reservePriceProperty.set(state.getSelectedAuction().getReservePrice());
-        buyoutPriceProperty.set(state.getSelectedAuction().getBuyoutPrice());
-        incrementProperty.set(state.getSelectedAuction().getMinimumIncrement());
+        titleProperty.set(state.getSelectedAuction().getItem().getTitle());
+        descriptionProperty.set(state.getSelectedAuction().getItem().getDescription());
+        reservePriceProperty.set(state.getSelectedAuction().getPriceConstraint().getReservePrice());
+        buyoutPriceProperty.set(state.getSelectedAuction().getPriceConstraint().getBuyoutPrice());
+        incrementProperty.set(state.getSelectedAuction().getPriceConstraint().getMinimumIncrement());
       }
       else
       {
@@ -196,15 +191,15 @@ public class AuctionViewModel
         Platform.runLater(() -> {
           headerProperty.set("Auction ID:");
           idProperty.set(((Auction) event.getNewValue()).getID());
-          titleProperty.set(((Auction) event.getNewValue()).getTitle());
+          titleProperty.set(((Auction) event.getNewValue()).getItem().getTitle());
           descriptionProperty.set(
-              ((Auction) event.getNewValue()).getDescription());
+              ((Auction) event.getNewValue()).getItem().getDescription());
           reservePriceProperty.set(
-              ((Auction) event.getNewValue()).getReservePrice());
+              ((Auction) event.getNewValue()).getPriceConstraint().getReservePrice());
           buyoutPriceProperty.set(
-              ((Auction) event.getNewValue()).getBuyoutPrice());
+              ((Auction) event.getNewValue()).getPriceConstraint().getBuyoutPrice());
           incrementProperty.set(
-              ((Auction) event.getNewValue()).getMinimumIncrement());
+              ((Auction) event.getNewValue()).getPriceConstraint().getMinimumIncrement());
           LocalTime timeAuction = LocalTime.ofSecondOfDay(
               ((Auction) event.getNewValue()).getAuctionTime());
           timerProperty.set(timeAuction.format(timeFormatter));

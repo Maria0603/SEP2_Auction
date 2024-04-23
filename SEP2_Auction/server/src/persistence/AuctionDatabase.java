@@ -75,7 +75,6 @@ public class AuctionDatabase implements AuctionPersistence
         throw new SQLException("No keys generated");
       }
     }
-
   }
 
   @Override public synchronized Auction getAuctionById(int id)

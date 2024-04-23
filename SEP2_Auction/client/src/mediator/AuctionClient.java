@@ -3,7 +3,6 @@ package mediator;
 import model.Auction;
 import model.AuctionModel;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;

@@ -6,6 +6,7 @@ public class ViewModelFactory
 {
   private AuctionViewModel auctionViewModel;
   private FixedPaneViewModel fixedPaneViewModel;
+  //private AllAuctionsViewModel allAuctionsViewModel;
   private ViewModelState viewModelState;
 
   public ViewModelFactory(AuctionModel model)
@@ -13,6 +14,7 @@ public class ViewModelFactory
     viewModelState = new ViewModelState();
     auctionViewModel = new AuctionViewModel(model, viewModelState);
     fixedPaneViewModel = new FixedPaneViewModel(model, viewModelState);
+    //allAuctionsViewModel=new AllAuctionsViewModel(model, viewModelState);
   }
 
   public AuctionViewModel getAuctionViewModel()

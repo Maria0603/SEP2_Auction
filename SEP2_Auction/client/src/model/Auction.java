@@ -7,14 +7,15 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class Auction
     implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
 {
   private int ID;
-  private String title, description, currentBidder, status;
-  private int reservePrice, buyoutPrice, minimumIncrement, auctionTime, currentBid;
+  private Item item;
+  private PriceConstraint priceConstraint;
+  private String currentBidder, status;
+  private int auctionTime, currentBid;
   private byte[] imageData;
 
   ///////////////////////////////////////////////////////////////////
@@ -31,11 +32,8 @@ public class Auction
   {
     property = new PropertyChangeSupport(this);
     setID(ID);
-    setTitle(title);
-    setDescription(description);
-    setReservePrice(reservePrice);
-    setMinimumIncrement(minimumIncrement);
-    setBuyoutPrice(buyoutPrice);
+    this.item=new Item(title, description);
+    this.priceConstraint=new PriceConstraint(reservePrice, buyoutPrice, minimumIncrement);
     setAuctionTime(auctionTime);
     setImageData(imageData);
     this.status = status;
@@ -45,7 +43,14 @@ public class Auction
     this.timer.addListener("End", this);
     Thread t = new Thread(timer);
     t.start();
-
+  }
+  public Item getItem()
+  {
+    return item;
+  }
+  public PriceConstraint getPriceConstraint()
+  {
+    return priceConstraint;
   }
 
   public byte[] getImageData()
@@ -107,75 +112,7 @@ public class Auction
     this.status = status;
   }
 
-  public String getTitle()
-  {
-    return title;
-  }
 
-  public void setTitle(String title)
-  {
-    int maxTitleLength = 80;
-    int minTitleLength = 5;
-    if (title.length() > maxTitleLength)
-      throw new IllegalArgumentException("The title is too long!");
-    else if (title.length() < minTitleLength)
-      throw new IllegalArgumentException("The title is too short!");
-    this.title = title;
-  }
-
-  public String getDescription()
-  {
-    return description;
-  }
-
-  public void setDescription(String description)
-  {
-    int maxDescriptionLength = 1400, minDescriptionLength = 20;
-    if (description.length() > maxDescriptionLength)
-      throw new IllegalArgumentException("The description is too long!");
-    else if (description.length() < minDescriptionLength)
-      throw new IllegalArgumentException("The description is too short!");
-    this.description = description;
-  }
-
-  public int getReservePrice()
-  {
-    return reservePrice;
-  }
-
-  public void setReservePrice(int reservePrice)
-  {
-    if (reservePrice < 0)
-      throw new IllegalArgumentException(
-          "The reserve price must be a positive number!");
-    this.reservePrice = reservePrice;
-  }
-
-  public int getBuyoutPrice()
-  {
-    return buyoutPrice;
-  }
-
-  public void setBuyoutPrice(int buyoutPrice)
-  {
-    if (buyoutPrice <= reservePrice)
-      throw new IllegalArgumentException(
-          "The buyout price must be greater than the reserve price!");
-    this.buyoutPrice = buyoutPrice;
-  }
-
-  public int getMinimumIncrement()
-  {
-    return minimumIncrement;
-  }
-
-  public void setMinimumIncrement(int minimumIncrement)
-  {
-    if (minimumIncrement < 1)
-      throw new IllegalArgumentException(
-          "The minimum bid increment must be at least 1!");
-    this.minimumIncrement = minimumIncrement;
-  }
 
   public void setAuctionTime(int auctionTime)
   {
@@ -194,27 +131,14 @@ public class Auction
 
   @Override public String toString()
   {
-    return "ID=" + ID + ", title='" + title + '\'' + ", description='"
-        + description + '\'' + ", reservePrice=" + reservePrice
-        + ", buyoutPrice=" + buyoutPrice + ", minimumIncrement="
-        + minimumIncrement + ", auctionTime=" + auctionTime + ", imageData='"
+    return "ID=" + ID + ", title='" + item.getTitle() + '\'' + ", description='"
+        + item.getDescription() + '\'' + ", reservePrice=" + priceConstraint.getReservePrice()
+        + ", buyoutPrice=" + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
+        + priceConstraint.getMinimumIncrement() + ", auctionTime=" + auctionTime + ", imageData='"
         + Arrays.toString(imageData) + '\'' + ", timer=" + timer + ", property="
         + property + '}';
   }
 
-  @Override public boolean equals(Object obj)
-  {
-    if (obj == null || this.getClass() != obj.getClass())
-      return false;
-
-    Auction auction = (Auction) obj;
-    return ID == auction.ID && reservePrice == auction.reservePrice
-        && buyoutPrice == auction.buyoutPrice
-        && minimumIncrement == auction.minimumIncrement
-        && auctionTime == auction.auctionTime && Objects.equals(title,
-        auction.title) && Objects.equals(description, auction.description)
-        && Arrays.equals(imageData, auction.getImageData());
-  }
 
   @Override synchronized public void addListener(String propertyName,
       PropertyChangeListener listener)

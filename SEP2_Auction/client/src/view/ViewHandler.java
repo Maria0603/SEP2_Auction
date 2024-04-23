@@ -31,10 +31,9 @@ public class ViewHandler
     Region root = null;
     switch (id)
     {
-      case "startAuction", "displayAuction":
+      case "startAuction", "displayAuction", "allAuctions":
         root = loadFixedPaneView("FixedPaneView.fxml", id);
 
-        break;
       //case "login":
       //case "createAccount":
     }
