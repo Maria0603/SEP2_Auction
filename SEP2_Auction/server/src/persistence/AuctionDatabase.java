@@ -35,6 +35,10 @@ public class AuctionDatabase implements AuctionPersistence
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
 
+
+//TODO: changes in logic
+// save auction should take byte[] as parameter, convert it to .jpg image, and save it
+// to images folder. Image !path! goes to DB
   @Override public synchronized Auction saveAuction(int ID, String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
@@ -57,6 +61,10 @@ public class AuctionDatabase implements AuctionPersistence
       statement.setInt(6, checkMinimumIncrement(minimumIncrement));
       statement.setInt(7, checkCurrentBid(0));
       statement.setString(8, checkCurrentBidder(null));
+      //TODO: new method
+      // String saveImageToRepository(byte[] imageData) - converts bytes to .jpg file, returns path to an image
+
+      //TODO: change method ro setString() - save only path in repository
       statement.setBytes(9, checkImageData(imageData));
       statement.setString(10, "ON SALE");
 
@@ -101,6 +109,9 @@ public class AuctionDatabase implements AuctionPersistence
         int auctionTime = resultSet.getInt("auction_time");
         int currentBid = resultSet.getInt("current_bid");
         String currentBidder = resultSet.getString("current_bidder");
+        //TODO: new method, change SQL request
+        // byte[] uploadImageFromRepository(String imagePath) - converts image from repository to bytes
+
         byte[] imageData = resultSet.getBytes("image_data");
         String status = resultSet.getString("status");
         resultSet.close();
