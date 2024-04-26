@@ -9,9 +9,9 @@ import java.sql.SQLException;
 
 public interface AuctionRemote extends Remote
 {
-  Auction startAuction(int ID, String title, String description,
+  Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws RemoteException, SQLException;
+      byte[] imageData) throws RemoteException, SQLException, ClassNotFoundException;
   Auction getAuction(int ID) throws RemoteException, SQLException;
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;

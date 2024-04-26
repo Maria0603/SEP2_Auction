@@ -10,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -52,16 +53,12 @@ public class AuctionViewModel
     errorProperty.set("");
     try
     {
-      /*
-      we pass the entered time *3600 to convert the time to seconds; we only fire events with the time
-      in seconds, and we convert it into a timer string here, in the view model (see the propertyChange() method)
-       */
-      state.setAuction(model.startAuction(idProperty.get(), titleProperty.get().trim(),
+      state.setAuction(model.startAuction(titleProperty.get().trim(),
           descriptionProperty.get().trim(), reservePriceProperty.get(),
           buyoutPriceProperty.get(), incrementProperty.get(),
-          timeProperty.get() * 3600 - 1, imageData));
+          timeProperty.get(), imageData));
     }
-    catch (IllegalArgumentException | SQLException e)
+    catch (IllegalArgumentException | SQLException | ClassNotFoundException e)
     {
       errorProperty.set(e.getMessage());
       titleProperty.set(titleProperty.get().trim());
@@ -179,7 +176,7 @@ public class AuctionViewModel
       case "Time":
         //if(idProperty.equals(event.getOldValue())) //we should only update one auction for each event
       {
-        LocalTime time = LocalTime.ofSecondOfDay((int) event.getNewValue());
+        LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
         Platform.runLater(() -> timerProperty.set(time.format(timeFormatter)));
       }
       break;
@@ -188,7 +185,39 @@ public class AuctionViewModel
         property.firePropertyChange(event);
         break;
       case "Auction":
+        Auction auction=((Auction)event.getNewValue());
+        //System.out.println((Auction)event.getNewValue());
+
         Platform.runLater(() -> {
+          headerProperty.set("Auction ID:");
+          idProperty.set(auction.getID());
+          try
+          {
+            titleProperty.set(model.getAuction(auction.getID()).getItem().getTitle());
+            descriptionProperty.set(
+                model.getAuction(auction.getID()).getItem().getDescription());
+            reservePriceProperty.set(
+                model.getAuction(auction.getID()).getPriceConstraint().getReservePrice());
+            buyoutPriceProperty.set(
+                model.getAuction(auction.getID()).getPriceConstraint().getBuyoutPrice());
+            incrementProperty.set(
+                model.getAuction(auction.getID()).getPriceConstraint().getMinimumIncrement());
+          }
+          catch (SQLException e)
+          {
+            //put it in the error label
+            e.printStackTrace();
+          }
+
+
+          //Time end=((Auction) event.getNewValue()).getEnd().getHour()
+          //LocalTime timeAuction = LocalTime.ofSecondOfDay(((Auction) event.getNewValue()).getEnd().getHour());
+          //timerProperty.set(timeAuction.format(timeFormatter));
+          byte[] imageData = ((Auction) event.getNewValue()).getImageData();
+          property.firePropertyChange("Auction", null, imageData);
+        });
+
+        /*Platform.runLater(() -> {
           headerProperty.set("Auction ID:");
           idProperty.set(((Auction) event.getNewValue()).getID());
           titleProperty.set(((Auction) event.getNewValue()).getItem().getTitle());
@@ -200,12 +229,13 @@ public class AuctionViewModel
               ((Auction) event.getNewValue()).getPriceConstraint().getBuyoutPrice());
           incrementProperty.set(
               ((Auction) event.getNewValue()).getPriceConstraint().getMinimumIncrement());
-          LocalTime timeAuction = LocalTime.ofSecondOfDay(
-              ((Auction) event.getNewValue()).getAuctionTime());
-          timerProperty.set(timeAuction.format(timeFormatter));
+
+          //Time end=((Auction) event.getNewValue()).getEnd().getHour()
+          //LocalTime timeAuction = LocalTime.ofSecondOfDay(((Auction) event.getNewValue()).getEnd().getHour());
+          //timerProperty.set(timeAuction.format(timeFormatter));
           byte[] imageData = ((Auction) event.getNewValue()).getImageData();
           property.firePropertyChange("Auction", null, imageData);
-        });
+        });*/
         break;
     }
   }

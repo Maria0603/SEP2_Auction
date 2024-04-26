@@ -3,11 +3,14 @@ package persistence;
 import model.Auction;
 
 import java.sql.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence
 {
   private static AuctionDatabase instance;
+  private MyDatabase database;
   //link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
@@ -16,26 +19,20 @@ public class AuctionDatabase implements AuctionPersistence
   // private static final String PASSWORD = "1706"; - Maria's password
   private static final String PASSWORD = "344692StupidPass";
 
-  private AuctionDatabase() throws SQLException
+  public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
-    DriverManager.registerDriver(new org.postgresql.Driver());
-  }
-
-  public static synchronized AuctionDatabase getInstance() throws SQLException
-  {
-    if (instance == null)
-    {
-      instance = new AuctionDatabase();
-    }
-    return instance;
+    this.database=new MyDatabase(DRIVER, URL, USER, PASSWORD);
+    Class.forName(DRIVER);
+    //DriverManager.registerDriver(new org.postgresql.Driver());
   }
 
   private Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
-
-  @Override public synchronized Auction saveAuction(int ID, String title,
+//TODO remove the id
+  //TODO change byte[] to String somehow
+  @Override public synchronized Auction saveAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException
@@ -43,8 +40,8 @@ public class AuctionDatabase implements AuctionPersistence
     try (Connection connection = getConnection())
     {
       String sql =
-          "INSERT INTO auction1(title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status) \n"
-              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+          "INSERT INTO auction1(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
+              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
       PreparedStatement statement = connection.prepareStatement(sql,
           PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -53,12 +50,17 @@ public class AuctionDatabase implements AuctionPersistence
       statement.setString(2, checkDescription(description));
       statement.setInt(3, checkReservePrice(reservePrice));
       statement.setInt(4, checkBuyoutPrice(buyoutPrice, reservePrice));
-      statement.setInt(5, checkAuctionTime(auctionTime));
-      statement.setInt(6, checkMinimumIncrement(minimumIncrement));
-      statement.setInt(7, checkCurrentBid(0));
-      statement.setString(8, checkCurrentBidder(null));
-      statement.setBytes(9, checkImageData(imageData));
-      statement.setString(10, "ON SALE");
+      statement.setInt(5, checkMinimumIncrement(minimumIncrement));
+      statement.setInt(6, checkCurrentBid(0));
+      statement.setString(7, checkCurrentBidder(null));
+      statement.setBytes(8, checkImageData(imageData));
+      statement.setString(9, "ONGOING");
+
+      LocalTime now=LocalTime.now();
+      Time start=Time.valueOf(now);
+      statement.setTime(10, start);
+      Time end=Time.valueOf(now.plusHours(auctionTime));
+      statement.setTime(11, end);
 
       statement.executeUpdate();
       ResultSet keys = statement.getGeneratedKeys();
@@ -70,7 +72,7 @@ public class AuctionDatabase implements AuctionPersistence
         statement.close();
         //and we create the auction with it
         return new Auction(id, title, description, reservePrice, buyoutPrice,
-            minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
+            minimumIncrement, start, end, 0, null, imageData, "ONGOING");
       }
       else
       {
@@ -85,7 +87,7 @@ public class AuctionDatabase implements AuctionPersistence
     try (Connection connection = getConnection())
     {
       String sql =
-          "SELECT ID, title, description, reserve_price, buyout_price, auction_time, minimum_bid_increment, current_bid, current_bidder, image_data, status\n"
+          "SELECT *\n"
               + "FROM sprint1database.auction1\n"
               + "WHERE id=?;";
       PreparedStatement statement = connection.prepareStatement(sql);
@@ -98,15 +100,18 @@ public class AuctionDatabase implements AuctionPersistence
         int reservePrice = resultSet.getInt("reserve_price");
         int buyoutPrice = resultSet.getInt("buyout_price");
         int minimumIncrement = resultSet.getInt("minimum_bid_increment");
-        int auctionTime = resultSet.getInt("auction_time");
         int currentBid = resultSet.getInt("current_bid");
         String currentBidder = resultSet.getString("current_bidder");
         byte[] imageData = resultSet.getBytes("image_data");
         String status = resultSet.getString("status");
+        Time auctionStart = resultSet.getTime("start_time");
+        Time auctionEnd = resultSet.getTime("end_time");
+
+        //int auctionTime=auctionTimeToExtract.toLocalTime().getHour();
         resultSet.close();
         statement.close();
         return new Auction(id, title, description, reservePrice, buyoutPrice,
-            minimumIncrement, auctionTime, currentBid, currentBidder, imageData,
+            minimumIncrement, auctionStart, auctionEnd, currentBid, currentBidder, imageData,
             status);
       }
       else
@@ -115,18 +120,7 @@ public class AuctionDatabase implements AuctionPersistence
       }
     }
   }
-
-  @Override public void updateTime(int id, int seconds) throws SQLException
-  {
-    try (Connection connection = getConnection())
-    {
-      String sql = "UPDATE auction1 SET auction_time=?\n" + "WHERE ID=?;";
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setInt(1, seconds);
-      statement.setInt(2, id);
-      statement.executeUpdate();
-    }
-  }
+  
   @Override public void markAsClosed(int id) throws SQLException
   {
     try (Connection connection = getConnection())

@@ -7,21 +7,22 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
-public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
+public class EndTime
+    implements Runnable, NamedPropertyChangeSubject, Serializable
 {
-  private long timerSeconds;
   private int id;
   private PropertyChangeSupport property;
+  Time start, end;
   ///////////////////////////////////////////////////////////////////
   //do not change this number
   //private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
-  public Timer(long timerSeconds, int id)
+  public EndTime(Time start, Time end, int id)
   {
-    this.timerSeconds = timerSeconds;
+    this.start=start;
+    this.end=end;
     this.id = id;
     property = new PropertyChangeSupport(this);
   }
@@ -31,35 +32,35 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
     return id;
   }
 
-  public long getTimerSeconds()
-  {
-    return timerSeconds;
-  }
-
 
   @Override public void run()
   {
-    //timerSeconds=timerSeconds/3600;
-    while (timerSeconds >= 0)
-    {
-      property.firePropertyChange("Time", id, timerSeconds);
-      try
-      {
-        Thread.sleep(1000);
-      }
-      catch (InterruptedException e)
-      {
-        //
-      }
-      timerSeconds--;
-    }
-    property.firePropertyChange("End", id, 0);
-    PropertyChangeListener[] listeners = property.getPropertyChangeListeners();
-    for (int i = 0; i < listeners.length; i++)
-    {
-      removeListener("Time", listeners[i]);
-      removeListener("End", listeners[i]);
-    }
+        while (timeLeft(start, end)>0)
+        {
+          try
+          {
+            //Thread.sleep(timeLeftToSleep * 1000);
+            Thread.sleep(timeLeft(start, end)*1000);
+          }
+          catch (InterruptedException e)
+          {
+            //
+          }
+          if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
+          {
+            property.firePropertyChange("End", id, 0);
+            break;
+          }
+        }
+  }
+
+  private long timeLeft(Time currentTime, Time end)
+  {
+    long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
+    long endSeconds = end.toLocalTime().toSecondOfDay();
+    if (currentSeconds >= endSeconds)
+      return 60*60*24-(currentSeconds-endSeconds);
+    else return endSeconds-currentSeconds;
   }
 
   @Override public void addListener(String propertyName,

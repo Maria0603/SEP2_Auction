@@ -6,8 +6,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class Auction
     implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
@@ -16,7 +17,8 @@ public class Auction
   private Item item;
   private PriceConstraint priceConstraint;
   private String currentBidder, status;
-  private int auctionTime, currentBid;
+  private int auctionEndTime, currentBid;
+  Time start, end;
   private byte[] imageData;
 
   ///////////////////////////////////////////////////////////////////
@@ -24,23 +26,26 @@ public class Auction
   private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
-  private Timer timer;
+  private EndTime timer;
   private PropertyChangeSupport property;
 
   public Auction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, int auctionTime, int currentBid,
+      int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd, int currentBid,
       String currentBidder, byte[] imageData, String status)
   {
     property = new PropertyChangeSupport(this);
     setID(ID);
     this.item=new Item(title, description);
     this.priceConstraint=new PriceConstraint(reservePrice, buyoutPrice, minimumIncrement);
-    setAuctionTime(auctionTime);
+
+    start=auctionStart;
+    end=auctionEnd;
+
     setImageData(imageData);
     this.status = status;
 
-    this.timer = new Timer(this.auctionTime, ID);
-    this.timer.addListener("Time", this);
+    this.timer = new EndTime(start, end, ID);
+    //this.timer.addListener("Time", this);
     this.timer.addListener("End", this);
     Thread t = new Thread(timer);
     t.start();
@@ -53,6 +58,14 @@ public class Auction
   {
     return priceConstraint;
   }
+  public Time getEndTime()
+  {
+    return end;
+  }
+  public Time getStartTime()
+  {
+    return start;
+  }
 
   public byte[] getImageData()
   {
@@ -64,11 +77,6 @@ public class Auction
     if (imageData == null)
       throw new IllegalArgumentException("Please upload an image.");
     this.imageData = imageData;
-  }
-
-  public int getAuctionTime()
-  {
-    return auctionTime;
   }
 
   public int getCurrentBid()
@@ -123,10 +131,10 @@ public class Auction
 
     /////////////////////////////////////////////////////////////////////////////////
     //correct line:
-    this.auctionTime = auctionTime;
+    this.auctionEndTime = auctionTime;
     ////////////////////////////////////////////////////////////////////////////////
     //for testing purposes:
-    //this.auctionTime=auctionTime/3600;
+    //this.auctionEndTime=auctionTime/3600;
   }
 
   @Override public String toString()
@@ -134,10 +142,9 @@ public class Auction
     return "ID=" + ID + ", title='" + item.getTitle() + '\'' + ", description='"
         + item.getDescription() + '\'' + ", reservePrice=" + priceConstraint.getReservePrice()
         + ", buyoutPrice=" + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
-        + priceConstraint.getMinimumIncrement() + ", auctionTime=" + auctionTime + ", imageData='"
-        + Arrays.toString(imageData) + '\'' + ", timer=" + timer + ", property="
-        + property + '}';
+        + priceConstraint.getMinimumIncrement() + ", auctionTime=" + auctionEndTime + '\'';
   }
+
 
 
   @Override synchronized public void addListener(String propertyName,

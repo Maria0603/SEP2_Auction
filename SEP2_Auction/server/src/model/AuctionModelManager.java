@@ -11,40 +11,31 @@ import java.sql.SQLException;
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
   private PropertyChangeSupport property;
+  private AuctionPersistence auctionDatabase;
 
   public AuctionModelManager()
   {
     property = new PropertyChangeSupport(this);
   }
 
-  @Override public Auction startAuction(int ID, String title,
+  @Override public Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
-      throws SQLException
+      throws SQLException, ClassNotFoundException
   {
-    /*
-    //without database
-    auction = new Auction(ID, title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, 0, null, imageData, "ON SALE");
-    property.firePropertyChange("Auction", null, auction);
-    auction.addListener("Time", this);
-    auction.addListener("End", this);
-    return auction;
-     */
-
-    //with database
-    Auction auction = AuctionDatabase.getInstance()
-        .saveAuction(ID, title, description, reservePrice, buyoutPrice,
+    auctionDatabase=new AuctionDatabase();
+    Auction auction = auctionDatabase.saveAuction(title, description, reservePrice, buyoutPrice,
             minimumIncrement, auctionTime, imageData);
     property.firePropertyChange("Auction", null, auction);
 
-    auction.addListener("Time", this);
+    //auction.addListener("Time", this);
     auction.addListener("End", this);
     return auction;
   }
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    return AuctionDatabase.getInstance().getAuctionById(ID);
+    return auctionDatabase.getAuctionById(ID);
   }
 
   @Override public void addListener(String propertyName,
@@ -62,22 +53,22 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     //update the time and status in the database
-    if(evt.getPropertyName().equals("Time") && (int)evt.getNewValue()%5==0)
+    /*if(evt.getPropertyName().equals("Time") && (int)evt.getNewValue()%5==0)
     {
       try
       {
-        AuctionDatabase.getInstance().updateTime((int)evt.getOldValue(), (int)evt.getNewValue());
+        auctionDatabase.updateTime((int)evt.getOldValue(), (int)evt.getNewValue());
       }
       catch(SQLException e)
       {
         e.printStackTrace();
       }
-    }
-    else if(evt.getPropertyName().equals("End"))
+    }*/
+    if(evt.getPropertyName().equals("End"))
     {
       try
       {
-        AuctionDatabase.getInstance().markAsClosed((int)evt.getOldValue());
+        auctionDatabase.markAsClosed((int)evt.getOldValue());
       }
       catch(SQLException e)
       {

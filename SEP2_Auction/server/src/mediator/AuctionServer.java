@@ -56,12 +56,12 @@ public class AuctionServer
     Naming.rebind("Connect", this);
   }
 
-  @Override public Auction startAuction(int id, String title,
+  @Override public Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
-      throws RemoteException, SQLException
+      throws RemoteException, SQLException, ClassNotFoundException
   {
-    return model.startAuction(id, title, description, reservePrice, buyoutPrice,
+    return model.startAuction(title, description, reservePrice, buyoutPrice,
         minimumIncrement, auctionTime, imageData);
   }
 
