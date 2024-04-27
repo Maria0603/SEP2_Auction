@@ -1,7 +1,6 @@
 package model;
 
 import persistence.AuctionDatabase;
-import persistence.AuctionPersistence;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -17,7 +16,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     property = new PropertyChangeSupport(this);
   }
 
-  @Override public Auction startAuction(int ID, String title,
+  @Override public Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException
@@ -33,7 +32,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
     //with database
     Auction auction = AuctionDatabase.getInstance()
-        .saveAuction(ID, title, description, reservePrice, buyoutPrice,
+        .saveAuction(title, description, reservePrice, buyoutPrice,
             minimumIncrement, auctionTime, imageData);
     property.firePropertyChange("Auction", null, auction);
 

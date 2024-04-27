@@ -44,14 +44,14 @@ public class AuctionClient
     }
   }
 
-  @Override public Auction startAuction(int ID, String title,
+  @Override public Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException
   {
     try
     {
-      return server.startAuction(ID, title, description, reservePrice,
+      return server.startAuction(title, description, reservePrice,
           buyoutPrice, minimumIncrement, auctionTime, imageData);
     }
     catch (RemoteException e)
