@@ -30,8 +30,8 @@ public class AuctionDatabase implements AuctionPersistence
   {
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
-//TODO remove the id
-  //TODO change byte[] to String somehow
+
+
   @Override public synchronized Auction saveAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)

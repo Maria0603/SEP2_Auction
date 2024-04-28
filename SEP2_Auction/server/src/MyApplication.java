@@ -6,6 +6,7 @@ import model.AuctionModelManager;
 
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 public class MyApplication extends Application
 {
@@ -13,12 +14,13 @@ public class MyApplication extends Application
 
   @Override public void start(Stage primaryStage)
   {
-    AuctionModel model = new AuctionModelManager();
     try
     {
+      AuctionModel model = new AuctionModelManager();
       server = new AuctionServer(model);
     }
-    catch (MalformedURLException | RemoteException e)
+    catch (MalformedURLException | RemoteException | ClassNotFoundException |
+           SQLException e)
     {
       e.printStackTrace();
     }

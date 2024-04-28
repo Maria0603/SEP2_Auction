@@ -13,17 +13,17 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   private PropertyChangeSupport property;
   private AuctionPersistence auctionDatabase;
 
-  public AuctionModelManager()
+  public AuctionModelManager() throws SQLException, ClassNotFoundException
   {
     property = new PropertyChangeSupport(this);
+    auctionDatabase=new AuctionDatabase();
   }
 
   @Override public Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
-      throws SQLException, ClassNotFoundException
+      throws SQLException
   {
-    auctionDatabase=new AuctionDatabase();
     Auction auction = auctionDatabase.saveAuction(title, description, reservePrice, buyoutPrice,
             minimumIncrement, auctionTime, imageData);
     property.firePropertyChange("Auction", null, auction);
