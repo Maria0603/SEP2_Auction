@@ -1,6 +1,7 @@
 package mediator;
 
 import model.Auction;
+import model.AuctionList;
 import model.AuctionModel;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
@@ -69,6 +70,11 @@ public class AuctionServer
       throws RemoteException, SQLException
   {
     return model.getAuction(id);
+  }
+
+  @Override public AuctionList getOngoingAuctions()
+      throws RemoteException, SQLException {
+    return null;
   }
 
   @Override public boolean addListener(GeneralListener<String, Object> listener,

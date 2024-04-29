@@ -1,6 +1,7 @@
 package model;
 
 import persistence.AuctionDatabase;
+import persistence.AuctionPersistence;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

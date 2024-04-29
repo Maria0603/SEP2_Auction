@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import model.AuctionList;
 import utility.persistence.MyDatabase;
 
-import javax.print.DocFlavor;
-
 public class AuctionDatabase implements AuctionPersistence {
   private static AuctionDatabase instance;
   private MyDatabase database;
@@ -45,7 +43,7 @@ public class AuctionDatabase implements AuctionPersistence {
     try (Connection connection = getConnection()) {
       if (auctionTime <= 0 || auctionTime > 24)
         throw new SQLException("The auction time can be at most 24 hours!");
-      String sql = "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
+      String sql = "INSERT INTO auction1(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
           + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
       PreparedStatement statement = connection.prepareStatement(sql,
@@ -58,7 +56,7 @@ public class AuctionDatabase implements AuctionPersistence {
       statement.setInt(5, checkMinimumIncrement(minimumIncrement));
       statement.setInt(6, checkCurrentBid(0));
       statement.setString(7, checkCurrentBidder("No bidder"));
-      statement.setBytes(8, checkImageData(imageData));
+      statement.setString(8, "temp_path");
       statement.setString(9, "ONGOING");
 
       LocalTime now = LocalTime.now();
