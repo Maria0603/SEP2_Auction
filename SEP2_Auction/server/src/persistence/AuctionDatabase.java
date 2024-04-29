@@ -97,7 +97,7 @@ public class AuctionDatabase implements AuctionPersistence {
 
     try (Connection connection = getConnection()) {
       String sql = "SELECT *\n"
-          + "FROM sprint1database.auction\n"
+          + "FROM sprint1database.auction1\n"
           + "WHERE id=?;";
       ArrayList<Object[]> results = database.query(sql, id);
       for (int i = 0; i < results.size(); i++) {

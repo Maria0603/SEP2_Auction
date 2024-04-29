@@ -21,5 +21,6 @@ public class Test {
 
 
     database.saveAuction("titleeeeeeeee", "defwefbiptbprfnrjvbrbo", 500, 55555, 50, 5, byteArray);
+    database.getAuctionById(12);
   }
 }
