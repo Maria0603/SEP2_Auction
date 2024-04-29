@@ -15,7 +15,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
   private PropertyChangeSupport property;
   private AuctionClient client;
-  private ArrayList<Integer> ids;
 
   public AuctionModelManager()
   {
@@ -23,7 +22,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     {
       property = new PropertyChangeSupport(this);
       client = new AuctionClient();
-      ids=new ArrayList<>();
       client.addListener("Auction", this);
       //client.addListener("Time", this);
       client.addListener("End", this);
@@ -48,9 +46,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     Auction auction=client.getAuction(ID);
     if(auction!=null)
     {
-      ids.add(auction.getID());
       Timer timer=new Timer(timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime())-1, ID);
       timer.addListener("Time", this);
+      timer.addListener("End", this);
       Thread t = new Thread(timer, String.valueOf(ID));
       t.start();
     }
