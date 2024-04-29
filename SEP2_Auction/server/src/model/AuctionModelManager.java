@@ -38,6 +38,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getAuctionById(ID);
   }
 
+  @Override public AuctionList getOngoingAuctions()
+  {
+    AuctionList list=new AuctionList();
+    return null;
+  }
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {

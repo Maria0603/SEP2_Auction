@@ -24,14 +24,14 @@ public class AuctionList
 
   public void removeAuction(int ID)
   {
-    auctions.remove(getAuction(ID));
+    auctions.remove(getAuctionByID(ID));
   }
 
-  public Auction getAuction(int ID)
+  public Auction getAuctionByID(int ID)
   {
-    for (int i = 0; i < auctions.size(); i++)
-      if (auctions.get(i).getID() == ID)
-        return auctions.get(i);
+    for (Auction auction : auctions)
+      if (auction.getID() == ID)
+        return auction;
     throw new IllegalArgumentException("No auction with this ID.");
   }
 

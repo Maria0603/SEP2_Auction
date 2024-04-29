@@ -1,6 +1,7 @@
 package persistence;
 
 import model.Auction;
+import model.AuctionList;
 import model.AuctionModel;
 
 import java.sql.SQLException;
@@ -13,4 +14,5 @@ public interface AuctionPersistence
       byte[] imageData) throws SQLException;
   Auction getAuctionById(int id) throws SQLException;
   void markAsClosed(int id) throws SQLException;
+  AuctionList getOngoingAuctions() throws SQLException;
 }

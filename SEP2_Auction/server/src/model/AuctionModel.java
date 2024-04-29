@@ -11,4 +11,5 @@ public interface AuctionModel extends NamedPropertyChangeSubject
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       byte[] imageData) throws SQLException;
   Auction getAuction(int ID) throws SQLException;
+  AuctionList getOngoingAuctions() throws SQLException;
 }
