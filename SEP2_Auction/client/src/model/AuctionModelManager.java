@@ -55,6 +55,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auction;
   }
 
+  @Override public AuctionList getOngoingAuctions() throws SQLException
+  {
+    return client.getOngoingAuctions();
+  }
+
   private long timeLeft(Time currentTime, Time end)
   {
     long currentSeconds = currentTime.toLocalTime().toSecondOfDay();

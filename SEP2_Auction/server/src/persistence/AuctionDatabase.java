@@ -45,7 +45,7 @@ public class AuctionDatabase implements AuctionPersistence
       if (auctionTime <= 0 || auctionTime > 24)
         throw new SQLException("The auction time can be at most 24 hours!");
       String sql =
-          "INSERT INTO auction1(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
+          "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
       PreparedStatement statement = connection.prepareStatement(sql,
@@ -93,7 +93,7 @@ public class AuctionDatabase implements AuctionPersistence
     {
       String sql =
           "SELECT *\n"
-              + "FROM sprint1database.auction1\n"
+              + "FROM sprint1database.auction\n"
               + "WHERE id=?;";
       ArrayList<Object[]> results=database.query(sql, id);
       for(int i=0; i<results.size(); i++)
@@ -135,7 +135,7 @@ public class AuctionDatabase implements AuctionPersistence
   {
     try (Connection connection = getConnection())
     {
-      String sql = "UPDATE auction1 SET status='CLOSED'\n" + "WHERE ID=?;";
+      String sql = "UPDATE auction SET status='CLOSED'\n" + "WHERE ID=?;";
       database.update(sql, id);
       /*PreparedStatement statement = connection.prepareStatement(sql);statement.setInt(1, id);statement.executeUpdate();*/
     }
@@ -143,7 +143,7 @@ public class AuctionDatabase implements AuctionPersistence
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
-    String sql="SELECT * FROM auction1 WHERE status='ONGOING';";
+    String sql="SELECT * FROM auction WHERE status='ONGOING';";
     ArrayList<Object[]> results=database.query(sql);
     AuctionList auctions=new AuctionList();
     for(int i=0; i<results.size(); i++)

@@ -1,6 +1,7 @@
 package mediator;
 
 import model.Auction;
+import model.AuctionList;
 import model.AuctionModel;
 
 import java.beans.PropertyChangeListener;
@@ -67,6 +68,19 @@ public class AuctionClient
       return server.getAuction(ID);
     }
     catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public AuctionList getOngoingAuctions() throws SQLException
+  {
+    try
+    {
+      return server.getOngoingAuctions();
+    }
+    catch(RemoteException e)
     {
       e.printStackTrace();
     }
