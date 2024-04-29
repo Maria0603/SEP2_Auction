@@ -38,6 +38,10 @@ public class AuctionList
         return auction;
     throw new IllegalArgumentException("No auction with this ID.");
   }
+  public Auction getAuction(int index)
+  {
+    return auctions.get(index);
+  }
 
   public int getSize()
   {
