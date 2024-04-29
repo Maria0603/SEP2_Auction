@@ -101,7 +101,6 @@ public class AuctionDatabase implements AuctionPersistence
         try
         {
           Object[] row = results.get(i);
-          //int ID = Integer.parseInt(row[0].toString());
           String title = row[1].toString();
           String description = row[2].toString();
           int reservePrice = Integer.parseInt(row[3].toString());
@@ -118,11 +117,13 @@ public class AuctionDatabase implements AuctionPersistence
               currentBidder, imageData, status);
         } catch(Exception e)
         {
+          //maybe throw exception with "No auction with this id", but for testing:
           e.printStackTrace();
       }
 
     }
       return null;
+      //without jar
       /*
       PreparedStatement statement = connection.prepareStatement(sql);statement.setInt(1, id);ResultSet resultSet = statement.executeQuery();if (resultSet.next())
       {String title = resultSet.getString("title");String description = resultSet.getString("description");int reservePrice = resultSet.getInt("reserve_price");int buyoutPrice = resultSet.getInt("buyout_price");int minimumIncrement = resultSet.getInt("minimum_bid_increment");int currentBid = resultSet.getInt("current_bid");String currentBidder = resultSet.getString("current_bidder");byte[] imageData = resultSet.getBytes("image_data");String status = resultSet.getString("status");Time auctionStart = resultSet.getTime("start_time");Time auctionEnd = resultSet.getTime("end_time");
@@ -142,7 +143,29 @@ public class AuctionDatabase implements AuctionPersistence
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
-    return null;
+    String sql="SELECT * FROM auction1 WHERE status='ONGOING';";
+    ArrayList<Object[]> results=database.query(sql);
+    AuctionList auctions=new AuctionList();
+    for(int i=0; i<results.size(); i++)
+    {
+        Object[] row = results.get(i);
+        int id=Integer.parseInt(row[0].toString());
+        String title = row[1].toString();
+        String description = row[2].toString();
+        int reservePrice = Integer.parseInt(row[3].toString());
+        int buyoutPrice = Integer.parseInt(row[4].toString());
+        int minimumIncrement = Integer.parseInt(row[5].toString());
+        int currentBid = Integer.parseInt(row[6].toString());
+        String currentBidder = row[7].toString();
+        byte[] imageData = row[8].toString().getBytes();
+        String status = row[9].toString();
+        Time auctionStart = Time.valueOf(row[10].toString());
+        Time auctionEnd = Time.valueOf(row[11].toString());
+        auctions.addAuction(new Auction(id, title, description, reservePrice, buyoutPrice,
+            minimumIncrement, auctionStart, auctionEnd, currentBid,
+            currentBidder, imageData, status));
+      }
+    return auctions;
   }
   private byte[] checkImageData(byte[] imageData) throws SQLException
   {
