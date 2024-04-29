@@ -94,7 +94,7 @@ public class AuctionViewModel
     buyoutPriceProperty.set(0);
     descriptionProperty.set("");
     errorProperty.set("");
-    incrementProperty.set(1);
+    incrementProperty.set(0);
     ratingProperty.set(0);
     reasonProperty.set("");
     reservePriceProperty.set(0);
