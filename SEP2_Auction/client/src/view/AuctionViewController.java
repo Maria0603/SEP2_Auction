@@ -101,6 +101,8 @@ public class AuctionViewController implements PropertyChangeListener
         this.auctionViewModel.getBuyoutPriceProperty(),
         new IntStringConverter());
 
+    //imageImageView.addListener
+
     //other bindings to be inserted
 
     errorLabel.setText("");

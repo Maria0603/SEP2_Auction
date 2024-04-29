@@ -59,7 +59,7 @@ public class AuctionServer
   @Override public Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
-      throws RemoteException, SQLException
+      throws RemoteException, SQLException, ClassNotFoundException
   {
     return model.startAuction(title, description, reservePrice, buyoutPrice,
         minimumIncrement, auctionTime, imageData);

@@ -126,7 +126,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" promptText="> 1" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
