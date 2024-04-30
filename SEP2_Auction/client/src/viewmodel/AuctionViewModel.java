@@ -62,12 +62,16 @@ public class AuctionViewModel
     errorProperty.set("");
     try
     {
+      //we cannot send the null image through model, because it cannot be converted into bytes, so:
+      if(imageProperty.get()==null)
+        throw new IllegalArgumentException("Please upload an image.");
       state.setAuction(model.startAuction(titleProperty.get().trim(),
           descriptionProperty.get().trim(), reservePriceProperty.get(),
           buyoutPriceProperty.get(), incrementProperty.get(),
           timeProperty.get(), imageToByteArray(imageProperty.get())));
     }
-    catch (IllegalArgumentException | SQLException | ClassNotFoundException e)
+    catch (IllegalArgumentException | SQLException | ClassNotFoundException |
+           IOException e)
     {
       errorProperty.set(e.getMessage());
       titleProperty.set(titleProperty.get().trim());
@@ -76,18 +80,11 @@ public class AuctionViewModel
       //e.printStackTrace();
     }
   }
-  private byte[] imageToByteArray(Image image)
+  private byte[] imageToByteArray(Image image) throws IOException
   {
     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    try
-    {
-      javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
+    javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
     return outputStream.toByteArray();
   }
   private Image byteArrayToImage(byte[] imageBytes)
@@ -223,27 +220,28 @@ public class AuctionViewModel
         Platform.runLater(() -> errorProperty.set("Auction closed."));
         break;
       case "Auction":
-        Auction auction = ((Auction) event.getNewValue());
+        int auctionId = ((Auction) event.getNewValue()).getID();
 
         Platform.runLater(() -> {
           headerProperty.set("Auction ID:");
-          idProperty.set(auction.getID());
+          idProperty.set(auctionId);
           try
           {
+            Auction auction=model.getAuction(auctionId);
             titleProperty.set(
-                model.getAuction(auction.getID()).getItem().getTitle());
+                auction.getItem().getTitle());
             descriptionProperty.set(
-                model.getAuction(auction.getID()).getItem().getDescription());
+                auction.getItem().getDescription());
             reservePriceProperty.set(
-                model.getAuction(auction.getID()).getPriceConstraint()
+                auction.getPriceConstraint()
                     .getReservePrice());
             buyoutPriceProperty.set(
-                model.getAuction(auction.getID()).getPriceConstraint()
+                auction.getPriceConstraint()
                     .getBuyoutPrice());
             incrementProperty.set(
-                model.getAuction(auction.getID()).getPriceConstraint()
+                auction.getPriceConstraint()
                     .getMinimumIncrement());
-            imageProperty.set(byteArrayToImage(model.getAuction(auction.getID()).getImageData()));
+            imageProperty.set(byteArrayToImage(auction.getImageData()));
           }
           catch (SQLException e)
           {

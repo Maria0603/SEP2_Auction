@@ -42,11 +42,12 @@ public class AuctionCardViewModel
   {
     try
     {
+      Auction auction=model.getAuction(auctionId);
       idProperty.set(auctionId);
-      titleProperty.set(model.getAuction(auctionId).getItem().getTitle());
-      currentBidProperty.set(model.getAuction(auctionId).getCurrentBid());
-      endTimeProperty.set("Ends: "+ model.getAuction(auctionId).getEndTime().toString());
-      imageProperty.set(byteArrayToImage(model.getAuction(auctionId).getImageData()));
+      titleProperty.set(auction.getItem().getTitle());
+      currentBidProperty.set(auction.getCurrentBid());
+      endTimeProperty.set("Ends: "+ auction.getEndTime().toString());
+      imageProperty.set(byteArrayToImage(auction.getImageData()));
     }
     catch (SQLException e)
     {

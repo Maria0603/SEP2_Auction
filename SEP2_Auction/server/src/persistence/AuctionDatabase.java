@@ -16,7 +16,6 @@ import model.AuctionList;
 import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence {
-  private static AuctionDatabase instance;
   private MyDatabase database;
   // link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
@@ -43,7 +42,6 @@ public class AuctionDatabase implements AuctionPersistence {
     try (Connection connection = getConnection())
     {
       checkAuctionTime(auctionTime);
-
       String sql = "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
           + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
@@ -162,14 +160,14 @@ public class AuctionDatabase implements AuctionPersistence {
       return byteArray;
 
     } catch (IOException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
     return null;
   }
 
-  private String saveImageToRepository(byte[] imageBytes, String imageTitle) {
+  private String saveImageToRepository(byte[] imageBytes, String imageTitle)
+  {
     String pathToImage = null;
-
     try {
       ByteArrayInputStream inStreamObj = new ByteArrayInputStream(imageBytes);
       BufferedImage newImage = ImageIO.read(inStreamObj);
@@ -177,20 +175,9 @@ public class AuctionDatabase implements AuctionPersistence {
       pathToImage = "server/images/" + imageTitle + ".jpg";
       ImageIO.write(newImage, "jpg", new File(pathToImage));
     } catch (IOException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
     return pathToImage;
-  }
-
-  @Override
-  public void updateTime(int id, int seconds) throws SQLException {
-    try (Connection connection = getConnection()) {
-      String sql = "UPDATE auction SET auction_time=?\n" + "WHERE ID=?;";
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setInt(1, seconds);
-      statement.setInt(2, id);
-      statement.executeUpdate();
-    }
   }
 
   @Override
@@ -242,12 +229,6 @@ public class AuctionDatabase implements AuctionPersistence {
     return bidder;
   }
 
-  private String checkStatus(String status) throws SQLException {
-    if (status.equals("ON SALE") || status.equals("CLOSED"))
-      return status;
-    throw new SQLException("Invalid status");
-  }
-
   private String checkTitle(String title) throws SQLException {
     int maxTitleLength = 80;
     int minTitleLength = 5;
@@ -287,17 +268,10 @@ public class AuctionDatabase implements AuctionPersistence {
     return minimumIncrement;
   }
 
-  private int checkAuctionTime(int auctionTime) throws SQLException {
+  private void checkAuctionTime(int auctionTime) throws SQLException {
     // to be updated when the moderator adds the time interval
     if (auctionTime <= 0 || auctionTime > 24 * 3600)
       throw new SQLException("The auction time can be at most 24 hours!");
-
-    /////////////////////////////////////////////////////////////////////////////////
-    // correct line:
-    return auctionTime;
-    ////////////////////////////////////////////////////////////////////////////////
-    // for testing purposes:
-    // this.auctionTime=auctionTime/3600;
   }
 
 }
