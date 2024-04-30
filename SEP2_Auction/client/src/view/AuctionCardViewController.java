@@ -47,7 +47,7 @@ public class AuctionCardViewController
 
   @FXML public void cardSelected(MouseEvent mouseEvent)
   {
-    //TODO: to extract the id in the auction view model
-    viewHandler.openView("displayAuction"+idLabel.getText());
+    //TODO: to set the view state - for Mariia?
+    viewHandler.openView("displayAuction");
   }
 }

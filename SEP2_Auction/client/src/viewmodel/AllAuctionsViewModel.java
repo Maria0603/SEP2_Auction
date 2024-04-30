@@ -24,7 +24,12 @@ public class AllAuctionsViewModel
   }
   public void reset(String id)
   {
-
+    switch (id)
+    {
+      case "allAuctions":
+        //nothing to do here
+      break;
+    }
   }
   public AuctionList getOngoingAuctions()
   {

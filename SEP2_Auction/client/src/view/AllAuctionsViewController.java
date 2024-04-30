@@ -11,7 +11,6 @@ import javafx.scene.layout.Region;
 import model.Auction;
 import model.AuctionList;
 import viewmodel.AllAuctionsViewModel;
-import viewmodel.AuctionCardViewModel;
 import viewmodel.ViewModelFactory;
 
 public class AllAuctionsViewController
@@ -33,15 +32,21 @@ public class AllAuctionsViewController
     this.viewModelFactory = viewModelFactory;
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
     auctionCards = FXCollections.observableArrayList();
+    reset(id);
     loadOngoingAuctions();
     //other bindings to be inserted
-    reset(id);
+
   }
 
   public void reset(String id)
   {
     allAuctionsViewModel.reset(id);
-    //auctionCards.clear();
+    switch (id)
+    {
+      case "allAuctions":
+        auctionCards.clear();
+        break;
+    }
   }
 
   public Region getRoot()

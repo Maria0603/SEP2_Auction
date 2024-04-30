@@ -117,7 +117,6 @@ public class AuctionViewController
         setForDisplay();
         break;
       case "startAuction":
-        auctionViewModel.reset(id);
         setForStart();
         imageImageView.setImage(null);
         break;
@@ -236,13 +235,14 @@ public class AuctionViewController
     {
       reset("");
       //sprint 1 focus
-      viewHandler.openView("displayAuction");
+      viewHandler.openView("allAuctions");
     }
     ////////////////////////////////////////////////////////
   }
 
   @FXML void importButtonPressed(ActionEvent event)
   {
+    imageImageView.setImage(null);
     fileChooser.getExtensionFilters().add(
         new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg", "*jpeg"));
 

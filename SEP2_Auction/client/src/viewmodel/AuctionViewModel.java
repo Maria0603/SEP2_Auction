@@ -52,7 +52,7 @@ public class AuctionViewModel
     imageProperty=new SimpleObjectProperty<>();
 
     model.addListener("Auction", this);
-    model.addListener("Time", this);
+    //model.addListener("Time", this);
     model.addListener("End", this);
     reset("startAuction");
   }
@@ -98,6 +98,7 @@ public class AuctionViewModel
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null && id.equals("displayAuction"))
     {
+      model.addListener("Time", this);
       headerProperty.set("Auction ID:");
       idProperty.set(state.getSelectedAuction().getID());
       titleProperty.set(state.getSelectedAuction().getItem().getTitle());
@@ -119,6 +120,7 @@ public class AuctionViewModel
   private void wipe()
   {
     state.setAuction(null);
+    model.removeListener("Time", this);
     headerProperty.set("Start auction");
     idProperty.set(0);
     bidProperty.set(0);

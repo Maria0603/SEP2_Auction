@@ -55,43 +55,41 @@ public class FixedPaneViewController
 
   public void reset(String id)
   {
+
     fixedPaneViewModel.reset();
 
     ///////////////////////////
     //sprint 1 focus
-    if (id.equals("startAuction"))
+    switch (id)
     {
-      sellItemButtonPressed();
-    }
-    else if (id.startsWith("displayAuction"))
-    {
-      try
+      case "startAuction" -> sellItemButtonPressed();
+      case "displayAuction" ->
       {
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("AuctionView.fxml"));
-        Region root = loader.load();
-        borderPane.setCenter(root);
-        auctionViewController = loader.getController();
-        auctionViewController.init(viewHandler,
-            viewModelFactory.getAuctionViewModel(), root, id);
+        try
+        {
+          FXMLLoader loader = new FXMLLoader(
+              getClass().getResource("AuctionView.fxml"));
+          Region root = loader.load();
+          borderPane.setCenter(root);
+          auctionViewController = loader.getController();
+          auctionViewController.init(viewHandler,
+              viewModelFactory.getAuctionViewModel(), root, id);
 
-        allAuctionsButton.setDisable(false);
-        myAuctions_allAccountsButton.setDisable(false);
-        myBidsButton.setDisable(false);
-        myProfile_settingsButton.setDisable(false);
-        notificationsButton.setDisable(false);
-        logOutButton.setDisable(false);
-        moderatorInfoButton.setDisable(false);
-        sellItemButton.setDisable(false);
+          allAuctionsButton.setDisable(false);
+          myAuctions_allAccountsButton.setDisable(false);
+          myBidsButton.setDisable(false);
+          myProfile_settingsButton.setDisable(false);
+          notificationsButton.setDisable(false);
+          logOutButton.setDisable(false);
+          moderatorInfoButton.setDisable(false);
+          sellItemButton.setDisable(false);
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
       }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    else if (id.equals("allAuctions"))
-    {
-      allAuctionsButtonPressed();
+      case "allAuctions" -> allAuctionsButtonPressed();
     }
 
   }
@@ -130,12 +128,19 @@ public class FixedPaneViewController
     }
     else
     {
+      borderPane.setCenter(auctionViewController.getRoot());
       auctionViewController.reset("startAuction");
+
     }
     return auctionViewController.getRoot();
   }
 
   @FXML Region allAuctionsButtonPressed()
+  {
+    return loadGrid("allAuctions");
+  }
+
+  private Region loadGrid(String id)
   {
     allAuctionsButton.setDisable(false);
     myAuctions_allAccountsButton.setDisable(false);
@@ -158,16 +163,20 @@ public class FixedPaneViewController
         allAuctionsViewController = loader.getController();
 
         allAuctionsViewController.init(viewHandler,
-            viewModelFactory, root, "allAuctions");
+            viewModelFactory, root, id);
+
       }
       catch (Exception e)
       {
         e.printStackTrace();
       }
+
     }
     else
     {
-      allAuctionsViewController.reset("allAuctions");
+      borderPane.setCenter(allAuctionsViewController.getRoot());
+      allAuctionsViewController.reset(id);
+
     }
     return allAuctionsViewController.getRoot();
   }
@@ -199,6 +208,7 @@ public class FixedPaneViewController
 
   public void myBidsButtonPressed(ActionEvent actionEvent)
   {
+    //return loadGrid("myBids");
   }
 
 }
