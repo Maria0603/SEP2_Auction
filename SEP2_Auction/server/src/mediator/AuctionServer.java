@@ -74,7 +74,7 @@ public class AuctionServer
 
   @Override public AuctionList getOngoingAuctions()
       throws RemoteException, SQLException {
-    return null;
+    return model.getOngoingAuctions();
   }
 
   @Override public boolean addListener(GeneralListener<String, Object> listener,

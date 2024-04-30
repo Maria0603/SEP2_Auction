@@ -16,15 +16,15 @@ import model.AuctionList;
 import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence {
-  private static AuctionDatabase instance;
   private MyDatabase database;
   // link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
 
-  private static final String PASSWORD = "1706";
-  // private static final String PASSWORD = "344692StupidPass";
+  //private static final String PASSWORD = "1706";
+  //private static final String PASSWORD = "344692StupidPass";
+  private static final String PASSWORD = "31052003";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
     this.database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
