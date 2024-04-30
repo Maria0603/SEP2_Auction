@@ -1,10 +1,8 @@
 package viewmodel;
 
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
 
@@ -17,6 +15,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
 {
   private IntegerProperty currentBidProperty, idProperty;
   private StringProperty endTimeProperty, titleProperty;
+  private ObjectProperty<Image>  imageProperty;
   private AuctionModel model;
   private ViewModelState state;
 
@@ -28,6 +27,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
     currentBidProperty = new SimpleIntegerProperty();
     titleProperty = new SimpleStringProperty();
     endTimeProperty=new SimpleStringProperty();
+    imageProperty=new SimpleObjectProperty<>();
 
     //model.addListener("Auction", this);
     //model.addListener("Time", this);
@@ -41,6 +41,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
     titleProperty.set(auction.getItem().getTitle());
     currentBidProperty.set(auction.getCurrentBid());
     endTimeProperty.set("Ends: "+ auction.getEndTime().toString());
+    //imageProperty.set(new Image(auction.getImageData()));
   }
   public StringProperty getTitleProperty()
   {

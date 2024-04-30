@@ -11,6 +11,7 @@ import javafx.scene.layout.Region;
 import model.Auction;
 import model.AuctionList;
 import viewmodel.AllAuctionsViewModel;
+import viewmodel.AuctionCardViewModel;
 import viewmodel.ViewModelFactory;
 
 public class AllAuctionsViewController
@@ -66,7 +67,7 @@ public class AllAuctionsViewController
     auctionsGrid.getRowConstraints().clear();
     auctionsGrid.getColumnConstraints().clear();
     {
-      for (int i = 0; i < auctionCards.size(); i++)
+      for (int i = auctionCards.size()-1; i >= 0; i--)
       {
         try
         {
