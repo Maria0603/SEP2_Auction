@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.*?>
-<ScrollPane fx:id="allAuctionsScrollPane" prefHeight="740.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAuctionsViewController">
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<ScrollPane fx:id="allAuctionsScrollPane" prefHeight="740.0" prefWidth="1102.0" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAuctionsViewController">
    <content>
-      <GridPane fx:id="auctionsGrid" gridLinesVisible="true" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1085.0" vgap="10.0">
+      <GridPane fx:id="auctionsGrid" alignment="CENTER" gridLinesVisible="true" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1085.0" vgap="5.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="266.0" minWidth="266.0" prefWidth="266.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="266.0" minWidth="266.0" prefWidth="266.0" />
@@ -17,6 +21,12 @@
             <RowConstraints maxHeight="492.0" minHeight="492.0" prefHeight="492.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="492.0" minHeight="492.0" prefHeight="492.0" vgrow="SOMETIMES" />
         </rowConstraints>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </GridPane>
    </content>
+   <padding>
+      <Insets bottom="3.0" top="3.0" />
+   </padding>
 </ScrollPane>

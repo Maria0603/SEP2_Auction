@@ -7,16 +7,16 @@ public class ViewModelFactory
   private AuctionViewModel auctionViewModel;
   private FixedPaneViewModel fixedPaneViewModel;
   private AllAuctionsViewModel allAuctionsViewModel;
-  private AuctionCardViewModel auctionCardViewModel;
   private ViewModelState viewModelState;
+  private AuctionModel model;
 
   public ViewModelFactory(AuctionModel model)
   {
+    this.model=model;
     viewModelState = new ViewModelState();
-    auctionViewModel = new AuctionViewModel(model, viewModelState);
-    fixedPaneViewModel = new FixedPaneViewModel(model, viewModelState);
-    allAuctionsViewModel=new AllAuctionsViewModel(model, viewModelState);
-    auctionCardViewModel=new AuctionCardViewModel(model, viewModelState);
+    auctionViewModel = new AuctionViewModel(this.model, viewModelState);
+    fixedPaneViewModel = new FixedPaneViewModel(this.model, viewModelState);
+    allAuctionsViewModel=new AllAuctionsViewModel(this.model, viewModelState);
   }
 
   public AuctionViewModel getAuctionViewModel()
@@ -35,6 +35,6 @@ public class ViewModelFactory
   }
   public AuctionCardViewModel getAuctionCardViewModel()
   {
-    return auctionCardViewModel;
+    return new AuctionCardViewModel(model, viewModelState);
   }
 }

@@ -25,13 +25,12 @@ public class ViewHandler
     this.primaryStage = primaryStage;
     openView("startAuction");
     //openView("allAuctions");
-
   }
 
   public void openView(String id)
   {
     Region root = null;
-    if(id.startsWith("startAuction") || id.startsWith("displayAuction")|| id.startsWith("allAuctions"))
+    if(id.equals("startAuction") || id.equals("displayAuction")|| id.equals("allAuctions"))
     {
       root = loadFixedPaneView("FixedPaneView.fxml", id);
     }
@@ -53,7 +52,6 @@ public class ViewHandler
 
     primaryStage.setTitle(title);
     primaryStage.setScene(currentScene);
-
     primaryStage.show();
   }
 
