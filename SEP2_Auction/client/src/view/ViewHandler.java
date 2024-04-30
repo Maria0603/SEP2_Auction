@@ -23,15 +23,15 @@ public class ViewHandler
   public void start(Stage primaryStage)
   {
     this.primaryStage = primaryStage;
-    openView("startAuction");
-    //openView("allAuctions");
+    //openView("startAuction");
+    openView("allAuctions");
 
   }
 
   public void openView(String id)
   {
     Region root = null;
-    if(id.startsWith("startAuction") || id.startsWith("displayAuction")|| id.startsWith("allAuctions"))
+    if(id.equals("startAuction") || id.startsWith("displayAuction")|| id.equals("allAuctions"))
     {
       root = loadFixedPaneView("FixedPaneView.fxml", id);
     }

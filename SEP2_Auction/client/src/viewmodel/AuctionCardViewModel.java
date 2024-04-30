@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class AuctionCardViewModel implements PropertyChangeListener
 {
   private IntegerProperty currentBidProperty, idProperty;
-  private StringProperty timerCountdownProperty, titleProperty;
+  private StringProperty endTimeProperty, titleProperty;
   private AuctionModel model;
   private ViewModelState state;
 
@@ -26,20 +26,21 @@ public class AuctionCardViewModel implements PropertyChangeListener
     this.state = state;
     idProperty = new SimpleIntegerProperty();
     currentBidProperty = new SimpleIntegerProperty();
-    timerCountdownProperty = new SimpleStringProperty();
     titleProperty = new SimpleStringProperty();
+    endTimeProperty=new SimpleStringProperty();
 
-    model.addListener("Auction", this);
-    model.addListener("Time", this);
-    model.addListener("End", this);
+    //model.addListener("Auction", this);
+    //model.addListener("Time", this);
+    //model.addListener("End", this);
     //reset(null);
   }
 
-  public void reset(Auction auction)
+  public void setData(Auction auction)
   {
     idProperty.set(auction.getID());
     titleProperty.set(auction.getItem().getTitle());
     currentBidProperty.set(auction.getCurrentBid());
+    endTimeProperty.set("Ends: "+ auction.getEndTime().toString());
   }
   public StringProperty getTitleProperty()
   {
@@ -47,7 +48,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
   }
   public StringProperty getTimerCountdownProperty()
   {
-    return timerCountdownProperty;
+    return endTimeProperty;
   }
   public IntegerProperty getIdProperty()
   {
@@ -68,7 +69,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
         if (idProperty.equals(evt.getOldValue())) //we should only update one auction for each event
         {
           LocalTime time = LocalTime.ofSecondOfDay((int) evt.getNewValue());
-          Platform.runLater(() -> timerCountdownProperty.set(time.format(timeFormatter)));
+          //Platform.runLater(() -> timerCountdownProperty.set(time.format(timeFormatter)));
         }
     }
   }

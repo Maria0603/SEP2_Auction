@@ -15,16 +15,16 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class AuctionViewModel
-    implements PropertyChangeListener, NamedPropertyChangeSubject {
-  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty,
-      timerProperty;
-  private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty,
-      reservePriceProperty, timeProperty;
+    implements PropertyChangeListener, NamedPropertyChangeSubject
+{
+  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty;
+  private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty;
   private AuctionModel model;
   private ViewModelState state;
   private PropertyChangeSupport property;
 
-  public AuctionViewModel(AuctionModel model, ViewModelState state) {
+  public AuctionViewModel(AuctionModel model, ViewModelState state)
+  {
     property = new PropertyChangeSupport(this);
     this.model = model;
     this.state = state;
@@ -48,36 +48,51 @@ public class AuctionViewModel
     reset("startAuction");
   }
 
-  public void startAuction(byte[] imageData) {
+  public void startAuction(byte[] imageData)
+  {
     errorProperty.set("");
-    try {
+    try
+    {
       state.setAuction(model.startAuction(titleProperty.get().trim(),
           descriptionProperty.get().trim(), reservePriceProperty.get(),
           buyoutPriceProperty.get(), incrementProperty.get(),
           timeProperty.get(), imageData));
-    } catch (IllegalArgumentException | SQLException | ClassNotFoundException e) {
+    }
+    catch (IllegalArgumentException | SQLException | ClassNotFoundException e)
+    {
       errorProperty.set(e.getMessage());
       titleProperty.set(titleProperty.get().trim());
       descriptionProperty.set(descriptionProperty.get().trim());
+      //only for testing:
+      e.printStackTrace();
     }
   }
 
-  public void reset(String id) {
+  public void reset(String id)
+  {
     Auction selectedAuction = state.getSelectedAuction();
-    if (selectedAuction != null && id.equals("displayAuction")) {
+    if (selectedAuction != null && id.equals("displayAuction"))
+    {
       headerProperty.set("Auction ID:");
       idProperty.set(state.getSelectedAuction().getID());
       titleProperty.set(state.getSelectedAuction().getItem().getTitle());
-      descriptionProperty.set(state.getSelectedAuction().getItem().getDescription());
-      reservePriceProperty.set(state.getSelectedAuction().getPriceConstraint().getReservePrice());
-      buyoutPriceProperty.set(state.getSelectedAuction().getPriceConstraint().getBuyoutPrice());
-      incrementProperty.set(state.getSelectedAuction().getPriceConstraint().getMinimumIncrement());
-    } else {
+      descriptionProperty.set(
+          state.getSelectedAuction().getItem().getDescription());
+      reservePriceProperty.set(
+          state.getSelectedAuction().getPriceConstraint().getReservePrice());
+      buyoutPriceProperty.set(
+          state.getSelectedAuction().getPriceConstraint().getBuyoutPrice());
+      incrementProperty.set(state.getSelectedAuction().getPriceConstraint()
+          .getMinimumIncrement());
+    }
+    else
+    {
       wipe();
     }
   }
 
-  private void wipe() {
+  private void wipe()
+  {
     state.setAuction(null);
     headerProperty.set("Start auction");
     idProperty.set(0);
@@ -93,71 +108,85 @@ public class AuctionViewModel
     titleProperty.set("");
   }
 
-  public IntegerProperty getIdProperty() {
+  public IntegerProperty getIdProperty()
+  {
     return idProperty;
   }
 
-  public IntegerProperty getRatingProperty() {
+  public IntegerProperty getRatingProperty()
+  {
     return ratingProperty;
   }
 
-  public StringProperty getReasonProperty() {
+  public StringProperty getReasonProperty()
+  {
     return reasonProperty;
   }
 
-  public IntegerProperty getReservePriceProperty() {
+  public IntegerProperty getReservePriceProperty()
+  {
     return reservePriceProperty;
   }
 
-  public IntegerProperty getTimeProperty() {
+  public IntegerProperty getTimeProperty()
+  {
     return timeProperty;
   }
 
-  public StringProperty getTimerProperty() {
+  public StringProperty getTimerProperty()
+  {
     return timerProperty;
   }
 
-  public StringProperty getTitleProperty() {
+  public StringProperty getTitleProperty()
+  {
     return titleProperty;
   }
 
-  public IntegerProperty getBidProperty() {
+  public IntegerProperty getBidProperty()
+  {
     return bidProperty;
   }
 
-  public IntegerProperty getBuyoutPriceProperty() {
+  public IntegerProperty getBuyoutPriceProperty()
+  {
     return buyoutPriceProperty;
   }
 
-  public StringProperty getDescriptionProperty() {
+  public StringProperty getDescriptionProperty()
+  {
     return descriptionProperty;
   }
 
-  public StringProperty getErrorProperty() {
+  public StringProperty getErrorProperty()
+  {
     return errorProperty;
   }
 
-  public StringProperty getHeaderProperty() {
+  public StringProperty getHeaderProperty()
+  {
     return headerProperty;
   }
 
-  public IntegerProperty getIncrementProperty() {
+  public IntegerProperty getIncrementProperty()
+  {
     return incrementProperty;
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent event) {
+  @Override public void propertyChange(PropertyChangeEvent event)
+  {
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    switch (event.getPropertyName()) {
+    switch (event.getPropertyName())
+    {
       case "Time":
-      // if(idProperty.equals(event.getOldValue())) //we should only update one
-      // auction for each event
+        // if(idProperty.equals(event.getOldValue())) //we should only update one
+        // auction for each event
       {
         LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
         Platform.runLater(() -> timerProperty.set(time.format(timeFormatter)));
       }
-        break;
+      break;
       case "End":
         Platform.runLater(() -> errorProperty.set("Auction closed."));
         property.firePropertyChange(event);
@@ -169,17 +198,24 @@ public class AuctionViewModel
         Platform.runLater(() -> {
           headerProperty.set("Auction ID:");
           idProperty.set(auction.getID());
-          try {
-            titleProperty.set(model.getAuction(auction.getID()).getItem().getTitle());
+          try
+          {
+            titleProperty.set(
+                model.getAuction(auction.getID()).getItem().getTitle());
             descriptionProperty.set(
                 model.getAuction(auction.getID()).getItem().getDescription());
             reservePriceProperty.set(
-                model.getAuction(auction.getID()).getPriceConstraint().getReservePrice());
+                model.getAuction(auction.getID()).getPriceConstraint()
+                    .getReservePrice());
             buyoutPriceProperty.set(
-                model.getAuction(auction.getID()).getPriceConstraint().getBuyoutPrice());
+                model.getAuction(auction.getID()).getPriceConstraint()
+                    .getBuyoutPrice());
             incrementProperty.set(
-                model.getAuction(auction.getID()).getPriceConstraint().getMinimumIncrement());
-          } catch (SQLException e) {
+                model.getAuction(auction.getID()).getPriceConstraint()
+                    .getMinimumIncrement());
+          }
+          catch (SQLException e)
+          {
             // put it in the error label
             e.printStackTrace();
           }
@@ -205,7 +241,7 @@ public class AuctionViewModel
          * ((Auction) event.getNewValue()).getPriceConstraint().getBuyoutPrice());
          * incrementProperty.set(
          * ((Auction) event.getNewValue()).getPriceConstraint().getMinimumIncrement());
-         * 
+         *
          * //Time end=((Auction) event.getNewValue()).getEnd().getHour()
          * //LocalTime timeAuction = LocalTime.ofSecondOfDay(((Auction)
          * event.getNewValue()).getEnd().getHour());
@@ -218,15 +254,15 @@ public class AuctionViewModel
     }
   }
 
-  @Override
-  public void addListener(String propertyName,
-      PropertyChangeListener listener) {
+  @Override public void addListener(String propertyName,
+      PropertyChangeListener listener)
+  {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void removeListener(String propertyName,
-      PropertyChangeListener listener) {
+  @Override public void removeListener(String propertyName,
+      PropertyChangeListener listener)
+  {
     property.removePropertyChangeListener(propertyName, listener);
   }
 }

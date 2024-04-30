@@ -27,8 +27,7 @@ public class FixedPaneViewController
   private ViewHandler viewHandler;
   private FixedPaneViewModel fixedPaneViewModel;
   private AuctionViewController auctionViewController;
-
-  //private AllAuctionsViewController allAuctionsViewController;
+  private AllAuctionsViewController allAuctionsViewController;
   private Region root;
 
   //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
@@ -64,7 +63,7 @@ public class FixedPaneViewController
     {
       sellItemButtonPressed();
     }
-    else if (id.equals("displayAuction"))
+    else if (id.startsWith("displayAuction"))
     {
       try
       {
@@ -136,9 +135,41 @@ public class FixedPaneViewController
     return auctionViewController.getRoot();
   }
 
-  @FXML void allAuctionsButtonPressed()
+  @FXML Region allAuctionsButtonPressed()
   {
+    allAuctionsButton.setDisable(false);
+    myAuctions_allAccountsButton.setDisable(false);
+    myBidsButton.setDisable(false);
+    myProfile_settingsButton.setDisable(false);
+    notificationsButton.setDisable(false);
+    logOutButton.setDisable(false);
+    moderatorInfoButton.setDisable(false);
+    sellItemButton.setDisable(false);
 
+    //the logic we would have in the ViewHandler - kind of
+    if (allAuctionsViewController == null)
+    {
+      try
+      {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("AllAuctions_MyAuctions_MyBidsView.fxml"));
+        Region root = loader.load();
+        borderPane.setCenter(root);
+        allAuctionsViewController = loader.getController();
+
+        allAuctionsViewController.init(viewHandler,
+            viewModelFactory, root, "allAuctions");
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+    else
+    {
+      allAuctionsViewController.reset("allAuctions");
+    }
+    return allAuctionsViewController.getRoot();
   }
 
   @FXML void logOutButtonPressed(ActionEvent event)

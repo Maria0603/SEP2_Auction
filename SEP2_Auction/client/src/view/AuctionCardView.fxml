@@ -2,16 +2,17 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
+
 <Pane fx:id="auctionCardPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#cardSelected" prefHeight="492.0" prefWidth="266.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionCardViewController">
    <children>
-      <Label fx:id="titleLabel" alignment="TOP_LEFT" layoutX="15.0" layoutY="376.0" prefHeight="108.0" prefWidth="242.0" text="Title with max 50 characters, meaning this many.." wrapText="true">
+      <Label fx:id="titleLabel" alignment="TOP_LEFT" layoutX="15.0" layoutY="376.0" prefHeight="108.0" prefWidth="242.0" text="Title with max 80 characters, meaning this many and not more than that........." wrapText="true">
          <font>
-            <Font size="18.0" />
+            <Font name="Monospaced Regular" size="18.0" />
          </font>
       </Label>
       <Label fx:id="currentBidLabel" layoutX="146.0" layoutY="349.0" prefHeight="27.0" prefWidth="123.0" text="currentBid">
@@ -19,9 +20,9 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="timerCountdownLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="182.0" layoutY="14.0" prefHeight="27.0" prefWidth="72.0" text="00:00:00">
+      <Label fx:id="endTimeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="151.0" layoutY="8.0" prefHeight="27.0" prefWidth="114.0" text="Ends: 18:45:89">
          <font>
-            <Font name="System Bold" size="18.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
       <Label layoutX="12.0" layoutY="349.0" text="Current bid ($):">
@@ -29,7 +30,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER" cache="true" layoutX="12.0" layoutY="41.0" maxHeight="307.0" maxWidth="242.0" minHeight="307.0" minWidth="242.0" prefHeight="307.0" prefWidth="242.0" style="-fx-background-color: gray;">
+      <HBox alignment="CENTER" cache="true" layoutX="12.0" layoutY="41.0" maxHeight="307.0" maxWidth="242.0" minHeight="289.0" minWidth="242.0" prefHeight="307.0" prefWidth="242.0" style="-fx-background-color: gray;">
          <children>
             <ImageView fx:id="imageImageView" fitHeight="307.0" fitWidth="242.0" pickOnBounds="true" preserveRatio="true">
                <viewport>
@@ -41,14 +42,14 @@
             <Insets />
          </opaqueInsets>
       </HBox>
-      <Label fx:id="idTextLabel" contentDisplay="CENTER" layoutX="8.0" layoutY="14.0" prefHeight="27.0" prefWidth="30.0" text="ID:">
+      <Label fx:id="idTextLabel" contentDisplay="CENTER" layoutX="5.0" layoutY="8.0" prefHeight="27.0" prefWidth="20.0" text="ID:">
          <font>
-            <Font name="System Bold" size="18.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="idLabel" contentDisplay="CENTER" layoutX="38.0" layoutY="14.0" prefHeight="27.0" prefWidth="130.0" text="ID label">
+      <Label fx:id="idLabel" contentDisplay="CENTER" layoutX="25.0" layoutY="8.0" prefHeight="27.0" prefWidth="114.0" text="ID label">
          <font>
-            <Font name="System Bold" size="18.0" />
+            <Font name="System Bold" size="14.0" />
          </font>
       </Label>
    </children>

@@ -23,8 +23,8 @@ public class AuctionDatabase implements AuctionPersistence {
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
 
-  private static final String PASSWORD = "1706";
-  // private static final String PASSWORD = "344692StupidPass";
+  //private static final String PASSWORD = "1706";
+   private static final String PASSWORD = "344692StupidPass";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
     this.database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
@@ -40,10 +40,11 @@ public class AuctionDatabase implements AuctionPersistence {
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException {
-    try (Connection connection = getConnection()) {
-      if (auctionTime <= 0 || auctionTime > 24)
-        throw new SQLException("The auction time can be at most 24 hours!");
-      String sql = "INSERT INTO auction1(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
+    try (Connection connection = getConnection())
+    {
+      checkAuctionTime(auctionTime);
+
+      String sql = "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
           + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
       PreparedStatement statement = connection.prepareStatement(sql,
@@ -73,7 +74,7 @@ public class AuctionDatabase implements AuctionPersistence {
         key.close();
         statement.close();
 
-        sql = "UPDATE auction1 SET image_data = ? WHERE id = ?;";
+        sql = "UPDATE auction SET image_data = ? WHERE id = ?;";
 
         PreparedStatement updateStatement = connection.prepareStatement(sql);
 
@@ -97,7 +98,7 @@ public class AuctionDatabase implements AuctionPersistence {
 
     try (Connection connection = getConnection()) {
       String sql = "SELECT *\n"
-          + "FROM sprint1database.auction1\n"
+          + "FROM sprint1database.auction\n"
           + "WHERE id=?;";
       ArrayList<Object[]> results = database.query(sql, id);
       for (int i = 0; i < results.size(); i++) {
@@ -184,7 +185,7 @@ public class AuctionDatabase implements AuctionPersistence {
   @Override
   public void updateTime(int id, int seconds) throws SQLException {
     try (Connection connection = getConnection()) {
-      String sql = "UPDATE auction1 SET auction_time=?\n" + "WHERE ID=?;";
+      String sql = "UPDATE auction SET auction_time=?\n" + "WHERE ID=?;";
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setInt(1, seconds);
       statement.setInt(2, id);
