@@ -25,25 +25,23 @@ public class AllAuctionsViewController
   private ObservableList<Auction> auctionCards;
   private ViewModelFactory viewModelFactory;
 
-  public void init(ViewHandler viewHandler, ViewModelFactory viewModelFactory, Region root, String id)
+  public void init(ViewHandler viewHandler, ViewModelFactory viewModelFactory,
+      Region root, String id)
   {
     this.root = root;
     this.viewHandler = viewHandler;
-    this.viewModelFactory=viewModelFactory;
-    this.allAuctionsViewModel=viewModelFactory.getAllAuctionsViewModel();
+    this.viewModelFactory = viewModelFactory;
+    this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
     auctionCards = FXCollections.observableArrayList();
     loadOngoingAuctions();
     //other bindings to be inserted
-    //auctionViewModel.addListener(this);
     reset(id);
   }
-
 
   public void reset(String id)
   {
     allAuctionsViewModel.reset(id);
     //auctionCards.clear();
-    //auctionCards.add(null);
   }
 
   public Region getRoot()
@@ -54,8 +52,8 @@ public class AllAuctionsViewController
   private void loadOngoingAuctions()
   {
     auctionCards.clear();
-    AuctionList list=allAuctionsViewModel.getOngoingAuctions();
-    for(int i=0; i<list.getSize(); i++)
+    AuctionList list = allAuctionsViewModel.getOngoingAuctions();
+    for (int i = 0; i < list.getSize(); i++)
     {
       auctionCards.add(list.getAuction(i));
     }
@@ -67,7 +65,7 @@ public class AllAuctionsViewController
     auctionsGrid.getRowConstraints().clear();
     auctionsGrid.getColumnConstraints().clear();
     {
-      for (int i = auctionCards.size()-1; i >= 0; i--)
+      for (int i = auctionCards.size() - 1; i >= 0; i--)
       {
         try
         {
@@ -75,17 +73,14 @@ public class AllAuctionsViewController
           load.setLocation(getClass().getResource("AuctionCardView.fxml"));
           Region innerRoot = load.load();
           AuctionCardViewController auctionCardViewController = load.getController();
-          auctionCardViewController.init(viewHandler, viewModelFactory.getAuctionCardViewModel(), innerRoot);
-
-          auctionCardViewController.setData(auctionCards.get(i));
-
-
+          auctionCardViewController.init(viewHandler,
+              viewModelFactory.getAuctionCardViewModel(), innerRoot);
+          auctionCardViewController.setData(auctionCards.get(i).getID());
           if (column == 4)
           {
             column = 0;
-            row += 1;
+            row++;
           }
-
           auctionsGrid.add(innerRoot, column++, row);
           GridPane.setMargin(innerRoot, new Insets(-1));
         }

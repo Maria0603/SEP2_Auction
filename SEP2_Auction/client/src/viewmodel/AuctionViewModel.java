@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class AuctionViewModel
     implements PropertyChangeListener

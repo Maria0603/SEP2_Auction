@@ -34,10 +34,11 @@ public class AuctionCardViewController
     Bindings.bindBidirectional(currentBidLabel.textProperty(), auctionCardViewModel.getCurrentBidProperty(), new IntStringConverter());
     endTimeLabel.textProperty().bindBidirectional(auctionCardViewModel.getTimerCountdownProperty());
     titleLabel.textProperty().bindBidirectional(auctionCardViewModel.getTitleProperty());
+    Bindings.bindBidirectional(imageImageView.imageProperty(), auctionCardViewModel.getImageProperty());
   }
-  public void setData(Auction auction)
+  public void setData(int auctionId)
   {
-    auctionCardViewModel.setData(auction);
+    auctionCardViewModel.setData(auctionId);
   }
   public Region getRoot()
   {

@@ -23,8 +23,8 @@ public class ViewHandler
   public void start(Stage primaryStage)
   {
     this.primaryStage = primaryStage;
-    openView("startAuction");
-    //openView("allAuctions");
+    //openView("startAuction");
+    openView("allAuctions");
 
   }
 

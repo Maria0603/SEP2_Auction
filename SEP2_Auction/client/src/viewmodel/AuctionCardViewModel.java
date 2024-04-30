@@ -8,10 +8,13 @@ import model.AuctionModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
-public class AuctionCardViewModel implements PropertyChangeListener
+public class AuctionCardViewModel
 {
   private IntegerProperty currentBidProperty, idProperty;
   private StringProperty endTimeProperty, titleProperty;
@@ -35,13 +38,29 @@ public class AuctionCardViewModel implements PropertyChangeListener
     //reset(null);
   }
 
-  public void setData(Auction auction)
+  public void setData(int auctionId)
   {
-    idProperty.set(auction.getID());
-    titleProperty.set(auction.getItem().getTitle());
-    currentBidProperty.set(auction.getCurrentBid());
-    endTimeProperty.set("Ends: "+ auction.getEndTime().toString());
-    //imageProperty.set(new Image(auction.getImageData()));
+    try
+    {
+      idProperty.set(auctionId);
+      titleProperty.set(model.getAuction(auctionId).getItem().getTitle());
+      currentBidProperty.set(model.getAuction(auctionId).getCurrentBid());
+      endTimeProperty.set("Ends: "+ model.getAuction(auctionId).getEndTime().toString());
+      imageProperty.set(byteArrayToImage(model.getAuction(auctionId).getImageData()));
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+  }
+  private Image byteArrayToImage(byte[] imageBytes)
+  {
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+    return new Image(inputStream);
+  }
+  public ObjectProperty<Image> getImageProperty()
+  {
+    return imageProperty;
   }
   public StringProperty getTitleProperty()
   {
@@ -58,20 +77,5 @@ public class AuctionCardViewModel implements PropertyChangeListener
   public IntegerProperty getCurrentBidProperty()
   {
     return currentBidProperty;
-  }
-
-  @Override public void propertyChange(PropertyChangeEvent evt)
-  {
-    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-    switch (evt.getPropertyName())
-    {
-      case "Time":
-        if (idProperty.equals(evt.getOldValue())) //we should only update one auction for each event
-        {
-          LocalTime time = LocalTime.ofSecondOfDay((int) evt.getNewValue());
-          //Platform.runLater(() -> timerCountdownProperty.set(time.format(timeFormatter)));
-        }
-    }
   }
 }
