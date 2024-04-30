@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 
-public class AuctionViewController implements PropertyChangeListener
+public class AuctionViewController
 {
   @FXML private ScrollPane auctionScrollPane;
   @FXML private Button backButton;
@@ -64,7 +64,6 @@ public class AuctionViewController implements PropertyChangeListener
   private AuctionViewModel auctionViewModel;
   private ViewHandler viewHandler;
   private FileChooser fileChooser;
-  private File file;
 
   //initializations and bindings
   public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel,
@@ -100,16 +99,12 @@ public class AuctionViewController implements PropertyChangeListener
     Bindings.bindBidirectional(buyoutPriceTextField.textProperty(),
         this.auctionViewModel.getBuyoutPriceProperty(),
         new IntStringConverter());
-
-    //imageImageView.addListener
-
+    Bindings.bindBidirectional(imageImageView.imageProperty(), auctionViewModel.getImageProperty());
     //other bindings to be inserted
 
     errorLabel.setText("");
     fileChooser = new FileChooser();
-    auctionViewModel.addListener("End", this);
-    auctionViewModel.addListener("Time", this);
-    auctionViewModel.addListener("Auction", this);
+
     reset(id);
   }
 
@@ -211,17 +206,6 @@ public class AuctionViewController implements PropertyChangeListener
 
   }
 
-  private void setForAuctionClosed()
-  {
-    Platform.runLater(() -> {
-      timerCountdownLabel.setStyle("-fx-background-color:RED");
-      placeBidButton.setDisable(true);
-      buyNowButton.setDisable(true);
-      currentBidderTextLabel.setText("Final bidder:");
-      currentBidTextLabel.setText("Final bid:");
-    });
-  }
-
   public Region getRoot()
   {
     return root;
@@ -229,14 +213,7 @@ public class AuctionViewController implements PropertyChangeListener
 
   @FXML void startAuctionButtonPressed(ActionEvent event)
   {
-    try
-    {
-      auctionViewModel.startAuction(convertImageToByteArray(file));
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
+    auctionViewModel.startAuction();
     if (errorLabel.getText().isEmpty())
     {
       viewHandler.openView("displayAuction");
@@ -267,26 +244,17 @@ public class AuctionViewController implements PropertyChangeListener
   @FXML void importButtonPressed(ActionEvent event)
   {
     fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
+        new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg", "*jpeg"));
 
-    file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
+    File file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 
     if (file != null)
     {
-      Image image = new Image(file.toURI().toString(), 120, 127, true, true);
+      Image image = new Image(file.toURI().toString(), -1, -1, true, true);
       imageImageView.setImage(image);
     }
   }
 
-  public byte[] convertImageToByteArray(File file) throws IOException
-  {
-    if (file == null)
-    {
-      errorLabel.setText("Please upload an image.");
-      return null;
-    }
-    return Files.readAllBytes(file.toPath());
-  }
 
   @FXML void buyNowButtonPressed(ActionEvent event)
   {
@@ -307,15 +275,4 @@ public class AuctionViewController implements PropertyChangeListener
   {
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt)
-  {
-    //for things that cannot be done from the view model
-    if (evt.getPropertyName().equals("End"))
-      setForAuctionClosed();
-    else if (evt.getPropertyName().equals("Auction"))
-    {
-      imageImageView.setImage(
-          new Image(new ByteArrayInputStream((byte[]) evt.getNewValue())));
-    }
-  }
 }

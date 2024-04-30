@@ -2,30 +2,37 @@ package viewmodel;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class AuctionViewModel
-    implements PropertyChangeListener, NamedPropertyChangeSubject
+    implements PropertyChangeListener
 {
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty;
   private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty;
+  private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
-  private PropertyChangeSupport property;
 
   public AuctionViewModel(AuctionModel model, ViewModelState state)
   {
-    property = new PropertyChangeSupport(this);
     this.model = model;
     this.state = state;
     idProperty = new SimpleIntegerProperty();
@@ -41,6 +48,7 @@ public class AuctionViewModel
     timeProperty = new SimpleIntegerProperty();
     timerProperty = new SimpleStringProperty();
     titleProperty = new SimpleStringProperty();
+    imageProperty=new SimpleObjectProperty<>();
 
     model.addListener("Auction", this);
     model.addListener("Time", this);
@@ -48,7 +56,7 @@ public class AuctionViewModel
     reset("startAuction");
   }
 
-  public void startAuction(byte[] imageData)
+  public void startAuction()
   {
     errorProperty.set("");
     try
@@ -56,7 +64,7 @@ public class AuctionViewModel
       state.setAuction(model.startAuction(titleProperty.get().trim(),
           descriptionProperty.get().trim(), reservePriceProperty.get(),
           buyoutPriceProperty.get(), incrementProperty.get(),
-          timeProperty.get(), imageData));
+          timeProperty.get(), imageToByteArray(imageProperty.get())));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException e)
     {
@@ -64,8 +72,27 @@ public class AuctionViewModel
       titleProperty.set(titleProperty.get().trim());
       descriptionProperty.set(descriptionProperty.get().trim());
       //only for testing:
+      //e.printStackTrace();
+    }
+  }
+  private byte[] imageToByteArray(Image image)
+  {
+    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    try
+    {
+      javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
+    }
+    catch (IOException e)
+    {
       e.printStackTrace();
     }
+    return outputStream.toByteArray();
+  }
+  private Image byteArrayToImage(byte[] imageBytes)
+  {
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+    return new Image(inputStream);
   }
 
   public void reset(String id)
@@ -106,6 +133,10 @@ public class AuctionViewModel
     reservePriceProperty.set(0);
     timeProperty.set(0);
     titleProperty.set("");
+  }
+  public ObjectProperty<Image> getImageProperty()
+  {
+    return imageProperty;
   }
 
   public IntegerProperty getIdProperty()
@@ -189,11 +220,9 @@ public class AuctionViewModel
       break;
       case "End":
         Platform.runLater(() -> errorProperty.set("Auction closed."));
-        property.firePropertyChange(event);
         break;
       case "Auction":
         Auction auction = ((Auction) event.getNewValue());
-        // System.out.println((Auction)event.getNewValue());
 
         Platform.runLater(() -> {
           headerProperty.set("Auction ID:");
@@ -213,56 +242,16 @@ public class AuctionViewModel
             incrementProperty.set(
                 model.getAuction(auction.getID()).getPriceConstraint()
                     .getMinimumIncrement());
+            imageProperty.set(byteArrayToImage(model.getAuction(auction.getID()).getImageData()));
           }
           catch (SQLException e)
           {
             // put it in the error label
             e.printStackTrace();
           }
-
-          // Time end=((Auction) event.getNewValue()).getEnd().getHour()
-          // LocalTime timeAuction = LocalTime.ofSecondOfDay(((Auction)
-          // event.getNewValue()).getEnd().getHour());
-          // timerProperty.set(timeAuction.format(timeFormatter));
-          byte[] imageData = ((Auction) event.getNewValue()).getImageData();
-          property.firePropertyChange("Auction", null, imageData);
         });
-
-        /*
-         * Platform.runLater(() -> {
-         * headerProperty.set("Auction ID:");
-         * idProperty.set(((Auction) event.getNewValue()).getID());
-         * titleProperty.set(((Auction) event.getNewValue()).getItem().getTitle());
-         * descriptionProperty.set(
-         * ((Auction) event.getNewValue()).getItem().getDescription());
-         * reservePriceProperty.set(
-         * ((Auction) event.getNewValue()).getPriceConstraint().getReservePrice());
-         * buyoutPriceProperty.set(
-         * ((Auction) event.getNewValue()).getPriceConstraint().getBuyoutPrice());
-         * incrementProperty.set(
-         * ((Auction) event.getNewValue()).getPriceConstraint().getMinimumIncrement());
-         *
-         * //Time end=((Auction) event.getNewValue()).getEnd().getHour()
-         * //LocalTime timeAuction = LocalTime.ofSecondOfDay(((Auction)
-         * event.getNewValue()).getEnd().getHour());
-         * //timerProperty.set(timeAuction.format(timeFormatter));
-         * byte[] imageData = ((Auction) event.getNewValue()).getImageData();
-         * property.firePropertyChange("Auction", null, imageData);
-         * });
-         */
         break;
     }
   }
 
-  @Override public void addListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.addPropertyChangeListener(propertyName, listener);
-  }
-
-  @Override public void removeListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.removePropertyChangeListener(propertyName, listener);
-  }
 }
