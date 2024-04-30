@@ -22,8 +22,8 @@ public class AuctionDatabase implements AuctionPersistence {
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
 
-  //private static final String PASSWORD = "1706";
-  //private static final String PASSWORD = "344692StupidPass";
+  // private static final String PASSWORD = "1706";
+  // private static final String PASSWORD = "344692StupidPass";
   private static final String PASSWORD = "31052003";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
@@ -41,9 +41,8 @@ public class AuctionDatabase implements AuctionPersistence {
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException {
     try (Connection connection = getConnection()) {
-      if (auctionTime <= 0 || auctionTime > 24)
-        throw new SQLException("The auction time can be at most 24 hours!");
-      String sql = "INSERT INTO auction1(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
+      checkAuctionTime(auctionTime);
+      String sql = "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
           + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
       PreparedStatement statement = connection.prepareStatement(sql,
@@ -73,7 +72,7 @@ public class AuctionDatabase implements AuctionPersistence {
         key.close();
         statement.close();
 
-        sql = "UPDATE auction1 SET image_data = ? WHERE id = ?;";
+        sql = "UPDATE auction SET image_data = ? WHERE id = ?;";
 
         PreparedStatement updateStatement = connection.prepareStatement(sql);
 
@@ -97,7 +96,7 @@ public class AuctionDatabase implements AuctionPersistence {
 
     try (Connection connection = getConnection()) {
       String sql = "SELECT *\n"
-          + "FROM sprint1database.auction1\n"
+          + "FROM sprint1database.auction\n"
           + "WHERE id=?;";
       ArrayList<Object[]> results = database.query(sql, id);
       for (int i = 0; i < results.size(); i++) {
@@ -161,14 +160,13 @@ public class AuctionDatabase implements AuctionPersistence {
       return byteArray;
 
     } catch (IOException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
     return null;
   }
 
   private String saveImageToRepository(byte[] imageBytes, String imageTitle) {
     String pathToImage = null;
-
     try {
       ByteArrayInputStream inStreamObj = new ByteArrayInputStream(imageBytes);
       BufferedImage newImage = ImageIO.read(inStreamObj);
@@ -176,20 +174,9 @@ public class AuctionDatabase implements AuctionPersistence {
       pathToImage = "server/images/" + imageTitle + ".jpg";
       ImageIO.write(newImage, "jpg", new File(pathToImage));
     } catch (IOException e) {
-      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
     return pathToImage;
-  }
-
-  @Override
-  public void updateTime(int id, int seconds) throws SQLException {
-    try (Connection connection = getConnection()) {
-      String sql = "UPDATE auction1 SET auction_time=?\n" + "WHERE ID=?;";
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setInt(1, seconds);
-      statement.setInt(2, id);
-      statement.executeUpdate();
-    }
   }
 
   @Override
@@ -241,12 +228,6 @@ public class AuctionDatabase implements AuctionPersistence {
     return bidder;
   }
 
-  private String checkStatus(String status) throws SQLException {
-    if (status.equals("ON SALE") || status.equals("CLOSED"))
-      return status;
-    throw new SQLException("Invalid status");
-  }
-
   private String checkTitle(String title) throws SQLException {
     int maxTitleLength = 80;
     int minTitleLength = 5;
@@ -286,17 +267,10 @@ public class AuctionDatabase implements AuctionPersistence {
     return minimumIncrement;
   }
 
-  private int checkAuctionTime(int auctionTime) throws SQLException {
+  private void checkAuctionTime(int auctionTime) throws SQLException {
     // to be updated when the moderator adds the time interval
     if (auctionTime <= 0 || auctionTime > 24 * 3600)
       throw new SQLException("The auction time can be at most 24 hours!");
-
-    /////////////////////////////////////////////////////////////////////////////////
-    // correct line:
-    return auctionTime;
-    ////////////////////////////////////////////////////////////////////////////////
-    // for testing purposes:
-    // this.auctionTime=auctionTime/3600;
   }
 
 }

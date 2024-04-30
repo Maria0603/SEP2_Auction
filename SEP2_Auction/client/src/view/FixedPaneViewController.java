@@ -27,8 +27,7 @@ public class FixedPaneViewController
   private ViewHandler viewHandler;
   private FixedPaneViewModel fixedPaneViewModel;
   private AuctionViewController auctionViewController;
-
-  //private AllAuctionsViewController allAuctionsViewController;
+  private AllAuctionsViewController allAuctionsViewController;
   private Region root;
 
   //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
@@ -56,43 +55,41 @@ public class FixedPaneViewController
 
   public void reset(String id)
   {
+
     fixedPaneViewModel.reset();
 
     ///////////////////////////
     //sprint 1 focus
-    if (id.equals("startAuction"))
+    switch (id)
     {
-      sellItemButtonPressed();
-    }
-    else if (id.equals("displayAuction"))
-    {
-      try
+      case "startAuction" -> sellItemButtonPressed();
+      case "displayAuction" ->
       {
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("AuctionView.fxml"));
-        Region root = loader.load();
-        borderPane.setCenter(root);
-        auctionViewController = loader.getController();
-        auctionViewController.init(viewHandler,
-            viewModelFactory.getAuctionViewModel(), root, id);
+        try
+        {
+          FXMLLoader loader = new FXMLLoader(
+              getClass().getResource("AuctionView.fxml"));
+          Region root = loader.load();
+          borderPane.setCenter(root);
+          auctionViewController = loader.getController();
+          auctionViewController.init(viewHandler,
+              viewModelFactory.getAuctionViewModel(), root, id);
 
-        allAuctionsButton.setDisable(false);
-        myAuctions_allAccountsButton.setDisable(false);
-        myBidsButton.setDisable(false);
-        myProfile_settingsButton.setDisable(false);
-        notificationsButton.setDisable(false);
-        logOutButton.setDisable(false);
-        moderatorInfoButton.setDisable(false);
-        sellItemButton.setDisable(false);
+          allAuctionsButton.setDisable(false);
+          myAuctions_allAccountsButton.setDisable(false);
+          myBidsButton.setDisable(false);
+          myProfile_settingsButton.setDisable(false);
+          notificationsButton.setDisable(false);
+          logOutButton.setDisable(false);
+          moderatorInfoButton.setDisable(false);
+          sellItemButton.setDisable(false);
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
       }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    else if (id.equals("allAuctions"))
-    {
-      allAuctionsButtonPressed();
+      case "allAuctions" -> allAuctionsButtonPressed();
     }
 
   }
@@ -131,14 +128,57 @@ public class FixedPaneViewController
     }
     else
     {
+      borderPane.setCenter(auctionViewController.getRoot());
       auctionViewController.reset("startAuction");
+
     }
     return auctionViewController.getRoot();
   }
 
-  @FXML void allAuctionsButtonPressed()
+  @FXML Region allAuctionsButtonPressed()
   {
+    return loadGrid("allAuctions");
+  }
 
+  private Region loadGrid(String id)
+  {
+    allAuctionsButton.setDisable(false);
+    myAuctions_allAccountsButton.setDisable(false);
+    myBidsButton.setDisable(false);
+    myProfile_settingsButton.setDisable(false);
+    notificationsButton.setDisable(false);
+    logOutButton.setDisable(false);
+    moderatorInfoButton.setDisable(false);
+    sellItemButton.setDisable(false);
+
+    //the logic we would have in the ViewHandler - kind of
+    if (allAuctionsViewController == null)
+    {
+      try
+      {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("AllAuctions_MyAuctions_MyBidsView.fxml"));
+        Region root = loader.load();
+        borderPane.setCenter(root);
+        allAuctionsViewController = loader.getController();
+
+        allAuctionsViewController.init(viewHandler,
+            viewModelFactory, root, id);
+
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+
+    }
+    else
+    {
+      borderPane.setCenter(allAuctionsViewController.getRoot());
+      allAuctionsViewController.reset(id);
+
+    }
+    return allAuctionsViewController.getRoot();
   }
 
   @FXML void logOutButtonPressed(ActionEvent event)
@@ -168,6 +208,7 @@ public class FixedPaneViewController
 
   public void myBidsButtonPressed(ActionEvent actionEvent)
   {
+    //return loadGrid("myBids");
   }
 
 }

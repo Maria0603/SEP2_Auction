@@ -17,7 +17,7 @@ public class AuctionCardViewController
   @FXML private Label currentBidLabel;
   @FXML private Label idLabel;
   @FXML private ImageView imageImageView;
-  @FXML private Label timerCountdownLabel;
+  @FXML private Label endTimeLabel;
   @FXML private Label idTextLabel;
   @FXML private Label titleLabel;
 
@@ -32,17 +32,22 @@ public class AuctionCardViewController
     this.auctionCardViewModel=auctionCardViewModel;
     Bindings.bindBidirectional(idLabel.textProperty(), auctionCardViewModel.getIdProperty(), new IntStringConverter());
     Bindings.bindBidirectional(currentBidLabel.textProperty(), auctionCardViewModel.getCurrentBidProperty(), new IntStringConverter());
-    timerCountdownLabel.textProperty().bindBidirectional(auctionCardViewModel.getTimerCountdownProperty());
+    endTimeLabel.textProperty().bindBidirectional(auctionCardViewModel.getTimerCountdownProperty());
     titleLabel.textProperty().bindBidirectional(auctionCardViewModel.getTitleProperty());
+    Bindings.bindBidirectional(imageImageView.imageProperty(), auctionCardViewModel.getImageProperty());
   }
-  public void setData(Auction auction)
+  public void setData(int auctionId)
   {
-    auctionCardViewModel.reset(auction);
+    auctionCardViewModel.setData(auctionId);
+  }
+  public Region getRoot()
+  {
+    return root;
   }
 
   @FXML public void cardSelected(MouseEvent mouseEvent)
   {
-    //TODO: to extract the id in the auction view model
-    viewHandler.openView("displayAuction"+idLabel.getText());
+    //TODO: to set the view state - for Mariia?
+    viewHandler.openView("displayAuction");
   }
 }

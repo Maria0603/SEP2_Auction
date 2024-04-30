@@ -16,78 +16,92 @@ import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
 
 public class AuctionClient
-    implements RemoteListener<String, Object>, AuctionModel {
+    implements RemoteListener<String, Object>, AuctionModel
+{
   private AuctionRemote server;
   private PropertyChangeSupport property;
 
-  public AuctionClient() throws IOException {
+  public AuctionClient() throws IOException
+  {
     start();
     property = new PropertyChangeSupport(this);
   }
 
   // establish server connection
-  private void start() {
-    try {
+  private void start()
+  {
+    try
+    {
       UnicastRemoteObject.exportObject(this, 0);
       server = (AuctionRemote) Naming.lookup("rmi://localhost:1099/Connect");
 
       server.addListener(this, "Auction");
       server.addListener(this, "Time");
       server.addListener(this, "End");
-    } catch (Exception e) {
+    }
+    catch (Exception e)
+    {
       e.printStackTrace();
     }
   }
 
-  @Override
-  public Auction startAuction(String title,
-      String description, int reservePrice, int buyoutPrice,
-      int minimumIncrement, int auctionTime, byte[] imageData)
-      throws SQLException, ClassNotFoundException {
-    try {
-      return server.startAuction(title, description, reservePrice,
-          buyoutPrice, minimumIncrement, auctionTime, imageData);
-    } catch (RemoteException e) {
+  @Override public Auction startAuction(String title, String description,
+      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
+      byte[] imageData) throws SQLException, ClassNotFoundException
+  {
+    try
+    {
+      return server.startAuction(title, description, reservePrice, buyoutPrice,
+          minimumIncrement, auctionTime, imageData);
+    }
+    catch (RemoteException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  @Override
-  public Auction getAuction(int ID) throws SQLException {
-    try {
+  @Override public Auction getAuction(int ID) throws SQLException
+  {
+    try
+    {
       return server.getAuction(ID);
-    } catch (RemoteException e) {
+    }
+    catch (RemoteException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  @Override
-  public AuctionList getOngoingAuctions() throws SQLException {
-    try {
+  @Override public AuctionList getOngoingAuctions() throws SQLException
+  {
+    try
+    {
       return server.getOngoingAuctions();
-    } catch (RemoteException e) {
+    }
+    catch (RemoteException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  @Override
-  public void addListener(String s,
-      PropertyChangeListener propertyChangeListener) {
+  @Override public void addListener(String s,
+      PropertyChangeListener propertyChangeListener)
+  {
     property.addPropertyChangeListener(s, propertyChangeListener);
   }
 
-  @Override
-  public void removeListener(String s,
-      PropertyChangeListener propertyChangeListener) {
+  @Override public void removeListener(String s,
+      PropertyChangeListener propertyChangeListener)
+  {
     property.removePropertyChangeListener(s, propertyChangeListener);
   }
 
-  @Override
-  public void propertyChange(ObserverEvent<String, Object> event)
-      throws RemoteException {
+  @Override public void propertyChange(ObserverEvent<String, Object> event)
+      throws RemoteException
+  {
     property.firePropertyChange(event.getPropertyName(), event.getValue1(),
         event.getValue2());
   }

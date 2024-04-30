@@ -73,7 +73,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" promptText="max. 2000000000" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -98,7 +98,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" promptText="max. 2000000000" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -126,7 +126,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" promptText="> 1" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" promptText="> 0" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
