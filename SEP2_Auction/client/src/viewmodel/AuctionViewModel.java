@@ -122,6 +122,12 @@ public class AuctionViewModel
     }
   }
 
+  public void leaveAuctionView()
+  {
+    model.removeListener("Time", this);
+    model.removeListener("End", this);
+  }
+
   public void wipe()
   {
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
@@ -216,7 +222,7 @@ public class AuctionViewModel
     switch (event.getPropertyName())
     {
       case "Time":
-        //System.out.println(event.getOldValue());
+        System.out.println(event.getOldValue());
         if(idProperty.get() == Integer.parseInt(event.getOldValue().toString()))
       {
         LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());

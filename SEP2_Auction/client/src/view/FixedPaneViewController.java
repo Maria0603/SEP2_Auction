@@ -142,6 +142,8 @@ public class FixedPaneViewController
 
   private Region loadGrid(String id)
   {
+    if(auctionViewController!=null)
+      auctionViewController.leaveAuctionView();
     allAuctionsButton.setDisable(false);
     myAuctions_allAccountsButton.setDisable(false);
     myBidsButton.setDisable(false);

@@ -207,6 +207,10 @@ public class AuctionViewController
     cancelButton.setVisible(false);
 
   }
+  public void leaveAuctionView()
+  {
+    auctionViewModel.leaveAuctionView();
+  }
 
   public Region getRoot()
   {
@@ -238,7 +242,7 @@ public class AuctionViewController
     {
       //we want the reset in the view model, so:
       reset("");
-
+      leaveAuctionView();
       viewHandler.openView("allAuctions");
     }
     ////////////////////////////////////////////////////////
