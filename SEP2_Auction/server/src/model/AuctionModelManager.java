@@ -18,7 +18,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public Auction startAuction(String title,
+  public synchronized Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
       throws SQLException {
@@ -32,12 +32,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public Auction getAuction(int ID) throws SQLException {
+  public synchronized Auction getAuction(int ID) throws SQLException {
     return auctionDatabase.getAuctionById(ID);
   }
 
   @Override
-  public AuctionList getOngoingAuctions() throws SQLException {
+  public synchronized AuctionList getOngoingAuctions() throws SQLException {
     return auctionDatabase.getOngoingAuctions();
   }
 

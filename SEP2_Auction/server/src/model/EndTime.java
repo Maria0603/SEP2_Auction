@@ -39,7 +39,6 @@ public class EndTime
         {
           try
           {
-            //Thread.sleep(timeLeftToSleep * 1000);
             Thread.sleep(timeLeft(start, end)*1000);
           }
           catch (InterruptedException e)

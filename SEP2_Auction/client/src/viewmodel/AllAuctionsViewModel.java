@@ -1,6 +1,8 @@
 package viewmodel;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,7 +22,6 @@ public class AllAuctionsViewModel implements PropertyChangeListener
   private ViewModelState state;
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
-  //private ObjectProperty<>
   public AllAuctionsViewModel(AuctionModel model, ViewModelState state)
   {
     this.model=model;
@@ -46,6 +47,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
+    switch (evt.getPropertyName())
+    {
+      case "Auction":
 
+        break;
+    }
   }
 }

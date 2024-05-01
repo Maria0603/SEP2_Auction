@@ -61,7 +61,9 @@ public class AuctionDatabase implements AuctionPersistence {
       LocalTime now = LocalTime.now();
       Time start = Time.valueOf(now);
       statement.setTime(10, start);
-      Time end = Time.valueOf(now.plusHours(auctionTime));
+      //Time end = Time.valueOf(now.plusHours(auctionTime));//this is correct
+      Time end = Time.valueOf(now.plusSeconds(auctionTime));
+
       statement.setTime(11, end);
 
       statement.executeUpdate();

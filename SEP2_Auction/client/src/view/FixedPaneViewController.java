@@ -176,7 +176,6 @@ public class FixedPaneViewController
     {
       borderPane.setCenter(allAuctionsViewController.getRoot());
       allAuctionsViewController.reset(id);
-
     }
     return allAuctionsViewController.getRoot();
   }

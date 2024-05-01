@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -51,7 +52,7 @@ public class AuctionViewModel
     titleProperty = new SimpleStringProperty();
     imageProperty=new SimpleObjectProperty<>();
 
-    //model.addListener("Auction", this);
+    //model.addListener("Time", this);
     //model.addListener("End", this);
     reset();
   }
@@ -64,10 +65,11 @@ public class AuctionViewModel
       //we cannot send the null image through model, because it cannot be converted into bytes, so:
       if(imageProperty.get()==null)
         throw new IllegalArgumentException("Please upload an image.");
-      state.setAuction(model.startAuction(titleProperty.get().trim(),
+      state.setAuction(model.getAuction(
+          model.startAuction(titleProperty.get().trim(),
           descriptionProperty.get().trim(), reservePriceProperty.get(),
           buyoutPriceProperty.get(), incrementProperty.get(),
-          timeProperty.get(), imageToByteArray(imageProperty.get())));
+          timeProperty.get(), imageToByteArray(imageProperty.get())).getID()));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException |
            IOException e)
@@ -120,12 +122,9 @@ public class AuctionViewModel
     }
   }
 
-  private void wipe()
+  public void wipe()
   {
-    state.wipeAuction();
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
-    model.removeListener("Time", this);
-    model.removeListener("End", this);
 
     headerProperty.set("Start auction");
     idProperty.set(0);
@@ -217,14 +216,15 @@ public class AuctionViewModel
     switch (event.getPropertyName())
     {
       case "Time":
-         if(idProperty.get()==(int)(event.getOldValue())) //we should only update one auction for each event
+        //System.out.println(event.getOldValue());
+        if(idProperty.get() == Integer.parseInt(event.getOldValue().toString()))
       {
         LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
         Platform.runLater(() -> timerProperty.set(time.format(timeFormatter)));
       }
       break;
       case "End":
-        if(idProperty.get()==(int)(event.getOldValue()))
+        if(idProperty.get() == Integer.parseInt(event.getOldValue().toString()))
         {
           Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
         }
