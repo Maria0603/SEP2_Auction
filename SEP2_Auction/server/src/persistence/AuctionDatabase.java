@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import model.AuctionList;
+import model.AuctionShortVersion;
 import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence {
@@ -197,11 +198,11 @@ public class AuctionDatabase implements AuctionPersistence {
 
   @Override
   public AuctionList getOngoingAuctions() throws SQLException {
-    String sql = "SELECT * FROM auction WHERE status='ONGOING';";
+    String sql = "SELECT ID, title, current_bid, image_data, end_time FROM auction WHERE status='ONGOING';";
     ArrayList<Object[]> results = database.query(sql);
     AuctionList auctions = new AuctionList();
     for (int i = 0; i < results.size(); i++) {
-      Object[] row = results.get(i);
+      /*Object[] row = results.get(i);
       int id = Integer.parseInt(row[0].toString());
       String title = row[1].toString();
       String description = row[2].toString();
@@ -216,7 +217,14 @@ public class AuctionDatabase implements AuctionPersistence {
       Time auctionEnd = Time.valueOf(row[11].toString());
       auctions.addAuction(new Auction(id, title, description, reservePrice, buyoutPrice,
           minimumIncrement, auctionStart, auctionEnd, currentBid,
-          currentBidder, imageData, status));
+          currentBidder, imageData, status));*/
+      Object[] row = results.get(i);
+      int id = Integer.parseInt(row[0].toString());
+      String title = row[1].toString();
+      int currentBid = Integer.parseInt(row[2].toString());
+      byte[] imageData = row[3].toString().getBytes();
+      Time auctionEnd = Time.valueOf(row[4].toString());
+      auctions.addAuction(new AuctionShortVersion(id, title, currentBid, auctionEnd, imageData));
     }
     return auctions;
   }

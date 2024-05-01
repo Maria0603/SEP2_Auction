@@ -10,6 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import model.Auction;
 import model.AuctionList;
+import model.AuctionShortVersion;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 
@@ -21,7 +22,7 @@ public class AllAuctionsViewController
   private Region root;
   private AllAuctionsViewModel allAuctionsViewModel;
   private ViewHandler viewHandler;
-  private ObservableList<Auction> auctionCards;
+  private ObservableList<AuctionShortVersion> auctionCards;
   private ViewModelFactory viewModelFactory;
 
   public void init(ViewHandler viewHandler, ViewModelFactory viewModelFactory,
@@ -79,7 +80,7 @@ public class AllAuctionsViewController
           AuctionCardViewController auctionCardViewController = load.getController();
           auctionCardViewController.init(viewHandler,
               viewModelFactory.getAuctionCardViewModel(), innerRoot);
-          auctionCardViewController.setData(auctionCards.get(i).getID());
+          auctionCardViewController.setData(auctionCards.get(i).getId());
           if (column == 4)
           {
             column = 0;

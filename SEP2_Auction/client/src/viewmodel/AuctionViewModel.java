@@ -222,7 +222,7 @@ public class AuctionViewModel
     switch (event.getPropertyName())
     {
       case "Time":
-        System.out.println(event.getOldValue());
+        //System.out.println(event.getOldValue());
         if(idProperty.get() == Integer.parseInt(event.getOldValue().toString()))
       {
         LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
