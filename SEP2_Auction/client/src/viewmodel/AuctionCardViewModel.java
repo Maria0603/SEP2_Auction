@@ -31,11 +31,6 @@ public class AuctionCardViewModel
     titleProperty = new SimpleStringProperty();
     endTimeProperty=new SimpleStringProperty();
     imageProperty=new SimpleObjectProperty<>();
-
-    //model.addListener("Auction", this);
-    //model.addListener("Time", this);
-    //model.addListener("End", this);
-    //reset(null);
   }
 
   public void setData(int auctionId)
@@ -46,8 +41,19 @@ public class AuctionCardViewModel
       idProperty.set(auctionId);
       titleProperty.set(auction.getItem().getTitle());
       currentBidProperty.set(auction.getCurrentBid());
-      endTimeProperty.set("Ends: "+ auction.getEndTime().toString());
+      endTimeProperty.set("End: "+ auction.getEndTime().toString());
       imageProperty.set(byteArrayToImage(auction.getImageData()));
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+  }
+  public void cardSelected()
+  {
+    try
+    {
+      state.setAuction(model.getAuction(idProperty.get()));
     }
     catch (SQLException e)
     {

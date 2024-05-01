@@ -1,5 +1,6 @@
 package viewmodel;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,28 +10,27 @@ import model.Auction;
 import model.AuctionList;
 import model.AuctionModel;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
-public class AllAuctionsViewModel
+public class AllAuctionsViewModel implements PropertyChangeListener
 {
   private AuctionModel model;
   private ViewModelState state;
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
+  //private ObjectProperty<>
   public AllAuctionsViewModel(AuctionModel model, ViewModelState state)
   {
     this.model=model;
     this.state=state;
+    //to add the new auction to the list:
+    model.addListener("Auction", this);
+    //to remove the closed one from the list:
+    model.addListener("End", this);
   }
-  public void reset(String id)
-  {
-    switch (id)
-    {
-      case "allAuctions":
-        //nothing to do here
-      break;
-    }
-  }
+
   public AuctionList getOngoingAuctions()
   {
     try
@@ -42,5 +42,10 @@ public class AllAuctionsViewModel
       e.printStackTrace();
     }
     return null;
+  }
+
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
+
   }
 }

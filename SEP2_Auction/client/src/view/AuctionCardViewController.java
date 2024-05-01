@@ -48,6 +48,7 @@ public class AuctionCardViewController
   @FXML public void cardSelected(MouseEvent mouseEvent)
   {
     //TODO: to set the view state - for Mariia?
+    auctionCardViewModel.cardSelected();
     viewHandler.openView("displayAuction");
   }
 }

@@ -40,7 +40,6 @@ public class AllAuctionsViewController
 
   public void reset(String id)
   {
-    allAuctionsViewModel.reset(id);
     switch (id)
     {
       case "allAuctions":

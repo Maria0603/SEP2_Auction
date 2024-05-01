@@ -41,7 +41,7 @@ public class AuctionViewModel
     buyoutPriceProperty = new SimpleIntegerProperty();
     descriptionProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
-    headerProperty = new SimpleStringProperty("");
+    headerProperty = new SimpleStringProperty();
     incrementProperty = new SimpleIntegerProperty();
     ratingProperty = new SimpleIntegerProperty();
     reasonProperty = new SimpleStringProperty();
@@ -51,10 +51,9 @@ public class AuctionViewModel
     titleProperty = new SimpleStringProperty();
     imageProperty=new SimpleObjectProperty<>();
 
-    model.addListener("Auction", this);
-    //model.addListener("Time", this);
-    model.addListener("End", this);
-    reset("startAuction");
+    //model.addListener("Auction", this);
+    //model.addListener("End", this);
+    reset();
   }
 
   public void startAuction()
@@ -93,23 +92,27 @@ public class AuctionViewModel
     return new Image(inputStream);
   }
 
-  public void reset(String id)
+  public void reset()
   {
     Auction selectedAuction = state.getSelectedAuction();
-    if (selectedAuction != null && id.equals("displayAuction"))
+    if (selectedAuction != null)
     {
+      //when we open an auction, we listen to the updating time
       model.addListener("Time", this);
+      model.addListener("End", this);
+
       headerProperty.set("Auction ID:");
-      idProperty.set(state.getSelectedAuction().getID());
-      titleProperty.set(state.getSelectedAuction().getItem().getTitle());
+      idProperty.set(selectedAuction.getID());
+      titleProperty.set(selectedAuction.getItem().getTitle());
       descriptionProperty.set(
-          state.getSelectedAuction().getItem().getDescription());
+          selectedAuction.getItem().getDescription());
       reservePriceProperty.set(
-          state.getSelectedAuction().getPriceConstraint().getReservePrice());
+          selectedAuction.getPriceConstraint().getReservePrice());
       buyoutPriceProperty.set(
-          state.getSelectedAuction().getPriceConstraint().getBuyoutPrice());
+          selectedAuction.getPriceConstraint().getBuyoutPrice());
       incrementProperty.set(state.getSelectedAuction().getPriceConstraint()
           .getMinimumIncrement());
+      imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
     }
     else
     {
@@ -119,8 +122,11 @@ public class AuctionViewModel
 
   private void wipe()
   {
-    state.setAuction(null);
+    state.wipeAuction();
+    //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
+    model.removeListener("End", this);
+
     headerProperty.set("Start auction");
     idProperty.set(0);
     bidProperty.set(0);
@@ -211,16 +217,19 @@ public class AuctionViewModel
     switch (event.getPropertyName())
     {
       case "Time":
-        // if(idProperty.equals(event.getOldValue())) //we should only update one
-        // auction for each event
+         if(idProperty.get()==(int)(event.getOldValue())) //we should only update one auction for each event
       {
         LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
         Platform.runLater(() -> timerProperty.set(time.format(timeFormatter)));
       }
       break;
       case "End":
-        Platform.runLater(() -> errorProperty.set("Auction closed."));
+        if(idProperty.get()==(int)(event.getOldValue()))
+        {
+          Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
+        }
         break;
+        /*
       case "Auction":
         int auctionId = ((Auction) event.getNewValue()).getID();
 
@@ -251,7 +260,7 @@ public class AuctionViewModel
             e.printStackTrace();
           }
         });
-        break;
+        break;*/
     }
   }
 

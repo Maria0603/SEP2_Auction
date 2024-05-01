@@ -110,7 +110,7 @@ public class AuctionViewController
 
   public void reset(String id)
   {
-    auctionViewModel.reset(id);
+    auctionViewModel.reset();
     switch (id)
     {
       case "displayAuction":
@@ -118,7 +118,6 @@ public class AuctionViewController
         break;
       case "startAuction":
         setForStart();
-        imageImageView.setImage(null);
         break;
     }
   }
@@ -128,6 +127,8 @@ public class AuctionViewController
     anchorPane.setPrefHeight(690);
     startAuctionButton.setLayoutY(625);
     cancelButton.setLayoutY(625);
+
+    imageImageView.setImage(null);
 
     titleTextArea.setDisable(false);
     titleTextArea.requestFocus();
@@ -233,8 +234,9 @@ public class AuctionViewController
     ////////////////////////////////////////////////////////
     if (result.isPresent() && result.get() == ButtonType.OK)
     {
+      //we want the reset in the view model, so:
       reset("");
-      //sprint 1 focus
+
       viewHandler.openView("allAuctions");
     }
     ////////////////////////////////////////////////////////
@@ -244,7 +246,7 @@ public class AuctionViewController
   {
     imageImageView.setImage(null);
     fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg", "*jpeg"));
+        new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
 
     File file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 
