@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
+import model.AuctionShortVersion;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,21 +34,13 @@ public class AuctionCardViewModel
     imageProperty=new SimpleObjectProperty<>();
   }
 
-  public void setData(int auctionId)
+  public void setData(AuctionShortVersion auction)
   {
-    try
-    {
-      Auction auction=model.getAuction(auctionId);
-      idProperty.set(auctionId);
-      titleProperty.set(auction.getItem().getTitle());
+      idProperty.set(auction.getId());
+      titleProperty.set(auction.getTitle());
       currentBidProperty.set(auction.getCurrentBid());
-      endTimeProperty.set("End: "+ auction.getEndTime().toString());
+      endTimeProperty.set("End: "+ auction.getEnd());
       imageProperty.set(byteArrayToImage(auction.getImageData()));
-    }
-    catch (SQLException e)
-    {
-      e.printStackTrace();
-    }
   }
   public void cardSelected()
   {

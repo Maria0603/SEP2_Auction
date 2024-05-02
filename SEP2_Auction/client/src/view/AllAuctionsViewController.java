@@ -34,7 +34,7 @@ public class AllAuctionsViewController
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
     auctionCards = FXCollections.observableArrayList();
     reset(id);
-    loadOngoingAuctions();
+    //loadOngoingAuctions();
     //other bindings to be inserted
 
   }
@@ -54,7 +54,7 @@ public class AllAuctionsViewController
     return root;
   }
 
-  private void loadOngoingAuctions()
+  public void loadOngoingAuctions()
   {
     auctionCards.clear();
     AuctionList list = allAuctionsViewModel.getOngoingAuctions();
@@ -80,7 +80,7 @@ public class AllAuctionsViewController
           AuctionCardViewController auctionCardViewController = load.getController();
           auctionCardViewController.init(viewHandler,
               viewModelFactory.getAuctionCardViewModel(), innerRoot);
-          auctionCardViewController.setData(auctionCards.get(i).getId());
+          auctionCardViewController.setData(auctionCards.get(i));
           if (column == 4)
           {
             column = 0;

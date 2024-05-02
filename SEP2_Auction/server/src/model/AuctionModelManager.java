@@ -33,11 +33,13 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override
   public synchronized Auction getAuction(int ID) throws SQLException {
+    System.out.println("server received a request in getAuctionById");
     return auctionDatabase.getAuctionById(ID);
   }
 
   @Override
   public synchronized AuctionList getOngoingAuctions() throws SQLException {
+    System.out.println("server received a request in getOngoingAuctions");
     return auctionDatabase.getOngoingAuctions();
   }
 
@@ -55,20 +57,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    // update the time and status in the database
-    /*
-     * if(evt.getPropertyName().equals("Time") && (int)evt.getNewValue()%5==0)
-     * {
-     * try
-     * {
-     * auctionDatabase.updateTime((int)evt.getOldValue(), (int)evt.getNewValue());
-     * }
-     * catch(SQLException e)
-     * {
-     * e.printStackTrace();
-     * }
-     * }
-     */
+
     if (evt.getPropertyName().equals("End")) {
       try {
         auctionDatabase.markAsClosed((int) evt.getOldValue());

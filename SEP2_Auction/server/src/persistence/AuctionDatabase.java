@@ -222,7 +222,8 @@ public class AuctionDatabase implements AuctionPersistence {
       int id = Integer.parseInt(row[0].toString());
       String title = row[1].toString();
       int currentBid = Integer.parseInt(row[2].toString());
-      byte[] imageData = row[3].toString().getBytes();
+      String imagePath = row[3].toString();
+      byte[] imageData = downloadImageFromRepository(imagePath);
       Time auctionEnd = Time.valueOf(row[4].toString());
       auctions.addAuction(new AuctionShortVersion(id, title, currentBid, auctionEnd, imageData));
     }
