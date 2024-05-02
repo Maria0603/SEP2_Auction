@@ -47,6 +47,7 @@ public class AllAuctionsViewController
     {
       case "allAuctions":
         auctionCards.clear();
+        //loadOngoingAuctions();
         break;
     }
   }

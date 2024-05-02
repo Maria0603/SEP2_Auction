@@ -29,7 +29,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   {
     Auction auction = modelManager.startAuction(title, description,
         reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
-    ongoingAuctionsCache.addAuction(auction);
+    //ongoingAuctionsCache.addAuction(auction);
     return auction;
   }
 

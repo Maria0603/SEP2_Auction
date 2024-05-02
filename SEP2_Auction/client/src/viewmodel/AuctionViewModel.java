@@ -51,6 +51,7 @@ public class AuctionViewModel implements PropertyChangeListener
     titleProperty = new SimpleStringProperty();
     imageProperty = new SimpleObjectProperty<>();
 
+
     //model.addListener("Time", this);
     //model.addListener("End", this);
     reset();
