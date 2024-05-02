@@ -1,6 +1,7 @@
 package view;
 
 import javafx.collections.FXCollections;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,7 +32,10 @@ public class AllAuctionsViewController
     this.viewHandler = viewHandler;
     this.viewModelFactory = viewModelFactory;
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
+
     auctionCards = FXCollections.observableArrayList();
+    Bindings.bindContent(auctionCards, allAuctionsViewModel.getAuctionCards());
+
 
     reset(windowType);
     loadOngoingAuctions();
@@ -58,14 +62,7 @@ public class AllAuctionsViewController
 
   public void loadOngoingAuctions()
   {
-    //TODO: make the view jump back to the beginning of the list when All auctions button is pressed
-    auctionCards.clear();
-    AuctionList list = allAuctionsViewModel.getOngoingAuctions();
-    for (int i = 0; i < list.getSize(); i++)
-    {
-      auctionCards.add(list.getAuction(i));
-    }
-
+    
     int row = 0;
     int column = 0;
 
