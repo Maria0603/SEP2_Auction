@@ -7,10 +7,11 @@ import view.ViewHandler;
 import viewmodel.ViewModelFactory;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class MyApplication extends Application
 {
-  @Override public void start(Stage primaryStage) throws Exception
+  @Override public void start(Stage primaryStage)
   {
     try
     {
@@ -20,7 +21,7 @@ public class MyApplication extends Application
       AuctionClient client = new AuctionClient();
       view.start(primaryStage);
     }
-    catch (IOException e)
+    catch (IOException | SQLException e)
     {
       e.printStackTrace();
     }

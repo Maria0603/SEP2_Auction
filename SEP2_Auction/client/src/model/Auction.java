@@ -33,7 +33,7 @@ public class Auction
       String currentBidder, byte[] imageData, String status)
   {
     property = new PropertyChangeSupport(this);
-    setID(ID);
+    this.ID=ID;
     this.item=new Item(title, description);
     this.priceConstraint=new PriceConstraint(reservePrice, buyoutPrice, minimumIncrement);
 
@@ -43,6 +43,10 @@ public class Auction
     setImageData(imageData);
     this.status = status;
 
+  }
+  public Auction(int ID, String title, int currentBid, Time end, byte[] imageData)
+  {
+    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, imageData, null);
   }
   public Item getItem()
   {
@@ -68,8 +72,6 @@ public class Auction
 
   public void setImageData(byte[] imageData)
   {
-    if (imageData == null)
-      throw new IllegalArgumentException("Please upload an image.");
     this.imageData = imageData;
   }
 
@@ -100,11 +102,6 @@ public class Auction
     return ID;
   }
 
-  public void setID(int ID)
-  {
-    this.ID = ID;
-  }
-
   public String getStatus()
   {
     return status;
@@ -115,21 +112,6 @@ public class Auction
     this.status = status;
   }
 
-
-
-  public void setAuctionTime(int auctionTime)
-  {
-    if (auctionTime <= 0 || auctionTime > 24 * 3600)
-      throw new IllegalArgumentException(
-          "The auction time can be at most 24 hours!");
-
-    /////////////////////////////////////////////////////////////////////////////////
-    //correct line:
-    this.auctionEndTime = auctionTime;
-    ////////////////////////////////////////////////////////////////////////////////
-    //for testing purposes:
-    //this.auctionEndTime=auctionTime/3600;
-  }
 
   @Override public String toString()
   {

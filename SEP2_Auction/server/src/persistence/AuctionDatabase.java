@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import model.AuctionList;
-import model.AuctionShortVersion;
 import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence {
@@ -225,7 +224,7 @@ public class AuctionDatabase implements AuctionPersistence {
       String imagePath = row[3].toString();
       byte[] imageData = downloadImageFromRepository(imagePath);
       Time auctionEnd = Time.valueOf(row[4].toString());
-      auctions.addAuction(new AuctionShortVersion(id, title, currentBid, auctionEnd, imageData));
+      auctions.addAuction(new Auction(id, title, currentBid, auctionEnd, imageData));
     }
     return auctions;
   }
@@ -281,7 +280,7 @@ public class AuctionDatabase implements AuctionPersistence {
 
   private void checkAuctionTime(int auctionTime) throws SQLException {
     // to be updated when the moderator adds the time interval
-    if (auctionTime <= 0 || auctionTime > 24 * 3600)
+    if (auctionTime <= 0 || auctionTime > 24)
       throw new SQLException("The auction time can be at most 24 hours!");
   }
 

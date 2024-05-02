@@ -10,7 +10,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import model.Auction;
 import model.AuctionList;
-import model.AuctionShortVersion;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 
@@ -22,7 +21,7 @@ public class AllAuctionsViewController
   private Region root;
   private AllAuctionsViewModel allAuctionsViewModel;
   private ViewHandler viewHandler;
-  private ObservableList<AuctionShortVersion> auctionCards;
+  private ObservableList<Auction> auctionCards;
   private ViewModelFactory viewModelFactory;
 
   public void init(ViewHandler viewHandler, ViewModelFactory viewModelFactory,
@@ -56,6 +55,7 @@ public class AllAuctionsViewController
 
   public void loadOngoingAuctions()
   {
+    //TODO: make the view jump back to the beginning of the list when All auctions button is pressed
     auctionCards.clear();
     AuctionList list = allAuctionsViewModel.getOngoingAuctions();
     for (int i = 0; i < list.getSize(); i++)
@@ -77,6 +77,7 @@ public class AllAuctionsViewController
           FXMLLoader load = new FXMLLoader();
           load.setLocation(getClass().getResource("AuctionCardView.fxml"));
           Region innerRoot = load.load();
+          //TODO: store these controllers so we can edit the current bid later
           AuctionCardViewController auctionCardViewController = load.getController();
           auctionCardViewController.init(viewHandler,
               viewModelFactory.getAuctionCardViewModel(), innerRoot);

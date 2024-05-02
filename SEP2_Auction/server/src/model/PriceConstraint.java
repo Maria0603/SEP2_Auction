@@ -24,9 +24,6 @@ public class PriceConstraint implements Serializable
 
   public void setReservePrice(int reservePrice)
   {
-    if (reservePrice < 0)
-      throw new IllegalArgumentException(
-          "The reserve price must be a positive number!");
     this.reservePrice = reservePrice;
   }
 
@@ -37,9 +34,6 @@ public class PriceConstraint implements Serializable
 
   public void setBuyoutPrice(int buyoutPrice)
   {
-    if (buyoutPrice <= reservePrice)
-      throw new IllegalArgumentException(
-          "The buyout price must be greater than the reserve price!");
     this.buyoutPrice = buyoutPrice;
   }
 
@@ -50,9 +44,6 @@ public class PriceConstraint implements Serializable
 
   public void setMinimumIncrement(int minimumIncrement)
   {
-    if (minimumIncrement < 1)
-      throw new IllegalArgumentException(
-          "The minimum bid increment must be at least 1!");
     this.minimumIncrement = minimumIncrement;
   }
 }

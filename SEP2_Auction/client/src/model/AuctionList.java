@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class AuctionList implements Serializable
 {
-  private ArrayList<AuctionShortVersion> auctions;
+  private ArrayList<Auction> auctions;
   ///////////////////////////////////////////////////////////////////
   //do not change this number
   private static final long serialVersionUID = 6529685098267757690L;
@@ -16,13 +16,13 @@ public class AuctionList implements Serializable
     this.auctions = new ArrayList<>();
   }
 
-  public void addAuction(AuctionShortVersion auction)
+  public void addAuction(Auction auction)
   {
     if (auction != null)
       auctions.add(auction);
   }
 
-  public void removeAuction(AuctionShortVersion auction)
+  public void removeAuction(Auction auction)
   {
     auctions.remove(auction);
   }
@@ -32,14 +32,14 @@ public class AuctionList implements Serializable
     auctions.remove(getAuctionByID(ID));
   }
 
-  public AuctionShortVersion getAuctionByID(int ID)
+  public Auction getAuctionByID(int ID)
   {
-    for (AuctionShortVersion auction : auctions)
-      if (auction.getId() == ID)
+    for (Auction auction : auctions)
+      if (auction.getID() == ID)
         return auction;
     throw new IllegalArgumentException("No auction with this ID.");
   }
-  public AuctionShortVersion getAuction(int index)
+  public Auction getAuction(int index)
   {
     return auctions.get(index);
   }

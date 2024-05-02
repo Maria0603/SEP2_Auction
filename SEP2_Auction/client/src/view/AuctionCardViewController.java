@@ -8,7 +8,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import model.Auction;
-import model.AuctionShortVersion;
 import utility.IntStringConverter;
 import viewmodel.AuctionCardViewModel;
 
@@ -37,7 +36,7 @@ public class AuctionCardViewController
     titleLabel.textProperty().bindBidirectional(auctionCardViewModel.getTitleProperty());
     Bindings.bindBidirectional(imageImageView.imageProperty(), auctionCardViewModel.getImageProperty());
   }
-  public void setData(AuctionShortVersion auction)
+  public void setData(Auction auction)
   {
     auctionCardViewModel.setData(auction);
   }

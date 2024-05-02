@@ -22,12 +22,6 @@ public class Item implements Serializable
 
   public void setTitle(String title)
   {
-    int maxTitleLength = 80;
-    int minTitleLength = 5;
-    if (title.length() > maxTitleLength)
-      throw new IllegalArgumentException("The title is too long!");
-    else if (title.length() < minTitleLength)
-      throw new IllegalArgumentException("The title is too short!");
     this.title = title;
   }
 
@@ -38,11 +32,6 @@ public class Item implements Serializable
 
   public void setDescription(String description)
   {
-    int maxDescriptionLength = 1400, minDescriptionLength = 20;
-    if (description.length() > maxDescriptionLength)
-      throw new IllegalArgumentException("The description is too long!");
-    else if (description.length() < minDescriptionLength)
-      throw new IllegalArgumentException("The description is too short!");
     this.description = description;
   }
 }

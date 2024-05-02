@@ -1,19 +1,12 @@
 package viewmodel;
 
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
-import model.AuctionShortVersion;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.sql.SQLException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 public class AuctionCardViewModel
 {
@@ -34,12 +27,12 @@ public class AuctionCardViewModel
     imageProperty=new SimpleObjectProperty<>();
   }
 
-  public void setData(AuctionShortVersion auction)
+  public void setData(Auction auction)
   {
-      idProperty.set(auction.getId());
-      titleProperty.set(auction.getTitle());
+      idProperty.set(auction.getID());
+      titleProperty.set(auction.getItem().getTitle());
       currentBidProperty.set(auction.getCurrentBid());
-      endTimeProperty.set("End: "+ auction.getEnd());
+      endTimeProperty.set("End: "+ auction.getEndTime());
       imageProperty.set(byteArrayToImage(auction.getImageData()));
   }
   public void cardSelected()
