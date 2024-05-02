@@ -57,6 +57,6 @@ public class AuctionCardViewController
   {
     //TODO: to set the view state - for Mariia?
     auctionCardViewModel.cardSelected();
-    viewHandler.openView("displayAuction");
+    viewHandler.openView(WindowType.DISPLAY_AUCTION);
   }
 }

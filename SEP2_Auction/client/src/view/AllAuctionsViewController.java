@@ -13,8 +13,6 @@ import model.AuctionList;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 
-import java.util.ArrayList;
-
 public class AllAuctionsViewController
 {
   @FXML private ScrollPane allAuctionsScrollPane;
@@ -27,7 +25,7 @@ public class AllAuctionsViewController
   private ViewModelFactory viewModelFactory;
 
   public void init(ViewHandler viewHandler, ViewModelFactory viewModelFactory,
-      Region root, String id)
+      Region root, WindowType windowType)
   {
     this.root = root;
     this.viewHandler = viewHandler;
@@ -35,20 +33,21 @@ public class AllAuctionsViewController
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
     auctionCards = FXCollections.observableArrayList();
 
-    reset(id);
+    reset(windowType);
     loadOngoingAuctions();
     //other bindings to be inserted
 
   }
 
-  public void reset(String id)
+  public void reset(WindowType type)
   {
-    switch (id)
+    switch (type)
     {
-      case "allAuctions":
+      case ALL_AUCTIONS -> {
         auctionCards.clear();
         //loadOngoingAuctions();
-        break;
+      }
+
     }
   }
 

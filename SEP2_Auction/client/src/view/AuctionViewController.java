@@ -1,6 +1,5 @@
 package view;
 
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,19 +7,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import utility.IntStringConverter;
 import viewmodel.AuctionViewModel;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Optional;
 
 public class AuctionViewController
@@ -68,7 +60,7 @@ public class AuctionViewController
 
   //initializations and bindings
   public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel,
-      Region root, String id)
+      Region root, WindowType windowType)
   {
     this.root = root;
     this.viewHandler = viewHandler;
@@ -107,18 +99,18 @@ public class AuctionViewController
     errorLabel.setText("");
     fileChooser = new FileChooser();
 
-    reset(id);
+    reset(windowType);
   }
 
-  public void reset(String id)
+  public void reset(WindowType type)
   {
     auctionViewModel.reset();
-    switch (id)
+    switch (type)
     {
-      case "displayAuction":
+      case DISPLAY_AUCTION:
         setForDisplay();
         break;
-      case "startAuction":
+      case START_AUCTION:
         setForStart();
         auctionViewModel.wipe();
         break;
@@ -224,7 +216,7 @@ public class AuctionViewController
     auctionViewModel.startAuction();
     if (errorLabel.getText().isEmpty())
     {
-      viewHandler.openView("displayAuction");
+      viewHandler.openView(WindowType.DISPLAY_AUCTION);
     }
   }
 
@@ -243,9 +235,9 @@ public class AuctionViewController
     if (result.isPresent() && result.get() == ButtonType.OK)
     {
       //we want the reset in the view model, so:
-      reset("");
+     // reset("");
       leaveAuctionView();
-      viewHandler.openView("allAuctions");
+      viewHandler.openView(WindowType.ALL_AUCTIONS);
     }
     ////////////////////////////////////////////////////////
   }
