@@ -3,6 +3,7 @@ import javafx.stage.Stage;
 import mediator.AuctionClient;
 import model.AuctionModel;
 import model.AuctionModelManager;
+import model.CacheProxy;
 import view.ViewHandler;
 import viewmodel.ViewModelFactory;
 
@@ -15,7 +16,7 @@ public class MyApplication extends Application
   {
     try
     {
-      AuctionModel model = new AuctionModelManager();
+      AuctionModel model = new CacheProxy();
       ViewModelFactory viewModelFactory = new ViewModelFactory(model);
       ViewHandler view = new ViewHandler(viewModelFactory);
       AuctionClient client = new AuctionClient();

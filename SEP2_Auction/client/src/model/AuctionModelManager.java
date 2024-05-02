@@ -15,13 +15,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
   private PropertyChangeSupport property;
   private AuctionClient client;
-  private AuctionList ongoingAuctionsCache;
 
   public AuctionModelManager() throws IOException, SQLException
   {
       property = new PropertyChangeSupport(this);
       client = new AuctionClient();
-      ongoingAuctionsCache=client.getOngoingAuctions();
       client.addListener("Auction", this);
       client.addListener("End", this);
   }
@@ -37,29 +35,15 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    Auction auction;
-    try
-    {
-      auction = ongoingAuctionsCache.getAuctionByID(ID);
-    }
-    catch(IllegalArgumentException e)
-    {
-        auction = client.getAuction(ID);
-    }
-      Timer timer=new Timer(timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime())-1, ID);
-      timer.addListener("Time", this);
-      timer.addListener("End", this);
-      Thread t = new Thread(timer, String.valueOf(ID));
-      t.start();
-    return auction;
+    return client.getAuction(ID);
   }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
-    return ongoingAuctionsCache;
+    return client.getOngoingAuctions();
   }
 
-  private long timeLeft(Time currentTime, Time end)
+  public long timeLeft(Time currentTime, Time end)
   {
     long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
     long endSeconds = end.toLocalTime().toSecondOfDay();
@@ -82,16 +66,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    switch (evt.getPropertyName())
-    {
-      case "Auction":
-        ongoingAuctionsCache.addAuction((Auction) evt.getNewValue());
-        break;
-      case "End":
-        ongoingAuctionsCache.removeAuction((Auction) evt.getNewValue());
-        //closedAuctionsCached.addAuction((Auction) evt.getNewValue());
-        break;
-    }
     //model manager property fires auction events further
     property.firePropertyChange(evt);
   }
