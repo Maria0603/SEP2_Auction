@@ -11,12 +11,14 @@ public class PriceConstraint implements Serializable
 
   private int reservePrice, buyoutPrice, minimumIncrement;
 
-  public PriceConstraint(int reservePrice, int buyoutPrice, int minimumIncrement)
+  public PriceConstraint(int reservePrice, int buyoutPrice,
+      int minimumIncrement)
   {
     setBuyoutPrice(buyoutPrice);
     setReservePrice(reservePrice);
     setMinimumIncrement(minimumIncrement);
   }
+
   public int getReservePrice()
   {
     return reservePrice;

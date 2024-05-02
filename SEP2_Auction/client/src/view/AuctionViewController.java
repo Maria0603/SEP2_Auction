@@ -100,7 +100,8 @@ public class AuctionViewController
     Bindings.bindBidirectional(buyoutPriceTextField.textProperty(),
         this.auctionViewModel.getBuyoutPriceProperty(),
         new IntStringConverter());
-    Bindings.bindBidirectional(imageImageView.imageProperty(), auctionViewModel.getImageProperty());
+    Bindings.bindBidirectional(imageImageView.imageProperty(),
+        auctionViewModel.getImageProperty());
     //other bindings to be inserted
 
     errorLabel.setText("");
@@ -207,6 +208,7 @@ public class AuctionViewController
     cancelButton.setVisible(false);
 
   }
+
   public void leaveAuctionView()
   {
     auctionViewModel.leaveAuctionView();
@@ -262,7 +264,6 @@ public class AuctionViewController
       imageImageView.setImage(image);
     }
   }
-
 
   @FXML void buyNowButtonPressed(ActionEvent event)
   {

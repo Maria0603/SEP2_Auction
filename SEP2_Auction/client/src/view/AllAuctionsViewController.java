@@ -13,6 +13,8 @@ import model.AuctionList;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 
+import java.util.ArrayList;
+
 public class AllAuctionsViewController
 {
   @FXML private ScrollPane allAuctionsScrollPane;
@@ -32,6 +34,7 @@ public class AllAuctionsViewController
     this.viewModelFactory = viewModelFactory;
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
     auctionCards = FXCollections.observableArrayList();
+
     reset(id);
     //loadOngoingAuctions();
     //other bindings to be inserted
@@ -77,7 +80,6 @@ public class AllAuctionsViewController
           FXMLLoader load = new FXMLLoader();
           load.setLocation(getClass().getResource("AuctionCardView.fxml"));
           Region innerRoot = load.load();
-          //TODO: store these controllers so we can edit the current bid later
           AuctionCardViewController auctionCardViewController = load.getController();
           auctionCardViewController.init(viewHandler,
               viewModelFactory.getAuctionCardViewModel(), innerRoot);

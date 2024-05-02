@@ -30,7 +30,8 @@ public class ViewHandler
   public void openView(String id)
   {
     Region root = null;
-    if(id.equals("startAuction") || id.equals("displayAuction")|| id.equals("allAuctions"))
+    if (id.equals("startAuction") || id.equals("displayAuction") || id.equals(
+        "allAuctions"))
     {
       root = loadFixedPaneView("FixedPaneView.fxml", id);
     }

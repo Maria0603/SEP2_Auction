@@ -22,10 +22,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
   private ViewModelState state;
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
+
   public AllAuctionsViewModel(AuctionModel model, ViewModelState state)
   {
-    this.model=model;
-    this.state=state;
+    this.model = model;
+    this.state = state;
     //to add the new auction to the list:
     model.addListener("Auction", this);
     //to remove the closed one from the list:

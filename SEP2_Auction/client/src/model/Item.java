@@ -10,11 +10,13 @@ public class Item implements Serializable
   //////////////////////////////////////////////////////////////////
 
   private String title, description;
+
   public Item(String title, String description)
   {
     setTitle(title);
     setDescription(description);
   }
+
   public String getTitle()
   {
     return title;

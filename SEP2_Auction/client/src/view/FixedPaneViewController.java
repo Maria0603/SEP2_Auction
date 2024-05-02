@@ -142,7 +142,7 @@ public class FixedPaneViewController
 
   private Region loadGrid(String id)
   {
-    if(auctionViewController!=null)
+    if (auctionViewController != null)
       auctionViewController.leaveAuctionView();
     allAuctionsButton.setDisable(false);
     myAuctions_allAccountsButton.setDisable(false);
@@ -164,8 +164,7 @@ public class FixedPaneViewController
         borderPane.setCenter(root);
         allAuctionsViewController = loader.getController();
 
-        allAuctionsViewController.init(viewHandler,
-            viewModelFactory, root, id);
+        allAuctionsViewController.init(viewHandler, viewModelFactory, root, id);
 
       }
       catch (Exception e)

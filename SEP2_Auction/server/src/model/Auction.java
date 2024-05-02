@@ -29,37 +29,45 @@ public class Auction
   private PropertyChangeSupport property;
 
   public Auction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd, int currentBid,
-      String currentBidder, byte[] imageData, String status)
+      int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
+      int currentBid, String currentBidder, byte[] imageData, String status)
   {
     property = new PropertyChangeSupport(this);
-    this.ID=ID;
-    this.item=new Item(title, description);
-    this.priceConstraint=new PriceConstraint(reservePrice, buyoutPrice, minimumIncrement);
+    this.ID = ID;
+    this.item = new Item(title, description);
+    this.priceConstraint = new PriceConstraint(reservePrice, buyoutPrice,
+        minimumIncrement);
 
-    start=auctionStart;
-    end=auctionEnd;
+    start = auctionStart;
+    end = auctionEnd;
 
     setImageData(imageData);
     this.status = status;
 
   }
-  public Auction(int ID, String title, int currentBid, Time end, byte[] imageData)
+
+  public Auction(int ID, String title, int currentBid, Time end,
+      byte[] imageData)
   {
-    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, imageData, null);
+    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, imageData,
+        null);
   }
+
   public Item getItem()
   {
     return item;
   }
+
   public PriceConstraint getPriceConstraint()
   {
     return priceConstraint;
   }
+
   public Time getEndTime()
   {
     return end;
   }
+
   public Time getStartTime()
   {
     return start;
@@ -112,15 +120,15 @@ public class Auction
     this.status = status;
   }
 
-
   @Override public String toString()
   {
     return "ID=" + ID + ", title='" + item.getTitle() + '\'' + ", description='"
-        + item.getDescription() + '\'' + ", reservePrice=" + priceConstraint.getReservePrice()
-        + ", buyoutPrice=" + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
-        + priceConstraint.getMinimumIncrement() + ", auctionTime=" + auctionEndTime + '\'';
+        + item.getDescription() + '\'' + ", reservePrice="
+        + priceConstraint.getReservePrice() + ", buyoutPrice="
+        + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
+        + priceConstraint.getMinimumIncrement() + ", auctionTime="
+        + auctionEndTime + '\'';
   }
-
 
   @Override synchronized public void addListener(String propertyName,
       PropertyChangeListener listener)

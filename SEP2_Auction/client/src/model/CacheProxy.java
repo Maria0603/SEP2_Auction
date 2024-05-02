@@ -13,20 +13,22 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   private AuctionList ongoingAuctionsCache;
   private AuctionModelManager modelManager;
   private PropertyChangeSupport property;
+
   public CacheProxy() throws SQLException, IOException
   {
-    property=new PropertyChangeSupport(this);
+    property = new PropertyChangeSupport(this);
     this.modelManager = new AuctionModelManager();
     modelManager.addListener("Auction", this);
     modelManager.addListener("End", this);
-    ongoingAuctionsCache=modelManager.getOngoingAuctions();
+    ongoingAuctionsCache = modelManager.getOngoingAuctions();
   }
 
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       byte[] imageData) throws SQLException, ClassNotFoundException
   {
-    Auction auction = modelManager.startAuction(title, description, reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+    Auction auction = modelManager.startAuction(title, description,
+        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
     ongoingAuctionsCache.addAuction(auction);
     return auction;
   }
@@ -38,11 +40,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     {
       auction = ongoingAuctionsCache.getAuctionByID(ID);
     }
-    catch(IllegalArgumentException e)
+    catch (IllegalArgumentException e)
     {
       auction = modelManager.getAuction(ID);
     }
-    Timer timer=new Timer(modelManager.timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime())-1, ID);
+    Timer timer = new Timer(modelManager.timeLeft(Time.valueOf(LocalTime.now()),
+        auction.getEndTime()) - 1, ID);
     timer.addListener("Time", this);
     timer.addListener("End", this);
     Thread t = new Thread(timer, String.valueOf(ID));
@@ -76,7 +79,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         break;
       case "End":
         ongoingAuctionsCache.removeAuction((Auction) evt.getNewValue());
-        //closedAuctionsCached.addAuction((Auction) evt.getNewValue());
+        //closedAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
     }
     property.firePropertyChange(evt);

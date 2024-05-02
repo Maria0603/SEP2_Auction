@@ -24,8 +24,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-public class AuctionViewModel
-    implements PropertyChangeListener
+public class AuctionViewModel implements PropertyChangeListener
 {
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty;
   private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty;
@@ -50,7 +49,7 @@ public class AuctionViewModel
     timeProperty = new SimpleIntegerProperty();
     timerProperty = new SimpleStringProperty();
     titleProperty = new SimpleStringProperty();
-    imageProperty=new SimpleObjectProperty<>();
+    imageProperty = new SimpleObjectProperty<>();
 
     //model.addListener("Time", this);
     //model.addListener("End", this);
@@ -63,13 +62,14 @@ public class AuctionViewModel
     try
     {
       //we cannot send the null image through model, because it cannot be converted into bytes, so:
-      if(imageProperty.get()==null)
+      if (imageProperty.get() == null)
         throw new IllegalArgumentException("Please upload an image.");
       state.setAuction(model.getAuction(
           model.startAuction(titleProperty.get().trim(),
-          descriptionProperty.get().trim(), reservePriceProperty.get(),
-          buyoutPriceProperty.get(), incrementProperty.get(),
-          timeProperty.get(), imageToByteArray(imageProperty.get())).getID()));
+                  descriptionProperty.get().trim(), reservePriceProperty.get(),
+                  buyoutPriceProperty.get(), incrementProperty.get(),
+                  timeProperty.get(), imageToByteArray(imageProperty.get()))
+              .getID()));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException |
            IOException e)
@@ -81,6 +81,7 @@ public class AuctionViewModel
       //e.printStackTrace();
     }
   }
+
   private byte[] imageToByteArray(Image image) throws IOException
   {
     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
@@ -88,6 +89,7 @@ public class AuctionViewModel
     javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
     return outputStream.toByteArray();
   }
+
   private Image byteArrayToImage(byte[] imageBytes)
   {
     ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
@@ -106,8 +108,7 @@ public class AuctionViewModel
       headerProperty.set("Auction ID:");
       idProperty.set(selectedAuction.getID());
       titleProperty.set(selectedAuction.getItem().getTitle());
-      descriptionProperty.set(
-          selectedAuction.getItem().getDescription());
+      descriptionProperty.set(selectedAuction.getItem().getDescription());
       reservePriceProperty.set(
           selectedAuction.getPriceConstraint().getReservePrice());
       buyoutPriceProperty.set(
@@ -145,6 +146,7 @@ public class AuctionViewModel
     timeProperty.set(0);
     titleProperty.set("");
   }
+
   public ObjectProperty<Image> getImageProperty()
   {
     return imageProperty;
@@ -223,14 +225,17 @@ public class AuctionViewModel
     {
       case "Time":
         //System.out.println(event.getOldValue());
-        if(idProperty.get() == Integer.parseInt(event.getOldValue().toString()))
-      {
-        LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
-        Platform.runLater(() -> timerProperty.set(time.format(timeFormatter)));
-      }
-      break;
+        if (idProperty.get() == Integer.parseInt(
+            event.getOldValue().toString()))
+        {
+          LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
+          Platform.runLater(
+              () -> timerProperty.set(time.format(timeFormatter)));
+        }
+        break;
       case "End":
-        if(idProperty.get() == Integer.parseInt(event.getOldValue().toString()))
+        if (idProperty.get() == Integer.parseInt(
+            event.getOldValue().toString()))
         {
           Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
         }
