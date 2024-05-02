@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 
-public class EndTime
+public class ServerTimer
     implements Runnable, NamedPropertyChangeSubject, Serializable
 {
   private int id;
@@ -19,7 +19,7 @@ public class EndTime
   //private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
-  public EndTime(Time start, Time end, int id)
+  public ServerTimer(Time start, Time end, int id)
   {
     this.start = start;
     this.end = end;
