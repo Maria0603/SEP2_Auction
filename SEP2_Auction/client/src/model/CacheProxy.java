@@ -35,15 +35,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    Auction auction;
-    try
-    {
-      auction = ongoingAuctionsCache.getAuctionByID(ID);
-    }
-    catch (IllegalArgumentException e)
-    {
-      auction = modelManager.getAuction(ID);
-    }
+    Auction auction = modelManager.getAuction(ID);
     Timer timer = new Timer(modelManager.timeLeft(Time.valueOf(LocalTime.now()),
         auction.getEndTime()) - 1, ID);
     timer.addListener("Time", this);

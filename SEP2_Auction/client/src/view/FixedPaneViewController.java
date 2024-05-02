@@ -178,7 +178,7 @@ public class FixedPaneViewController
       borderPane.setCenter(allAuctionsViewController.getRoot());
       allAuctionsViewController.reset(id);
     }
-    allAuctionsViewController.loadOngoingAuctions();
+    //allAuctionsViewController.loadOngoingAuctions();
     return allAuctionsViewController.getRoot();
   }
 

@@ -36,7 +36,7 @@ public class AllAuctionsViewController
     auctionCards = FXCollections.observableArrayList();
 
     reset(id);
-    //loadOngoingAuctions();
+    loadOngoingAuctions();
     //other bindings to be inserted
 
   }
