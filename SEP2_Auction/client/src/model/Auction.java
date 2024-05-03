@@ -1,5 +1,6 @@
 package model;
 
+import javafx.scene.Node;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.beans.PropertyChangeEvent;
@@ -11,8 +12,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public class Auction
-    implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
-{
+    implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable {
   private int ID;
   private Item item;
   private PriceConstraint priceConstraint;

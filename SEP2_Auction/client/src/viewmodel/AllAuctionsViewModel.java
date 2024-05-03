@@ -11,13 +11,15 @@ import javafx.scene.layout.GridPane;
 import model.Auction;
 import model.AuctionList;
 import model.AuctionModel;
+import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
-public class AllAuctionsViewModel implements PropertyChangeListener
+public class AllAuctionsViewModel implements PropertyChangeListener,
+    NamedPropertyChangeSubject
 {
   private AuctionModel model;
   private ViewModelState state;
@@ -78,5 +80,15 @@ public class AllAuctionsViewModel implements PropertyChangeListener
 
   public ObservableList<Auction> getAuctionCards() {
     return auctionCards;
+  }
+
+  @Override synchronized public void addListener(String propertyName,
+      PropertyChangeListener listener) {
+    property.addPropertyChangeListener(propertyName, listener);
+  }
+
+  @Override public synchronized void removeListener(String propertyName,
+      PropertyChangeListener listener) {
+    property.removePropertyChangeListener(propertyName, listener);
   }
 }

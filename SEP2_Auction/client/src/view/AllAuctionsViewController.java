@@ -5,20 +5,23 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import model.Auction;
-import model.AuctionList;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
+import javafx.geometry.Insets;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-public class AllAuctionsViewController {
+public class AllAuctionsViewController implements PropertyChangeListener {
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
+
+  private final int NUMBER_OF_COLUMNS = 4;
 
   private Region root;
   private AllAuctionsViewModel allAuctionsViewModel;
@@ -35,6 +38,9 @@ public class AllAuctionsViewController {
 
     auctionCards = FXCollections.observableArrayList();
     Bindings.bindContent(auctionCards, allAuctionsViewModel.getAuctionCards());
+
+    allAuctionsViewModel.addListener("Auction", this);
+    allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
     loadOngoingAuctions();
@@ -58,31 +64,21 @@ public class AllAuctionsViewController {
 
   public void loadOngoingAuctions() {
     clearGrid();
-
     try {
 
       int totalElements = auctionCards.size();
-      int numColumns = 4;
-      int numRows = (totalElements + numColumns - 1) / numColumns;
+      int numRows = (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
 
       int listIndex = auctionCards.size() - 1;
 
       for (int row = 0; row < numRows; row++) {
-        for (int column = 0; column < numColumns; column++) {
+        for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 
           if(listIndex >= 0){
 
-            AuctionCardViewController newCardController = initNewCard();
-            newCardController.setData(auctionCards.get(listIndex));
-
-            auctionsGrid.add(newCardController.getRoot(), column, row);
-            GridPane.setMargin(newCardController.getRoot(), new Insets(-1));
-
+            addNewCardToGrid(auctionCards.get(listIndex), column, row);
             listIndex--;
-          } else {
-           ///
           }
-
         }
       }
     }
@@ -91,13 +87,28 @@ public class AllAuctionsViewController {
     }
   }
 
+  private void addNewCardToGrid(Auction auction, int column, int row)
+      throws IOException {
+
+    AuctionCardViewController newCardController = initNewCard();
+    newCardController.setData(auction);
+
+    auctionsGrid.add(newCardController.getRoot(), column, row);
+    GridPane.setMargin(newCardController.getRoot(), new Insets(-1));
+
+  }
+
+
   private AuctionCardViewController initNewCard() throws IOException {
     FXMLLoader load = new FXMLLoader();
     load.setLocation(getClass().getResource("AuctionCardView.fxml"));
+
     Region innerRoot = load.load();
     AuctionCardViewController auctionCardViewController = load.getController();
+
     auctionCardViewController.init(viewHandler,
         viewModelFactory.getAuctionCardViewModel(), innerRoot);
+
     return auctionCardViewController;
   }
 
@@ -107,4 +118,18 @@ public class AllAuctionsViewController {
     auctionsGrid.getColumnConstraints().clear();
   }
 
+  private int getNumberOfRowsInGrid(){
+    int totalElements = auctionCards.size();
+    return (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
+  }
+
+  @Override public void propertyChange(PropertyChangeEvent evt) {
+    switch (evt.getPropertyName()) {
+      case "Auction" -> {
+        ///here we can trigger grid to add new card to the tail
+      }
+      case "End" -> {
+      }
+    }
+  }
 }
