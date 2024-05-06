@@ -295,20 +295,19 @@ public class AuctionViewModel implements PropertyChangeListener
   public void isValidBid() {
     if (incomingBidProperty.get() <= 0) {
       errorProperty.set("Bid amount must be greater than zero.");
-     /* throw new IllegalArgumentException(
-          "Bid amount must be greater than zero.");*/
     }
 
     if (incomingBidProperty.get() < reservePriceProperty.get()) {
       errorProperty.set("Bid amount must be at least the reserve price.");
-      /* throw new IllegalArgumentException(
-          "Bid amount must be at least the reserve price."); */
     }
 
     if (incomingBidProperty.get() <= currentBidProperty.get()) {
       errorProperty.set("Bid amount must be higher than the highest bid.");
-      /* throw new IllegalArgumentException(
-          "Bid amount must be higher than the highest bid."); */
+    }
+    if (incomingBidProperty.get()
+        < currentBidProperty.get() + incrementProperty.get()) {
+      errorProperty.set(
+          "Bid amount must be at least the minimum increment higher than the highest bid.");
     }
   }
 
