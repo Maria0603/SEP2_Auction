@@ -17,6 +17,9 @@ import java.util.Optional;
 
 public class AuctionViewController
 {
+  @FXML public TextField incomingBidTextField;
+  @FXML private Label currentBidLabel;
+
   @FXML private ScrollPane auctionScrollPane;
   @FXML private Button backButton;
   @FXML private Label bidLabel;
@@ -24,7 +27,6 @@ public class AuctionViewController
   @FXML private Button buyNowButton;
   @FXML private TextField buyoutPriceTextField;
   @FXML private Button cancelButton;
-  @FXML private Label currentBidLabel;
   @FXML private Label currentBidTextLabel;
   @FXML private Label currentBidderLabel;
   @FXML private Label currentBidderTextLabel;
@@ -95,6 +97,10 @@ public class AuctionViewController
     Bindings.bindBidirectional(imageImageView.imageProperty(),
         auctionViewModel.getImageProperty());
     //other bindings to be inserted
+
+    Bindings.bindBidirectional(currentBidLabel.textProperty(), this.auctionViewModel.getCurrentBidProperty(), new IntStringConverter());
+    Bindings.bindBidirectional(incomingBidTextField.textProperty(), this.auctionViewModel.getIncomingBidProperty(), new IntStringConverter());
+
 
     errorLabel.setText("");
     fileChooser = new FileChooser();
@@ -267,9 +273,10 @@ public class AuctionViewController
 
   }
 
-  @FXML void placeBidButtonPressed(ActionEvent event)
-  {
+  @FXML
+  void placeBidButtonPressed(ActionEvent event) {
 
+    auctionViewModel.placeBid();
   }
 
   public void deleteButtonPressed(ActionEvent actionEvent)

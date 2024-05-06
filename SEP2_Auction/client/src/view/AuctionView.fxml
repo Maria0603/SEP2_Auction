@@ -260,7 +260,7 @@
                               <Insets right="30.0" />
                            </HBox.margin>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="bidTextField" prefHeight="26.0" prefWidth="198.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incomingBidTextField" prefHeight="26.0" prefWidth="198.0">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>

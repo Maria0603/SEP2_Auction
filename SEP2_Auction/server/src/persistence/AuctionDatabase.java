@@ -23,8 +23,9 @@ public class AuctionDatabase implements AuctionPersistence
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
 
-  private static final String PASSWORD = "1706";
+  //private static final String PASSWORD = "1706";
   //private static final String PASSWORD = "344692StupidPass";
+  private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
