@@ -18,7 +18,7 @@ public class TestBid {
     private static void testSaveBid() throws SQLException, ClassNotFoundException {
         AuctionDatabase bidDatabase = new AuctionDatabase();
         // Dummy data for testing
-        int auctionId = 1;
+        int auctionId = 2;
         String participantEmail = "test@example.com";
         double bidAmount = 100.0;
         // Save bid

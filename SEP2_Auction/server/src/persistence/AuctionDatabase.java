@@ -26,7 +26,7 @@ public class AuctionDatabase implements AuctionPersistence {
 
   // private static final String PASSWORD = "1706";
   // private static final String PASSWORD = "344692StupidPass";
-  private static final String PASSWORD = "0000";
+  private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
     this.database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
@@ -287,7 +287,7 @@ public class AuctionDatabase implements AuctionPersistence {
   @Override
   public Bid saveBid(int auctionId, String participantEmail, double bidAmount) throws SQLException {
     try (Connection connection = getConnection()) {
-      String sql = "INSERT INTO Bid (participant_email, auction_id, bid_amount, bid_time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
+      String sql = "INSERT INTO sprint1database.bid (participant_email, auction_id, bid_amount, bid_time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
       PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
       statement.setString(1, participantEmail);
       statement.setInt(2, auctionId);
@@ -309,7 +309,7 @@ public class AuctionDatabase implements AuctionPersistence {
   public List<Bid> getBidsForAuction(int auctionId) throws SQLException {
     List<Bid> bids = new ArrayList<>();
     try (Connection connection = getConnection()) {
-      String sql = "SELECT * FROM Bid WHERE auction_id = ?";
+      String sql = "SELECT * FROM sprint1database.bid WHERE auction_id = ?";
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setInt(1, auctionId);
       ResultSet resultSet = statement.executeQuery();
@@ -325,6 +325,4 @@ public class AuctionDatabase implements AuctionPersistence {
     }
     return bids;
   }
-
-
 }
