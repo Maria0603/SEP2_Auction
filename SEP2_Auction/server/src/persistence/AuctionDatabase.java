@@ -22,14 +22,14 @@ public class AuctionDatabase implements AuctionPersistence
   private MyDatabase database;
   // link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
-  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=bidtable";
+  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
 
 
   // private static final String PASSWORD = "1706";
   // private static final String PASSWORD = "344692StupidPass";
 
-  private static final String PASSWORD = "2031";
+  private static final String PASSWORD = "31052003";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
@@ -219,7 +219,7 @@ public class AuctionDatabase implements AuctionPersistence
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
-    String sql = "SELECT ID, title, current_bid, image_data, end_time FROM auction WHERE status='ONGOING';";
+    String sql = "SELECT ID, title, current_bid, image_data, end_time FROM sprint1database.auction WHERE status='ONGOING';";
     ArrayList<Object[]> results = database.query(sql);
     AuctionList auctions = new AuctionList();
     for (int i = 0; i < results.size(); i++)
@@ -259,10 +259,8 @@ public class AuctionDatabase implements AuctionPersistence
     if (bid < 0) {
       throw new IllegalArgumentException("Bid amount cannot be negative");
     }
-    if (bid < checkCurrentBid(bid)){
-      throw new IllegalArgumentException("Bid has to be higher than the current bid");
-    }
-    return bid;
+
+      return bid;
   }
 
   private String checkCurrentBidder(String bidder) {
