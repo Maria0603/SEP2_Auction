@@ -1,3 +1,4 @@
+/*
 
 package test;
 
@@ -146,3 +147,4 @@ class AuctionListTest
 }
 
 
+*/

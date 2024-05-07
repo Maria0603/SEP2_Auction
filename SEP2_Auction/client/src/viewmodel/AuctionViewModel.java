@@ -129,13 +129,14 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void leaveAuctionView()
   {
+    //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
     model.removeListener("End", this);
   }
 
   public void wipe()
   {
-    //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
+
 
     headerProperty.set("Start auction");
     idProperty.set(0);
