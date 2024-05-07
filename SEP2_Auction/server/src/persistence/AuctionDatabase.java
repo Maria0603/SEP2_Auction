@@ -11,20 +11,22 @@ import javax.imageio.ImageIO;
 import java.sql.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.AuctionList;
+import model.Bid;
 import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence {
   private MyDatabase database;
   // link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
-  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
+  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=bidtable";
   private static final String USER = "postgres";
 
   // private static final String PASSWORD = "1706";
   // private static final String PASSWORD = "344692StupidPass";
-  private static final String PASSWORD = "31052003";
+  private static final String PASSWORD = "0000";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
     this.database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
@@ -219,12 +221,21 @@ public class AuctionDatabase implements AuctionPersistence {
   }
 
   private int checkCurrentBid(int bid) {
-    // logic for bid
+    // Ensuring bid is non-negative
+    if (bid < 0) {
+      throw new IllegalArgumentException("Bid amount cannot be negative");
+    }
+    if (bid < checkCurrentBid(bid)){
+      throw new IllegalArgumentException("Bid has to be higher than the current bid");
+    }
     return bid;
   }
 
   private String checkCurrentBidder(String bidder) {
-    // logic for bidder
+    // Ensuring bidder is not null or empty
+    if (bidder == null || bidder.isEmpty()) {
+      throw new IllegalArgumentException("Bidder cannot be null or empty");
+    }
     return bidder;
   }
 
@@ -272,5 +283,48 @@ public class AuctionDatabase implements AuctionPersistence {
     if (auctionTime <= 0 || auctionTime > 24 * 3600)
       throw new SQLException("The auction time can be at most 24 hours!");
   }
+
+  @Override
+  public Bid saveBid(int auctionId, String participantEmail, double bidAmount) throws SQLException {
+    try (Connection connection = getConnection()) {
+      String sql = "INSERT INTO Bid (participant_email, auction_id, bid_amount, bid_time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
+      PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+      statement.setString(1, participantEmail);
+      statement.setInt(2, auctionId);
+      statement.setDouble(3, bidAmount);
+      statement.executeUpdate();
+
+      ResultSet generatedKeys = statement.getGeneratedKeys();
+      if (generatedKeys.next()) {
+        int bidId = generatedKeys.getInt(1);
+        Bid bid = new Bid(bidId, auctionId, participantEmail, bidAmount, null); // Timestamp will be null for now
+        return bid;
+      } else {
+        throw new SQLException("Failed to save bid, no ID obtained.");
+      }
+    }
+  }
+
+  @Override
+  public List<Bid> getBidsForAuction(int auctionId) throws SQLException {
+    List<Bid> bids = new ArrayList<>();
+    try (Connection connection = getConnection()) {
+      String sql = "SELECT * FROM Bid WHERE auction_id = ?";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setInt(1, auctionId);
+      ResultSet resultSet = statement.executeQuery();
+      while (resultSet.next()) {
+        int bidId = resultSet.getInt("bid_id");
+        String participantEmail = resultSet.getString("participant_email");
+        double bidAmount = resultSet.getDouble("bid_amount");
+        Timestamp bidTime = resultSet.getTimestamp("bid_time");
+
+        Bid bid = new Bid(bidId, auctionId, participantEmail, bidAmount, bidTime.toLocalDateTime());
+        bids.add(bid);
+      }
+    }
+    return bids;
+  }
+
 
 }
