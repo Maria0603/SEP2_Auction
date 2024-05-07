@@ -11,7 +11,7 @@ import javafx.scene.layout.Region;
 import viewmodel.FixedPaneViewModel;
 import viewmodel.ViewModelFactory;
 
-public class FixedPaneViewController
+public class FixedPaneViewHandler
 {
   @FXML private Button allAuctionsButton;
   @FXML private BorderPane borderPane;
@@ -37,7 +37,7 @@ public class FixedPaneViewController
 
   public void init(ViewHandler viewHandler,
       FixedPaneViewModel fixedPaneViewModel, ViewModelFactory viewModelFactory,
-      Region root, String id)
+      Region root, WindowType windowType)
   {
     this.root = root;
     this.viewModelFactory = viewModelFactory;
@@ -45,7 +45,8 @@ public class FixedPaneViewController
     this.viewHandler = viewHandler;
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
-    reset(id);
+    
+    reset(windowType);
   }
 
   public Region getRoot()
@@ -53,17 +54,17 @@ public class FixedPaneViewController
     return root;
   }
 
-  public void reset(String id)
+  public void reset(WindowType windowType)
   {
 
     fixedPaneViewModel.reset();
 
     ///////////////////////////
     //sprint 1 focus
-    switch (id)
+    switch (windowType)
     {
-      case "startAuction" -> sellItemButtonPressed();
-      case "displayAuction" ->
+      case START_AUCTION -> sellItemButtonPressed();
+      case DISPLAY_AUCTION ->
       {
         try
         {
@@ -73,7 +74,7 @@ public class FixedPaneViewController
           borderPane.setCenter(root);
           auctionViewController = loader.getController();
           auctionViewController.init(viewHandler,
-              viewModelFactory.getAuctionViewModel(), root, id);
+              viewModelFactory.getAuctionViewModel(), root, windowType);
 
           allAuctionsButton.setDisable(false);
           myAuctions_allAccountsButton.setDisable(false);
@@ -89,7 +90,7 @@ public class FixedPaneViewController
           e.printStackTrace();
         }
       }
-      case "allAuctions" -> allAuctionsButtonPressed();
+      case ALL_AUCTIONS -> allAuctionsButtonPressed();
     }
 
   }
@@ -119,7 +120,7 @@ public class FixedPaneViewController
         auctionViewController = loader.getController();
 
         auctionViewController.init(viewHandler,
-            viewModelFactory.getAuctionViewModel(), root, "startAuction");
+            viewModelFactory.getAuctionViewModel(), root, WindowType.START_AUCTION);
       }
       catch (Exception e)
       {
@@ -129,7 +130,7 @@ public class FixedPaneViewController
     else
     {
       borderPane.setCenter(auctionViewController.getRoot());
-      auctionViewController.reset("startAuction");
+      auctionViewController.reset(WindowType.START_AUCTION);
 
     }
     return auctionViewController.getRoot();
@@ -137,11 +138,13 @@ public class FixedPaneViewController
 
   @FXML Region allAuctionsButtonPressed()
   {
-    return loadGrid("allAuctions");
+    return loadGrid(WindowType.START_AUCTION);
   }
 
-  private Region loadGrid(String id)
+  private Region loadGrid(WindowType windowType)
   {
+    if (auctionViewController != null)
+      auctionViewController.leaveAuctionView();
     allAuctionsButton.setDisable(false);
     myAuctions_allAccountsButton.setDisable(false);
     myBidsButton.setDisable(false);
@@ -162,8 +165,8 @@ public class FixedPaneViewController
         borderPane.setCenter(root);
         allAuctionsViewController = loader.getController();
 
-        allAuctionsViewController.init(viewHandler,
-            viewModelFactory, root, id);
+        allAuctionsViewController.init(viewHandler, viewModelFactory, root,
+            windowType);
 
       }
       catch (Exception e)
@@ -175,9 +178,9 @@ public class FixedPaneViewController
     else
     {
       borderPane.setCenter(allAuctionsViewController.getRoot());
-      allAuctionsViewController.reset(id);
-
+      allAuctionsViewController.reset(windowType);
     }
+    allAuctionsViewController.loadOngoingAuctions();
     return allAuctionsViewController.getRoot();
   }
 

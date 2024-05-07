@@ -57,9 +57,9 @@ public class AuctionServer
     Naming.rebind("Connect", this);
   }
 
-  @Override public Auction startAuction(String title,
-      String description, int reservePrice, int buyoutPrice,
-      int minimumIncrement, int auctionTime, byte[] imageData)
+  @Override public Auction startAuction(String title, String description,
+      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
+      byte[] imageData)
       throws RemoteException, SQLException, ClassNotFoundException
   {
     return model.startAuction(title, description, reservePrice, buyoutPrice,
@@ -73,7 +73,8 @@ public class AuctionServer
   }
 
   @Override public AuctionList getOngoingAuctions()
-      throws RemoteException, SQLException {
+      throws RemoteException, SQLException
+  {
     return model.getOngoingAuctions();
   }
 

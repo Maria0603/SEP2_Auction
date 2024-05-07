@@ -8,22 +8,24 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
-public class AuctionModelManager implements AuctionModel, PropertyChangeListener {
+public class AuctionModelManager implements AuctionModel, PropertyChangeListener
+{
   private PropertyChangeSupport property;
   private AuctionPersistence auctionDatabase;
 
-  public AuctionModelManager() throws SQLException, ClassNotFoundException {
+  public AuctionModelManager() throws SQLException, ClassNotFoundException
+  {
     property = new PropertyChangeSupport(this);
     auctionDatabase = new AuctionDatabase();
   }
 
-  @Override
-  public Auction startAuction(String title,
+  @Override public synchronized Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData)
-      throws SQLException {
-    Auction auction = auctionDatabase.saveAuction(title, description, reservePrice, buyoutPrice,
-        minimumIncrement, auctionTime, imageData);
+      throws SQLException
+  {
+    Auction auction = auctionDatabase.saveAuction(title, description,
+        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
     property.firePropertyChange("Auction", null, auction);
 
     // auction.addListener("Time", this);
@@ -31,48 +33,42 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auction;
   }
 
-  @Override
-  public Auction getAuction(int ID) throws SQLException {
+  @Override public synchronized Auction getAuction(int ID) throws SQLException
+  {
+    System.out.println("server received a request in getAuctionById");
     return auctionDatabase.getAuctionById(ID);
   }
 
-  @Override
-  public AuctionList getOngoingAuctions() throws SQLException {
+  @Override public synchronized AuctionList getOngoingAuctions()
+      throws SQLException
+  {
+    System.out.println("server received a request in getOngoingAuctions");
     return auctionDatabase.getOngoingAuctions();
   }
 
-  @Override
-  public void addListener(String propertyName,
-      PropertyChangeListener listener) {
+  @Override public synchronized void addListener(String propertyName,
+      PropertyChangeListener listener)
+  {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void removeListener(String propertyName,
-      PropertyChangeListener listener) {
+  @Override public synchronized void removeListener(String propertyName,
+      PropertyChangeListener listener)
+  {
     property.removePropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-    // update the time and status in the database
-    /*
-     * if(evt.getPropertyName().equals("Time") && (int)evt.getNewValue()%5==0)
-     * {
-     * try
-     * {
-     * auctionDatabase.updateTime((int)evt.getOldValue(), (int)evt.getNewValue());
-     * }
-     * catch(SQLException e)
-     * {
-     * e.printStackTrace();
-     * }
-     * }
-     */
-    if (evt.getPropertyName().equals("End")) {
-      try {
+  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
+  {
+
+    if (evt.getPropertyName().equals("End"))
+    {
+      try
+      {
         auctionDatabase.markAsClosed((int) evt.getOldValue());
-      } catch (SQLException e) {
+      }
+      catch (SQLException e)
+      {
         e.printStackTrace();
       }
     }

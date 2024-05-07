@@ -12,6 +12,8 @@
     <orderEntry type="library" name="postgresql-42.7.3" level="application" />
     <orderEntry type="library" name="MyDatabase2" level="application" />
     <orderEntry type="library" name="postgresql-42.7.31" level="project" />
+
     <orderEntry type="library" name="MyDatabase" level="project" />
+
   </component>
 </module>

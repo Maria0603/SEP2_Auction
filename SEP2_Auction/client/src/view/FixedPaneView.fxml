@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.Ellipse?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" prefHeight="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FixedPaneViewController">
+<BorderPane fx:id="borderPane" prefHeight="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FixedPaneViewHandler">
    <center>
       <Pane fx:id="changePane" prefHeight="740.0" prefWidth="1102.0" />
    </center>

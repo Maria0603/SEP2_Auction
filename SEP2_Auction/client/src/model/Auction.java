@@ -1,5 +1,6 @@
 package model;
 
+import javafx.scene.Node;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.beans.PropertyChangeEvent;
@@ -11,8 +12,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public class Auction
-    implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
-{
+    implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable {
   private int ID;
   private Item item;
   private PriceConstraint priceConstraint;
@@ -29,33 +29,45 @@ public class Auction
   private PropertyChangeSupport property;
 
   public Auction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd, int currentBid,
-      String currentBidder, byte[] imageData, String status)
+      int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
+      int currentBid, String currentBidder, byte[] imageData, String status)
   {
     property = new PropertyChangeSupport(this);
-    setID(ID);
-    this.item=new Item(title, description);
-    this.priceConstraint=new PriceConstraint(reservePrice, buyoutPrice, minimumIncrement);
+    this.ID = ID;
+    this.item = new Item(title, description);
+    this.priceConstraint = new PriceConstraint(reservePrice, buyoutPrice,
+        minimumIncrement);
 
-    start=auctionStart;
-    end=auctionEnd;
+    start = auctionStart;
+    end = auctionEnd;
 
     setImageData(imageData);
     this.status = status;
 
   }
+
+  public Auction(int ID, String title, int currentBid, Time end,
+      byte[] imageData)
+  {
+    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, imageData,
+        null);
+  }
+
   public Item getItem()
   {
     return item;
   }
+
   public PriceConstraint getPriceConstraint()
   {
     return priceConstraint;
   }
+
   public Time getEndTime()
   {
     return end;
   }
+
   public Time getStartTime()
   {
     return start;
@@ -68,8 +80,6 @@ public class Auction
 
   public void setImageData(byte[] imageData)
   {
-    if (imageData == null)
-      throw new IllegalArgumentException("Please upload an image.");
     this.imageData = imageData;
   }
 
@@ -100,11 +110,6 @@ public class Auction
     return ID;
   }
 
-  public void setID(int ID)
-  {
-    this.ID = ID;
-  }
-
   public String getStatus()
   {
     return status;
@@ -115,30 +120,15 @@ public class Auction
     this.status = status;
   }
 
-
-
-  public void setAuctionTime(int auctionTime)
-  {
-    if (auctionTime <= 0 || auctionTime > 24 * 3600)
-      throw new IllegalArgumentException(
-          "The auction time can be at most 24 hours!");
-
-    /////////////////////////////////////////////////////////////////////////////////
-    //correct line:
-    this.auctionEndTime = auctionTime;
-    ////////////////////////////////////////////////////////////////////////////////
-    //for testing purposes:
-    //this.auctionEndTime=auctionTime/3600;
-  }
-
   @Override public String toString()
   {
     return "ID=" + ID + ", title='" + item.getTitle() + '\'' + ", description='"
-        + item.getDescription() + '\'' + ", reservePrice=" + priceConstraint.getReservePrice()
-        + ", buyoutPrice=" + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
-        + priceConstraint.getMinimumIncrement() + ", auctionTime=" + auctionEndTime + '\'';
+        + item.getDescription() + '\'' + ", reservePrice="
+        + priceConstraint.getReservePrice() + ", buyoutPrice="
+        + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
+        + priceConstraint.getMinimumIncrement() + ", auctionTime="
+        + auctionEndTime + '\'';
   }
-
 
   @Override synchronized public void addListener(String propertyName,
       PropertyChangeListener listener)

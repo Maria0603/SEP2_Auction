@@ -36,7 +36,6 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
     return timerSeconds;
   }
 
-
   @Override public void run()
   {
     //timerSeconds=timerSeconds/3600;

@@ -12,11 +12,11 @@ public class ViewModelFactory
 
   public ViewModelFactory(AuctionModel model)
   {
-    this.model=model;
+    this.model = model;
     viewModelState = new ViewModelState();
     auctionViewModel = new AuctionViewModel(this.model, viewModelState);
     fixedPaneViewModel = new FixedPaneViewModel(this.model, viewModelState);
-    allAuctionsViewModel=new AllAuctionsViewModel(this.model, viewModelState);
+    allAuctionsViewModel = new AllAuctionsViewModel(this.model, viewModelState);
   }
 
   public AuctionViewModel getAuctionViewModel()
@@ -33,6 +33,7 @@ public class ViewModelFactory
   {
     return allAuctionsViewModel;
   }
+
   public AuctionCardViewModel getAuctionCardViewModel()
   {
     return new AuctionCardViewModel(model, viewModelState);

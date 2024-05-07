@@ -39,6 +39,7 @@ public class AuctionList implements Serializable
         return auction;
     throw new IllegalArgumentException("No auction with this ID.");
   }
+
   public Auction getAuction(int index)
   {
     return auctions.get(index);
