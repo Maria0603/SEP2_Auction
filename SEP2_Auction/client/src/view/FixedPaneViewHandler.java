@@ -1,3 +1,4 @@
+
 package view;
 
 import javafx.event.ActionEvent;
@@ -28,6 +29,7 @@ public class FixedPaneViewHandler
   private FixedPaneViewModel fixedPaneViewModel;
   private AuctionViewController auctionViewController;
   private AllAuctionsViewController allAuctionsViewController;
+  private AllAccounts_NotificationsViewController allAccountsNotificationsViewController;
   private Region root;
 
   //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
@@ -45,7 +47,7 @@ public class FixedPaneViewHandler
     this.viewHandler = viewHandler;
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
-    
+
     reset(windowType);
   }
 
@@ -59,8 +61,6 @@ public class FixedPaneViewHandler
 
     fixedPaneViewModel.reset();
 
-    ///////////////////////////
-    //sprint 1 focus
     switch (windowType)
     {
       case START_AUCTION -> sellItemButtonPressed();
@@ -91,6 +91,7 @@ public class FixedPaneViewHandler
         }
       }
       case ALL_AUCTIONS -> allAuctionsButtonPressed();
+      case NOTIFICATIONS -> notificationsButtonPressed();
     }
 
   }
@@ -204,9 +205,33 @@ public class FixedPaneViewHandler
 
   }
 
-  @FXML void notificationsButtonPressed(ActionEvent event)
+  @FXML Region notificationsButtonPressed()
   {
+    if (allAccountsNotificationsViewController == null)
+    {
+      try
+      {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("AllAccounts_NotificationsView.fxml"));
+        Region root = loader.load();
+        borderPane.setCenter(root);
+        allAccountsNotificationsViewController = loader.getController();
 
+        allAccountsNotificationsViewController.init(viewHandler, viewModelFactory.getAllAccountsNotificationsViewModel(), root, WindowType.NOTIFICATIONS);
+
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+
+    }
+    else
+    {
+      borderPane.setCenter(allAccountsNotificationsViewController.getRoot());
+      allAccountsNotificationsViewController.reset(WindowType.NOTIFICATIONS);
+    }
+    return allAuctionsViewController.getRoot();
   }
 
   public void myBidsButtonPressed(ActionEvent actionEvent)
@@ -215,3 +240,8 @@ public class FixedPaneViewHandler
   }
 
 }
+
+
+
+
+

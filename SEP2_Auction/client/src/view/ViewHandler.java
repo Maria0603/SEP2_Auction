@@ -1,3 +1,4 @@
+
 package view;
 
 import javafx.fxml.FXMLLoader;
@@ -28,9 +29,9 @@ public class ViewHandler {
     Region root = null;
     switch (type) {
       case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS ->{
-          root = loadFixedPaneView("FixedPaneView.fxml", type);
+        root = loadFixedPaneView("FixedPaneView.fxml", type);
       }
-      case SING_UP, LOG_IN -> {
+      case SIGN_UP, LOG_IN -> {
         //for future
       }
       default -> {
@@ -77,3 +78,9 @@ public class ViewHandler {
     return fixedPaneViewController.getRoot();
   }
 }
+
+
+
+
+
+

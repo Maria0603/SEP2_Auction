@@ -1,3 +1,4 @@
+
 package model;
 
 import mediator.AuctionClient;
@@ -22,7 +23,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client = new AuctionClient();
     client.addListener("Auction", this);
     client.addListener("End", this);
-    client.addListener("Bid",this);
   }
 
   @Override public Auction startAuction(String title, String description,
@@ -43,14 +43,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getOngoingAuctions();
   }
 
-  public long timeLeft(Time currentTime, Time end)
+  @Override public NotificationList getNotifications(String receiver)
+      throws SQLException
   {
-    long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
-    long endSeconds = end.toLocalTime().toSecondOfDay();
-    if (currentSeconds >= endSeconds)
-      return 60 * 60 * 24 - (currentSeconds - endSeconds);
-    else
-      return endSeconds - currentSeconds;
+    return client.getNotifications(receiver);
   }
 
   @Override public void addListener(String propertyName,
@@ -71,3 +67,4 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     property.firePropertyChange(evt);
   }
 }
+

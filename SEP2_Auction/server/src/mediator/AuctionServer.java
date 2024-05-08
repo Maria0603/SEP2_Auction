@@ -1,8 +1,10 @@
+
 package mediator;
 
 import model.Auction;
 import model.AuctionList;
 import model.AuctionModel;
+import model.NotificationList;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
@@ -33,7 +35,6 @@ public class AuctionServer
     model.addListener("Auction", this);
     model.addListener("Time", this);
     model.addListener("End", this);
-    model.addListener("Bid",this);
 
     startRegistry();
     startServer();
@@ -77,6 +78,12 @@ public class AuctionServer
       throws RemoteException, SQLException
   {
     return model.getOngoingAuctions();
+  }
+
+  @Override public NotificationList getNotifications(String receiver)
+      throws RemoteException, SQLException
+  {
+    return model.getNotifications(receiver);
   }
 
   @Override public boolean addListener(GeneralListener<String, Object> listener,
