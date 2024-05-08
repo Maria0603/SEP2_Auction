@@ -11,6 +11,12 @@ public interface AuctionModel extends NamedPropertyChangeSubject
       throws SQLException, ClassNotFoundException;
   Auction getAuction(int ID) throws SQLException;
   AuctionList getOngoingAuctions() throws SQLException;
+
   NotificationList getNotifications(String receiver) throws SQLException;
   Bid placeBid(String bidder, int bidValue, int auctionId) throws SQLException;
+
+
+  void addUser(String firstname,String lastname, String email, String password, String phone);
+  String getUser(String email, String password);
 }
+

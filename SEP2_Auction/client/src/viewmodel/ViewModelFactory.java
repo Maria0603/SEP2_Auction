@@ -7,7 +7,11 @@ public class ViewModelFactory
   private AuctionViewModel auctionViewModel;
   private FixedPaneViewModel fixedPaneViewModel;
   private AllAuctionsViewModel allAuctionsViewModel;
+
   private AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel;
+
+  private CreateLoginViewModel createLoginViewModel;
+
   private ViewModelState viewModelState;
   private AuctionModel model;
 
@@ -18,7 +22,11 @@ public class ViewModelFactory
     auctionViewModel = new AuctionViewModel(this.model, viewModelState);
     fixedPaneViewModel = new FixedPaneViewModel(this.model, viewModelState);
     allAuctionsViewModel = new AllAuctionsViewModel(this.model, viewModelState);
+
     allAccountsNotificationsViewModel=new AllAccounts_NotificationsViewModel(this.model, viewModelState);
+
+    createLoginViewModel = new CreateLoginViewModel(this.model);
+
   }
 
   public AuctionViewModel getAuctionViewModel()
@@ -40,8 +48,12 @@ public class ViewModelFactory
   {
     return new AuctionCardViewModel(model, viewModelState);
   }
+
   public AllAccounts_NotificationsViewModel getAllAccountsNotificationsViewModel()
   {
     return allAccountsNotificationsViewModel;
   }
+
+  public CreateLoginViewModel getCreateLoginViewModel() {return createLoginViewModel;}
+
 }

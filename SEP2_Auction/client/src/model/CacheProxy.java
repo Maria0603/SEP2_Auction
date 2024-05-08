@@ -76,6 +76,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     return ongoingAuctionsCache;
   }
 
+
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
@@ -96,6 +97,16 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       return 60 * 60 * 24 - (currentSeconds - endSeconds);
     else
       return endSeconds - currentSeconds;
+
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+    modelManager.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public String getUser(String email, String password) {
+    return modelManager.getUser(email,password);
+
   }
 
   @Override public void addListener(String propertyName,

@@ -17,8 +17,13 @@ public interface AuctionRemote extends Remote
       throws RemoteException, SQLException, ClassNotFoundException;
   Auction getAuction(int ID) throws RemoteException, SQLException;
   AuctionList getOngoingAuctions() throws RemoteException, SQLException;
+
   NotificationList getNotifications(String receiver) throws RemoteException, SQLException;
   Bid placeBid(String bidder, int bidValue, int auctionId) throws RemoteException, SQLException;
+
+
+  void addUser(String firstname,String lastname, String email, String password, String phone) throws RemoteException;
+  String getUser(String email, String password) throws RemoteException;
 
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;

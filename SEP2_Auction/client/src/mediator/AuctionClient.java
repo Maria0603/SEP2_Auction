@@ -89,6 +89,7 @@ public class AuctionClient
     return null;
   }
 
+
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
@@ -115,6 +116,25 @@ public class AuctionClient
       e.printStackTrace();
     }
     return null;
+
+
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+    try {
+      server.addUser(firstname,lastname,email,password,phone);
+    } catch (RemoteException e) {
+      //  ...
+    }
+  }
+
+  @Override
+  public String getUser(String email, String password) {
+    try {
+      return server.getUser(email,password);
+    } catch (RemoteException e) {
+      return null;
+    }
+
   }
 
   @Override public void addListener(String s,
