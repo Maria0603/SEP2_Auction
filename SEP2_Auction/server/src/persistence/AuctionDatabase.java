@@ -29,7 +29,7 @@ public class AuctionDatabase implements AuctionPersistence
   // private static final String PASSWORD = "1706";
   // private static final String PASSWORD = "344692StupidPass";
 
-  private static final String PASSWORD = "31052003";
+  private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
@@ -363,5 +363,20 @@ public class AuctionDatabase implements AuctionPersistence
       }
     }
     return bids;
+  }
+
+  @Override
+  public void updateCurrentBid(Bid currentBid) throws SQLException {
+    try (Connection connection = getConnection()) {
+      String sql = "UPDATE sprint1database.bid SET bid_amount = ?, participant_email = ?, bid_time = CURRENT_TIMESTAMP WHERE bid_id = ?";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setDouble(1, currentBid.getBidAmount());
+      statement.setString(2, currentBid.getParticipantEmail());
+      statement.setInt(3, currentBid.getBidId());
+      statement.executeUpdate();
+      System.out.println("Successfully saved");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

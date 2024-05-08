@@ -73,7 +73,6 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
         property.firePropertyChange(evt);
         break;
       case "End":
-
         property.firePropertyChange(evt);
     }
   }

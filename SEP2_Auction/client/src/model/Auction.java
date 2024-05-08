@@ -139,7 +139,6 @@ public class Auction
   @Override public synchronized void removeListener(String propertyName,
       PropertyChangeListener listener)
   {
-
     property.removePropertyChangeListener(propertyName, listener);
   }
 

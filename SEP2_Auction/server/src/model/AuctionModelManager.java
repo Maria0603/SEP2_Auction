@@ -58,9 +58,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     property.removePropertyChangeListener(propertyName, listener);
   }
 
-  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
+  @Override public void propertyChange(PropertyChangeEvent evt)
   {
-
     if (evt.getPropertyName().equals("End"))
     {
       try
@@ -71,8 +70,17 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       {
         e.printStackTrace();
       }
+    } else if (evt.getPropertyName().equals("Bid"))
+    {
+      try
+      {
+        auctionDatabase.updateCurrentBid((Bid) evt.getNewValue());
+      }
+      catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
     }
-    // model manager property fires auction events further
     property.firePropertyChange(evt);
-  }
+  }// model manager property fires auction events further
+
 }

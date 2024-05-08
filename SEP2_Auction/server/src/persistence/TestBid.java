@@ -3,13 +3,16 @@ package persistence;
 import model.Bid;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class TestBid {
     public static void main(String[] args) {
         try {
-            testSaveBid();
-            testGetBidsForAuction();
+//            testSaveBid();
+//            testGetBidsForAuction();
+            testUpdateCurrentBid();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -18,7 +21,7 @@ public class TestBid {
     private static void testSaveBid() throws SQLException, ClassNotFoundException {
         AuctionDatabase bidDatabase = new AuctionDatabase();
         // Dummy data for testing
-        int auctionId = 2;
+        int auctionId = 1;
         String participantEmail = "test@example.com";
         double bidAmount = 100.0;
         // Save bid
@@ -33,7 +36,7 @@ public class TestBid {
     private static void testGetBidsForAuction() throws SQLException, ClassNotFoundException {
         AuctionDatabase bidDatabase = new AuctionDatabase();
         // Dummy auction ID for testing
-        int auctionId = 1;
+        int auctionId = 3;
         // Get bids for auction
         List<Bid> bids = bidDatabase.getBidsForAuction(auctionId);
         if (bids != null && !bids.isEmpty()) {
@@ -45,4 +48,22 @@ public class TestBid {
             System.out.println("No bids found for auction " + auctionId);
         }
     }
+
+    private static void testUpdateCurrentBid() throws SQLException, ClassNotFoundException {
+        AuctionDatabase bidDatabase = new AuctionDatabase();
+        int bidId = 2;
+        String participantEmail = "test@example.com";
+        int auctionId = 3;
+        double bidAmount = 190.0;
+        LocalDateTime bidTime = LocalDateTime.now();
+        Bid currentBid = new Bid(bidId, auctionId, participantEmail, bidAmount, bidTime);
+        try {
+            bidDatabase.updateCurrentBid(currentBid);
+            System.out.println("Bid updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -20,4 +20,5 @@ public interface AuctionPersistence
   Bid saveBid(int auctionId, String participantEmail, double bidAmount) throws SQLException;
 
   List<Bid> getBidsForAuction(int auctionId) throws SQLException;
+  void updateCurrentBid(Bid currentBid) throws SQLException;
 }
