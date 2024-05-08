@@ -1,6 +1,6 @@
 package persistence;
 
-import model.Auction;
+import model.*;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -9,12 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.AuctionList;
-import model.Bid;
 import utility.persistence.MyDatabase;
 
 public class AuctionDatabase implements AuctionPersistence
@@ -251,6 +250,31 @@ public class AuctionDatabase implements AuctionPersistence
           new Auction(id, title, currentBid, auctionEnd, imageData));
     }
     return auctions;
+  }
+  @Override public NotificationList getNotifications(String receiver) throws SQLException
+  {
+
+    String sql = "SELECT * FROM notification WHERE receiver=?;";
+    ArrayList<Object[]> results = database.query(sql, receiver);
+    NotificationList notifications=new NotificationList();
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      String content=row[1].toString();
+      String dateTime=row[2].toString() + " " + row[3].toString();
+      notifications.addNotification(new Notification(dateTime, content, receiver));
+    }
+    return notifications;
+  }
+  @Override public Notification saveNotification(String content, String receiver) throws SQLException
+  {
+    String sql =
+        "INSERT INTO notification(receiver, content, date, time) VALUES (?, ?, ?, ?);";
+    Date date=Date.valueOf(LocalDate.now());
+    Time time=Time.valueOf(LocalTime.now());
+
+    database.update(sql, receiver, content, date, time);
+    return new Notification(date + " " + time, content, receiver);
   }
 
 

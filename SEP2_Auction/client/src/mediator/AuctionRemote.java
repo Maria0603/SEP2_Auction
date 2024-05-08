@@ -2,6 +2,7 @@ package mediator;
 
 import model.Auction;
 import model.AuctionList;
+import model.NotificationList;
 import utility.observer.listener.GeneralListener;
 
 import java.rmi.Remote;
@@ -15,6 +16,7 @@ public interface AuctionRemote extends Remote
       throws RemoteException, SQLException, ClassNotFoundException;
   Auction getAuction(int ID) throws RemoteException, SQLException;
   AuctionList getOngoingAuctions() throws RemoteException, SQLException;
+  NotificationList getNotifications(String receiver) throws RemoteException, SQLException;
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   boolean removeListener(GeneralListener<String, Object> listener,

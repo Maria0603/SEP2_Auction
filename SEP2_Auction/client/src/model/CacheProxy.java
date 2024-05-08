@@ -7,12 +7,16 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class CacheProxy implements AuctionModel, PropertyChangeListener
 {
   private AuctionList ongoingAuctionsCache;
+  private AuctionList previousOpenedAuctions;
+  private NotificationList notifications;
   private AuctionModelManager modelManager;
   private PropertyChangeSupport property;
+  private ArrayList<Thread> timers;
 
   public CacheProxy() throws SQLException, IOException
   {
@@ -21,6 +25,10 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.addListener("Auction", this);
     modelManager.addListener("End", this);
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
+    previousOpenedAuctions=new AuctionList();
+    timers=new ArrayList<>();
+
+    notifications=modelManager.getNotifications("Mr Kaplan");
   }
 
   @Override public Auction startAuction(String title, String description,
@@ -35,19 +43,51 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    Auction auction = modelManager.getAuction(ID);
-    Timer timer = new Timer(modelManager.timeLeft(Time.valueOf(LocalTime.now()),
-        auction.getEndTime()) - 1, ID);
-    timer.addListener("Time", this);
-    timer.addListener("End", this);
-    Thread t = new Thread(timer, String.valueOf(ID));
-    t.start();
+    Auction auction;
+    try
+    {
+      auction = previousOpenedAuctions.getAuctionByID(ID);
+      for(int i=0; i<timers.size(); i++)
+        if(timers.get(i).getId()==ID)
+          timers.get(i).start();
+      //else timers.get(i).interrupt();
+    }
+    catch(IllegalArgumentException e)
+    {
+      auction = modelManager.getAuction(ID);
+      //add auction to cache
+      previousOpenedAuctions.addAuction(auction);
+      Timer timer = new Timer(timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1, ID);
+      timer.addListener("Time", this);
+      timer.addListener("End", this);
+      Thread t = new Thread(timer, String.valueOf(ID));
+      //add timer to cache
+      timers.add(t);
+      t.start();
+    }
+
     return auction;
   }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
     return ongoingAuctionsCache;
+  }
+
+  @Override public NotificationList getNotifications(String receiver)
+      throws SQLException
+  {
+    return notifications;
+  }
+
+  private long timeLeft(Time currentTime, Time end)
+  {
+    long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
+    long endSeconds = end.toLocalTime().toSecondOfDay();
+    if (currentSeconds >= endSeconds)
+      return 60 * 60 * 24 - (currentSeconds - endSeconds);
+    else
+      return endSeconds - currentSeconds;
   }
 
   @Override public void addListener(String propertyName,
@@ -73,7 +113,13 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         ongoingAuctionsCache.removeAuction((Auction) evt.getNewValue());
         //closedAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
+      case "Notification":
+        notifications.addNotification((Notification) evt.getNewValue());
     }
     property.firePropertyChange(evt);
   }
 }
+
+
+
+
