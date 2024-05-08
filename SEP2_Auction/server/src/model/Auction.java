@@ -30,7 +30,7 @@ public class Auction
 
   public Auction(int ID, String title, String description, int reservePrice,
       int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
-      int currentBid, String currentBidder, byte[] imageData, String status)
+      int currentBid, String currentBidder, String seller, byte[] imageData, String status)
   {
     property = new PropertyChangeSupport(this);
     this.ID = ID;
@@ -49,7 +49,7 @@ public class Auction
   public Auction(int ID, String title, int currentBid, Time end,
       byte[] imageData)
   {
-    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, imageData,
+    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, null, imageData,
         null);
   }
 

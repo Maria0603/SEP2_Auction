@@ -1,71 +1,43 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public class Bid implements Serializable {
-    private int bidId;
     private int auctionId;
-    private String participantEmail;
-    private double bidAmount;
-    private LocalDateTime bidTime;
+    private String bidder;
+    private int bidAmount;
 
-    public Bid(int bidId, int auctionId, String participantEmail, double bidAmount, LocalDateTime bidTime) {
-        this.bidId = bidId;
+    public Bid(int auctionId, String bidder, int bidAmount) {
         this.auctionId = auctionId;
-        this.participantEmail = participantEmail;
+        this.bidder = bidder;
         this.bidAmount = bidAmount;
-        this.bidTime = bidTime;
-    }
-
-    public int getBidId() {
-        return bidId;
-    }
-
-    public void setBidId(int bidId) {
-        this.bidId = bidId;
     }
 
     public int getAuctionId() {
         return auctionId;
     }
 
-    public void setAuctionId(int auctionId) {
-        this.auctionId = auctionId;
+
+    public String getBidder() {
+        return bidder;
     }
 
-    public String getParticipantEmail() {
-        return participantEmail;
+    public void setBidder(String bidder) {
+        this.bidder = bidder;
     }
 
-    public void setParticipantEmail(String participantEmail) {
-        this.participantEmail = participantEmail;
-    }
-
-    public double getBidAmount() {
+    public int getBidAmount() {
         return bidAmount;
     }
 
-    public void setBidAmount(double bidAmount) {
-        this.bidAmount = bidAmount;
-    }
 
-    public LocalDateTime getBidTime() {
-        return bidTime;
-    }
-
-    public void setBidTime(LocalDateTime bidTime) {
-        this.bidTime = bidTime;
-    }
 
     @Override
     public String toString() {
         return "Bid{" +
-                "bidId=" + bidId +
                 ", auctionId=" + auctionId +
-                ", participantEmail='" + participantEmail + '\'' +
+                ", participantEmail='" + bidder + '\'' +
                 ", bidAmount=" + bidAmount +
-                ", bidTime=" + bidTime +
                 '}';
     }
 }

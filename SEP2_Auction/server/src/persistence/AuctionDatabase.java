@@ -12,7 +12,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import utility.persistence.MyDatabase;
 
@@ -26,9 +25,9 @@ public class AuctionDatabase implements AuctionPersistence
 
 
   // private static final String PASSWORD = "1706";
-  // private static final String PASSWORD = "344692StupidPass";
+   private static final String PASSWORD = "344692StupidPass";
 
-  private static final String PASSWORD = "2031";
+  //private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
@@ -49,8 +48,8 @@ public class AuctionDatabase implements AuctionPersistence
 
       checkAuctionTime(auctionTime);
       String sql =
-          "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time) \n"
-              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+          "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time, creator_email) \n"
+              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
       PreparedStatement statement = connection.prepareStatement(sql,
           PreparedStatement.RETURN_GENERATED_KEYS);
@@ -60,8 +59,8 @@ public class AuctionDatabase implements AuctionPersistence
       statement.setInt(3, checkReservePrice(reservePrice));
       statement.setInt(4, checkBuyoutPrice(buyoutPrice, reservePrice));
       statement.setInt(5, checkMinimumIncrement(minimumIncrement));
-      statement.setInt(6, checkCurrentBid(0));
-      statement.setString(7, checkCurrentBidder("No bidder"));
+      statement.setInt(6, 0);
+      statement.setString(7, "No bidder");
       statement.setString(8, "temp_path");
       statement.setString(9, "ONGOING");
 
@@ -72,6 +71,7 @@ public class AuctionDatabase implements AuctionPersistence
       //Time end = Time.valueOf(now.plusSeconds(auctionTime));
 
       statement.setTime(11, end);
+      statement.setString(12, null);
 
       statement.executeUpdate();
       ResultSet key = statement.getGeneratedKeys();
@@ -93,7 +93,7 @@ public class AuctionDatabase implements AuctionPersistence
         updateStatement.close();
 
         return new Auction(id, title, description, reservePrice, buyoutPrice,
-            minimumIncrement, start, end, 0, "No bidder", imageData, "ONGOING");
+            minimumIncrement, start, end, 0, "No bidder", null,  imageData, "ONGOING");
       }
       else
       {
@@ -130,9 +130,10 @@ public class AuctionDatabase implements AuctionPersistence
           String status = row[9].toString();
           Time auctionStart = Time.valueOf(row[10].toString());
           Time auctionEnd = Time.valueOf(row[11].toString());
+          String seller=row[12].toString();
           return new Auction(id, title, description, reservePrice, buyoutPrice,
               minimumIncrement, auctionStart, auctionEnd, currentBid,
-              currentBidder, imageData, status);
+              currentBidder, seller, imageData, status);
         }
         catch (Exception e)
         {
@@ -142,26 +143,6 @@ public class AuctionDatabase implements AuctionPersistence
 
       }
       return null;
-      // without jar
-      /*
-       * PreparedStatement statement =
-       * connection.prepareStatement(sql);statement.setInt(1, id);ResultSet resultSet
-       * = statement.executeQuery();if (resultSet.next())
-       * {String title = resultSet.getString("title");String description =
-       * resultSet.getString("description");int reservePrice =
-       * resultSet.getInt("reserve_price");int buyoutPrice =
-       * resultSet.getInt("buyout_price");int minimumIncrement =
-       * resultSet.getInt("minimum_bid_increment");int currentBid =
-       * resultSet.getInt("current_bid");String currentBidder =
-       * resultSet.getString("current_bidder");byte[] imageData =
-       * resultSet.getBytes("image_data");String status =
-       * resultSet.getString("status");Time auctionStart =
-       * resultSet.getTime("start_time");Time auctionEnd =
-       * resultSet.getTime("end_time");
-       * resultSet.close();statement.close();return new Auction(id, title,
-       * description, reservePrice, buyoutPrice,minimumIncrement, auctionStart,
-       * auctionEnd, currentBid, currentBidder, imageData,status);}else{return null;}
-       */
     }
   }
 
@@ -223,22 +204,6 @@ public class AuctionDatabase implements AuctionPersistence
     AuctionList auctions = new AuctionList();
     for (int i = 0; i < results.size(); i++)
     {
-      /*Object[] row = results.get(i);
-      int id = Integer.parseInt(row[0].toString());
-      String title = row[1].toString();
-      String description = row[2].toString();
-      int reservePrice = Integer.parseInt(row[3].toString());
-      int buyoutPrice = Integer.parseInt(row[4].toString());
-      int minimumIncrement = Integer.parseInt(row[5].toString());
-      int currentBid = Integer.parseInt(row[6].toString());
-      String currentBidder = row[7].toString();
-      byte[] imageData = row[8].toString().getBytes();
-      String status = row[9].toString();
-      Time auctionStart = Time.valueOf(row[10].toString());
-      Time auctionEnd = Time.valueOf(row[11].toString());
-      auctions.addAuction(new Auction(id, title, description, reservePrice, buyoutPrice,
-          minimumIncrement, auctionStart, auctionEnd, currentBid,
-          currentBidder, imageData, status));*/
       Object[] row = results.get(i);
       int id = Integer.parseInt(row[0].toString());
       String title = row[1].toString();
@@ -260,13 +225,14 @@ public class AuctionDatabase implements AuctionPersistence
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
-      String content=row[1].toString();
-      String dateTime=row[2].toString() + " " + row[3].toString();
+      String content=row[2].toString();
+      String dateTime=row[3].toString() + " " + row[4].toString();
       notifications.addNotification(new Notification(dateTime, content, receiver));
     }
     return notifications;
   }
-  @Override public Notification saveNotification(String content, String receiver) throws SQLException
+  @Override public Notification saveNotification(String content,
+      String receiver) throws SQLException
   {
     String sql =
         "INSERT INTO notification(receiver, content, date, time) VALUES (?, ?, ?, ?);";
@@ -277,24 +243,77 @@ public class AuctionDatabase implements AuctionPersistence
     return new Notification(date + " " + time, content, receiver);
   }
 
+  @Override
+  public Bid saveBid(String participantEmail, int bidAmount, int auctionId) throws SQLException {
+    try (Connection connection = getConnection()) {
 
-  private int checkCurrentBid(int bid) {
-    // Ensuring bid is non-negative
-    if (bid < 0) {
-      throw new IllegalArgumentException("Bid amount cannot be negative");
-    }
+      String retrieveSql="SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status\n"
+          + "FROM auction\n" + "WHERE auction.ID=?;";
+      ArrayList<Object[]> results = database.query(retrieveSql, auctionId);
+      for (int i = 0; i < results.size(); i++)
+      {
+        Object[] row = results.get(i);
 
+        int currentBid=Integer.parseInt(row[0].toString());
+        String currentBidder=row[1].toString();
+        int reservePrice=Integer.parseInt(row[2].toString());
+        int increment=Integer.parseInt(row[3].toString());
+        String status=row[4].toString();
+        checkBid(bidAmount, participantEmail, currentBid, currentBidder, reservePrice, increment, status);
+      }
+      String sql = "INSERT INTO sprint1database.bid (participant_email, auction_id, bid_amount) VALUES (?, ?, ?)";
+      database.update(sql, participantEmail, auctionId, bidAmount);
+      Bid bid=new Bid(auctionId, participantEmail, bidAmount);
+      updateCurrentBid(bid);
       return bid;
-  }
-
-  private String checkCurrentBidder(String bidder) {
-    // Ensuring bidder is not null or empty
-    if (bidder == null || bidder.isEmpty()) {
-      throw new IllegalArgumentException("Bidder cannot be null or empty");
     }
-
-    return bidder;
   }
+
+  @Override
+  public Bid getBidForAuction(int auctionId) throws SQLException
+  {
+      String sql = "SELECT * FROM sprint1database.bid WHERE auction_id = ?";
+      ArrayList<Object[]> results = database.query(sql, auctionId);
+      for (int i = 0; i < results.size(); i++)
+      {
+        Object[] row = results.get(i);
+        String currentBidder = row[1].toString();
+        int currentBid = Integer.parseInt(row[2].toString());
+        return new Bid(auctionId, currentBidder, currentBid);
+      }
+      return null;
+  }
+
+  @Override
+  public void updateCurrentBid(Bid currentBid) throws SQLException
+  {
+      String sql = "UPDATE auction SET current_bid=?, current_bidder=? WHERE auction.ID=?;";
+      database.update(sql, currentBid.getBidAmount(), currentBid.getBidder(), currentBid.getAuctionId());
+  }
+
+
+  private void checkBid(int bidAmount, String participantEmail, int currentBid, String currentBidder, int reservePrice, int increment, String status)
+      throws SQLException
+  {
+    if (!status.equals("ONGOING"))
+      throw new SQLException("The auction is closed.");
+    else
+    {
+      if(participantEmail.equals(currentBidder))
+        throw new SQLException("You are the current bidder.");
+      else
+      {
+        if(currentBid>0)
+        {
+          if (bidAmount <= currentBid + increment)
+            throw new SQLException("Your bid must is not high enough.");
+        }
+        else if(bidAmount<reservePrice)
+          throw new SQLException("Your bid must be at least the reserve price.");
+      }
+    }
+  }
+
 
   private String checkTitle(String title) throws SQLException
   {
@@ -347,60 +366,5 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("The auction time can be at most 24 hours!");
   }
 
-  @Override
-  public Bid saveBid(int auctionId, String participantEmail, double bidAmount) throws SQLException {
-    try (Connection connection = getConnection()) {
-      String sql = "INSERT INTO sprint1database.bid (participant_email, auction_id, bid_amount, bid_time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
-      PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-      statement.setString(1, participantEmail);
-      statement.setInt(2, auctionId);
-      statement.setDouble(3, bidAmount);
-      statement.executeUpdate();
 
-      ResultSet generatedKeys = statement.getGeneratedKeys();
-      if (generatedKeys.next()) {
-        int bidId = generatedKeys.getInt(1);
-        Bid bid = new Bid(bidId, auctionId, participantEmail, bidAmount, null); // Timestamp will be null for now
-        return bid;
-      } else {
-        throw new SQLException("Failed to save bid, no ID obtained.");
-      }
-    }
-  }
-
-  @Override
-  public List<Bid> getBidsForAuction(int auctionId) throws SQLException {
-    List<Bid> bids = new ArrayList<>();
-    try (Connection connection = getConnection()) {
-      String sql = "SELECT * FROM sprint1database.bid WHERE auction_id = ?";
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setInt(1, auctionId);
-      ResultSet resultSet = statement.executeQuery();
-      while (resultSet.next()) {
-        int bidId = resultSet.getInt("bid_id");
-        String participantEmail = resultSet.getString("participant_email");
-        double bidAmount = resultSet.getDouble("bid_amount");
-        Timestamp bidTime = resultSet.getTimestamp("bid_time");
-
-        Bid bid = new Bid(bidId, auctionId, participantEmail, bidAmount, bidTime.toLocalDateTime());
-        bids.add(bid);
-      }
-    }
-    return bids;
-  }
-
-  @Override
-  public void updateCurrentBid(Bid currentBid) throws SQLException {
-    try (Connection connection = getConnection()) {
-      String sql = "UPDATE sprint1database.bid SET bid_amount = ?, participant_email = ?, bid_time = CURRENT_TIMESTAMP WHERE bid_id = ?";
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setDouble(1, currentBid.getBidAmount());
-      statement.setString(2, currentBid.getParticipantEmail());
-      statement.setInt(3, currentBid.getBidId());
-      statement.executeUpdate();
-      System.out.println("Successfully saved");
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
-  }
 }

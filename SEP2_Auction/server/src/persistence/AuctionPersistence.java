@@ -16,8 +16,7 @@ public interface AuctionPersistence
 
   NotificationList getNotifications(String receiver) throws SQLException;
   Notification saveNotification(String content, String receiver) throws SQLException;
-  Bid saveBid(int auctionId, String participantEmail, double bidAmount) throws SQLException;
-
-  List<Bid> getBidsForAuction(int auctionId) throws SQLException;
+  Bid saveBid(String participantEmail, int bidAmount, int auctionId) throws SQLException;
+  Bid getBidForAuction(int auctionId) throws SQLException;
   void updateCurrentBid(Bid currentBid) throws SQLException;
 }
