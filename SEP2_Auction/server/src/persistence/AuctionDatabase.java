@@ -299,9 +299,9 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("The auction is closed.");
     else
     {
-      if(participantEmail.equals(currentBidder))
-        throw new SQLException("You are the current bidder.");
-      else
+      //if(participantEmail.equals(currentBidder))
+        //throw new SQLException("You are the current bidder.");
+     // else
       {
         if(currentBid>0)
         {

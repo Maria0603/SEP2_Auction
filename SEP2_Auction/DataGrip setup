@@ -1,0 +1,141 @@
+CREATE SCHEMA IF NOT EXISTS sprint1database;
+SET SCHEMA 'sprint1database';
+
+
+CREATE DOMAIN email VARCHAR(100);
+
+
+
+DROP TABLE Auction CASCADE;
+DROP TABLE Users CASCADE;
+DROP TABLE Bid CASCADE;
+DROP TABLE Notification CASCADE;
+DROP TABLE Moderator CASCADE;
+DROP TABLE Moderates CASCADE;
+DROP TABLE participant CASCADE;
+
+CREATE TABLE users (
+  user_email email PRIMARY KEY,
+  password VARCHAR(255) NOT NULL,
+  --nickname VARCHAR(255),
+  phone_number VARCHAR(255),
+  first_name VARCHAR(255),
+  last_name VARCHAR(255)
+  --birth_date DATE,
+  --rate INTEGER
+);
+
+CREATE TABLE participant(
+    user_email email PRIMARY KEY,
+    birth_date DATE,
+    rate INTEGER,
+    FOREIGN KEY (user_email) references users (user_email)
+);
+
+CREATE TABLE IF NOT EXISTS auction(
+   ID SERIAL PRIMARY KEY,
+   title VARCHAR(80) CHECK (length(title)>5) NOT NULL,
+   description VARCHAR(1400) CHECK (length(description)>20) NOT NULL,
+   reserve_price INTEGER NOT NULL,
+   buyout_price INTEGER NOT NULL,
+   minimum_bid_increment INTEGER NOT NULL,
+   current_bid INTEGER,
+   current_bidder email,
+   image_data VARCHAR(250) NOT NULL ,
+   status VARCHAR(7) CHECK (status IN ('ONGOING','CLOSED')) NOT NULL,
+   start_time TIME NOT NULL,
+   end_time TIME NOT NULL,
+   --creator_email email NOT NULL,
+    creator_email email, --null for now
+   --moderator_email email NOT NULL,
+   FOREIGN KEY (creator_email) references participant(user_email)
+   --FOREIGN KEY (moderator_email) references moderator
+);
+
+
+CREATE TABLE bid (
+  bid_id SERIAL PRIMARY KEY,
+  participant_email email NOT NULL,
+  auction_id INTEGER NOT NULL,
+  bid_amount INTEGER CHECK (bid_amount>0) NOT NULL,
+  FOREIGN KEY (participant_email) REFERENCES users(user_email),
+  FOREIGN KEY (auction_id) REFERENCES auction(id)
+);
+
+CREATE TABLE notification (
+  notification_id SERIAL PRIMARY KEY,
+  receiver email,
+  content VARCHAR(1000),
+  date DATE,
+  time TIME,
+  FOREIGN KEY (receiver) REFERENCES participant(user_email)
+);
+-------------------------------not checked and not needed yet
+CREATE TABLE Moderator (
+  moderator_email VARCHAR(255) PRIMARY KEY,
+  FOREIGN KEY (moderator_email) REFERENCES Users(user_email)
+);
+
+CREATE TABLE Moderates (
+  auction_id INTEGER NOT NULL,
+  moderator_email VARCHAR(255) NOT NULL,
+  FOREIGN KEY (auction_id) REFERENCES Auction(id),
+  FOREIGN KEY (moderator_email) REFERENCES Moderator(moderator_email)
+);
+
+INSERT INTO Users (user_email, password, nickname, phone_number, first_name, last_name, birth_date, rate)
+VALUES ('test@example.com', '0000', 'TestUser', '123456789', 'John', 'Doe', '1990-01-01', 0);
+
+SELECT password FROM Users;
+
+INSERT INTO Users (user_email, password, nickname, phone_number, first_name, last_name, birth_date, rate)
+VALUES ('test2@example.com', 'password123', 'TestUser', '123456789', 'John', 'Doe', '1990-01-01', 5);
+
+
+CREATE SCHEMA IF NOT EXISTS sprint1database;
+SET SCHEMA 'sprint1database';
+
+
+CREATE DOMAIN email VARCHAR(100);
+
+    --creator_email email NOT NULL,
+    --moderator_email email NOT NULL,
+    --FOREIGN KEY (creator_email) references participant
+    --FOREIGN KEY (moderator_email) references moderator
+
+
+CREATE TABLE Users (
+                       user_email VARCHAR(255) PRIMARY KEY,
+                       password VARCHAR(255) NOT NULL,
+                       nickname VARCHAR(255),
+                       phone_number VARCHAR(255),
+                       first_name VARCHAR(255),
+                       last_name VARCHAR(255),
+                       birth_date DATE,
+                       rate INTEGER
+);
+
+CREATE TABLE Auction (
+                         ID SERIAL PRIMARY KEY,
+                         title VARCHAR(80) CHECK (length(title)>5) NOT NULL,
+                         description VARCHAR(1400) CHECK (length(description)>20) NOT NULL,
+                         reserve_price INTEGER NOT NULL,
+                         buyout_price INTEGER NOT NULL,
+                         minimum_bid_increment INTEGER NOT NULL,
+                         current_bid INTEGER,
+                         current_bidder email,
+                         image_data VARCHAR(250) NOT NULL ,
+                         status VARCHAR(7) CHECK (status IN ('ONGOING','CLOSED')) NOT NULL,
+                         start_time TIME NOT NULL,
+                         end_time TIME NOT NULL
+);
+
+CREATE TABLE Bid (
+                     bid_id SERIAL PRIMARY KEY,
+                     participant_email VARCHAR(255) NOT NULL,
+                     auction_id INTEGER NOT NULL,
+                     bid_amount DECIMAL(10,2) NOT NULL,
+                     bid_time TIMESTAMP NOT NULL,
+                     FOREIGN KEY (participant_email) REFERENCES Users(user_email),
+                     FOREIGN KEY (auction_id) REFERENCES Auction(id)
+);

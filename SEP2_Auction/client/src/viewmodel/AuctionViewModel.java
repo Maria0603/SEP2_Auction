@@ -95,12 +95,13 @@ public class AuctionViewModel implements PropertyChangeListener
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
+      //e.printStackTrace();
     }
-
-    if(errorProperty.get().isEmpty() && bid!=null)
+    if(errorProperty.get().isEmpty() && bid!=null && idProperty.get()==bid.getAuctionId())
     {
       currentBidProperty.set(bid.getBidAmount());
       currentBidderProperty.set(bid.getBidder());
+      incomingBidProperty.set(0);
     }
   }
 
@@ -271,38 +272,6 @@ public class AuctionViewModel implements PropertyChangeListener
           Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
         }
         break;
-        /*
-      case "Auction":
-        int auctionId = ((Auction) event.getNewValue()).getID();
-
-        Platform.runLater(() -> {
-          headerProperty.set("Auction ID:");
-          idProperty.set(auctionId);
-          try
-          {
-            Auction auction=model.getAuction(auctionId);
-            titleProperty.set(
-                auction.getItem().getTitle());
-            descriptionProperty.set(
-                auction.getItem().getDescription());
-            reservePriceProperty.set(
-                auction.getPriceConstraint()
-                    .getReservePrice());
-            buyoutPriceProperty.set(
-                auction.getPriceConstraint()
-                    .getBuyoutPrice());
-            incrementProperty.set(
-                auction.getPriceConstraint()
-                    .getMinimumIncrement());
-            imageProperty.set(byteArrayToImage(auction.getImageData()));
-          }
-          catch (SQLException e)
-          {
-            // put it in the error label
-            e.printStackTrace();
-          }
-        });
-        break;*/
     }
   }
 

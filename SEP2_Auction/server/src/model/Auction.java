@@ -16,7 +16,7 @@ public class Auction
   private int ID;
   private Item item;
   private PriceConstraint priceConstraint;
-  private String currentBidder, status;
+  private String currentBidder, seller, status;
   private int auctionEndTime, currentBid;
   Time start, end;
   private byte[] imageData;
@@ -42,6 +42,9 @@ public class Auction
     end = auctionEnd;
 
     setImageData(imageData);
+    setCurrentBid(currentBid);
+    setCurrentBidder(currentBidder);
+    this.seller=seller;
     this.status = status;
 
   }
