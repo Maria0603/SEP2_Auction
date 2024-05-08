@@ -38,7 +38,7 @@ public class CreateLoginViewController {
     private CreateLoginViewModel viewModel;
     private ViewHandler viewHandler;
 
-    //  privates
+    //  Purpose of this is to switch between Create User and Login
     private boolean isLogin;
 
     public void init(ViewHandler viewHandler, CreateLoginViewModel viewModel, Region root, WindowType windowType){
@@ -150,10 +150,9 @@ public class CreateLoginViewController {
     }
 
     private void loginAfterButtonPress(){
-        //  TODO: do this as boolean
-        //  TODO: set the viewState with email
-        viewModel.login();
-        viewHandler.openView(WindowType.ALL_AUCTIONS);
+        if(viewModel.login()){
+            viewHandler.openView(WindowType.ALL_AUCTIONS);
+        }
     }
     @FXML
     public void onEnter(ActionEvent actionEvent) {  confirm();  }

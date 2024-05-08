@@ -62,4 +62,8 @@ public class User implements Serializable {
     public String getPhone() {
         return phone;
     }
+    @Override public String toString(){
+        String s = firstname + " " + lastname + ": " + email + ", " + password;
+        return s;
+    }
 }

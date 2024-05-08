@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -98,12 +99,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       return endSeconds - currentSeconds;
   }
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
     modelManager.addUser(firstname,lastname,email,password,phone);
   }
 
   @Override
-  public String getUser(String email, String password) throws SQLException {
+  public User getUser(String email, String password) throws SQLException {
     return modelManager.getUser(email,password);
 
   }

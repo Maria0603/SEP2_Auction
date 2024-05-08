@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import model.AuctionModel;
+import model.User;
 
 import java.sql.SQLException;
 
@@ -37,28 +38,36 @@ public class CreateLoginViewModel {
         errorProperty.set("");
     }
     public boolean createUser(){
-        if(validateInput()){
+        //  Null Checks need to be included
+        if(validateInputCreateAccount()){
             return false;
         }
-        model.addUser(firstnameProperty.get(),lastnameProperty.get(),emailProperty.get(),passwordProperty.get(),phoneProperty.get());
+        try {
+            model.addUser(firstnameProperty.get(),lastnameProperty.get(),emailProperty.get(),passwordProperty.get(),phoneProperty.get());
+        } catch (SQLException e) {
+            errorProperty.set(e.getLocalizedMessage());
+            return false;
+        }
         return true;
     }
 
-    //  If 'null' is received the login was incorrect... else correct email of a user will added
     //  TODO: Do this as boolean and work with the error label
-    public void login(){
-        String user = null;
-        try {
-            user = model.getUser(emailProperty.get(),passwordProperty.get());
-        } catch (SQLException e) {
-            errorProperty.set(e.getMessage());
+    public boolean login(){
+        if(emailProperty.get().isEmpty() && passwordProperty.get().isEmpty()){
+            errorProperty.set("Some fields are empty");
+            return false;
         }
-        System.out.println("Email is set in CreateLoginViewModel, login() method");
+
+        try {
+            User user = model.getUser(emailProperty.get(), passwordProperty.get());
+            viewState.setUser(new User(firstnameProperty.get(),lastnameProperty.get(),emailProperty.get(),passwordProperty.get(),phoneProperty.get()));
+            return true;
+        } catch (SQLException e) {
+            errorProperty.set(e.getLocalizedMessage());
+            return false;
+        }
+
         //  ViewState
-        viewState.setEmail(emailProperty.get());
-        //
-        emailProperty.set(user);
-        errorProperty.set("Successful login as: "+user);
     }
     public StringProperty firstnameProperty() {
         return firstnameProperty;
@@ -81,7 +90,7 @@ public class CreateLoginViewModel {
     public StringProperty errorProperty() {
         return errorProperty;
     }
-    private boolean validateInput(){
+    private boolean validateInputCreateAccount(){
         //  TODO: Add more checks
         errorProperty.set("");
         if(firstnameProperty.get() == null){
@@ -118,4 +127,5 @@ public class CreateLoginViewModel {
         }
         return false;
     }
+
 }

@@ -90,7 +90,7 @@ public class AuctionViewModel implements PropertyChangeListener
     Bid bid = null;
     try
     {
-      bid=model.placeBid(state.getEmail(), incomingBidProperty.get(), idProperty.get());
+      bid=model.placeBid(state.getUser().getEmail(), incomingBidProperty.get(), idProperty.get());
     }
     catch (SQLException e)
     {

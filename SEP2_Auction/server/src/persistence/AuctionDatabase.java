@@ -289,9 +289,8 @@ public class AuctionDatabase implements AuctionPersistence
   }
 
   @Override
-  public User createUser(String firstname, String lastname, String email, String password, String phone) {
+  public User createUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
 
-    //  TODO: CHECK IF EMAIL ALREADY EXISTS IN checkEmail(email);
     try(Connection connection = getConnection()){
       String sql = "INSERT INTO sprint1database.users(first_name,last_name,user_email,password,phone_number)  \n" +
               "VALUES(?,?,?,?,?);";
@@ -308,13 +307,16 @@ public class AuctionDatabase implements AuctionPersistence
 
       return new User(firstname,lastname,email,password,phone);
     } catch (SQLException e) {
-      //  TODO: Forward exception to screen
       System.out.println("DATABASE(-TODO in comments-): Catch: " + e.getMessage());
-      return null;}
+      throw new SQLException(e.getMessage());
+    }
   }
 
   @Override
   public User getUser(String email, String password) throws SQLException {
+    if(!isValidPassword(email,password)){
+      throw new SQLException("Credentials do not match");
+    }
     try(Connection connection = getConnection()){
       String sql = "SELECT * FROM sprint1database.users WHERE user_email=?";
       ArrayList<Object[]> results = database.query(sql, email);
@@ -329,7 +331,9 @@ public class AuctionDatabase implements AuctionPersistence
           String _firstname = row[3].toString();
           String _lastname = row[4].toString();
 
-          return new User(_firstname,_lastname,_email,_password,_phone);
+          User user = new User(_firstname,_lastname,_email,_password,_phone);
+          System.out.println("DATABASE: getUser: returning: " + user);
+          return user;
         }
         catch (Exception e)
         {
@@ -339,7 +343,53 @@ public class AuctionDatabase implements AuctionPersistence
       return null;
     }
   }
+  private boolean isEmailInTheSystem(String email){
+    int count = 0;
+    try(Connection connection = getConnection()){
+      String sql = "SELECT count(*) FROM users WHERE user_email=?;";
+      ArrayList<Object[]> result = database.query(sql, email);
+      for (int i = 0; i < result.size(); i++) {
+        try {
+          Object[] row = result.get(i);
+          count = Integer.parseInt(row[0].toString());
+        }
+        catch (Exception e){
+          e.printStackTrace();
+        }
+      }
 
+      System.out.println("DATABASE: email is in the system, " + count + ",  returning " + (count > 0));
+      return count > 0;
+    }
+    catch (SQLException e){
+      System.out.println("DATABASE: mail does not exist");
+      return false;
+    }
+  }
+  private boolean isValidPassword(String email, String password){
+    System.out.println("DATABASE: Validation method");
+    int count = 0;
+    try(Connection connection = getConnection()){
+      String sql = "SELECT count(*) FROM users WHERE user_email=? AND password=?;";
+      ArrayList<Object[]> result = database.query(sql, email, password);
+      for (int i = 0; i < result.size(); i++) {
+        try {
+          Object[] row = result.get(i);
+          count = Integer.parseInt(row[0].toString());
+        }
+        catch (Exception e){
+          e.printStackTrace();
+        }
+      }
+
+      System.out.println("DATABASE: query selected: " + count + ",  returning " + (count > 0));
+      return count > 0;
+    }
+    catch (SQLException e){
+      System.out.println("DATABASE: Password does not match an email");
+      return false;
+    }
+  }
 
   private void checkBid(int bidAmount, String participantEmail, int currentBid, String currentBidder, int reservePrice, int increment, String status)
       throws SQLException
@@ -439,7 +489,9 @@ public class AuctionDatabase implements AuctionPersistence
     if(!email.contains("@")){
       throw new SQLException("Email must be in 'name@domain' format");
     }
-    //  TODO: Check if there is a already existing email
+    if(isEmailInTheSystem(email)){
+      throw new SQLException("Email is already in the system");
+    }
     return email;
   }
   private String checkPassword(String password) throws SQLException {
@@ -449,6 +501,7 @@ public class AuctionDatabase implements AuctionPersistence
     if(password.length() < 4){
       throw new SQLException("Password must be larger than 3 letters");
     }
+
     return password;
   }
   private String checkPhone(String phone) throws SQLException {

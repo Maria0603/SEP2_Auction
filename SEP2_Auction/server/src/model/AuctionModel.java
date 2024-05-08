@@ -16,7 +16,7 @@ public interface AuctionModel extends NamedPropertyChangeSubject
   Bid placeBid(String bidder, int bidValue, int auctionId) throws SQLException;
 
 
-  void addUser(String firstname, String lastname, String email, String password, String phone);
-  String getUser(String email, String password) throws SQLException;
+  void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException;
+  User getUser(String email, String password) throws SQLException;
 }
 

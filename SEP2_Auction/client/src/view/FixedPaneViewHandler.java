@@ -187,7 +187,7 @@ public class FixedPaneViewHandler
 
   @FXML void logOutButtonPressed(ActionEvent event)
   {
-
+    viewHandler.openView(WindowType.LOG_IN);
   }
 
   @FXML void moderatorInfoButtonPressed(ActionEvent event)

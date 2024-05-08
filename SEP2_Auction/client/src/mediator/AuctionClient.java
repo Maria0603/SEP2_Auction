@@ -106,16 +106,16 @@ public class AuctionClient
 
 
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
     try {
       server.addUser(firstname,lastname,email,password,phone);
-    } catch (RemoteException e) {
-      //  ...
+    } catch (SQLException e) {
+      throw new SQLException(e.getMessage());
     }
   }
 
   @Override
-  public String getUser(String email, String password) throws SQLException {
+  public User getUser(String email, String password) throws SQLException {
     try {
       return server.getUser(email,password);
     } catch (RemoteException e) {

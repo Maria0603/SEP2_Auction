@@ -1,16 +1,17 @@
 package viewmodel;
 
 import model.Auction;
+import model.User;
 
 public class ViewModelState
 {
   private Auction selectedAuction;
-  private String email;
+  private User user;
 
   public ViewModelState()
   {
     selectedAuction = null;
-    email=null;
+    user=null;
   }
 
   public void setAuction(Auction auction)
@@ -27,13 +28,13 @@ public class ViewModelState
   {
     selectedAuction = null;
   }
-  public void setEmail(String email)
-  {
-    this.email=email;
-  }
-  public String getEmail()
-  {
-    return email;
+
+
+  public User getUser() {
+    return user;
   }
 
+  public void setUser(User user) {
+    this.user = user;
+  }
 }

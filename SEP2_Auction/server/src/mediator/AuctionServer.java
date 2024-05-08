@@ -91,12 +91,12 @@ public class AuctionServer
     return model.placeBid(bidder, bidValue, auctionId);
   }
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
     model.addUser(firstname,lastname,email,password,phone);
   }
 
   @Override
-  public String getUser(String email, String password) throws SQLException {
+  public User getUser(String email, String password) throws SQLException {
     System.out.println("AuctionServer: " + email + ", " + password);
     return model.getUser(email,password);
 

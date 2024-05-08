@@ -21,7 +21,7 @@ public class FixedPaneViewModel
   public void reset()
   {
     //  Just setting the email
-    emailProperty.set(state.getEmail());
+    emailProperty.set(state.getUser().getEmail());
   }
 
   public StringProperty getEmailProperty()

@@ -1,9 +1,6 @@
 package mediator;
 
-import model.Auction;
-import model.AuctionList;
-import model.Bid;
-import model.NotificationList;
+import model.*;
 import utility.observer.listener.GeneralListener;
 
 import java.rmi.Remote;
@@ -22,8 +19,8 @@ public interface AuctionRemote extends Remote
   Bid placeBid(String bidder, int bidValue, int auctionId) throws RemoteException, SQLException;
 
 
-  void addUser(String firstname,String lastname, String email, String password, String phone) throws RemoteException;
-  String getUser(String email, String password) throws RemoteException, SQLException;
+  void addUser(String firstname,String lastname, String email, String password, String phone) throws RemoteException, SQLException;
+  User getUser(String email, String password) throws RemoteException, SQLException;
 
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;

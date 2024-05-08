@@ -14,13 +14,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
   private PropertyChangeSupport property;
   private AuctionPersistence auctionDatabase;
-  private UserList userList;
 
   public AuctionModelManager() throws SQLException, ClassNotFoundException
   {
     property = new PropertyChangeSupport(this);
     auctionDatabase = new AuctionDatabase();
-    userList = new UserList();
   }
 
   @Override public synchronized Auction startAuction(String title,
@@ -64,14 +62,15 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return bid;
   }
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
     auctionDatabase.createUser(firstname,lastname,email,password,phone);
   }
 
   @Override
-  public String getUser(String email, String password) throws SQLException {
+  public User getUser(String email, String password) throws SQLException {
     //  TODO: add validation in database
-    return auctionDatabase.getUser(email,password).getEmail();
+    System.out.println("ModelManager: getting user from database");
+    return auctionDatabase.getUser(email,password);
   }
 
   @Override public synchronized void addListener(String propertyName,

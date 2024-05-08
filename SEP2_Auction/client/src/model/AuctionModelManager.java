@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -51,12 +52,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
     client.addUser(firstname,lastname,email,password,phone);
   }
 
   @Override
-  public String getUser(String email, String password) throws SQLException {
+  public User getUser(String email, String password) throws SQLException {
     return client.getUser(email,password);
   }
 
