@@ -121,6 +121,7 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void reset()
   {
+    model.addListener("Bid", this);
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null)
     {
@@ -140,6 +141,7 @@ public class AuctionViewModel implements PropertyChangeListener
           .getMinimumIncrement());
       imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
       currentBidderProperty.set(selectedAuction.getCurrentBidder());
+      currentBidProperty.set(selectedAuction.getCurrentBid());
     }
     else
     {
@@ -270,6 +272,16 @@ public class AuctionViewModel implements PropertyChangeListener
             event.getOldValue().toString()))
         {
           Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
+        }
+        break;
+      case "Bid":
+        Bid bid=(Bid)event.getNewValue();
+        if (idProperty.get() == bid.getAuctionId())
+        {
+          Platform.runLater(() -> {
+            currentBidProperty.set(bid.getBidAmount());
+            currentBidderProperty.set(bid.getBidder());
+              });
         }
         break;
     }

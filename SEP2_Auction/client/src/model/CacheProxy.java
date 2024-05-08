@@ -24,6 +24,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     this.modelManager = new AuctionModelManager();
     modelManager.addListener("Auction", this);
     modelManager.addListener("End", this);
+    modelManager.addListener("Bid", this);
+
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
     previousOpenedAuctions=new AuctionList();
     timers=new ArrayList<>();
@@ -121,6 +123,15 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         break;
       case "Notification":
         notifications.addNotification((Notification) evt.getNewValue());
+        break;
+      case "Bid":
+        Bid bid=(Bid)evt.getNewValue();
+        ongoingAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        ongoingAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+        previousOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        previousOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+
+        break;
     }
     property.firePropertyChange(evt);
   }

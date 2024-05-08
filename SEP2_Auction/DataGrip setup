@@ -31,6 +31,8 @@ CREATE TABLE participant(
     rate INTEGER,
     FOREIGN KEY (user_email) references users (user_email)
 );
+INSERT INTO participant (user_email, birth_date, rate)
+VALUES ('bob_the_bidder@gmail.com', '1990-01-01', 0);
 
 CREATE TABLE IF NOT EXISTS auction(
    ID SERIAL PRIMARY KEY,
@@ -58,7 +60,7 @@ CREATE TABLE bid (
   participant_email email NOT NULL,
   auction_id INTEGER NOT NULL,
   bid_amount INTEGER CHECK (bid_amount>0) NOT NULL,
-  FOREIGN KEY (participant_email) REFERENCES users(user_email),
+  FOREIGN KEY (participant_email) REFERENCES participant(user_email),
   FOREIGN KEY (auction_id) REFERENCES auction(id)
 );
 
@@ -83,6 +85,7 @@ CREATE TABLE Moderates (
   FOREIGN KEY (moderator_email) REFERENCES Moderator(moderator_email)
 );
 
+
 INSERT INTO Users (user_email, password, nickname, phone_number, first_name, last_name, birth_date, rate)
 VALUES ('test@example.com', '0000', 'TestUser', '123456789', 'John', 'Doe', '1990-01-01', 0);
 
@@ -90,7 +93,6 @@ SELECT password FROM Users;
 
 INSERT INTO Users (user_email, password, nickname, phone_number, first_name, last_name, birth_date, rate)
 VALUES ('test2@example.com', 'password123', 'TestUser', '123456789', 'John', 'Doe', '1990-01-01', 5);
-
 
 CREATE SCHEMA IF NOT EXISTS sprint1database;
 SET SCHEMA 'sprint1database';

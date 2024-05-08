@@ -32,6 +32,7 @@ public class AuctionServer
     model.addListener("Auction", this);
     model.addListener("Time", this);
     model.addListener("End", this);
+    model.addListener("Bid", this);
 
     startRegistry();
     startServer();

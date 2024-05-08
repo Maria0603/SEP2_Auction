@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
+import model.Bid;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -85,8 +86,9 @@ public class AuctionCardViewModel implements PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    if (idProperty.get() == Integer.parseInt(evt.getOldValue().toString()))
-      Platform.runLater(() -> currentBidProperty.set(
-          Integer.parseInt(evt.getNewValue().toString())));
+    Bid bid=(Bid)evt.getNewValue();
+    System.out.println("received: " +bid.toString());
+    if (idProperty.get() == bid.getAuctionId())
+      Platform.runLater(() -> currentBidProperty.set(bid.getBidAmount()));
   }
 }
