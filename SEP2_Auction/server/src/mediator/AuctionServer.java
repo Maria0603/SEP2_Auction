@@ -96,7 +96,8 @@ public class AuctionServer
   }
 
   @Override
-  public String getUser(String email, String password) {
+  public String getUser(String email, String password) throws SQLException {
+    System.out.println("AuctionServer: " + email + ", " + password);
     return model.getUser(email,password);
 
   }

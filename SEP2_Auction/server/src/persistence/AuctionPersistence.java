@@ -13,10 +13,11 @@ public interface AuctionPersistence
   Auction getAuctionById(int id) throws SQLException;
   void markAsClosed(int id) throws SQLException;
   AuctionList getOngoingAuctions() throws SQLException;
-
   NotificationList getNotifications(String receiver) throws SQLException;
   Notification saveNotification(String content, String receiver) throws SQLException;
   Bid saveBid(String participantEmail, int bidAmount, int auctionId) throws SQLException;
   Bid getBidForAuction(int auctionId) throws SQLException;
   void updateCurrentBid(Bid currentBid) throws SQLException;
+  User createUser(String firstname, String lastname, String email, String password, String phone);
+  User getUser(String email, String password) throws SQLException;
 }

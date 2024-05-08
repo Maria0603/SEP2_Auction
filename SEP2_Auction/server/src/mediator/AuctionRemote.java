@@ -23,7 +23,7 @@ public interface AuctionRemote extends Remote
 
 
   void addUser(String firstname,String lastname, String email, String password, String phone) throws RemoteException;
-  String getUser(String email, String password) throws RemoteException;
+  String getUser(String email, String password) throws RemoteException, SQLException;
 
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;

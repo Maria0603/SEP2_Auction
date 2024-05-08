@@ -102,13 +102,11 @@ public class AuctionDatabase implements AuctionPersistence
     }
   }
 
-  @Override public synchronized Auction getAuctionById(int id)
-      throws SQLException
+  @Override public synchronized Auction getAuctionById(int id) throws SQLException
   {
     try (Connection connection = getConnection())
     {
-      String sql =
-          "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
+      String sql = "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
       ArrayList<Object[]> results = database.query(sql, id);
       for (int i = 0; i < results.size(); i++)
       {
@@ -140,7 +138,6 @@ public class AuctionDatabase implements AuctionPersistence
           // maybe throw exception with "No auction with this id", but for testing:
           e.printStackTrace();
         }
-
       }
       return null;
     }
@@ -291,6 +288,58 @@ public class AuctionDatabase implements AuctionPersistence
       database.update(sql, currentBid.getBidAmount(), currentBid.getBidder(), currentBid.getAuctionId());
   }
 
+  @Override
+  public User createUser(String firstname, String lastname, String email, String password, String phone) {
+
+    //  TODO: CHECK IF EMAIL ALREADY EXISTS IN checkEmail(email);
+    try(Connection connection = getConnection()){
+      String sql = "INSERT INTO sprint1database.users(first_name,last_name,user_email,password,phone_number)  \n" +
+              "VALUES(?,?,?,?,?);";
+
+      PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+
+      statement.setString(1, checkFirstname(firstname));
+      statement.setString(2, checkLastname(lastname));
+      statement.setString(3, checkEmail(email));
+      statement.setString(4, checkPassword(password));
+      statement.setString(5, checkPhone(phone));
+
+      statement.executeUpdate();
+
+      return new User(firstname,lastname,email,password,phone);
+    } catch (SQLException e) {
+      //  TODO: Forward exception to screen
+      System.out.println("DATABASE(-TODO in comments-): Catch: " + e.getMessage());
+      return null;}
+  }
+
+  @Override
+  public User getUser(String email, String password) throws SQLException {
+    try(Connection connection = getConnection()){
+      String sql = "SELECT * FROM sprint1database.users WHERE user_email=?";
+      ArrayList<Object[]> results = database.query(sql, email);
+      for (int i = 0; i < results.size(); i++)
+      {
+        try
+        {
+          Object[] row = results.get(i);
+          String _email = row[0].toString();
+          String _password = row[1].toString();
+          String _phone = row[2].toString();
+          String _firstname = row[3].toString();
+          String _lastname = row[4].toString();
+
+          return new User(_firstname,_lastname,_email,_password,_phone);
+        }
+        catch (Exception e)
+        {
+          System.out.println("DATABASE: getUserException: " +e.getMessage());
+        }
+      }
+      return null;
+    }
+  }
+
 
   private void checkBid(int bidAmount, String participantEmail, int currentBid, String currentBidder, int reservePrice, int increment, String status)
       throws SQLException
@@ -364,6 +413,52 @@ public class AuctionDatabase implements AuctionPersistence
     // to be updated when the moderator adds the time interval
     if (auctionTime <= 0 || auctionTime > 24)
       throw new SQLException("The auction time can be at most 24 hours!");
+  }
+  private String checkFirstname(String firstname) throws SQLException {
+    if(firstname.isEmpty()){
+      throw new SQLException("Empty firstname");
+    }
+    if(firstname.length() < 4){
+      throw new SQLException("Firstname must be larger than 3 letters");
+    }
+    return firstname;
+  }
+  private String checkLastname(String lastname) throws SQLException {
+    if(lastname.isEmpty()){
+      throw new SQLException("Empty lastname");
+    }
+    if(lastname.length() < 4){
+      throw new SQLException("Lastname must be larger than 3 letters");
+    }
+    return lastname;
+  }
+  private String checkEmail(String email) throws SQLException {
+    if(email.isEmpty()){
+      throw new SQLException("Empty email");
+    }
+    if(!email.contains("@")){
+      throw new SQLException("Email must be in 'name@domain' format");
+    }
+    //  TODO: Check if there is a already existing email
+    return email;
+  }
+  private String checkPassword(String password) throws SQLException {
+    if(password.isEmpty()){
+      throw new SQLException("Empty password");
+    }
+    if(password.length() < 4){
+      throw new SQLException("Password must be larger than 3 letters");
+    }
+    return password;
+  }
+  private String checkPhone(String phone) throws SQLException {
+    if(phone.isEmpty()){
+      throw new SQLException("Empty phone");
+    }
+    if(phone.length() < 4){
+      throw new SQLException("Phone must be larger than 3 numbers");
+    }
+  return phone;
   }
 
 

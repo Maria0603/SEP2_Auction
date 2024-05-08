@@ -25,7 +25,7 @@ public class ViewModelFactory
 
     allAccountsNotificationsViewModel=new AllAccounts_NotificationsViewModel(this.model, viewModelState);
 
-    createLoginViewModel = new CreateLoginViewModel(this.model);
+    createLoginViewModel = new CreateLoginViewModel(this.model, viewModelState);
 
   }
 

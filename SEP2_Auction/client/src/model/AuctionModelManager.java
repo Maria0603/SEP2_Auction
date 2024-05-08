@@ -56,7 +56,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public String getUser(String email, String password) {
+  public String getUser(String email, String password) throws SQLException {
     return client.getUser(email,password);
   }
 

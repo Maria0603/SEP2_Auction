@@ -20,10 +20,8 @@ public class FixedPaneViewModel
 
   public void reset()
   {
-    //when we will have accounts:
-    //emailProperty.set(state.getAccount().getEmail());
-    emailProperty.set("bob_the_bidder@gmail.com");
-    state.setEmail(emailProperty.get());
+    //  Just setting the email
+    emailProperty.set(state.getEmail());
   }
 
   public StringProperty getEmailProperty()

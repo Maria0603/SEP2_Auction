@@ -115,7 +115,7 @@ public class AuctionClient
   }
 
   @Override
-  public String getUser(String email, String password) {
+  public String getUser(String email, String password) throws SQLException {
     try {
       return server.getUser(email,password);
     } catch (RemoteException e) {

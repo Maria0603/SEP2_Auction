@@ -65,16 +65,13 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
   @Override
   public void addUser(String firstname, String lastname, String email, String password, String phone) {
-    //  TODO: Add to the database table
-    userList.addUser(firstname,lastname,email,password,phone);
+    auctionDatabase.createUser(firstname,lastname,email,password,phone);
   }
 
   @Override
-  public String getUser(String email, String password) {
-    if(userList.passValidation(email,password)){
-      return userList.getUser(email).getEmail();
-    }
-    return null;
+  public String getUser(String email, String password) throws SQLException {
+    //  TODO: add validation in database
+    return auctionDatabase.getUser(email,password).getEmail();
   }
 
   @Override public synchronized void addListener(String propertyName,

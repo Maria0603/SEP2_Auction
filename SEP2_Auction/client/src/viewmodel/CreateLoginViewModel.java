@@ -5,12 +5,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import model.AuctionModel;
 
+import java.sql.SQLException;
+
 public class CreateLoginViewModel {
     private StringProperty headerProperty,
             firstnameProperty,lastnameProperty, emailProperty,
             passwordProperty, repasswordProperty, phoneProperty,errorProperty;
     private AuctionModel model;
-    public CreateLoginViewModel(AuctionModel model){
+    private ViewModelState viewState;
+    public CreateLoginViewModel(AuctionModel model, ViewModelState viewState){
+        this.viewState = viewState;
         this.model = model;
         headerProperty = new SimpleStringProperty();
         firstnameProperty = new SimpleStringProperty();
@@ -39,15 +43,21 @@ public class CreateLoginViewModel {
         model.addUser(firstnameProperty.get(),lastnameProperty.get(),emailProperty.get(),passwordProperty.get(),phoneProperty.get());
         return true;
     }
+
     //  If 'null' is received the login was incorrect... else correct email of a user will added
+    //  TODO: Do this as boolean and work with the error label
     public void login(){
-
-        String user = model.getUser(emailProperty.get(),passwordProperty.get());
-        if(user.isEmpty()){
-            errorProperty.set("Incorrect email or password");
+        String user = null;
+        try {
+            user = model.getUser(emailProperty.get(),passwordProperty.get());
+        } catch (SQLException e) {
+            errorProperty.set(e.getMessage());
         }
-
-        //  TODO: call the database here
+        System.out.println("Email is set in CreateLoginViewModel, login() method");
+        //  ViewState
+        viewState.setEmail(emailProperty.get());
+        //
+        emailProperty.set(user);
         errorProperty.set("Successful login as: "+user);
     }
     public StringProperty firstnameProperty() {

@@ -71,6 +71,8 @@ public class CreateLoginViewController {
                 break;
         }
     }
+
+
     //  TODO: maybe try to move this to the viewModel
     private void setForCreateAccount(){
         //  Buttons
@@ -98,6 +100,8 @@ public class CreateLoginViewController {
         //  ...
         isLogin = false;
     }
+
+
     //  TODO: Adjust position of password label and field vertically
     private void setForLogin(){
         //  Buttons
@@ -146,7 +150,10 @@ public class CreateLoginViewController {
     }
 
     private void loginAfterButtonPress(){
+        //  TODO: do this as boolean
+        //  TODO: set the viewState with email
         viewModel.login();
+        viewHandler.openView(WindowType.ALL_AUCTIONS);
     }
     @FXML
     public void onEnter(ActionEvent actionEvent) {  confirm();  }
