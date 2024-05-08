@@ -43,6 +43,16 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getOngoingAuctions();
   }
 
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+    client.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public String getUser(String email, String password) {
+    return client.getUser(email,password);
+  }
+
   public long timeLeft(Time currentTime, Time end)
   {
     long currentSeconds = currentTime.toLocalTime().toSecondOfDay();

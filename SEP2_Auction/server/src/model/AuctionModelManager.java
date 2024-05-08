@@ -12,11 +12,13 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
   private PropertyChangeSupport property;
   private AuctionPersistence auctionDatabase;
+  private UserList userList;
 
   public AuctionModelManager() throws SQLException, ClassNotFoundException
   {
     property = new PropertyChangeSupport(this);
     auctionDatabase = new AuctionDatabase();
+    userList = new UserList();
   }
 
   @Override public synchronized Auction startAuction(String title,
@@ -44,6 +46,20 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     System.out.println("server received a request in getOngoingAuctions");
     return auctionDatabase.getOngoingAuctions();
+  }
+
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+    //  TODO: Add to the database table
+    userList.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public String getUser(String email, String password) {
+    if(userList.passValidation(email,password)){
+      return userList.getUser(email).getEmail();
+    }
+    return null;
   }
 
   @Override public synchronized void addListener(String propertyName,

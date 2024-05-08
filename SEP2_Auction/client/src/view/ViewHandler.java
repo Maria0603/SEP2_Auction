@@ -11,6 +11,7 @@ public class ViewHandler {
   private Scene currentScene;
   private ViewModelFactory viewModelFactory;
   private FixedPaneViewHandler fixedPaneViewController;
+  private CreateLoginViewController createLoginViewController;
 
   public ViewHandler(ViewModelFactory viewModelFactory) {
     this.viewModelFactory = viewModelFactory;
@@ -21,7 +22,8 @@ public class ViewHandler {
     this.primaryStage = primaryStage;
     //openView("startAuction");
     //openView("allAuctions");
-    openView(WindowType.ALL_AUCTIONS);
+    //openView(WindowType.ALL_AUCTIONS);
+    openView(WindowType.SING_UP);
   }
 
   public void openView(WindowType type) {
@@ -31,7 +33,7 @@ public class ViewHandler {
           root = loadFixedPaneView("FixedPaneView.fxml", type);
       }
       case SING_UP, LOG_IN -> {
-        //for future
+        root = loadCreateLoginView("CreateAccountEditProfileView.fxml",type);
       }
       default -> {
         System.out.println("Unexpected value: " + type);
@@ -75,5 +77,26 @@ public class ViewHandler {
       fixedPaneViewController.reset(windowType);
     }
     return fixedPaneViewController.getRoot();
+  }
+  private Region loadCreateLoginView(String fxmlFile, WindowType windowType) {
+    if (createLoginViewController == null) {
+      try {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(fxmlFile));
+        Region root = loader.load();
+        createLoginViewController = loader.getController();
+
+        createLoginViewController.init(this,
+                viewModelFactory.getCreateLoginViewModel(), root,
+                windowType);
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    else {
+      createLoginViewController.reset(windowType);
+    }
+    return createLoginViewController.getRoot();
   }
 }

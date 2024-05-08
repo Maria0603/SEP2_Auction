@@ -79,6 +79,16 @@ public class AuctionServer
     return model.getOngoingAuctions();
   }
 
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+    model.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public String getUser(String email, String password) {
+    return model.getUser(email,password);
+  }
+
   @Override public boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException
   {

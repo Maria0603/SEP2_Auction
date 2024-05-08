@@ -14,4 +14,6 @@ public interface AuctionModel extends NamedPropertyChangeSubject
   Auction getAuction(int ID) throws SQLException;
 
   AuctionList getOngoingAuctions() throws SQLException;
+  void addUser(String firstname,String lastname, String email, String password, String phone);
+  String getUser(String email, String password);
 }

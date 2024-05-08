@@ -50,6 +50,16 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     return ongoingAuctionsCache;
   }
 
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) {
+    modelManager.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public String getUser(String email, String password) {
+    return modelManager.getUser(email,password);
+  }
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {
