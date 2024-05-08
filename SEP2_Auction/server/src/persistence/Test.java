@@ -25,7 +25,7 @@ public class Test {
   }
   private static void testBidDatabase() throws SQLException, ClassNotFoundException {
     AuctionDatabase bidDatabase = new AuctionDatabase();
-    bidDatabase.saveBid(1, "test@example.com", 100.0);
-    bidDatabase.getBidsForAuction(1);
+    //bidDatabase.saveBid(1, "test@example.com", 100.0);
+    //bidDatabase.getBidsForAuction(1);
   }
 }

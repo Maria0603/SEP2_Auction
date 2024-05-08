@@ -80,6 +80,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     return notifications;
   }
 
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws SQLException
+  {
+    return modelManager.placeBid(bidder, bidValue, auctionId);
+  }
+
   private long timeLeft(Time currentTime, Time end)
   {
     long currentSeconds = currentTime.toLocalTime().toSecondOfDay();

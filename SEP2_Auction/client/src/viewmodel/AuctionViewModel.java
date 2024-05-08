@@ -214,6 +214,10 @@ public class AuctionViewModel implements PropertyChangeListener
   {
     return currentBidProperty;
   }
+  public StringProperty getCurrentBidderProperty()
+  {
+    return currentBidderProperty;
+  }
 
   public IntegerProperty getBuyoutPriceProperty()
   {
@@ -242,6 +246,7 @@ public class AuctionViewModel implements PropertyChangeListener
   public IntegerProperty getIncomingBidProperty() {
     return incomingBidProperty;
   }
+
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {

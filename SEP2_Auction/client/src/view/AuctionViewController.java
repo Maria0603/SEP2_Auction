@@ -23,7 +23,6 @@ public class AuctionViewController
   @FXML private ScrollPane auctionScrollPane;
   @FXML private Button backButton;
   @FXML private Label bidLabel;
-  //@FXML private TextField bidTextField;
   @FXML private Button buyNowButton;
   @FXML private TextField buyoutPriceTextField;
   @FXML private Button cancelButton;
@@ -96,6 +95,7 @@ public class AuctionViewController
         new IntStringConverter());
     Bindings.bindBidirectional(imageImageView.imageProperty(),
         auctionViewModel.getImageProperty());
+    currentBidderLabel.textProperty().bindBidirectional(this.auctionViewModel.getCurrentBidderProperty());
     //other bindings to be inserted
 
     Bindings.bindBidirectional(currentBidLabel.textProperty(), this.auctionViewModel.getCurrentBidProperty(), new IntStringConverter());
@@ -160,6 +160,8 @@ public class AuctionViewController
     ratingLabel.setVisible(false);
     deleteButton.setVisible(false);
     reasonTextArea.setVisible(false);
+
+    incomingBidTextField.setVisible(false);
 
   }
 

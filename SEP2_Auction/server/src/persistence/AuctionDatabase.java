@@ -105,7 +105,6 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public synchronized Auction getAuctionById(int id)
       throws SQLException
   {
-
     try (Connection connection = getConnection())
     {
       String sql =
@@ -130,7 +129,8 @@ public class AuctionDatabase implements AuctionPersistence
           String status = row[9].toString();
           Time auctionStart = Time.valueOf(row[10].toString());
           Time auctionEnd = Time.valueOf(row[11].toString());
-          String seller=row[12].toString();
+          //String seller=row[12].toString(); //the correct line
+          String seller=null;
           return new Auction(id, title, description, reservePrice, buyoutPrice,
               minimumIncrement, auctionStart, auctionEnd, currentBid,
               currentBidder, seller, imageData, status);

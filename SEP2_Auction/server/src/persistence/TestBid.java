@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class TestBid {
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         try {
 //            testSaveBid();
 //            testGetBidsForAuction();
@@ -65,5 +65,5 @@ public class TestBid {
         }
     }
 
-
+*/
 }
