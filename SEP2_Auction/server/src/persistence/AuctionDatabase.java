@@ -216,7 +216,7 @@ public class AuctionDatabase implements AuctionPersistence
     }
     return auctions;
   }
-  @Override public NotificationList getNotifications(String receiver) throws SQLException
+/*  @Override public NotificationList getNotifications(String receiver) throws SQLException
   {
 
     String sql = "SELECT * FROM notification WHERE receiver=?;";
@@ -241,7 +241,7 @@ public class AuctionDatabase implements AuctionPersistence
 
     database.update(sql, receiver, content, date, time);
     return new Notification(date + " " + time, content, receiver);
-  }
+  }*/
 
   @Override
   public Bid saveBid(String participantEmail, int bidAmount, int auctionId) throws SQLException {

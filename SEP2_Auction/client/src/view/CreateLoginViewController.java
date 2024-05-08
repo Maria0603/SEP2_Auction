@@ -63,7 +63,7 @@ public class CreateLoginViewController {
     public void reset(WindowType type){
         viewModel.reset();  //  initial reset
         switch (type){
-            case SING_UP:
+            case SIGN_UP:
                 setForCreateAccount();
                 break;
             case LOG_IN:
@@ -165,7 +165,7 @@ public class CreateLoginViewController {
     @FXML
     public void loginButtonPressed(ActionEvent actionEvent) {
         if(isLogin){
-            reset(WindowType.SING_UP);
+            reset(WindowType.SIGN_UP);
         }
         else{
             reset(WindowType.LOG_IN);

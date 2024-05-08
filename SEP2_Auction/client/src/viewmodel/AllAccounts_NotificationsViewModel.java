@@ -31,7 +31,7 @@ public class AllAccounts_NotificationsViewModel implements
     notifications= FXCollections.observableArrayList();
     selectedRowProperty=new SimpleObjectProperty<>();
     errorProperty=new SimpleStringProperty();
-    loadNotifications();
+//    loadNotifications();
   }
   public ObservableList<NotificationViewModel> getNotifications()
   {
@@ -40,30 +40,30 @@ public class AllAccounts_NotificationsViewModel implements
   public void reset()
   {
     errorProperty.set(null);
-    loadNotifications();
+//    loadNotifications();
   }
   public void setSelected(NotificationViewModel notification)
   {
     selectedRowProperty.set(notification);
   }
-  private void loadNotifications()
-  {
-    notifications.clear();
-    NotificationList list;
-    try
-    {
-      //we need the accounts
-      list = model.getNotifications("mr. kaplan");
-      for(int i=0; i<list.getSize(); i++)
-      {
-        notifications.add(new NotificationViewModel(list.getNotification(i)));
-      }
-    }
-    catch(SQLException e)
-    {
-      errorProperty.set(e.getMessage());
-    }
-  }
+//  private void loadNotifications()
+//  {
+//    notifications.clear();
+//    NotificationList list;
+//    try
+//    {
+//      //we need the accounts
+//      list = model.getNotifications("mr. kaplan");
+//      for(int i=0; i<list.getSize(); i++)
+//      {
+//        notifications.add(new NotificationViewModel(list.getNotification(i)));
+//      }
+//    }
+//    catch(SQLException e)
+//    {
+//      errorProperty.set(e.getMessage());
+//    }
+//  }
   public StringProperty getErrorProperty()
   {
     return errorProperty;

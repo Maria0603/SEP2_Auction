@@ -79,11 +79,11 @@ public class AuctionServer
   }
 
 
-  @Override public NotificationList getNotifications(String receiver)
-      throws RemoteException, SQLException
-  {
-    return model.getNotifications(receiver);
-  }
+//  @Override public NotificationList getNotifications(String receiver)
+//      throws RemoteException, SQLException
+//  {
+//    return model.getNotifications(receiver);
+//  }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws RemoteException, SQLException

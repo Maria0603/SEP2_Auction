@@ -45,8 +45,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
 
-  @Override public NotificationList getNotifications(String receiver)
-      throws SQLException
+//  @Override public NotificationList getNotifications(String receiver)
+//      throws SQLException
 
   @Override
   public void addUser(String firstname, String lastname, String email, String password, String phone) {
@@ -58,11 +58,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getUser(email,password);
   }
 
-  public long timeLeft(Time currentTime, Time end)
-
-  {
-    return client.getNotifications(receiver);
-  }
+//  public long timeLeft(Time currentTime, Time end)
+//  {
+//    return client.getNotifications(receiver);
+//  }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException

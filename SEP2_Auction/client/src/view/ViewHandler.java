@@ -23,8 +23,8 @@ public class ViewHandler {
     this.primaryStage = primaryStage;
     //openView("startAuction");
     //openView("allAuctions");
-    //openView(WindowType.ALL_AUCTIONS);
-    openView(WindowType.SING_UP);
+    openView(WindowType.ALL_AUCTIONS);
+//    openView(WindowType.SIGN_UP);
   }
 
   public void openView(WindowType type) {
@@ -35,9 +35,6 @@ public class ViewHandler {
       }
 
       case SIGN_UP, LOG_IN -> {
-        //for future
-      }
-      case SING_UP, LOG_IN -> {
         root = loadCreateLoginView("CreateAccountEditProfileView.fxml",type);
       }
       default -> {

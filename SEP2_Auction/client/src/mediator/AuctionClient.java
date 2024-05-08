@@ -1,8 +1,8 @@
-
-
 package mediator;
 
-import model.*;
+import model.Auction;
+import model.AuctionList;
+import model.AuctionModel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
+import model.Bid;
 import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
 
@@ -38,8 +39,7 @@ public class AuctionClient
       server.addListener(this, "Auction");
       server.addListener(this, "Time");
       server.addListener(this, "End");
-      server.addListener(this, "Bid");
-
+      server.addListener(this,"Bid");
     }
     catch (Exception e)
     {
@@ -89,33 +89,14 @@ public class AuctionClient
     return null;
   }
 
-
-  @Override public NotificationList getNotifications(String receiver)
-      throws SQLException
-  {
-    try
-    {
-      return server.getNotifications(receiver);
-    }
-    catch(RemoteException e)
-    {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws SQLException
-  {
-    try
-    {
+  @Override
+  public Bid placeBid(String bidder, int bidValue, int auctionId) throws SQLException {
+    try {
       return server.placeBid(bidder, bidValue, auctionId);
+    } catch (RemoteException e) {
+      return null;
     }
-    catch(RemoteException e)
-    {
-      e.printStackTrace();
-    }
-    return null;
+  }
 
 
   @Override
@@ -134,7 +115,6 @@ public class AuctionClient
     } catch (RemoteException e) {
       return null;
     }
-
   }
 
   @Override public void addListener(String s,
@@ -157,12 +137,3 @@ public class AuctionClient
   }
 
 }
-
-
-
-
-
-
-
-
-
