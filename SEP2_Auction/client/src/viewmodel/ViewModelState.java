@@ -5,10 +5,12 @@ import model.Auction;
 public class ViewModelState
 {
   private Auction selectedAuction;
+  private String email;
 
   public ViewModelState()
   {
     selectedAuction = null;
+    email=null;
   }
 
   public void setAuction(Auction auction)
@@ -25,4 +27,13 @@ public class ViewModelState
   {
     selectedAuction = null;
   }
+  public void setEmail(String email)
+  {
+    this.email=email;
+  }
+  public String getEmail()
+  {
+    return email;
+  }
+
 }

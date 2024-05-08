@@ -6,6 +6,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
+import model.Bid;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.awt.image.BufferedImage;
@@ -26,8 +27,8 @@ import java.util.Arrays;
 
 public class AuctionViewModel implements PropertyChangeListener
 {
-  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty;
-  private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;;
+  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
+  private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;;
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
@@ -37,7 +38,6 @@ public class AuctionViewModel implements PropertyChangeListener
     this.model = model;
     this.state = state;
     idProperty = new SimpleIntegerProperty();
-    bidProperty = new SimpleIntegerProperty();
     buyoutPriceProperty = new SimpleIntegerProperty();
     descriptionProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
@@ -52,9 +52,8 @@ public class AuctionViewModel implements PropertyChangeListener
     imageProperty = new SimpleObjectProperty<>();
 
     incomingBidProperty = new SimpleIntegerProperty();
-
     currentBidProperty = new SimpleIntegerProperty();
-    currentBidProperty.set(0);
+    currentBidderProperty=new SimpleStringProperty();
     //model.addListener("Time", this);
     //model.addListener("End", this);
     reset();
@@ -83,6 +82,25 @@ public class AuctionViewModel implements PropertyChangeListener
       descriptionProperty.set(descriptionProperty.get().trim());
       //only for testing:
       //e.printStackTrace();
+    }
+  }
+  public void placeBid()
+  {
+    errorProperty.set("");
+    Bid bid = null;
+    try
+    {
+      bid=model.placeBid(state.getEmail(), incomingBidProperty.get(), idProperty.get());
+    }
+    catch (SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+
+    if(errorProperty.get().isEmpty() && bid!=null)
+    {
+      currentBidProperty.set(bid.getBidAmount());
+      currentBidderProperty.set(bid.getBidder());
     }
   }
 
@@ -120,6 +138,7 @@ public class AuctionViewModel implements PropertyChangeListener
       incrementProperty.set(state.getSelectedAuction().getPriceConstraint()
           .getMinimumIncrement());
       imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
+      currentBidderProperty.set(selectedAuction.getCurrentBidder());
     }
     else
     {
@@ -136,11 +155,9 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void wipe()
   {
-
-
     headerProperty.set("Start auction");
     idProperty.set(0);
-    bidProperty.set(0);
+    currentBidProperty.set(0);
     buyoutPriceProperty.set(0);
     descriptionProperty.set("");
     errorProperty.set("");
@@ -150,6 +167,7 @@ public class AuctionViewModel implements PropertyChangeListener
     reservePriceProperty.set(0);
     timeProperty.set(0);
     titleProperty.set("");
+    currentBidderProperty.set("No bidder");
   }
 
   public ObjectProperty<Image> getImageProperty()
@@ -192,9 +210,9 @@ public class AuctionViewModel implements PropertyChangeListener
     return titleProperty;
   }
 
-  public IntegerProperty getBidProperty()
+  public IntegerProperty getCurrentBidProperty()
   {
-    return bidProperty;
+    return currentBidProperty;
   }
 
   public IntegerProperty getBuyoutPriceProperty()
@@ -220,6 +238,9 @@ public class AuctionViewModel implements PropertyChangeListener
   public IntegerProperty getIncrementProperty()
   {
     return incrementProperty;
+  }
+  public IntegerProperty getIncomingBidProperty() {
+    return incomingBidProperty;
   }
 
   @Override public void propertyChange(PropertyChangeEvent event)
@@ -279,44 +300,6 @@ public class AuctionViewModel implements PropertyChangeListener
         break;*/
     }
   }
-  public void placeBid() {
-    errorProperty.set("");
-    isValidBid();
 
 
-    if(errorProperty.get().equals("")){
-      if (currentBidProperty.get() < incomingBidProperty.get()) {
-        System.out.println("passed if statement");
-        currentBidProperty.set(incomingBidProperty.get());
-        System.out.printf("new current bid: " + currentBidProperty.get());
-      }
-    }
-  }
-
-  public void isValidBid() {
-    if (incomingBidProperty.get() <= 0) {
-      errorProperty.set("Bid amount must be greater than zero.");
-    }
-
-    if (incomingBidProperty.get() < reservePriceProperty.get()) {
-      errorProperty.set("Bid amount must be at least the reserve price.");
-    }
-
-    if (incomingBidProperty.get() <= currentBidProperty.get()) {
-      errorProperty.set("Bid amount must be higher than the highest bid.");
-    }
-    if (incomingBidProperty.get()
-        < currentBidProperty.get() + incrementProperty.get()) {
-      errorProperty.set(
-          "Bid amount must be at least the minimum increment higher than the highest bid.");
-    }
-  }
-
-  public IntegerProperty getCurrentBidProperty() {
-    return currentBidProperty;
-  }
-
-  public IntegerProperty getIncomingBidProperty() {
-    return incomingBidProperty;
-  }
 }

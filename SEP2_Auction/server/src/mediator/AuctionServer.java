@@ -1,10 +1,7 @@
 
 package mediator;
 
-import model.Auction;
-import model.AuctionList;
-import model.AuctionModel;
-import model.NotificationList;
+import model.*;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
@@ -84,6 +81,12 @@ public class AuctionServer
       throws RemoteException, SQLException
   {
     return model.getNotifications(receiver);
+  }
+
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws RemoteException, SQLException
+  {
+    return model.placeBid(bidder, bidValue, auctionId);
   }
 
   @Override public boolean addListener(GeneralListener<String, Object> listener,

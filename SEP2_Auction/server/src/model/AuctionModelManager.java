@@ -54,6 +54,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getNotifications(receiver);
   }
 
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws SQLException
+  {
+    return auctionDatabase.saveBid(bidder, bidValue, auctionId);
+  }
+
   @Override public synchronized void addListener(String propertyName,
       PropertyChangeListener listener)
   {

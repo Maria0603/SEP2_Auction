@@ -2,9 +2,7 @@
 
 package mediator;
 
-import model.Auction;
-import model.AuctionList;
-import model.AuctionModel;
+import model.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -14,7 +12,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
-import model.NotificationList;
 import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
 
@@ -96,6 +93,20 @@ public class AuctionClient
     try
     {
       return server.getNotifications(receiver);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws SQLException
+  {
+    try
+    {
+      return server.placeBid(bidder, bidValue, auctionId);
     }
     catch(RemoteException e)
     {
