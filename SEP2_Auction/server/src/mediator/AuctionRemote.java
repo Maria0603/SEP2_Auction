@@ -18,7 +18,7 @@ public interface AuctionRemote extends Remote
   Auction getAuction(int ID) throws RemoteException, SQLException;
   AuctionList getOngoingAuctions() throws RemoteException, SQLException;
 
-//  NotificationList getNotifications(String receiver) throws RemoteException, SQLException;
+  NotificationList getNotifications(String receiver) throws RemoteException, SQLException;
   Bid placeBid(String bidder, int bidValue, int auctionId) throws RemoteException, SQLException;
 
 

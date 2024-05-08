@@ -39,13 +39,15 @@ public class CreateLoginViewModel {
         model.addUser(firstnameProperty.get(),lastnameProperty.get(),emailProperty.get(),passwordProperty.get(),phoneProperty.get());
         return true;
     }
+    //  If 'null' is received the login was incorrect... else correct email of a user will added
     public void login(){
-        //  TODO: if you get 'null' its because it was incorrect. else you get a string with user
 
         String user = model.getUser(emailProperty.get(),passwordProperty.get());
         if(user.isEmpty()){
             errorProperty.set("Incorrect email or password");
         }
+
+        //  TODO: call the database here
         errorProperty.set("Successful login as: "+user);
     }
     public StringProperty firstnameProperty() {

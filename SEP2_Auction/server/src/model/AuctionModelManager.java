@@ -51,11 +51,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
 
-//  @Override public NotificationList getNotifications(String receiver)
-//      throws SQLException
-//  {
-//    return auctionDatabase.getNotifications(receiver);
-//  }
+  @Override public NotificationList getNotifications(String receiver)
+      throws SQLException
+  {
+    return auctionDatabase.getNotifications(receiver);
+  }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException {
