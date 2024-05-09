@@ -23,8 +23,8 @@ public class ViewHandler {
     this.primaryStage = primaryStage;
     //openView("startAuction");
     //openView("allAuctions");
-    openView(WindowType.ALL_AUCTIONS);
-    //openView(WindowType.SIGN_UP);
+    //openView(WindowType.ALL_AUCTIONS);
+    openView(WindowType.SIGN_UP);
   }
 
   public void openView(WindowType type) {

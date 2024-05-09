@@ -19,6 +19,7 @@ import javafx.geometry.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AllAuctionsViewController implements PropertyChangeListener {
   @FXML private ScrollPane allAuctionsScrollPane;
@@ -140,26 +141,22 @@ public class AllAuctionsViewController implements PropertyChangeListener {
 
   @FXML public void searchPressed(ActionEvent actionEvent) throws IOException {
     clearGrid();
-    try {
+    ArrayList<Auction> searchResults = allAuctionsViewModel.searchAuctions();
+
+
+      int resultIndex = 0;
       for (int row = 0; row < getNumberOfRowsInGrid(); row++) {
         for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 
-          int auctionCardsIndex = getLinearIndex(row, column);
-          if(auctionCards.get(auctionCardsIndex).isMatchesSearchMask(searchInputField.getText())){
-
-            addNewCardToGrid(auctionCards.get(column), column, row);
+            addNewCardToGrid(searchResults.get(resultIndex), column, row);
+            resultIndex++;
           }
 
         }
-      }
-    }catch (IOException e){
-      //
-    }
 
   }
 
-
-  private int getLinearIndex(int row, int col){
+  private int getLinearIndex(int row, int col) {
     return row * col + col;
   }
 }

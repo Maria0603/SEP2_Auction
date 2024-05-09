@@ -59,7 +59,6 @@ public class Auction
 
   public boolean isMatchesSearchMask(String searchMask) {
     return String.valueOf(ID).contains(searchMask) || item.getTitle()
-        .toLowerCase().contains(searchMask) || item.getDescription()
         .toLowerCase().contains(searchMask);
   }
 

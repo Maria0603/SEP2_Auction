@@ -66,6 +66,21 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
     return null;
   }
 
+  public ArrayList<Auction> searchAuctions(){
+    AuctionList list = this.getOngoingAuctions();
+    ArrayList<Auction> result = new ArrayList<>();
+    String mask = searchInputField.get();
+
+    for (int i = 0; i < list.getSize(); i++)
+    {
+      Auction auction = list.getAuction(i);
+      System.out.println(auction);
+      if(auction.isMatchesSearchMask(mask)){
+        result.add(auction);
+      }
+    }
+    return result;
+  }
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
