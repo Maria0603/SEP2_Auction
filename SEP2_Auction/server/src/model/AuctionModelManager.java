@@ -49,25 +49,34 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
 
-  @Override public NotificationList getNotifications(String receiver)
+  @Override public synchronized NotificationList getNotifications(String receiver)
       throws SQLException
   {
     return auctionDatabase.getNotifications(receiver);
   }
 
-  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+  @Override public synchronized Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException {
+    //we extract the existing bidder
+    Bid existingBid=auctionDatabase.getCurrentBidForAuction(auctionId);
     Bid bid = auctionDatabase.saveBid(bidder, bidValue, auctionId);
-    property.firePropertyChange("Bid", null, bid);
+    //if they exist, we send the notification in the event
+    if(existingBid!=null)
+    {
+      Notification notification= auctionDatabase.saveNotification("Your bid has been beaten for auction ID: "+ auctionId+".",
+          existingBid.getBidder());
+      property.firePropertyChange("Notification", null, notification);
+    }
+      property.firePropertyChange("Bid", null, bid);
     return bid;
   }
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
+  public synchronized void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
     auctionDatabase.createUser(firstname,lastname,email,password,phone);
   }
 
   @Override
-  public User getUser(String email, String password) throws SQLException {
+  public synchronized User getUser(String email, String password) throws SQLException {
     //  TODO: add validation in database
     System.out.println("ModelManager: getting user from database");
     return auctionDatabase.getUser(email,password);

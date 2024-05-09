@@ -136,7 +136,11 @@ public class CreateLoginViewController {
     }
     private void createAccountButtonPress(){
         try{
-            if(viewModel.ageValidation(datePicker.getValue()) && viewModel.createUser()){
+            /*if(viewModel.ageValidation(datePicker.getValue()) && viewModel.createUser()){
+                reset(WindowType.LOG_IN);
+                datePicker.setValue(null);  //  has to be reset for 'ageValidation'
+            }*/
+            if(viewModel.createUser()){
                 reset(WindowType.LOG_IN);
                 datePicker.setValue(null);  //  has to be reset for 'ageValidation'
             }

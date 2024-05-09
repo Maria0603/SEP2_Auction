@@ -37,6 +37,7 @@ public class AuctionClient
       server.addListener(this, "Time");
       server.addListener(this, "End");
       server.addListener(this,"Bid");
+      server.addListener(this, "Notification");
     }
     catch (Exception e)
     {

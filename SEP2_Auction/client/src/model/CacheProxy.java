@@ -14,7 +14,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 {
   private AuctionList ongoingAuctionsCache;
   private AuctionList previousOpenedAuctions;
-  private NotificationList notifications;
+  //private NotificationList notifications;
   private AuctionModelManager modelManager;
   private PropertyChangeSupport property;
   private ArrayList<Thread> timers;
@@ -26,12 +26,13 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.addListener("Auction", this);
     modelManager.addListener("End", this);
     modelManager.addListener("Bid", this);
+    modelManager.addListener("Notification", this);
 
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
     previousOpenedAuctions=new AuctionList();
     timers=new ArrayList<>();
 
-    notifications=modelManager.getNotifications("Mr Kaplan");
+    //notifications=null;
   }
 
   @Override public Auction startAuction(String title, String description,
@@ -81,7 +82,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
-    return notifications;
+    /*if(notifications==null)
+    {
+      notifications = modelManager.getNotifications(receiver);
+    }
+    return notifications;*/
+    return modelManager.getNotifications(receiver);
   }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
@@ -133,7 +139,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         //closedAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
       case "Notification":
-        notifications.addNotification((Notification) evt.getNewValue());
+        //notifications.addNotification((Notification) evt.getNewValue());
         break;
       case "Bid":
         Bid bid=(Bid)evt.getNewValue();

@@ -30,7 +30,7 @@ public class CreateLoginViewModel {
 
         dateProperty = new SimpleStringProperty();
 
-
+        reset();
     }
     public void reset(){
         firstnameProperty.set("");

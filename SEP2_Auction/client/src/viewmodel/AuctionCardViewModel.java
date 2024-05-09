@@ -87,7 +87,6 @@ public class AuctionCardViewModel implements PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     Bid bid=(Bid)evt.getNewValue();
-    System.out.println("received: " +bid.toString());
     if (idProperty.get() == bid.getAuctionId())
       Platform.runLater(() -> currentBidProperty.set(bid.getBidAmount()));
   }

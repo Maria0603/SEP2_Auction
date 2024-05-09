@@ -68,7 +68,6 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
   {
     switch (evt.getPropertyName()) {
       case "Auction":
-        System.out.println("all auctions view model received event");
         auctionCards.add((Auction) evt.getNewValue());
         property.firePropertyChange(evt);
         break;

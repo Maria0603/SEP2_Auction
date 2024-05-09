@@ -265,15 +265,15 @@ public class AuctionDatabase implements AuctionPersistence
   }
 
   @Override
-  public Bid getBidForAuction(int auctionId) throws SQLException
+  public Bid getCurrentBidForAuction(int auctionId) throws SQLException
   {
-      String sql = "SELECT * FROM sprint1database.bid WHERE auction_id = ?";
+      String sql = "SELECT current_bid, current_bidder FROM auction WHERE ID=?;";
       ArrayList<Object[]> results = database.query(sql, auctionId);
       for (int i = 0; i < results.size(); i++)
       {
         Object[] row = results.get(i);
+        int currentBid = Integer.parseInt(row[0].toString());
         String currentBidder = row[1].toString();
-        int currentBid = Integer.parseInt(row[2].toString());
         return new Bid(auctionId, currentBidder, currentBid);
       }
       return null;
