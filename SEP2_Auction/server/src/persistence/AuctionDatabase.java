@@ -291,19 +291,17 @@ public class AuctionDatabase implements AuctionPersistence
   @Override
   public User createUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
 
-    try(Connection connection = getConnection()){
+    try{
       String sql = "INSERT INTO sprint1database.users(first_name,last_name,user_email,password,phone_number)  \n" +
               "VALUES(?,?,?,?,?);";
 
-      PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+      checkFirstname(firstname);
+      checkLastname(lastname);
+      checkEmail(email);
+      checkPassword(password);
+      checkPhone(phone);
 
-      statement.setString(1, checkFirstname(firstname));
-      statement.setString(2, checkLastname(lastname));
-      statement.setString(3, checkEmail(email));
-      statement.setString(4, checkPassword(password));
-      statement.setString(5, checkPhone(phone));
-
-      statement.executeUpdate();
+      database.update(sql, firstname, lastname, email, password, phone);
 
       return new User(firstname,lastname,email,password,phone);
     } catch (SQLException e) {
