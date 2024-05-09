@@ -1,8 +1,6 @@
 package mediator;
 
-import model.Auction;
-import model.AuctionList;
-import model.AuctionModel;
+import model.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -38,6 +36,8 @@ public class AuctionClient
       server.addListener(this, "Auction");
       server.addListener(this, "Time");
       server.addListener(this, "End");
+      server.addListener(this,"Bid");
+      server.addListener(this, "Notification");
     }
     catch (Exception e)
     {
@@ -85,6 +85,43 @@ public class AuctionClient
       e.printStackTrace();
     }
     return null;
+  }
+
+  @Override
+  public NotificationList getNotifications(String receiver) throws SQLException {
+    try {
+      return server.getNotifications(receiver);
+    } catch (RemoteException e) {
+      return null;
+    }
+  }
+
+  @Override
+  public Bid placeBid(String bidder, int bidValue, int auctionId) throws SQLException {
+    try {
+      return server.placeBid(bidder, bidValue, auctionId);
+    } catch (RemoteException e) {
+      return null;
+    }
+  }
+
+
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
+    try {
+      server.addUser(firstname,lastname,email,password,phone);
+    } catch (SQLException e) {
+      throw new SQLException(e.getMessage());
+    }
+  }
+
+  @Override
+  public User getUser(String email, String password) throws SQLException {
+    try {
+      return server.getUser(email,password);
+    } catch (RemoteException e) {
+      return null;
+    }
   }
 
   @Override public void addListener(String s,

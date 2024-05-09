@@ -6,6 +6,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
+import model.Bid;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.awt.image.BufferedImage;
@@ -18,16 +19,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-public class AuctionViewModel
-    implements PropertyChangeListener
+public class AuctionViewModel implements PropertyChangeListener
 {
-  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty;
-  private IntegerProperty idProperty, bidProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty;
+  private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
+  private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;;
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
@@ -37,11 +38,10 @@ public class AuctionViewModel
     this.model = model;
     this.state = state;
     idProperty = new SimpleIntegerProperty();
-    bidProperty = new SimpleIntegerProperty();
     buyoutPriceProperty = new SimpleIntegerProperty();
     descriptionProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
-    headerProperty = new SimpleStringProperty("");
+    headerProperty = new SimpleStringProperty();
     incrementProperty = new SimpleIntegerProperty();
     ratingProperty = new SimpleIntegerProperty();
     reasonProperty = new SimpleStringProperty();
@@ -49,12 +49,14 @@ public class AuctionViewModel
     timeProperty = new SimpleIntegerProperty();
     timerProperty = new SimpleStringProperty();
     titleProperty = new SimpleStringProperty();
-    imageProperty=new SimpleObjectProperty<>();
+    imageProperty = new SimpleObjectProperty<>();
 
-    model.addListener("Auction", this);
+    incomingBidProperty = new SimpleIntegerProperty();
+    currentBidProperty = new SimpleIntegerProperty();
+    currentBidderProperty=new SimpleStringProperty();
     //model.addListener("Time", this);
-    model.addListener("End", this);
-    reset("startAuction");
+    //model.addListener("End", this);
+    reset();
   }
 
   public void startAuction()
@@ -63,12 +65,14 @@ public class AuctionViewModel
     try
     {
       //we cannot send the null image through model, because it cannot be converted into bytes, so:
-      if(imageProperty.get()==null)
+      if (imageProperty.get() == null)
         throw new IllegalArgumentException("Please upload an image.");
-      state.setAuction(model.startAuction(titleProperty.get().trim(),
-          descriptionProperty.get().trim(), reservePriceProperty.get(),
-          buyoutPriceProperty.get(), incrementProperty.get(),
-          timeProperty.get(), imageToByteArray(imageProperty.get())));
+      state.setAuction(model.getAuction(
+          model.startAuction(titleProperty.get().trim(),
+                  descriptionProperty.get().trim(), reservePriceProperty.get(),
+                  buyoutPriceProperty.get(), incrementProperty.get(),
+                  timeProperty.get(), imageToByteArray(imageProperty.get()))
+              .getID()));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException |
            IOException e)
@@ -80,6 +84,27 @@ public class AuctionViewModel
       //e.printStackTrace();
     }
   }
+  public void placeBid()
+  {
+    errorProperty.set("");
+    Bid bid = null;
+    try
+    {
+      bid=model.placeBid(state.getUserEmail(), incomingBidProperty.get(), idProperty.get());
+    }
+    catch (SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+      //e.printStackTrace();
+    }
+    if(errorProperty.get().isEmpty() && bid!=null && idProperty.get()==bid.getAuctionId())
+    {
+      currentBidProperty.set(bid.getBidAmount());
+      currentBidderProperty.set(bid.getBidder());
+      incomingBidProperty.set(0);
+    }
+  }
+
   private byte[] imageToByteArray(Image image) throws IOException
   {
     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
@@ -87,29 +112,36 @@ public class AuctionViewModel
     javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
     return outputStream.toByteArray();
   }
+
   private Image byteArrayToImage(byte[] imageBytes)
   {
     ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
     return new Image(inputStream);
   }
 
-  public void reset(String id)
+  public void reset()
   {
+    model.addListener("Bid", this);
     Auction selectedAuction = state.getSelectedAuction();
-    if (selectedAuction != null && id.equals("displayAuction"))
+    if (selectedAuction != null)
     {
+      //when we open an auction, we listen to the updating time
       model.addListener("Time", this);
+      model.addListener("End", this);
+
       headerProperty.set("Auction ID:");
-      idProperty.set(state.getSelectedAuction().getID());
-      titleProperty.set(state.getSelectedAuction().getItem().getTitle());
-      descriptionProperty.set(
-          state.getSelectedAuction().getItem().getDescription());
+      idProperty.set(selectedAuction.getID());
+      titleProperty.set(selectedAuction.getItem().getTitle());
+      descriptionProperty.set(selectedAuction.getItem().getDescription());
       reservePriceProperty.set(
-          state.getSelectedAuction().getPriceConstraint().getReservePrice());
+          selectedAuction.getPriceConstraint().getReservePrice());
       buyoutPriceProperty.set(
-          state.getSelectedAuction().getPriceConstraint().getBuyoutPrice());
+          selectedAuction.getPriceConstraint().getBuyoutPrice());
       incrementProperty.set(state.getSelectedAuction().getPriceConstraint()
           .getMinimumIncrement());
+      imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
+      currentBidderProperty.set(selectedAuction.getCurrentBidder());
+      currentBidProperty.set(selectedAuction.getCurrentBid());
     }
     else
     {
@@ -117,13 +149,18 @@ public class AuctionViewModel
     }
   }
 
-  private void wipe()
+  public void leaveAuctionView()
   {
-    state.setAuction(null);
+    //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
+    model.removeListener("End", this);
+  }
+
+  public void wipe()
+  {
     headerProperty.set("Start auction");
     idProperty.set(0);
-    bidProperty.set(0);
+    currentBidProperty.set(0);
     buyoutPriceProperty.set(0);
     descriptionProperty.set("");
     errorProperty.set("");
@@ -133,7 +170,9 @@ public class AuctionViewModel
     reservePriceProperty.set(0);
     timeProperty.set(0);
     titleProperty.set("");
+    currentBidderProperty.set("No bidder");
   }
+
   public ObjectProperty<Image> getImageProperty()
   {
     return imageProperty;
@@ -174,9 +213,13 @@ public class AuctionViewModel
     return titleProperty;
   }
 
-  public IntegerProperty getBidProperty()
+  public IntegerProperty getCurrentBidProperty()
   {
-    return bidProperty;
+    return currentBidProperty;
+  }
+  public StringProperty getCurrentBidderProperty()
+  {
+    return currentBidderProperty;
   }
 
   public IntegerProperty getBuyoutPriceProperty()
@@ -203,6 +246,10 @@ public class AuctionViewModel
   {
     return incrementProperty;
   }
+  public IntegerProperty getIncomingBidProperty() {
+    return incomingBidProperty;
+  }
+
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {
@@ -211,48 +258,34 @@ public class AuctionViewModel
     switch (event.getPropertyName())
     {
       case "Time":
-        // if(idProperty.equals(event.getOldValue())) //we should only update one
-        // auction for each event
-      {
-        LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
-        Platform.runLater(() -> timerProperty.set(time.format(timeFormatter)));
-      }
-      break;
-      case "End":
-        Platform.runLater(() -> errorProperty.set("Auction closed."));
+        //System.out.println(event.getOldValue());
+        if (idProperty.get() == Integer.parseInt(
+            event.getOldValue().toString()))
+        {
+          LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
+          Platform.runLater(
+              () -> timerProperty.set(time.format(timeFormatter)));
+        }
         break;
-      case "Auction":
-        int auctionId = ((Auction) event.getNewValue()).getID();
-
-        Platform.runLater(() -> {
-          headerProperty.set("Auction ID:");
-          idProperty.set(auctionId);
-          try
-          {
-            Auction auction=model.getAuction(auctionId);
-            titleProperty.set(
-                auction.getItem().getTitle());
-            descriptionProperty.set(
-                auction.getItem().getDescription());
-            reservePriceProperty.set(
-                auction.getPriceConstraint()
-                    .getReservePrice());
-            buyoutPriceProperty.set(
-                auction.getPriceConstraint()
-                    .getBuyoutPrice());
-            incrementProperty.set(
-                auction.getPriceConstraint()
-                    .getMinimumIncrement());
-            imageProperty.set(byteArrayToImage(auction.getImageData()));
-          }
-          catch (SQLException e)
-          {
-            // put it in the error label
-            e.printStackTrace();
-          }
-        });
+      case "End":
+        if (idProperty.get() == Integer.parseInt(
+            event.getOldValue().toString()))
+        {
+          Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
+        }
+        break;
+      case "Bid":
+        Bid bid=(Bid)event.getNewValue();
+        if (idProperty.get() == bid.getAuctionId())
+        {
+          Platform.runLater(() -> {
+            currentBidProperty.set(bid.getBidAmount());
+            currentBidderProperty.set(bid.getBidder());
+              });
+        }
         break;
     }
   }
+
 
 }

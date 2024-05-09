@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 
-public class EndTime
+public class ServerTimer
     implements Runnable, NamedPropertyChangeSubject, Serializable
 {
   private int id;
@@ -19,10 +19,10 @@ public class EndTime
   //private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
-  public EndTime(Time start, Time end, int id)
+  public ServerTimer(Time start, Time end, int id)
   {
-    this.start=start;
-    this.end=end;
+    this.start = start;
+    this.end = end;
     this.id = id;
     property = new PropertyChangeSupport(this);
   }
@@ -32,26 +32,24 @@ public class EndTime
     return id;
   }
 
-
   @Override public void run()
   {
-        while (timeLeft(start, end)>0)
-        {
-          try
-          {
-            //Thread.sleep(timeLeftToSleep * 1000);
-            Thread.sleep(timeLeft(start, end)*1000);
-          }
-          catch (InterruptedException e)
-          {
-            //
-          }
-          if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
-          {
-            property.firePropertyChange("End", id, 0);
-            break;
-          }
-        }
+    while (timeLeft(start, end) > 0)
+    {
+      try
+      {
+        Thread.sleep(timeLeft(start, end) * 1000);
+      }
+      catch (InterruptedException e)
+      {
+        //
+      }
+      if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
+      {
+        property.firePropertyChange("End", id, 0);
+        break;
+      }
+    }
   }
 
   private long timeLeft(Time currentTime, Time end)
@@ -59,8 +57,9 @@ public class EndTime
     long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
     long endSeconds = end.toLocalTime().toSecondOfDay();
     if (currentSeconds >= endSeconds)
-      return 60*60*24-(currentSeconds-endSeconds);
-    else return endSeconds-currentSeconds;
+      return 60 * 60 * 24 - (currentSeconds - endSeconds);
+    else
+      return endSeconds - currentSeconds;
   }
 
   @Override public void addListener(String propertyName,

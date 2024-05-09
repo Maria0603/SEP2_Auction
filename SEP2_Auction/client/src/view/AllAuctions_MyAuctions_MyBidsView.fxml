@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fx:id="allAuctionsScrollPane" prefHeight="740.0" prefWidth="1102.0" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAuctionsViewController">
+<ScrollPane fx:id="allAuctionsScrollPane" prefHeight="740.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAuctionsViewController">
    <content>
-      <GridPane fx:id="auctionsGrid" alignment="CENTER" gridLinesVisible="true" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1085.0" vgap="5.0">
+      <GridPane fx:id="auctionsGrid" gridLinesVisible="true" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1086.0" vgap="5.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="266.0" minWidth="266.0" prefWidth="266.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="266.0" minWidth="266.0" prefWidth="266.0" />
@@ -24,6 +24,9 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
       </GridPane>
    </content>
    <padding>

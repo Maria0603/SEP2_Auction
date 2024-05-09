@@ -1,71 +1,67 @@
+
 package view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import viewmodel.AuctionViewModel;
 import viewmodel.ViewModelFactory;
 
-public class ViewHandler
-{
+public class ViewHandler {
   private Stage primaryStage;
   private Scene currentScene;
   private ViewModelFactory viewModelFactory;
-  private FixedPaneViewController fixedPaneViewController;
+  private FixedPaneViewHandler fixedPaneViewController;
+  private CreateLoginViewController createLoginViewController;
 
-  public ViewHandler(ViewModelFactory viewModelFactory)
-  {
+  public ViewHandler(ViewModelFactory viewModelFactory) {
     this.viewModelFactory = viewModelFactory;
     currentScene = new Scene(new Region());
   }
 
-  public void start(Stage primaryStage)
-  {
+  public void start(Stage primaryStage) {
     this.primaryStage = primaryStage;
-    openView("startAuction");
+    //openView("startAuction");
     //openView("allAuctions");
+//    openView(WindowType.ALL_AUCTIONS);
+    openView(WindowType.SIGN_UP);
   }
 
-  public void openView(String id)
-  {
+  public void openView(WindowType type) {
     Region root = null;
-    if(id.equals("startAuction") || id.equals("displayAuction")|| id.equals("allAuctions"))
-    {
-      root = loadFixedPaneView("FixedPaneView.fxml", id);
+    switch (type) {
+      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS ->{
+        root = loadFixedPaneView("FixedPaneView.fxml", type);
+      }
+      case SIGN_UP, LOG_IN -> {
+        root = loadCreateLoginView("CreateAccountEditProfileView.fxml",type);
+      }
+      default -> {
+        System.out.println("Unexpected value: " + type);
+      }
     }
-    /*switch (id)
-    {
-      case "startAuction", "displayAuction", "allAuctions":
-        root = loadFixedPaneView("FixedPaneView.fxml", id);
-
-      //case "login":
-      //case "createAccount":
-    }
-     */
     currentScene.setRoot(root);
+
     String title = "";
-    if (root.getUserData() != null)
-    {
+    if (root.getUserData() != null) {
       title += root.getUserData();
     }
+
 
     primaryStage.setTitle(title);
     primaryStage.setScene(currentScene);
     primaryStage.show();
   }
 
-  public void closeView()
-  {
+
+  public void closeView() {
     primaryStage.close();
   }
 
-  private Region loadFixedPaneView(String fxmlFile, String id)
-  {
-    if (fixedPaneViewController == null)
-    {
-      try
-      {
+
+  private Region loadFixedPaneView(String fxmlFile, WindowType windowType) {
+    if (fixedPaneViewController == null) {
+      try {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(fxmlFile));
         Region root = loader.load();
@@ -73,18 +69,42 @@ public class ViewHandler
 
         fixedPaneViewController.init(this,
             viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root,
-            id);
+            windowType);
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
         e.printStackTrace();
       }
     }
-    else
-    {
-      fixedPaneViewController.reset(id);
+    else {
+      fixedPaneViewController.reset(windowType);
     }
     return fixedPaneViewController.getRoot();
   }
+  private Region loadCreateLoginView(String fxmlFile, WindowType windowType) {
+    if (createLoginViewController == null) {
+      try {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(fxmlFile));
+        Region root = loader.load();
+        createLoginViewController = loader.getController();
 
+        createLoginViewController.init(this,
+                viewModelFactory.getCreateLoginViewModel(), root,
+                windowType);
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    else {
+      createLoginViewController.reset(windowType);
+    }
+    return createLoginViewController.getRoot();
+  }
 }
+
+
+
+
+
+

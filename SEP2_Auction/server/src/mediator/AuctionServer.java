@@ -1,8 +1,7 @@
+
 package mediator;
 
-import model.Auction;
-import model.AuctionList;
-import model.AuctionModel;
+import model.*;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
@@ -33,6 +32,8 @@ public class AuctionServer
     model.addListener("Auction", this);
     model.addListener("Time", this);
     model.addListener("End", this);
+    model.addListener("Bid", this);
+    model.addListener("Notification", this);
 
     startRegistry();
     startServer();
@@ -57,40 +58,65 @@ public class AuctionServer
     Naming.rebind("Connect", this);
   }
 
-  @Override public Auction startAuction(String title,
-      String description, int reservePrice, int buyoutPrice,
-      int minimumIncrement, int auctionTime, byte[] imageData)
+  @Override public synchronized Auction startAuction(String title, String description,
+      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
+      byte[] imageData)
       throws RemoteException, SQLException, ClassNotFoundException
   {
     return model.startAuction(title, description, reservePrice, buyoutPrice,
         minimumIncrement, auctionTime, imageData);
   }
 
-  @Override public Auction getAuction(int id)
+  @Override public synchronized Auction getAuction(int id)
       throws RemoteException, SQLException
   {
     return model.getAuction(id);
   }
 
-  @Override public AuctionList getOngoingAuctions()
-      throws RemoteException, SQLException {
+  @Override public synchronized AuctionList getOngoingAuctions()
+      throws RemoteException, SQLException
+  {
     return model.getOngoingAuctions();
   }
 
-  @Override public boolean addListener(GeneralListener<String, Object> listener,
+
+  @Override public synchronized NotificationList getNotifications(String receiver)
+      throws RemoteException, SQLException
+  {
+    return model.getNotifications(receiver);
+  }
+
+  @Override public synchronized Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws RemoteException, SQLException
+  {
+    return model.placeBid(bidder, bidValue, auctionId);
+  }
+  @Override
+  public synchronized void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
+    model.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public synchronized User getUser(String email, String password) throws SQLException {
+    System.out.println("AuctionServer: " + email + ", " + password);
+    return model.getUser(email,password);
+
+  }
+
+  @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException
   {
     return property.addListener(listener, propertyNames);
   }
 
-  @Override public boolean removeListener(
+  @Override public synchronized boolean removeListener(
       GeneralListener<String, Object> listener, String... propertyNames)
       throws RemoteException
   {
     return property.removeListener(listener, propertyNames);
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt)
+  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
   {
     property.firePropertyChange(evt.getPropertyName(),
         String.valueOf(evt.getOldValue()), evt.getNewValue());

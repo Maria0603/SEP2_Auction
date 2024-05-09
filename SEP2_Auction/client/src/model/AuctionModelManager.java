@@ -1,3 +1,4 @@
+
 package model;
 
 import mediator.AuctionClient;
@@ -6,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -16,43 +18,27 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   private PropertyChangeSupport property;
   private AuctionClient client;
 
-  public AuctionModelManager()
+  public AuctionModelManager() throws IOException, SQLException
   {
-    try
-    {
-      property = new PropertyChangeSupport(this);
-      client = new AuctionClient();
-      client.addListener("Auction", this);
-      //client.addListener("Time", this);
-      client.addListener("End", this);
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
+    property = new PropertyChangeSupport(this);
+    client = new AuctionClient();
+    client.addListener("Auction", this);
+    client.addListener("End", this);
+    client.addListener("Bid", this);
+    client.addListener("Notification", this);
   }
 
-  @Override public Auction startAuction(String title,
-      String description, int reservePrice, int buyoutPrice,
-      int minimumIncrement, int auctionTime, byte[] imageData)
-      throws SQLException, ClassNotFoundException
+  @Override public Auction startAuction(String title, String description,
+      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
+      byte[] imageData) throws SQLException, ClassNotFoundException
   {
-    return client.startAuction(title, description, reservePrice,
-        buyoutPrice, minimumIncrement, auctionTime, imageData);
+    return client.startAuction(title, description, reservePrice, buyoutPrice,
+        minimumIncrement, auctionTime, imageData);
   }
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    Auction auction=client.getAuction(ID);
-    if(auction!=null)
-    {
-      Timer timer=new Timer(timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime())-1, ID);
-      timer.addListener("Time", this);
-      timer.addListener("End", this);
-      Thread t = new Thread(timer, String.valueOf(ID));
-      t.start();
-    }
-    return auction;
+    return client.getAuction(ID);
   }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
@@ -60,13 +46,28 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getOngoingAuctions();
   }
 
-  private long timeLeft(Time currentTime, Time end)
+
+  @Override public NotificationList getNotifications(String receiver)
+      throws SQLException{
+    return client.getNotifications(receiver);
+  }
+
+  @Override
+  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
+    client.addUser(firstname,lastname,email,password,phone);
+  }
+
+  @Override
+  public User getUser(String email, String password) throws SQLException {
+    return client.getUser(email,password);
+  }
+
+
+
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws SQLException
   {
-    long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
-    long endSeconds = end.toLocalTime().toSecondOfDay();
-    if (currentSeconds >= endSeconds)
-      return 60*60*24-(currentSeconds-endSeconds);
-    else return endSeconds-currentSeconds;
+    return client.placeBid(bidder, bidValue, auctionId);
   }
 
   @Override public void addListener(String propertyName,
@@ -87,3 +88,4 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     property.firePropertyChange(evt);
   }
 }
+

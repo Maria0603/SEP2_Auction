@@ -1,16 +1,20 @@
 package viewmodel;
 
+import javafx.beans.InvalidationListener;
 import model.Auction;
+import model.User;
+
+import java.util.Observable;
 
 public class ViewModelState
 {
   private Auction selectedAuction;
-  private boolean displayAuction;
+  private String userEmail;
 
   public ViewModelState()
   {
     selectedAuction = null;
-    displayAuction = false;
+    userEmail=null;
   }
 
   public void setAuction(Auction auction)
@@ -23,18 +27,18 @@ public class ViewModelState
     return selectedAuction;
   }
 
-  public boolean getDisplayAuction()
-  {
-    return displayAuction;
-  }
-
-  public void setDisplayAuction(boolean display)
-  {
-    this.displayAuction = display;
-  }
-
   public void wipeAuction()
   {
     selectedAuction = null;
   }
+
+
+  public String getUserEmail() {
+    return userEmail;
+  }
+
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
+  }
+
 }

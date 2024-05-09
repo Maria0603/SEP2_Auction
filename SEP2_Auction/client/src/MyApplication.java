@@ -3,24 +3,26 @@ import javafx.stage.Stage;
 import mediator.AuctionClient;
 import model.AuctionModel;
 import model.AuctionModelManager;
+import model.CacheProxy;
 import view.ViewHandler;
 import viewmodel.ViewModelFactory;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class MyApplication extends Application
 {
-  @Override public void start(Stage primaryStage) throws Exception
+  @Override public void start(Stage primaryStage)
   {
     try
     {
-      AuctionModel model = new AuctionModelManager();
+      AuctionModel model = new CacheProxy();
       ViewModelFactory viewModelFactory = new ViewModelFactory(model);
       ViewHandler view = new ViewHandler(viewModelFactory);
       AuctionClient client = new AuctionClient();
       view.start(primaryStage);
     }
-    catch (IOException e)
+    catch (IOException | SQLException e)
     {
       e.printStackTrace();
     }
