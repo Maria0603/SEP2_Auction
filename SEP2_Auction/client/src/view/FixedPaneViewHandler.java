@@ -47,7 +47,7 @@ public class FixedPaneViewHandler
     this.viewHandler = viewHandler;
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
-
+    notificationsButton.styleProperty().bindBidirectional(fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
     reset(windowType);
   }
 
@@ -209,6 +209,8 @@ public class FixedPaneViewHandler
 
   @FXML Region notificationsButtonPressed()
   {
+    //notificationsButton.setStyle("-fx-background-color: #ffffff;");
+    notificationsButton.setStyle("");
     if (allAccountsNotificationsViewController == null)
     {
       try

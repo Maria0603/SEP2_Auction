@@ -292,8 +292,8 @@ public class AuctionDatabase implements AuctionPersistence
       String sql = "INSERT INTO sprint1database.users(first_name,last_name,user_email,password,phone_number)  \n" +
               "VALUES(?,?,?,?,?);";
 
-      checkFirstname(firstname);
-      checkLastname(lastname);
+      checkFirstName(firstname);
+      checkLastName(lastname);
       checkEmail(email);
       checkPassword(password);
       checkPhone(phone);
@@ -433,21 +433,21 @@ public class AuctionDatabase implements AuctionPersistence
     if (auctionTime <= 0 || auctionTime > 24)
       throw new SQLException("The auction time can be at most 24 hours!");
   }
-  private String checkFirstname(String firstname) throws SQLException {
+  private String checkFirstName(String firstname) throws SQLException {
     if(firstname.isEmpty()){
-      throw new SQLException("Empty firstname");
+      throw new SQLException("Empty first name");
     }
     if(firstname.length() < 4){
-      throw new SQLException("The firstname must be at least 3 characters long.");
+      throw new SQLException("The first name must be at least 3 characters long.");
     }
     return firstname;
   }
-  private String checkLastname(String lastname) throws SQLException {
+  private String checkLastName(String lastname) throws SQLException {
     if(lastname.isEmpty()){
-      throw new SQLException("Empty lastname");
+      throw new SQLException("Empty last name");
     }
     if(lastname.length() < 4){
-      throw new SQLException("The lastname must be at least 3 characters long.");
+      throw new SQLException("The last name must be at least 3 characters long.");
     }
     return lastname;
   }
@@ -459,7 +459,7 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("Email must be in 'name@domain' format");
     }
     if(isEmailInTheSystem(email)){
-      throw new SQLException("Email is already in the system. Login!");
+      throw new SQLException("Email is already in the system. Please login.");
     }
     return email;
   }
@@ -474,9 +474,6 @@ public class AuctionDatabase implements AuctionPersistence
     return password;
   }
   private String checkPhone(String phone) throws SQLException {
-    if(phone.isEmpty()){
-      throw new SQLException("Empty phone");
-    }
     if(phone.length() < 4){
       throw new SQLException("Invalid phone number.");
     }

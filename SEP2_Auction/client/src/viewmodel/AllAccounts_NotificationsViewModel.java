@@ -55,14 +55,14 @@ public class AllAccounts_NotificationsViewModel
 
   private void loadNotifications()
   {
-    if (viewModelState.getUser() != null)
+    if (viewModelState.getUserEmail() != null)
     {
       notifications.clear();
       NotificationList list;
       try
       {
         //we need the accounts
-        list = model.getNotifications(viewModelState.getUser().getEmail());
+        list = model.getNotifications(viewModelState.getUserEmail());
         for (int i = 0; i < list.getSize(); i++)
         {
           notifications.add(new NotificationViewModel(list.getNotification(i)));
@@ -87,19 +87,15 @@ public class AllAccounts_NotificationsViewModel
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("rrrrrrrrrrrrrrrr");
     switch (evt.getPropertyName())
     {
 
       case "Notification":
-        System.out.println(evt.getNewValue());
         if (evt.getNewValue() != null)
         {
           Notification notification = (Notification) evt.getNewValue();
-          System.out.println(
-              notification.getContent() + " " + notification.getReceiver());
           if (notification.getReceiver()
-              .equals(viewModelState.getUser().getEmail()))
+              .equals(viewModelState.getUserEmail()))
             Platform.runLater(() -> addNotification(new NotificationViewModel(notification)));
         }
         break;
