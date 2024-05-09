@@ -4,35 +4,26 @@ SET SCHEMA 'sprint1database';
 
 CREATE DOMAIN email VARCHAR(100);
 
-
-
 DROP TABLE Auction CASCADE;
 DROP TABLE Users CASCADE;
 DROP TABLE Bid CASCADE;
 DROP TABLE Notification CASCADE;
-DROP TABLE Moderator CASCADE;
-DROP TABLE Moderates CASCADE;
 DROP TABLE participant CASCADE;
 
 CREATE TABLE users (
   user_email email PRIMARY KEY,
   password VARCHAR(255) NOT NULL,
-  --nickname VARCHAR(255),
   phone_number VARCHAR(255),
   first_name VARCHAR(255),
   last_name VARCHAR(255)
-  --birth_date DATE,
-  --rate INTEGER
 );
 
 CREATE TABLE participant(
     user_email email PRIMARY KEY,
     birth_date DATE,
-    rate INTEGER,
+    --rate INTEGER,
     FOREIGN KEY (user_email) references users (user_email)
 );
-INSERT INTO participant (user_email, birth_date, rate)
-VALUES ('bob_the_bidder@gmail.com', '1990-01-01', 0);
 
 CREATE TABLE IF NOT EXISTS auction(
    ID SERIAL PRIMARY KEY,
@@ -47,8 +38,7 @@ CREATE TABLE IF NOT EXISTS auction(
    status VARCHAR(7) CHECK (status IN ('ONGOING','CLOSED')) NOT NULL,
    start_time TIME NOT NULL,
    end_time TIME NOT NULL,
-   --creator_email email NOT NULL,
-    creator_email email, --null for now
+   creator_email email NOT NULL,
    --moderator_email email NOT NULL,
    FOREIGN KEY (creator_email) references participant(user_email)
    --FOREIGN KEY (moderator_email) references moderator
@@ -60,8 +50,7 @@ CREATE TABLE bid (
   participant_email email NOT NULL,
   auction_id INTEGER NOT NULL,
   bid_amount INTEGER CHECK (bid_amount>0) NOT NULL,
-  --FOREIGN KEY (participant_email) REFERENCES participant(user_email), --correct line
-  FOREIGN KEY (participant_email) REFERENCES users(user_email),
+  FOREIGN KEY (participant_email) REFERENCES participant(user_email),
   FOREIGN KEY (auction_id) REFERENCES auction(id)
 );
 
@@ -71,7 +60,5 @@ CREATE TABLE notification (
   content VARCHAR(1000),
   date DATE,
   time TIME,
-  --FOREIGN KEY (receiver) REFERENCES participant(user_email) --correct line
-  FOREIGN KEY (receiver) REFERENCES users(user_email)
-
+  FOREIGN KEY (receiver) REFERENCES participant(user_email)
 );
