@@ -3,9 +3,10 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Ellipse?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="borderPane" prefHeight="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FixedPaneViewHandler">
@@ -20,7 +21,12 @@
                   <Font name="System Bold" size="21.0" />
                </font>
             </Label>
-            <Button id="resetPassword_loginButton" fx:id="logOutButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1199.0" layoutY="12.0" mnemonicParsing="false" onAction="#logOutButtonPressed" prefHeight="30.0" prefWidth="115.0" text="Log out" textAlignment="CENTER">
+            <ImageView fitHeight="34.0" fitWidth="32.0" layoutX="24.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/user%20(1).png" />
+               </image>
+            </ImageView>
+            <Button id="resetPassword_loginButton" fx:id="logOutButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1199.0" layoutY="12.0" mnemonicParsing="false" onAction="#logOutButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Log out" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -28,9 +34,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Ellipse fill="DODGERBLUE" layoutX="35.0" layoutY="31.0" radiusX="20.0" radiusY="15.0" stroke="BLACK" strokeType="INSIDE" />
-            <Ellipse fill="#21d2ff" layoutX="35.0" layoutY="16.0" radiusX="15.0" radiusY="11.0" stroke="BLACK" strokeType="INSIDE" />
-            <Button id="resetPassword_loginButton" fx:id="notificationsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="809.0" layoutY="12.0" mnemonicParsing="false" onAction="#notificationsButtonPressed" prefHeight="30.0" prefWidth="115.0" text="Notifications" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="notificationsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="809.0" layoutY="12.0" mnemonicParsing="false" onAction="#notificationsButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Notifications" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -38,7 +42,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="sellItemButton" alignment="CENTER" contentDisplay="CENTER" layoutX="941.0" layoutY="13.0" mnemonicParsing="false" onAction="#sellItemButtonPressed" prefHeight="30.0" prefWidth="115.0" text="Sell item" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="sellItemButton" alignment="CENTER" contentDisplay="CENTER" layoutX="941.0" layoutY="13.0" mnemonicParsing="false" onAction="#sellItemButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Sell item" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -46,7 +50,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="moderatorInfoButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1072.0" layoutY="13.0" mnemonicParsing="false" onAction="#moderatorInfoButtonPressed" prefHeight="30.0" prefWidth="115.0" text="Moderator info" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="moderatorInfoButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1072.0" layoutY="13.0" mnemonicParsing="false" onAction="#moderatorInfoButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Moderator info" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -60,7 +64,7 @@
    <left>
       <Pane prefHeight="780.0" prefWidth="226.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="resetPassword_loginButton" fx:id="myProfile_settingsButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#myProfile_settingsButtonPressed" prefHeight="50.0" prefWidth="224.0" text="My profile" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="myProfile_settingsButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#myProfile_settingsButtonPressed" prefHeight="50.0" prefWidth="224.0" styleClass="button2" stylesheets="@../css/styling.css" text="My profile" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -68,7 +72,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="allAuctionsButton" alignment="CENTER" contentDisplay="CENTER" layoutY="50.0" mnemonicParsing="false" onAction="#allAuctionsButtonPressed" prefHeight="50.0" prefWidth="224.0" text="All auctions" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="allAuctionsButton" alignment="CENTER" contentDisplay="CENTER" layoutY="50.0" mnemonicParsing="false" onAction="#allAuctionsButtonPressed" prefHeight="50.0" prefWidth="224.0" styleClass="button2" stylesheets="@../css/styling.css" text="All auctions" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -76,7 +80,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="myAuctions_allAccountsButton" alignment="CENTER" contentDisplay="CENTER" layoutY="100.0" mnemonicParsing="false" onAction="#myAuctions_allAccountsButtonPressed" prefHeight="50.0" prefWidth="224.0" text="My auctions" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="myAuctions_allAccountsButton" alignment="CENTER" contentDisplay="CENTER" layoutY="100.0" mnemonicParsing="false" onAction="#myAuctions_allAccountsButtonPressed" prefHeight="50.0" prefWidth="224.0" styleClass="button2" stylesheets="@../css/styling.css" text="My auctions" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -84,7 +88,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="myBidsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="150.0" mnemonicParsing="false" onAction="#myBidsButtonPressed" prefHeight="50.0" prefWidth="224.0" text="My bids" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="myBidsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="150.0" mnemonicParsing="false" onAction="#myBidsButtonPressed" prefHeight="50.0" prefWidth="224.0" styleClass="button2" stylesheets="@../css/styling.css" text="My bids" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

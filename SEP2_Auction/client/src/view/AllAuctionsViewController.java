@@ -3,6 +3,7 @@ package view;
 import javafx.collections.FXCollections;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
@@ -131,5 +132,9 @@ public class AllAuctionsViewController implements PropertyChangeListener {
       case "End" -> {
       }
     }
+  }
+
+  public void searchPressed(ActionEvent actionEvent) {
+
   }
 }
