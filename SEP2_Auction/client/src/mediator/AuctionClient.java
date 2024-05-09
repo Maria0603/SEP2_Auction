@@ -111,7 +111,7 @@ public class AuctionClient
   @Override
   public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
     try {
-      server.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
+      return server.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
     } catch (RemoteException e) {
       e.printStackTrace();
     }

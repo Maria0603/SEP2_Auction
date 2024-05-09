@@ -60,7 +60,7 @@ public class CreateLoginViewModel
     }
     catch (SQLException e)
     {
-      errorProperty.set(e.getLocalizedMessage());
+      errorProperty.set(e.getMessage());
       //e.printStackTrace();
       return false;
     }
@@ -70,13 +70,6 @@ public class CreateLoginViewModel
   public boolean login()
   {
     errorProperty.set("");
-    if (emailProperty.get().trim().isEmpty() || passwordProperty.get().trim()
-        .isEmpty())
-    {
-      errorProperty.set("Some fields are empty");
-      return false;
-    }
-
     try
     {
       String user = model.login(emailProperty.get().trim(),
@@ -87,7 +80,7 @@ public class CreateLoginViewModel
     }
     catch (SQLException e)
     {
-      errorProperty.set(e.getLocalizedMessage());
+      errorProperty.set(e.getMessage());
       //e.printStackTrace();
       return false;
     }

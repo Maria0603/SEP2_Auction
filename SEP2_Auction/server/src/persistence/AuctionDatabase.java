@@ -316,7 +316,6 @@ public class AuctionDatabase implements AuctionPersistence
         "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
     String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n"; //the correct line
-    //String sqlParticipant = "INSERT INTO participant(user_email) VALUES (?);\n";
 
     checkFirstName(firstname);
     checkLastName(lastname);
@@ -325,10 +324,8 @@ public class AuctionDatabase implements AuctionPersistence
     checkPhone(phone);
     ageValidation(birthday);
     database.update(sqlUser, email, password, phone, firstname, lastname);
-    //Date date= (Date) Date.from(birthday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     Date date=Date.valueOf(birthday);
-    database.update(sqlParticipant, email, date);//the correct line
-    //database.update(sqlParticipant, email);
+    database.update(sqlParticipant, email, date);
     return new User(firstname, lastname, email, password, phone, birthday);
   }
 
@@ -388,10 +385,10 @@ public class AuctionDatabase implements AuctionPersistence
   {
     if (!status.equals("ONGOING"))
       throw new SQLException("The auction is closed.");
-    //if (participantEmail.equals(currentBidder))
-      //throw new SQLException("You are the current bidder.");
-    //if(participantEmail.equals(seller))
-      //throw new SQLException("You cannot bid for your item");
+    if (participantEmail.equals(currentBidder))
+      throw new SQLException("You are the current bidder.");
+    if(participantEmail.equals(seller))
+      throw new SQLException("You cannot bid for your item");
     if (currentBid > 0)
     {
       if (bidAmount <= currentBid + increment)
@@ -521,7 +518,7 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("This phone number is already in the system.");
     }
   }
-  //  Has to be used from controller :c
+
   private void ageValidation(LocalDate birthday) throws SQLException
   {
     if (birthday != null)
@@ -529,7 +526,7 @@ public class AuctionDatabase implements AuctionPersistence
       LocalDate currentDate = LocalDate.now();
       Period period = Period.between(birthday, currentDate);
       int age = period.getYears();
-      if (age < 2)
+      if (age < 18)
         throw new SQLException("You must be over 18 years old.");
     }
   }
