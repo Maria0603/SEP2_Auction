@@ -4,20 +4,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class CacheProxy implements AuctionModel, PropertyChangeListener
 {
   private AuctionList ongoingAuctionsCache;
-  private AuctionList previousOpenedAuctions;
-  //private NotificationList notifications;
+  private AuctionList previouslyOpenedAuctions;
+  private NotificationList notifications;
   private AuctionModelManager modelManager;
   private PropertyChangeSupport property;
   private ArrayList<Thread> timers;
+  private String userEmail;
+
+  private AuctionList previousBids;
 
   public CacheProxy() throws SQLException, IOException
   {
@@ -29,20 +32,21 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.addListener("Notification", this);
 
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
-    previousOpenedAuctions=new AuctionList();
+    previouslyOpenedAuctions =new AuctionList();
     timers=new ArrayList<>();
 
-    //notifications=null;
+    notifications=null;
+    previousBids=null;
+
+    userEmail =null;
   }
 
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws SQLException, ClassNotFoundException
+      byte[] imageData, String seller) throws SQLException, ClassNotFoundException
   {
-    Auction auction = modelManager.startAuction(title, description,
-        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
-    //ongoingAuctionsCache.addAuction(auction);
-    return auction;
+    return modelManager.startAuction(title, description,
+        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
   }
 
   @Override public Auction getAuction(int ID) throws SQLException
@@ -50,7 +54,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     Auction auction;
     try
     {
-      auction = previousOpenedAuctions.getAuctionByID(ID);
+      auction = previouslyOpenedAuctions.getAuctionByID(ID);
       for(int i=0; i<timers.size(); i++)
         if(timers.get(i).getId()==ID)
           timers.get(i).start();
@@ -60,7 +64,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     {
       auction = modelManager.getAuction(ID);
       //add auction to cache
-      previousOpenedAuctions.addAuction(auction);
+      previouslyOpenedAuctions.addAuction(auction);
       Timer timer = new Timer(timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1, ID);
       timer.addListener("Time", this);
       timer.addListener("End", this);
@@ -82,12 +86,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
-    /*if(notifications==null)
+    if(notifications==null && receiver.equals(userEmail))
     {
       notifications = modelManager.getNotifications(receiver);
     }
-    return notifications;*/
-    return modelManager.getNotifications(receiver);
+    return notifications;
+    //return modelManager.getNotifications(receiver);
   }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
@@ -105,14 +109,25 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       return endSeconds - currentSeconds;
   }
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
-    modelManager.addUser(firstname,lastname,email,password,phone);
+  public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday
+  ) throws SQLException {
+    return modelManager.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
   }
 
   @Override
-  public User getUser(String email, String password) throws SQLException {
-    return modelManager.getUser(email,password);
+  public String login(String email, String password) throws SQLException {
+    userEmail=modelManager.login(email, password);
+    return userEmail;
+  }
 
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    if(previousBids==null && bidder.equals(userEmail))
+    {
+      previousBids = modelManager.getPreviousBids(bidder);
+    }
+    return previousBids;
   }
 
   @Override public void addListener(String propertyName,
@@ -135,18 +150,21 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         ongoingAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
       case "End":
-        ongoingAuctionsCache.removeAuction((Auction) evt.getNewValue());
+        ongoingAuctionsCache.removeAuction(Integer.parseInt(evt.getOldValue().toString()));
         //closedAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
       case "Notification":
-        //notifications.addNotification((Notification) evt.getNewValue());
+        Notification notification=(Notification) evt.getNewValue();
+        if(notification.getReceiver().equals(userEmail))
+          notifications.addNotification(notification);
         break;
       case "Bid":
         Bid bid=(Bid)evt.getNewValue();
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
-        previousOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
-        previousOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+
+        previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
 
         break;
     }

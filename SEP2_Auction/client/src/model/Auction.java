@@ -71,6 +71,10 @@ public class Auction
   {
     return priceConstraint;
   }
+  public String getSeller()
+  {
+    return seller;
+  }
 
   public Time getEndTime()
   {

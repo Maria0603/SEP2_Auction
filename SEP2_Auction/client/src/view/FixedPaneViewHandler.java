@@ -141,7 +141,8 @@ public class FixedPaneViewHandler
 
   @FXML Region allAuctionsButtonPressed()
   {
-    return loadGrid(WindowType.START_AUCTION);
+    fixedPaneViewModel.allAuctions();
+    return loadGrid(WindowType.ALL_AUCTIONS);
   }
 
   private Region loadGrid(WindowType windowType)
@@ -183,7 +184,7 @@ public class FixedPaneViewHandler
       borderPane.setCenter(allAuctionsViewController.getRoot());
       allAuctionsViewController.reset(windowType);
     }
-    allAuctionsViewController.loadOngoingAuctions();
+    //allAuctionsViewController.loadAuctions();
     return allAuctionsViewController.getRoot();
   }
 
@@ -199,7 +200,7 @@ public class FixedPaneViewHandler
 
   @FXML void myAuctions_allAccountsButtonPressed(ActionEvent event)
   {
-
+    fixedPaneViewModel.myCreatedAuctions();
   }
 
   @FXML void myProfile_settingsButtonPressed(ActionEvent event)
@@ -238,9 +239,10 @@ public class FixedPaneViewHandler
     return allAuctionsViewController.getRoot();
   }
 
-  public void myBidsButtonPressed(ActionEvent actionEvent)
+  @FXML public Region myBidsButtonPressed(ActionEvent actionEvent)
   {
-    //return loadGrid("myBids");
+    fixedPaneViewModel.myBids();
+    return loadGrid(WindowType.BIDS);
   }
 
 }

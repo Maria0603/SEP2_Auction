@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -30,10 +32,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws SQLException, ClassNotFoundException
+      byte[] imageData, String seller) throws SQLException, ClassNotFoundException
   {
     return client.startAuction(title, description, reservePrice, buyoutPrice,
-        minimumIncrement, auctionTime, imageData);
+        minimumIncrement, auctionTime, imageData, seller);
   }
 
   @Override public Auction getAuction(int ID) throws SQLException
@@ -53,16 +55,20 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
-    client.addUser(firstname,lastname,email,password,phone);
+  public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
+    return client.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
   }
 
   @Override
-  public User getUser(String email, String password) throws SQLException {
-    return client.getUser(email,password);
+  public String login(String email, String password) throws SQLException {
+    return client.login(email,password);
   }
 
-
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    return client.getPreviousBids(bidder);
+  }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException

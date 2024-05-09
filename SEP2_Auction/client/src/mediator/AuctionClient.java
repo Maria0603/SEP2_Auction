@@ -9,6 +9,8 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
 
 import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
@@ -47,12 +49,12 @@ public class AuctionClient
 
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws SQLException, ClassNotFoundException
+      byte[] imageData, String seller) throws SQLException, ClassNotFoundException
   {
     try
     {
       return server.startAuction(title, description, reservePrice, buyoutPrice,
-          minimumIncrement, auctionTime, imageData);
+          minimumIncrement, auctionTime, imageData, seller);
     }
     catch (RemoteException e)
     {
@@ -107,21 +109,36 @@ public class AuctionClient
 
 
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
+  public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
     try {
-      server.addUser(firstname,lastname,email,password,phone);
-    } catch (SQLException e) {
-      throw new SQLException(e.getMessage());
+      return server.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
+    } catch (RemoteException e) {
+      e.printStackTrace();
     }
+    return null;
   }
 
   @Override
-  public User getUser(String email, String password) throws SQLException {
+  public String login(String email, String password) throws SQLException {
     try {
-      return server.getUser(email,password);
+      return server.login(email,password);
     } catch (RemoteException e) {
       return null;
     }
+  }
+
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    try
+    {
+      return server.getPreviousBids(bidder);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @Override public void addListener(String s,

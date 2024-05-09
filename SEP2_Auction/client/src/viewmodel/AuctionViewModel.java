@@ -27,8 +27,20 @@ import java.util.Arrays;
 
 public class AuctionViewModel implements PropertyChangeListener
 {
+
+  private BooleanProperty importButtonVisible, timeLabelVisible, timeTextFieldVisible, startAuctionButtonVisible, cancelButtonVisible;
+  private BooleanProperty timerCountdownLabelVisible, currentBidderLabelVisible, currentBidLabelVisible, currentBidderTextLabelVisible;
+  private BooleanProperty currentBidTextLabelVisible;
+  private BooleanProperty hoursLabelVisible;
+  private BooleanProperty bidLabelVisible;
+  private BooleanProperty placeBidButtonVisible;
+  private BooleanProperty buyNowButtonVisible;
+  private BooleanProperty somethingWrongLabelVisible;
+  private BooleanProperty sellerRateLabelVisible, ratingLabelVisible, deleteButtonVisible, reasonTextAreaVisible, incomingBidTextFieldVisible;
+
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
-  private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;;
+  private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;
+  ;
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
@@ -53,10 +65,11 @@ public class AuctionViewModel implements PropertyChangeListener
 
     incomingBidProperty = new SimpleIntegerProperty();
     currentBidProperty = new SimpleIntegerProperty();
-    currentBidderProperty=new SimpleStringProperty();
+    currentBidderProperty = new SimpleStringProperty();
     //model.addListener("Time", this);
     //model.addListener("End", this);
     reset();
+    //importButtonVisible=new SimpleBooleanProperty();
   }
 
   public void startAuction()
@@ -69,10 +82,10 @@ public class AuctionViewModel implements PropertyChangeListener
         throw new IllegalArgumentException("Please upload an image.");
       state.setAuction(model.getAuction(
           model.startAuction(titleProperty.get().trim(),
-                  descriptionProperty.get().trim(), reservePriceProperty.get(),
-                  buyoutPriceProperty.get(), incrementProperty.get(),
-                  timeProperty.get(), imageToByteArray(imageProperty.get()))
-              .getID()));
+              descriptionProperty.get().trim(), reservePriceProperty.get(),
+              buyoutPriceProperty.get(), incrementProperty.get(),
+              timeProperty.get(), imageToByteArray(imageProperty.get()),
+              state.getUserEmail()).getID()));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException |
            IOException e)
@@ -84,20 +97,24 @@ public class AuctionViewModel implements PropertyChangeListener
       //e.printStackTrace();
     }
   }
+
   public void placeBid()
   {
     errorProperty.set("");
     Bid bid = null;
     try
     {
-      bid=model.placeBid(state.getUserEmail(), incomingBidProperty.get(), idProperty.get());
+      bid = model.placeBid(state.getUserEmail(), incomingBidProperty.get(),
+          idProperty.get());
     }
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
+      incomingBidProperty.set(0);
       //e.printStackTrace();
     }
-    if(errorProperty.get().isEmpty() && bid!=null && idProperty.get()==bid.getAuctionId())
+    if (errorProperty.get().isEmpty() && bid != null
+        && idProperty.get() == bid.getAuctionId())
     {
       currentBidProperty.set(bid.getBidAmount());
       currentBidderProperty.set(bid.getBidder());
@@ -147,6 +164,34 @@ public class AuctionViewModel implements PropertyChangeListener
     {
       wipe();
     }
+  }
+
+  public void setForStart()
+  {
+    importButtonVisible.set(false);
+    timeLabelVisible.set(true);
+    timeTextFieldVisible.set(true);
+    startAuctionButtonVisible.set(true);
+    cancelButtonVisible.set(true);
+    timerCountdownLabelVisible.set(false);
+    currentBidderLabelVisible.set(false);
+    currentBidLabelVisible.set(false);
+    currentBidderTextLabelVisible.set(false);
+    currentBidTextLabelVisible.set(false);
+    bidLabelVisible.set(false);
+    placeBidButtonVisible.set(false);
+    buyNowButtonVisible.set(false);
+    somethingWrongLabelVisible.set(false);
+    sellerRateLabelVisible.set(false);
+    ratingLabelVisible.set(false);
+    deleteButtonVisible.set(false);
+    reasonTextAreaVisible.set(false);
+    incomingBidTextFieldVisible.set(false);
+  }
+
+  public BooleanProperty getImportButtonVisible()
+  {
+    return importButtonVisible;
   }
 
   public void leaveAuctionView()
@@ -217,6 +262,7 @@ public class AuctionViewModel implements PropertyChangeListener
   {
     return currentBidProperty;
   }
+
   public StringProperty getCurrentBidderProperty()
   {
     return currentBidderProperty;
@@ -246,10 +292,113 @@ public class AuctionViewModel implements PropertyChangeListener
   {
     return incrementProperty;
   }
-  public IntegerProperty getIncomingBidProperty() {
+
+  public IntegerProperty getIncomingBidProperty()
+  {
     return incomingBidProperty;
   }
 
+  public BooleanProperty timeLabelVisibleProperty()
+  {
+    return timeLabelVisible;
+  }
+
+
+  public BooleanProperty timeTextFieldVisibleProperty()
+  {
+    return timeTextFieldVisible;
+  }
+
+
+  public BooleanProperty startAuctionButtonVisibleProperty()
+  {
+    return startAuctionButtonVisible;
+  }
+
+  public BooleanProperty cancelButtonVisibleProperty()
+  {
+    return cancelButtonVisible;
+  }
+
+  public BooleanProperty timerCountdownLabelVisibleProperty()
+  {
+    return timerCountdownLabelVisible;
+  }
+
+  public BooleanProperty currentBidderLabelVisibleProperty()
+  {
+    return currentBidderLabelVisible;
+  }
+  public BooleanProperty currentBidLabelVisibleProperty()
+  {
+    return currentBidLabelVisible;
+  }
+
+  public BooleanProperty currentBidderTextLabelVisibleProperty()
+  {
+    return currentBidderTextLabelVisible;
+  }
+
+  public BooleanProperty currentBidTextLabelVisibleProperty()
+  {
+    return currentBidTextLabelVisible;
+  }
+  public BooleanProperty bidLabelVisibleProperty()
+  {
+    return bidLabelVisible;
+  }
+
+
+  public BooleanProperty placeBidButtonVisibleProperty()
+  {
+    return placeBidButtonVisible;
+  }
+
+
+  public BooleanProperty buyNowButtonVisibleProperty()
+  {
+    return buyNowButtonVisible;
+  }
+
+
+  public BooleanProperty somethingWrongLabelVisibleProperty()
+  {
+    return somethingWrongLabelVisible;
+  }
+
+
+  public BooleanProperty sellerRateLabelVisibleProperty()
+  {
+    return sellerRateLabelVisible;
+  }
+
+  public BooleanProperty ratingLabelVisibleProperty()
+  {
+    return ratingLabelVisible;
+  }
+
+
+  public BooleanProperty deleteButtonVisibleProperty()
+  {
+    return deleteButtonVisible;
+  }
+
+
+  public BooleanProperty reasonTextAreaVisibleProperty()
+  {
+    return reasonTextAreaVisible;
+  }
+
+
+  public BooleanProperty incomingBidTextFieldVisibleProperty()
+  {
+    return incomingBidTextFieldVisible;
+  }
+
+  public BooleanProperty hoursLabelVisibleProperty()
+  {
+    return hoursLabelVisible;
+  }
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {
@@ -275,17 +424,16 @@ public class AuctionViewModel implements PropertyChangeListener
         }
         break;
       case "Bid":
-        Bid bid=(Bid)event.getNewValue();
+        Bid bid = (Bid) event.getNewValue();
         if (idProperty.get() == bid.getAuctionId())
         {
           Platform.runLater(() -> {
             currentBidProperty.set(bid.getBidAmount());
             currentBidderProperty.set(bid.getBidder());
-              });
+          });
         }
         break;
     }
   }
-
 
 }

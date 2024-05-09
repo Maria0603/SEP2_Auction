@@ -15,6 +15,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class AuctionServer
     implements AuctionRemote, RemoteSubject<String, Object>,
@@ -60,11 +62,11 @@ public class AuctionServer
 
   @Override public synchronized Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData)
+      byte[] imageData, String seller)
       throws RemoteException, SQLException, ClassNotFoundException
   {
     return model.startAuction(title, description, reservePrice, buyoutPrice,
-        minimumIncrement, auctionTime, imageData);
+        minimumIncrement, auctionTime, imageData, seller);
   }
 
   @Override public synchronized Auction getAuction(int id)
@@ -92,16 +94,21 @@ public class AuctionServer
     return model.placeBid(bidder, bidValue, auctionId);
   }
   @Override
-  public synchronized void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
-    model.addUser(firstname,lastname,email,password,phone);
+  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
+    return model.addUser(firstname,lastname,email,password, repeatedPassword, phone, birthday);
   }
 
   @Override
-  public synchronized User getUser(String email, String password) throws SQLException {
+  public synchronized String login(String email, String password) throws SQLException {
     System.out.println("AuctionServer: " + email + ", " + password);
-    return model.getUser(email,password);
-
+    return model.login(email,password);
   }
+
+  @Override public AuctionList getPreviousBids(String bidder) throws SQLException
+  {
+    return model.getPreviousBids(bidder);
+  }
+
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException

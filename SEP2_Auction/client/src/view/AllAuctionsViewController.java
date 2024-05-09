@@ -22,9 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AllAuctionsViewController implements PropertyChangeListener {
-  @FXML private ScrollPane allAuctionsScrollPane;
-  @FXML private GridPane auctionsGrid;
-  @FXML public TextField searchInputField;
+  @FXML
+  private ScrollPane allAuctionsScrollPane;
+  @FXML
+  private GridPane auctionsGrid;
+  @FXML
+  public TextField searchInputField;
 
   private final int NUMBER_OF_COLUMNS = 4;
 
@@ -42,24 +45,24 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
 
     auctionCards = FXCollections.observableArrayList();
-    Bindings.bindContent(auctionCards, allAuctionsViewModel.getAuctionCards());
+    Bindings.bindContent(auctionCards, this.allAuctionsViewModel.getAuctionCards());
+
     searchInputField.textProperty()
         .bindBidirectional(this.allAuctionsViewModel.getSearchInputField());
 
-    allAuctionsViewModel.addListener("Auction", this);
-    allAuctionsViewModel.addListener("End", this);
+    this.allAuctionsViewModel.addListener("Auction", this);
+    this.allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
-    loadOngoingAuctions();
-    //other bindings to be inserted
+    loadAuctions();
+    // other bindings to be inserted
 
   }
 
   public void reset(WindowType type) {
     switch (type) {
-      case ALL_AUCTIONS -> {
-        auctionCards.clear();
-        //loadOngoingAuctions();
+      case ALL_AUCTIONS, BIDS -> {
+        loadAuctions();
       }
 
     }
@@ -69,10 +72,10 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     return root;
   }
 
-  public void loadOngoingAuctions() {
+  public void loadAuctions() {
+    allAuctionsViewModel.fillAuctionCards();
     clearGrid();
     try {
-
       int totalElements = auctionCards.size();
       int numRows = (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
 
@@ -88,8 +91,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
           }
         }
       }
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       ///
     }
   }
@@ -129,30 +131,31 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     return (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt) {
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
     switch (evt.getPropertyName()) {
       case "Auction" -> {
-        ///here we can trigger grid to add new card to the tail
+        /// here we can trigger grid to add new card to the tail
       }
       case "End" -> {
       }
     }
   }
 
-  @FXML public void searchPressed(ActionEvent actionEvent) throws IOException {
+  @FXML
+  public void searchPressed(ActionEvent actionEvent) throws IOException {
     clearGrid();
     ArrayList<Auction> searchResults = allAuctionsViewModel.searchAuctions();
 
+    int resultIndex = 0;
+    for (int row = 0; row < getNumberOfRowsInGrid(); row++) {
+      for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 
-      int resultIndex = 0;
-      for (int row = 0; row < getNumberOfRowsInGrid(); row++) {
-        for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+        addNewCardToGrid(searchResults.get(resultIndex), column, row);
+        resultIndex++;
+      }
 
-            addNewCardToGrid(searchResults.get(resultIndex), column, row);
-            resultIndex++;
-          }
-
-        }
+    }
 
   }
 

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class TestUsers {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         AuctionPersistence database = new AuctionDatabase();
-
+/*
         //  Play around with values for full content
 
         ///////////////// CREATE USER //////////////////////
@@ -25,6 +25,6 @@ public class TestUsers {
         }
         catch (SQLException e){
             System.out.println("Database exception: " + e.getLocalizedMessage());
-        }
+        }*/
     }
 }

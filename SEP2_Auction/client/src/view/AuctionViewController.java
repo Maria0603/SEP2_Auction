@@ -1,6 +1,7 @@
 package view;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -107,6 +108,27 @@ public class AuctionViewController
     fileChooser = new FileChooser();
 
     reset(windowType);
+    //TODO: everything must be bound to the view model, so we won't have setForStart(), setForDisplay() in the controllers
+    /*importButton.visibleProperty().bindBidirectional(this.auctionViewModel.getImportButtonVisible());
+    timeLabel.visibleProperty().bindBidirectional(this.auctionViewModel.timeLabelVisibleProperty());
+    timeTextField.visibleProperty().bindBidirectional(this.auctionViewModel.timeTextFieldVisibleProperty());
+    hoursLabel.visibleProperty().bindBidirectional(this.auctionViewModel.hoursLabelVisibleProperty());
+    startAuctionButton.visibleProperty().bindBidirectional(this.auctionViewModel.startAuctionButtonVisibleProperty());
+    cancelButton.visibleProperty().bindBidirectional(this.auctionViewModel.cancelButtonVisibleProperty());
+    timerCountdownLabel.visibleProperty().bindBidirectional(this.auctionViewModel.timerCountdownLabelVisibleProperty());
+    currentBidderLabel.visibleProperty().bindBidirectional(this.auctionViewModel.currentBidderLabelVisibleProperty());
+    currentBidLabel.visibleProperty().bindBidirectional(this.auctionViewModel.currentBidLabelVisibleProperty());
+    bidLabel.visibleProperty().bindBidirectional(this.auctionViewModel.bidLabelVisibleProperty());
+    placeBidButton.visibleProperty().bindBidirectional(this.auctionViewModel.placeBidButtonVisibleProperty());
+    buyNowButton.visibleProperty().bindBidirectional(this.auctionViewModel.buyNowButtonVisibleProperty());
+    somethingWrongLabel.visibleProperty().bindBidirectional(this.auctionViewModel.somethingWrongLabelVisibleProperty());
+    sellerRateLabel.visibleProperty().bindBidirectional(this.auctionViewModel.sellerRateLabelVisibleProperty());
+    ratingLabel.visibleProperty().bindBidirectional(this.auctionViewModel.ratingLabelVisibleProperty());
+    deleteButton.visibleProperty().bindBidirectional(this.auctionViewModel.deleteButtonVisibleProperty());
+    reasonTextArea.visibleProperty().bindBidirectional(this.auctionViewModel.reasonTextAreaVisibleProperty());
+    incomingBidTextField.visibleProperty().bindBidirectional(this.auctionViewModel.incomingBidTextFieldVisibleProperty());
+    currentBidTextLabel.visibleProperty().bindBidirectional(this.auctionViewModel.currentBidTextLabelVisibleProperty());
+    currentBidderTextLabel.visibleProperty().bindBidirectional(this.auctionViewModel.currentBidderTextLabelVisibleProperty());*/
   }
 
   public void reset(WindowType type)
@@ -126,6 +148,8 @@ public class AuctionViewController
 
   private void setForStart()
   {
+    //auctionViewModel.setForStart();
+
     anchorPane.setPrefHeight(690);
     startAuctionButton.setLayoutY(625);
     cancelButton.setLayoutY(625);

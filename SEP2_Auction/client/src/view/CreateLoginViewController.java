@@ -8,175 +8,208 @@ import viewmodel.CreateLoginViewModel;
 
 import javafx.scene.control.*;
 
-public class CreateLoginViewController {
-    //  Labels
-    @FXML private Label headerLabel;
-    @FXML private Label errorLabel;
-    @FXML private Label firstnameLabel;
-    @FXML private Label lastnameLabel;
-    @FXML private Label emailLabel;
-    @FXML private Label phoneLabel;
-    @FXML private Label dateLabel;
-    @FXML private Label passwordLabel;
-    @FXML private Label repeatPasswordLabel;
+public class CreateLoginViewController
+{
+  //  Labels
+  @FXML private Label headerLabel;
+  @FXML private Label errorLabel;
+  @FXML private Label firstnameLabel;
+  @FXML private Label lastnameLabel;
+  @FXML private Label emailLabel;
+  @FXML private Label phoneLabel;
+  @FXML private Label dateLabel;
+  @FXML private Label passwordLabel;
+  @FXML private Label repeatPasswordLabel;
 
-    //  Fields
-    @FXML private TextField firstnameField;
-    @FXML private TextField lastnameField;
-    @FXML private TextField emailField;
-    @FXML private TextField phoneField;
-    @FXML private DatePicker datePicker;
-    @FXML private TextField passwordField;
-    @FXML private TextField repasswordField;
+  //  Fields
+  @FXML private TextField firstnameField;
+  @FXML private TextField lastnameField;
+  @FXML private TextField emailField;
+  @FXML private TextField phoneField;
+  @FXML private DatePicker datePicker;
+  @FXML private TextField passwordField;
+  @FXML private TextField repasswordField;
 
+  //  Buttons
+  @FXML private Button createAccount_SaveChangesButton;
+  @FXML private Button resetPasswordButton;
+  @FXML private Button cancelButton;
+  @FXML private Button loginButton;
+  private Region root;
+  private CreateLoginViewModel viewModel;
+  private ViewHandler viewHandler;
+
+  //  Purpose of this is to switch between Create User and Login
+  private boolean isLogin;
+
+  public void init(ViewHandler viewHandler, CreateLoginViewModel viewModel,
+      Region root, WindowType windowType)
+  {
+    this.root = root;
+    this.viewHandler = viewHandler;
+    this.viewModel = viewModel;
+
+    //  Bind to viewModel
+    firstnameField.textProperty()
+        .bindBidirectional(viewModel.getFirstNameProperty());
+    lastnameField.textProperty()
+        .bindBidirectional(viewModel.getLastNameProperty());
+    emailField.textProperty().bindBidirectional(viewModel.getEmailProperty());
+    passwordField.textProperty()
+        .bindBidirectional(viewModel.getPasswordProperty());
+    repasswordField.textProperty()
+        .bindBidirectional(viewModel.getRepasswordProperty());
+    phoneField.textProperty().bindBidirectional(viewModel.getPhoneProperty());
+    errorLabel.textProperty().bindBidirectional(viewModel.getErrorProperty());
+
+    datePicker.getEditor().setDisable(true);
+    //  reset(windowType);
+    errorLabel.setText("");
+  }
+
+  public Region getRoot()
+  {
+    return root;
+  }
+
+  public void reset(WindowType type)
+  {
+    viewModel.reset();  //  initial reset
+    switch (type)
+    {
+      case SIGN_UP:
+        setForCreateAccount();
+        break;
+      case LOG_IN:
+        setForLogin();
+        break;
+    }
+  }
+
+  //  TODO: maybe try to move this to the viewModel
+  private void setForCreateAccount()
+  {
     //  Buttons
-    @FXML private Button createAccount_SaveChangesButton;
-    @FXML private Button resetPasswordButton;
-    @FXML private Button cancelButton;
-    @FXML private Button loginButton;
-    private Region root;
-    private CreateLoginViewModel viewModel;
-    private ViewHandler viewHandler;
+    createAccount_SaveChangesButton.textProperty().set("Confirm");
+    resetPasswordButton.setVisible(false);
+    loginButton.textProperty().set("Login");
+    //  Fields
+    firstnameField.setVisible(true);
+    lastnameField.setVisible(true);
+    phoneField.setVisible(true);
+    datePicker.setVisible(true);
+    passwordField.setVisible(true);
+    repasswordField.setVisible(true);
+    errorLabel.textProperty().set("");
+    //  Labels
+    headerLabel.textProperty().set("Create Account");
+    firstnameLabel.setVisible(true);
+    lastnameLabel.setVisible(true);
+    emailLabel.setVisible(true);
+    phoneLabel.setVisible(true);
+    dateLabel.setVisible(true);
+    passwordLabel.setVisible(true);
+    repeatPasswordLabel.setVisible(true);
 
-    //  Purpose of this is to switch between Create User and Login
-    private boolean isLogin;
+    isLogin = false;
+  }
 
-    public void init(ViewHandler viewHandler, CreateLoginViewModel viewModel, Region root, WindowType windowType){
-        this.root = root;
-        this.viewHandler = viewHandler;
-        this.viewModel = viewModel;
+  private void setForLogin()
+  {
+    //  Buttons
+    createAccount_SaveChangesButton.textProperty().set("Confirm");
+    resetPasswordButton.setVisible(false);
+    loginButton.textProperty().set("Create Account");
+    //  Fields
+    headerLabel.textProperty().set("Login");
+    firstnameField.setVisible(false);
+    lastnameField.setVisible(false);
+    phoneField.setVisible(false);
+    datePicker.setVisible(false);
+    passwordField.setVisible(true);
+    repasswordField.setVisible(false);
+    errorLabel.textProperty().set("");
+    //  Labels
+    firstnameLabel.setVisible(false);
+    lastnameLabel.setVisible(false);
+    emailLabel.setVisible(true);    //  only this
+    phoneLabel.setVisible(false);
+    dateLabel.setVisible(false);
+    passwordLabel.setVisible(true); //  and this visible
+    repeatPasswordLabel.setVisible(false);
 
-        //  Bind to viewModel
-        firstnameField.textProperty().bindBidirectional(viewModel.firstnameProperty());
-        lastnameField.textProperty().bindBidirectional(viewModel.lastnameProperty());
-        emailField.textProperty().bindBidirectional(viewModel.emailProperty());
-        passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
-        repasswordField.textProperty().bindBidirectional(viewModel.repasswordProperty());
-        phoneField.textProperty().bindBidirectional(viewModel.phoneProperty());
-        errorLabel.textProperty().bindBidirectional(viewModel.errorProperty());
+    isLogin = true;
+  }
 
-
-
-        //  reset(windowType);
-        errorLabel.setText("");
+  private void confirm()
+  {
+    if (!isLogin)
+    {
+      createAccountButtonPress();
     }
-    public Region getRoot(){return root;}
+    else
+    {
+      loginAfterPress();
+    }
+  }
 
-    public void reset(WindowType type){
-        viewModel.reset();  //  initial reset
-        switch (type){
-            case SIGN_UP:
-                setForCreateAccount();
-                break;
-            case LOG_IN:
-                setForLogin();
-                break;
-        }
+  private void createAccountButtonPress()
+  {
+    try
+    {
+      viewModel.receiveBirthDate(datePicker.getValue());
+      if (viewModel.createUser())
+      {
+        reset(WindowType.LOG_IN);
+        viewHandler.openView(WindowType.ALL_AUCTIONS);
+        datePicker.setValue(null);  //  has to be reset for 'ageValidation'
+      }
     }
+    //  Database exceptions (like if email is in system or password matches the email)
+    catch (IllegalArgumentException e)
+    {
+      errorLabel.setText(e.getMessage());
+    }
+  }
 
-    //  TODO: maybe try to move this to the viewModel
-    private void setForCreateAccount(){
-        //  Buttons
-        createAccount_SaveChangesButton.textProperty().set("Confirm");
-        resetPasswordButton.setVisible(true);
-        loginButton.textProperty().set("Login");
-        //  Fields
-        firstnameField.setVisible(true);
-        lastnameField.setVisible(true);
-        phoneField.setVisible(true);
-        datePicker.setVisible(true);
-        passwordField.setVisible(true);
-        repasswordField.setVisible(true);
-        errorLabel.textProperty().set("");
-        //  Labels
-        headerLabel.textProperty().set("Create Account");
-        firstnameLabel.setVisible(true);
-        lastnameLabel.setVisible(true);
-        emailLabel.setVisible(true);
-        phoneLabel.setVisible(true);
-        dateLabel.setVisible(true);
-        passwordLabel.setVisible(true);
-        repeatPasswordLabel.setVisible(true);
+  private void loginAfterPress()
+  {
+    if (viewModel.login())
+    {
+      viewHandler.openView(WindowType.ALL_AUCTIONS);
+    }
+  }
 
-        isLogin = false;
-    }
+  @FXML public void onEnter(ActionEvent actionEvent)
+  {
+    //confirm();
+  }
 
-    private void setForLogin(){
-        //  Buttons
-        createAccount_SaveChangesButton.textProperty().set("Confirm");
-        resetPasswordButton.setVisible(false);
-        loginButton.textProperty().set("Create Account");
-        //  Fields
-        headerLabel.textProperty().set("Login");
-        firstnameField.setVisible(false);
-        lastnameField.setVisible(false);
-        phoneField.setVisible(false);
-        datePicker.setVisible(false);
-        passwordField.setVisible(true);
-        repasswordField.setVisible(false);
-        errorLabel.textProperty().set("");
-        //  Labels
-        firstnameLabel.setVisible(false);
-        lastnameLabel.setVisible(false);
-        emailLabel.setVisible(true);    //  only this
-        phoneLabel.setVisible(false);
-        dateLabel.setVisible(false);
-        passwordLabel.setVisible(true); //  and this visible
-        repeatPasswordLabel.setVisible(false);
+  @FXML public void createAccount_SaveChangesButtonPressed(
+      ActionEvent actionEvent)
+  {
+    confirm();
+  }
 
-        isLogin = true;
-    }
-    private void confirm(){
-        if(!isLogin){
-            createAccountButtonPress();
-        }
-        else if(isLogin){
-            loginAfterPress();
-        }
-    }
-    private void createAccountButtonPress(){
-        try{
-            /*if(viewModel.ageValidation(datePicker.getValue()) && viewModel.createUser()){
-                reset(WindowType.LOG_IN);
-                datePicker.setValue(null);  //  has to be reset for 'ageValidation'
-            }*/
-            if(viewModel.createUser()){
-                reset(WindowType.LOG_IN);
-                datePicker.setValue(null);  //  has to be reset for 'ageValidation'
-            }
-        }
-        //  Database exceptions (like if email is in system or password matches the email)
-        catch (IllegalArgumentException e){
-            errorLabel.setText(e.getLocalizedMessage());
-        }
-    }
+  @FXML public void cancelButtonPressed(ActionEvent actionEvent)
+  {
+    //errorLabel.setText("CANCEL BUTTON: to be implemented");
+  }
 
-    private void loginAfterPress(){
-        if(viewModel.login()){
-            viewHandler.openView(WindowType.ALL_AUCTIONS);
-        }
+  @FXML public void resetPasswordButtonPressed(ActionEvent actionEvent)
+  {
+    //errorLabel.setText("RESET PASSWORD BUTTON: to be implemented");
+  }
+
+  @FXML public void loginButtonPressed(ActionEvent actionEvent)
+  {
+    if (isLogin)
+    {
+      reset(WindowType.SIGN_UP);
     }
-    @FXML
-    public void onEnter(ActionEvent actionEvent) {  confirm();  }
-    @FXML
-    public void createAccount_SaveChangesButtonPressed(ActionEvent actionEvent) {
-        confirm();
+    else
+    {
+      reset(WindowType.LOG_IN);
     }
-    @FXML
-    public void cancelButtonPressed(ActionEvent actionEvent) {
-        errorLabel.setText("CANCEL BUTTON: to be implemented");
-    }
-    @FXML
-    public void resetPasswordButtonPressed(ActionEvent actionEvent) {
-        errorLabel.setText("RESET PASSWORD BUTTON: to be implemented");
-    }
-    @FXML
-    public void loginButtonPressed(ActionEvent actionEvent) {
-        if(isLogin){
-            reset(WindowType.SIGN_UP);
-        }
-        else{
-            reset(WindowType.LOG_IN);
-        }
-    }
+  }
 }

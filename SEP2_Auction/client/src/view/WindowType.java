@@ -6,5 +6,6 @@ public enum WindowType {
   ALL_AUCTIONS,
   LOG_IN,
   SIGN_UP,
-  NOTIFICATIONS
+  NOTIFICATIONS,
+  BIDS
 }
