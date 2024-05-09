@@ -47,6 +47,7 @@ public class ViewHandler {
       title += root.getUserData();
     }
 
+
     primaryStage.setTitle(title);
     primaryStage.setScene(currentScene);
     primaryStage.show();

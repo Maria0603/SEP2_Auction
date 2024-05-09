@@ -51,7 +51,6 @@ public class CreateLoginViewModel {
         return true;
     }
 
-    //  TODO: Do this as boolean and work with the error label
     public boolean login(){
         if(emailProperty.get().isEmpty() && passwordProperty.get().isEmpty()){
             errorProperty.set("Some fields are empty");
@@ -60,7 +59,8 @@ public class CreateLoginViewModel {
 
         try {
             User user = model.getUser(emailProperty.get(), passwordProperty.get());
-            viewState.setUser(new User(firstnameProperty.get(),lastnameProperty.get(),emailProperty.get(),passwordProperty.get(),phoneProperty.get()));
+            //  Giving the viewState all the user info from the model=>takes from servers database
+            viewState.setUser(new User(user.getFirstname(), user.getLastname(),user.getEmail(),user.getPassword(),user.getPhone()));
             return true;
         } catch (SQLException e) {
             errorProperty.set(e.getLocalizedMessage());
@@ -91,7 +91,7 @@ public class CreateLoginViewModel {
         return errorProperty;
     }
     private boolean validateInputCreateAccount(){
-        //  TODO: Add more checks
+        //  TODO: Add more checks (AGE, CORRECT_PHONE)
         errorProperty.set("");
         if(firstnameProperty.get() == null){
             errorProperty.set("Empty first name");

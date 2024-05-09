@@ -84,6 +84,8 @@ public class FixedPaneViewHandler
           logOutButton.setDisable(false);
           moderatorInfoButton.setDisable(false);
           sellItemButton.setDisable(false);
+
+
         }
         catch (Exception e)
         {

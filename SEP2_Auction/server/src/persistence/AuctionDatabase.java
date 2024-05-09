@@ -366,8 +366,27 @@ public class AuctionDatabase implements AuctionPersistence
       return false;
     }
   }
+  private boolean isPhoneInTheSystem(String phone){
+    int count = 0;
+    try(Connection connection = getConnection()){
+      String sql = "SELECT count(*) FROM users WHERE phone_number=?;";
+      ArrayList<Object[]> result = database.query(sql, phone);
+      for (int i = 0; i < result.size(); i++) {
+        try {
+          Object[] row = result.get(i);
+          count = Integer.parseInt(row[0].toString());
+        }
+        catch (Exception e){
+          e.printStackTrace();
+        }
+      }
+      return count > 0;
+    }
+    catch (SQLException e){
+      return false;
+    }
+  }
   private boolean isValidPassword(String email, String password){
-    System.out.println("DATABASE: Validation method");
     int count = 0;
     try(Connection connection = getConnection()){
       String sql = "SELECT count(*) FROM users WHERE user_email=? AND password=?;";
@@ -381,12 +400,9 @@ public class AuctionDatabase implements AuctionPersistence
           e.printStackTrace();
         }
       }
-
-      System.out.println("DATABASE: query selected: " + count + ",  returning " + (count > 0));
       return count > 0;
     }
     catch (SQLException e){
-      System.out.println("DATABASE: Password does not match an email");
       return false;
     }
   }
@@ -412,7 +428,6 @@ public class AuctionDatabase implements AuctionPersistence
       }
     }
   }
-
 
   private String checkTitle(String title) throws SQLException
   {
@@ -510,6 +525,9 @@ public class AuctionDatabase implements AuctionPersistence
     }
     if(phone.length() < 4){
       throw new SQLException("Phone must be larger than 3 numbers");
+    }
+    if(isPhoneInTheSystem(phone)){
+      throw new SQLException("Phone number is already in the system");
     }
   return phone;
   }
