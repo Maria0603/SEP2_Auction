@@ -37,10 +37,10 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
 
     auctionCards = FXCollections.observableArrayList();
-    Bindings.bindContent(auctionCards, allAuctionsViewModel.getAuctionCards());
+    Bindings.bindContent(auctionCards, this.allAuctionsViewModel.getAuctionCards());
 
-    allAuctionsViewModel.addListener("Auction", this);
-    allAuctionsViewModel.addListener("End", this);
+    this.allAuctionsViewModel.addListener("Auction", this);
+    this.allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
     loadAuctions();
@@ -51,8 +51,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   public void reset(WindowType type) {
     switch (type) {
       case ALL_AUCTIONS, BIDS -> {
-        auctionCards.clear();
-        //loadOngoingAuctions();
+        loadAuctions();
       }
 
     }
@@ -63,9 +62,9 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   }
 
   public void loadAuctions() {
+    allAuctionsViewModel.fillAuctionCards();
     clearGrid();
     try {
-
       int totalElements = auctionCards.size();
       int numRows = (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
 

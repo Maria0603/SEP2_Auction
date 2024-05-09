@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class AuctionList implements Serializable
 {
@@ -48,5 +49,12 @@ public class AuctionList implements Serializable
   public int getSize()
   {
     return auctions.size();
+  }
+  public String toString()
+  {
+    StringBuilder s= new StringBuilder();
+    for(int i=0; i<getSize(); i++)
+      s.append(auctions.get(i)).append('\n');
+    return s.toString();
   }
 }

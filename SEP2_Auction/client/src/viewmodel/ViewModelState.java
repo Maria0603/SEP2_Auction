@@ -17,9 +17,7 @@ public class ViewModelState
   {
     selectedAuction = null;
     userEmail=null;
-    bids=false;
-    createdAuctions=false;
-    allAuctions=true;
+    setAllAuctions();
   }
 
   public void setAuction(Auction auction)

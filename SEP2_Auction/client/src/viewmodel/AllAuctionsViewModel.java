@@ -81,8 +81,9 @@ public class AllAuctionsViewModel
     return null;
   }*/
 
-  private void fillAuctionCards()
+  public void fillAuctionCards()
   {
+    auctionCards.clear();
     AuctionList list;
     if (state.getAllAuctions())
     {
