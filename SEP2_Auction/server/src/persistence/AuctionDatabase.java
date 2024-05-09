@@ -146,7 +146,8 @@ public class AuctionDatabase implements AuctionPersistence
           e.printStackTrace();
         }
       }
-      return null;
+    System.out.println("request for auction by ID in database");
+    return null;
   }
 
   private Auction getCardAuctionById(int id) throws SQLException
@@ -185,13 +186,13 @@ public class AuctionDatabase implements AuctionPersistence
       auctions.addAuction(
           new Auction(id, title, currentBid, auctionEnd, imageData));
     }
+    System.out.println("request for ongoing auctions in database");
     return auctions;
   }
 
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
-
     String sql = "SELECT * FROM notification WHERE receiver=?;";
     ArrayList<Object[]> results = database.query(sql, receiver);
     NotificationList notifications = new NotificationList();
@@ -203,13 +204,13 @@ public class AuctionDatabase implements AuctionPersistence
       notifications.addNotification(
           new Notification(dateTime, content, receiver));
     }
+    System.out.println("request for notifications in database");
     return notifications;
   }
 
   @Override public Notification saveNotification(String content,
       String receiver) throws SQLException
   {
-    System.out.println("trying to insert into notification: " + receiver + " + " + content);
     String sql = "INSERT INTO notification(receiver, content, date, time) VALUES (?, ?, ?, ?);";
     Date date = Date.valueOf(LocalDate.now());
     Time time = Time.valueOf(LocalTime.now());
@@ -314,7 +315,7 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
-    String sql="SELECT bid.auction_id\n" + "FROM bid\n"
+    String sql="SELECT DISTINCT bid.auction_id\n" + "FROM bid\n"
         + "WHERE participant_email=?;";
     ArrayList<Object[]> results = database.query(sql, bidder);
     AuctionList auctions = new AuctionList();
@@ -324,6 +325,7 @@ public class AuctionDatabase implements AuctionPersistence
       int id = Integer.parseInt(row[0].toString());
       auctions.addAuction(getCardAuctionById(id));
     }
+    System.out.println("request for previous bids in database");
     return auctions;
   }
 
