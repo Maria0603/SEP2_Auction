@@ -56,7 +56,7 @@ public class CreateLoginViewModel {
     }
 
     public boolean login(){
-        if(emailProperty.get().isEmpty() && passwordProperty.get().isEmpty()){
+        if(emailProperty.get().isEmpty() || passwordProperty.get().isEmpty()){
             errorProperty.set("Some fields are empty");
             return false;
         }
