@@ -71,7 +71,7 @@ public class AuctionViewModel implements PropertyChangeListener
           model.startAuction(titleProperty.get().trim(),
                   descriptionProperty.get().trim(), reservePriceProperty.get(),
                   buyoutPriceProperty.get(), incrementProperty.get(),
-                  timeProperty.get(), imageToByteArray(imageProperty.get()))
+                  timeProperty.get(), imageToByteArray(imageProperty.get()), state.getUserEmail())
               .getID()));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException |

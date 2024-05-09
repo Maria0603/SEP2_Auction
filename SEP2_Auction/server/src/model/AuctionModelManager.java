@@ -9,6 +9,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -23,11 +25,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public synchronized Auction startAuction(String title,
       String description, int reservePrice, int buyoutPrice,
-      int minimumIncrement, int auctionTime, byte[] imageData)
+      int minimumIncrement, int auctionTime, byte[] imageData, String seller)
       throws SQLException
   {
     Auction auction = auctionDatabase.saveAuction(title, description,
-        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
     property.firePropertyChange("Auction", null, auction);
 
     // auction.addListener("Time", this);
@@ -71,15 +73,14 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return bid;
   }
   @Override
-  public synchronized void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
-    auctionDatabase.createUser(firstname,lastname,email,password,phone);
+  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
+    return auctionDatabase.createUser(firstname,lastname,email,password, repeatedPassword,phone, birthday).getEmail();
   }
 
   @Override
-  public synchronized User getUser(String email, String password) throws SQLException {
+  public synchronized String login(String email, String password) throws SQLException {
     //  TODO: add validation in database
-    System.out.println("ModelManager: getting user from database");
-    return auctionDatabase.getUser(email,password);
+    return auctionDatabase.login(email,password);
   }
 
   @Override public synchronized void addListener(String propertyName,

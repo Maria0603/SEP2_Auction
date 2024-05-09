@@ -7,14 +7,18 @@ import model.User;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class CreateLoginViewModel
 {
   private StringProperty headerProperty, firstnameProperty, lastnameProperty, emailProperty, dateProperty, passwordProperty, repasswordProperty, phoneProperty, errorProperty;
   private AuctionModel model;
   private ViewModelState viewState;
+  private LocalDate birthDate;
 
   public CreateLoginViewModel(AuctionModel model, ViewModelState viewState)
   {
@@ -29,7 +33,8 @@ public class CreateLoginViewModel
     phoneProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
 
-    dateProperty = new SimpleStringProperty();
+    //dateProperty = new SimpleStringProperty();
+    birthDate=null;
 
     reset();
   }
@@ -47,16 +52,12 @@ public class CreateLoginViewModel
 
   public boolean createUser()
   {
-    //  Null Checks need to be included - TODO: NOT IN THE VIEW MODEL
-    if (validateInputCreateAccount())
-    {
-      return false;
-    }
     try
     {
-      model.addUser(firstnameProperty.get().trim(),
+      String email=model.addUser(firstnameProperty.get().trim(),
           lastnameProperty.get().trim(), emailProperty.get().trim(),
-          passwordProperty.get(), phoneProperty.get().trim());
+          passwordProperty.get(), repasswordProperty.get(), phoneProperty.get().trim(), birthDate);
+      viewState.setUserEmail(email);
     }
     catch (SQLException e)
     {
@@ -68,6 +69,7 @@ public class CreateLoginViewModel
 
   public boolean login()
   {
+    errorProperty.set("");
     if (emailProperty.get().trim().isEmpty() || passwordProperty.get().trim()
         .isEmpty())
     {
@@ -77,10 +79,10 @@ public class CreateLoginViewModel
 
     try
     {
-      User user = model.getUser(emailProperty.get().trim(),
+      String user = model.login(emailProperty.get().trim(),
           passwordProperty.get());
       //  Giving the viewState all the user info from the model=>takes from servers database
-      viewState.setUserEmail(user.getEmail());
+      viewState.setUserEmail(user);
       return true;
     }
     catch (SQLException e)
@@ -132,80 +134,10 @@ public class CreateLoginViewModel
     return dateProperty;
   }
 
-  private boolean validateInputCreateAccount()
+  public void receiveBirthDate(LocalDate date)
   {
-    errorProperty.set("");
-    if (firstnameProperty.get() == null)
-    {
-      errorProperty.set("Empty first name");
-      return true;
-    }
-    if (lastnameProperty.get() == null)
-    {
-      errorProperty.set("Empty last name");
-      return true;
-    }
-    if (emailProperty.get() == null)
-    {
-      errorProperty.set("Empty email name");
-      return true;
-    }
-    if (!emailProperty.get().contains("@"))
-    {
-      errorProperty.set("Email has to be in 'name@domain' format");
-      return true;
-    }
-    if (phoneProperty.get() == null)
-    {
-      errorProperty.set("Empty phone name ");
-      return true;
-    }
-    if (passwordProperty.get() == null)
-    {
-      errorProperty.set("Empty password");
-      return true;
-    }
-    if (repasswordProperty.get() == null)
-    {
-      errorProperty.set("Empty second password");
-      return true;
-    }
-    if (!passwordProperty.get().equals(repasswordProperty.get()))
-    {
-      errorProperty.set("Passwords do not match");
-      return true;
-    }
-
-    try
-    {
-      long phone = Long.parseLong(phoneProperty.get());
-    }
-    catch (NumberFormatException e)
-    {
-      errorProperty.set("Phone number must be a number");
-      return true;
-    }
-    return false;
+    this.birthDate=date;
   }
 
-  //  Has to be used from controller :c
-  public boolean ageValidation(LocalDate birthday)
-  {
-    if (birthday != null)
-    {
-      LocalDate currentDate = LocalDate.now();
-      Period period = Period.between(birthday, currentDate);
-      int age = period.getYears();
-      if (age >= 18)
-      {
-        return true;
-      }
-      else
-      {
-        throw new IllegalArgumentException("User is not over 18 years old.");
-      }
-    }
-    return false;
-  }
 
 }

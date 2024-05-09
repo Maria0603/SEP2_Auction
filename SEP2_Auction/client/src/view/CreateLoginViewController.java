@@ -55,8 +55,6 @@ public class CreateLoginViewController {
         phoneField.textProperty().bindBidirectional(viewModel.phoneProperty());
         errorLabel.textProperty().bindBidirectional(viewModel.errorProperty());
 
-
-
         //  reset(windowType);
         errorLabel.setText("");
     }
@@ -140,6 +138,7 @@ public class CreateLoginViewController {
                 reset(WindowType.LOG_IN);
                 datePicker.setValue(null);  //  has to be reset for 'ageValidation'
             }*/
+            viewModel.receiveBirthDate(datePicker.getValue());
             if(viewModel.createUser()){
                 reset(WindowType.LOG_IN);
                 datePicker.setValue(null);  //  has to be reset for 'ageValidation'

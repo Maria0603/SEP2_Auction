@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CacheProxy implements AuctionModel, PropertyChangeListener
 {
@@ -37,10 +39,10 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData) throws SQLException, ClassNotFoundException
+      byte[] imageData, String seller) throws SQLException, ClassNotFoundException
   {
     Auction auction = modelManager.startAuction(title, description,
-        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData);
+        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
     //ongoingAuctionsCache.addAuction(auction);
     return auction;
   }
@@ -105,13 +107,14 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       return endSeconds - currentSeconds;
   }
   @Override
-  public void addUser(String firstname, String lastname, String email, String password, String phone) throws SQLException {
-    modelManager.addUser(firstname,lastname,email,password,phone);
+  public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday
+  ) throws SQLException {
+    return modelManager.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
   }
 
   @Override
-  public User getUser(String email, String password) throws SQLException {
-    return modelManager.getUser(email,password);
+  public String login(String email, String password) throws SQLException {
+    return modelManager.login(email,password);
 
   }
 
