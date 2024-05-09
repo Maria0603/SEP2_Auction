@@ -1,16 +1,18 @@
 package viewmodel;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import model.AuctionModel;
 import model.User;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class CreateLoginViewModel {
     private StringProperty headerProperty,
-            firstnameProperty,lastnameProperty, emailProperty,
+            firstnameProperty,lastnameProperty, emailProperty, dateProperty,
             passwordProperty, repasswordProperty, phoneProperty,errorProperty;
     private AuctionModel model;
     private ViewModelState viewState;
@@ -25,6 +27,8 @@ public class CreateLoginViewModel {
         repasswordProperty = new SimpleStringProperty();
         phoneProperty = new SimpleStringProperty();
         errorProperty = new SimpleStringProperty();
+
+        dateProperty = new SimpleStringProperty();
 
 
     }
@@ -90,8 +94,9 @@ public class CreateLoginViewModel {
     public StringProperty errorProperty() {
         return errorProperty;
     }
+    public StringProperty dateProperty() {return dateProperty;}
+
     private boolean validateInputCreateAccount(){
-        //  TODO: Add more checks (AGE, CORRECT_PHONE)
         errorProperty.set("");
         if(firstnameProperty.get() == null){
             errorProperty.set("Empty first name");
@@ -124,6 +129,27 @@ public class CreateLoginViewModel {
         if(!passwordProperty.get().equals(repasswordProperty.get())){
             errorProperty.set("Passwords do not match");
             return true;
+        }
+
+        try {
+            long phone = Long.parseLong(phoneProperty.get());
+        } catch (NumberFormatException e) {
+            errorProperty.set("Phone number must be a number");
+            return true;
+        }
+        return false;
+    }
+    //  Has to be used from controller :c
+    public boolean ageValidation(LocalDate birthday){
+        if (birthday != null) {
+            LocalDate currentDate = LocalDate.now();
+            Period period = Period.between(birthday, currentDate);
+            int age = period.getYears();
+            if (age >= 18) {
+                return true;
+            } else {
+                throw new IllegalArgumentException("User is not over 18 years old.");
+            }
         }
         return false;
     }

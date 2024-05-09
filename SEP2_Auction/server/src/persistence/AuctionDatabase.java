@@ -307,7 +307,6 @@ public class AuctionDatabase implements AuctionPersistence
 
       return new User(firstname,lastname,email,password,phone);
     } catch (SQLException e) {
-      System.out.println("DATABASE(-TODO in comments-): Catch: " + e.getMessage());
       throw new SQLException(e.getMessage());
     }
   }
@@ -332,12 +331,12 @@ public class AuctionDatabase implements AuctionPersistence
           String _lastname = row[4].toString();
 
           User user = new User(_firstname,_lastname,_email,_password,_phone);
-          System.out.println("DATABASE: getUser: returning: " + user);
+
           return user;
         }
         catch (Exception e)
         {
-          System.out.println("DATABASE: getUserException: " +e.getMessage());
+
         }
       }
       return null;
@@ -358,11 +357,11 @@ public class AuctionDatabase implements AuctionPersistence
         }
       }
 
-      System.out.println("DATABASE: email is in the system, " + count + ",  returning " + (count > 0));
+
       return count > 0;
     }
     catch (SQLException e){
-      System.out.println("DATABASE: mail does not exist");
+
       return false;
     }
   }

@@ -5,9 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.Region;
 import viewmodel.CreateLoginViewModel;
-import javafx.beans.binding.Bindings;
 
 import javafx.scene.control.*;
+
 public class CreateLoginViewController {
     //  Labels
     @FXML private Label headerLabel;
@@ -55,6 +55,8 @@ public class CreateLoginViewController {
         phoneField.textProperty().bindBidirectional(viewModel.phoneProperty());
         errorLabel.textProperty().bindBidirectional(viewModel.errorProperty());
 
+
+
         //  reset(windowType);
         errorLabel.setText("");
     }
@@ -71,7 +73,6 @@ public class CreateLoginViewController {
                 break;
         }
     }
-
 
     //  TODO: maybe try to move this to the viewModel
     private void setForCreateAccount(){
@@ -97,12 +98,9 @@ public class CreateLoginViewController {
         passwordLabel.setVisible(true);
         repeatPasswordLabel.setVisible(true);
 
-        //  ...
         isLogin = false;
     }
 
-
-    //  TODO: Adjust position of password label and field vertically
     private void setForLogin(){
         //  Buttons
         createAccount_SaveChangesButton.textProperty().set("Confirm");
@@ -126,30 +124,30 @@ public class CreateLoginViewController {
         passwordLabel.setVisible(true); //  and this visible
         repeatPasswordLabel.setVisible(false);
 
-        //  ..
         isLogin = true;
     }
     private void confirm(){
         if(!isLogin){
-            createAccountAfterButtonPress();
+            createAccountButtonPress();
         }
         else if(isLogin){
-            loginAfterButtonPress();
+            loginAfterPress();
         }
     }
-    private void createAccountAfterButtonPress(){
+    private void createAccountButtonPress(){
         try{
-            if(viewModel.createUser()){
-                //  Successful creation of user -> proceed to login
+            if(viewModel.ageValidation(datePicker.getValue()) && viewModel.createUser()){
                 reset(WindowType.LOG_IN);
+                datePicker.setValue(null);  //  has to be reset for 'ageValidation'
             }
         }
+        //  Database exceptions (like if email is in system or password matches the email)
         catch (IllegalArgumentException e){
             errorLabel.setText(e.getLocalizedMessage());
         }
     }
 
-    private void loginAfterButtonPress(){
+    private void loginAfterPress(){
         if(viewModel.login()){
             viewHandler.openView(WindowType.ALL_AUCTIONS);
         }
