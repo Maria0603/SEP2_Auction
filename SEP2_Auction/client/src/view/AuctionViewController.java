@@ -71,6 +71,7 @@ public class AuctionViewController
         this.auctionViewModel.getIdProperty(), new IntStringConverter());
     headerLabel.textProperty()
         .bindBidirectional(this.auctionViewModel.getHeaderProperty());
+
     titleTextArea.textProperty()
         .bindBidirectional(this.auctionViewModel.getTitleProperty());
     descriptionTextArea.textProperty()

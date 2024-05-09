@@ -1,8 +1,7 @@
 package viewmodel;
 
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AllAuctionsViewModel implements PropertyChangeListener,
     NamedPropertyChangeSubject
@@ -27,6 +27,7 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
 
+  @FXML private StringProperty searchInputField;
   @FXML private ObservableList<Auction> auctionCards;
 
   public AllAuctionsViewModel(AuctionModel model, ViewModelState state)
@@ -40,7 +41,16 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
     model.addListener("End", this);
 
     auctionCards = FXCollections.observableArrayList();
-    fillAuctionCards();
+    searchInputField = new SimpleStringProperty();
+    fillAuctionCardsWithCache();
+  }
+
+  private void fillAuctionCardsWithCache(){
+    AuctionList list = this.getOngoingAuctions();
+    for (int i = 0; i < list.getSize(); i++)
+    {
+      auctionCards.add(list.getAuction(i));
+    }
   }
 
   public AuctionList getOngoingAuctions()
@@ -56,13 +66,6 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
     return null;
   }
 
-  private void fillAuctionCards(){
-    AuctionList list = this.getOngoingAuctions();
-    for (int i = 0; i < list.getSize(); i++)
-    {
-      auctionCards.add(list.getAuction(i));
-    }
-  }
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
@@ -79,6 +82,8 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
   public ObservableList<Auction> getAuctionCards() {
     return auctionCards;
   }
+
+  public StringProperty getSearchInputField(){return searchInputField;}
 
   @Override synchronized public void addListener(String propertyName,
       PropertyChangeListener listener) {

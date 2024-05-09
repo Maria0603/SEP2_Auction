@@ -50,7 +50,7 @@
            <children>
                <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="1099.0" spacing="10.0">
                    <children>
-                       <TextField prefHeight="26.0" prefWidth="344.0">
+                       <TextField fx:id="searchInputField" prefHeight="26.0" prefWidth="344.0">
                            <font>
                                <Font size="11.0" />
                            </font>

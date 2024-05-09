@@ -1,7 +1,9 @@
 package model;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AuctionList implements Serializable
 {
@@ -48,5 +50,32 @@ public class AuctionList implements Serializable
   public int getSize()
   {
     return auctions.size();
+  }
+
+
+  @Override public String toString() {
+    String out = "";
+    for (Auction auction : auctions){
+      out += auction.toString() + "\n";
+    }
+    return "AuctionList{" + out + "}";
+  }
+
+  public static void main(String[] args) {
+    Auction auction = new Auction(11, "qqqq", "sfde", 22, 222, 2,
+        new Time(1111111111), new Time(333333333), 4444, "dfd", "efbeflk", null, "ONGOING");
+    Auction auction1 = new Auction(12, "qqaqqq", "scefde", 22, 222, 2,
+        new Time(1111111111), new Time(333333333), 4444, "dfd", "efbeflk", null, "ONGOING");
+    Auction auction2 = new Auction(11, "qqqq", "sfde", 22, 222, 2,
+        new Time(1111111111), new Time(333333333), 4444, "dfd", "efbeflk", null, "ONGOING");
+
+    AuctionList auctionList= new AuctionList();
+    auctionList.addAuction(auction1);
+    auctionList.addAuction(auction);
+    auctionList.addAuction(auction2);
+
+    System.out.println(auctionList);
+
+    System.out.println(auctionList.searchAuctions("sfde"));
   }
 }

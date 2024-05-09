@@ -7,9 +7,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import model.Auction;
+import utility.IntStringConverter;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 import javafx.geometry.Insets;
@@ -21,6 +23,7 @@ import java.io.IOException;
 public class AllAuctionsViewController implements PropertyChangeListener {
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
+  @FXML public TextField searchInputField;
 
   private final int NUMBER_OF_COLUMNS = 4;
 
@@ -39,6 +42,8 @@ public class AllAuctionsViewController implements PropertyChangeListener {
 
     auctionCards = FXCollections.observableArrayList();
     Bindings.bindContent(auctionCards, allAuctionsViewModel.getAuctionCards());
+    searchInputField.textProperty()
+        .bindBidirectional(this.allAuctionsViewModel.getSearchInputField());
 
     allAuctionsViewModel.addListener("Auction", this);
     allAuctionsViewModel.addListener("End", this);
@@ -75,7 +80,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
       for (int row = 0; row < numRows; row++) {
         for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 
-          if(listIndex >= 0){
+          if (listIndex >= 0) {
 
             addNewCardToGrid(auctionCards.get(listIndex), column, row);
             listIndex--;
@@ -99,7 +104,6 @@ public class AllAuctionsViewController implements PropertyChangeListener {
 
   }
 
-
   private AuctionCardViewController initNewCard() throws IOException {
     FXMLLoader load = new FXMLLoader();
     load.setLocation(getClass().getResource("AuctionCardView.fxml"));
@@ -119,7 +123,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     auctionsGrid.getColumnConstraints().clear();
   }
 
-  private int getNumberOfRowsInGrid(){
+  private int getNumberOfRowsInGrid() {
     int totalElements = auctionCards.size();
     return (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
   }
@@ -134,7 +138,28 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     }
   }
 
-  public void searchPressed(ActionEvent actionEvent) {
+  @FXML public void searchPressed(ActionEvent actionEvent) throws IOException {
+    clearGrid();
+    try {
+      for (int row = 0; row < getNumberOfRowsInGrid(); row++) {
+        for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 
+          int auctionCardsIndex = getLinearIndex(row, column);
+          if(auctionCards.get(auctionCardsIndex).isMatchesSearchMask(searchInputField.getText())){
+
+            addNewCardToGrid(auctionCards.get(column), column, row);
+          }
+
+        }
+      }
+    }catch (IOException e){
+      //
+    }
+
+  }
+
+
+  private int getLinearIndex(int row, int col){
+    return row * col + col;
   }
 }
