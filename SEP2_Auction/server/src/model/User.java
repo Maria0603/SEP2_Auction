@@ -1,27 +1,25 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class User implements Serializable {
     ///////////////////////////////////////////////////////////////////
     //do not change this number
     private static final long serialVersionUID = 6529685098267757690L;
     //////////////////////////////////////////////////////////////////
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String password;
-    private String phone;
-    public User(String firstname, String lastname, String email, String password, String phone){
+    private String firstname, lastname, email, password, phone;
+    private LocalDate birthday;
+    public User(String firstname, String lastname, String email, String password, String phone, LocalDate birthday){
         setFirstname(firstname);
         setLastname(lastname);
         setEmail(email);
         setPassword(password);
         setPhone(phone);
-
+        setBirthday(birthday);
     }
     public void setFirstname(String firstname){
-
 
         this.firstname = firstname;
     }
@@ -41,6 +39,14 @@ public class User implements Serializable {
     public void setPhone(String phone){
 
         this.phone = phone;
+    }
+    public void setBirthday(LocalDate birthday)
+    {
+        this.birthday = birthday;
+    }
+    public LocalDate getBirthday()
+    {
+        return birthday;
     }
 
     public String getFirstname() {
