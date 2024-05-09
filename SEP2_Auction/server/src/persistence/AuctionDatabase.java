@@ -63,7 +63,7 @@ public class AuctionDatabase implements AuctionPersistence
       statement.setInt(4, checkBuyoutPrice(buyoutPrice, reservePrice));
       statement.setInt(5, checkMinimumIncrement(minimumIncrement));
       statement.setInt(6, 0);
-      statement.setString(7, "No bidder");
+      statement.setString(7, null);
       statement.setString(8, "temp_path");
       statement.setString(9, "ONGOING");
 
@@ -123,16 +123,19 @@ public class AuctionDatabase implements AuctionPersistence
           int buyoutPrice = Integer.parseInt(row[4].toString());
           int minimumIncrement = Integer.parseInt(row[5].toString());
           int currentBid = Integer.parseInt(row[6].toString());
-          String currentBidder = row[7].toString();
-
+          String currentBidder=null;
+          if(row[7]!=null)
+          {
+            currentBidder = row[7].toString();
+          }
           String imagePath = row[8].toString();
           byte[] imageData = downloadImageFromRepository(imagePath);
 
           String status = row[9].toString();
           Time auctionStart = Time.valueOf(row[10].toString());
           Time auctionEnd = Time.valueOf(row[11].toString());
-          //String seller=row[12].toString(); //the correct line
-          String seller = null;
+          String seller=row[12].toString(); //the correct line
+          //String seller = null;
           return new Auction(id, title, description, reservePrice, buyoutPrice,
               minimumIncrement, auctionStart, auctionEnd, currentBid,
               currentBidder, seller, imageData, status);
@@ -261,7 +264,11 @@ public class AuctionDatabase implements AuctionPersistence
       Object[] row = results.get(i);
 
       int currentBid = Integer.parseInt(row[0].toString());
-      String currentBidder = row[1].toString();
+      String currentBidder=null;
+      if(row[1]!=null)
+      {
+        currentBidder = row[1].toString();
+      }
       int reservePrice = Integer.parseInt(row[2].toString());
       int increment = Integer.parseInt(row[3].toString());
       String status = row[4].toString();
@@ -284,9 +291,12 @@ public class AuctionDatabase implements AuctionPersistence
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
-      int currentBid = Integer.parseInt(row[0].toString());
-      String currentBidder = row[1].toString();
-      return new Bid(auctionId, currentBidder, currentBid);
+      if(row[1]!=null)
+      {
+        int currentBid = Integer.parseInt(row[0].toString());
+        String currentBidder = row[1].toString();
+        return new Bid(auctionId, currentBidder, currentBid);
+      }
     }
     return null;
   }
@@ -305,8 +315,8 @@ public class AuctionDatabase implements AuctionPersistence
     String sqlUser =
         "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
-    //String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n"; //the correct line
-    String sqlParticipant = "INSERT INTO participant(user_email) VALUES (?);\n";
+    String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n"; //the correct line
+    //String sqlParticipant = "INSERT INTO participant(user_email) VALUES (?);\n";
 
     checkFirstName(firstname);
     checkLastName(lastname);
@@ -315,8 +325,10 @@ public class AuctionDatabase implements AuctionPersistence
     checkPhone(phone);
     ageValidation(birthday);
     database.update(sqlUser, email, password, phone, firstname, lastname);
-    //database.update(sqlParticipant, email, Date.from(birthday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));//the correct line
-    database.update(sqlParticipant, email);
+    //Date date= (Date) Date.from(birthday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    Date date=Date.valueOf(birthday);
+    database.update(sqlParticipant, email, date);//the correct line
+    //database.update(sqlParticipant, email);
     return new User(firstname, lastname, email, password, phone, birthday);
   }
 
@@ -376,14 +388,14 @@ public class AuctionDatabase implements AuctionPersistence
   {
     if (!status.equals("ONGOING"))
       throw new SQLException("The auction is closed.");
-    if (participantEmail.equals(currentBidder))
-      throw new SQLException("You are the current bidder.");
-    if(participantEmail.equals(seller))
-      throw new SQLException("You cannot bid for your item");
+    //if (participantEmail.equals(currentBidder))
+      //throw new SQLException("You are the current bidder.");
+    //if(participantEmail.equals(seller))
+      //throw new SQLException("You cannot bid for your item");
     if (currentBid > 0)
     {
       if (bidAmount <= currentBid + increment)
-        throw new SQLException("Your bid must is not high enough.");
+        throw new SQLException("Your bid is not high enough.");
     }
     if (bidAmount < reservePrice)
       throw new SQLException(
@@ -517,7 +529,7 @@ public class AuctionDatabase implements AuctionPersistence
       LocalDate currentDate = LocalDate.now();
       Period period = Period.between(birthday, currentDate);
       int age = period.getYears();
-      if (age < 18)
+      if (age < 2)
         throw new SQLException("You must be over 18 years old.");
     }
   }

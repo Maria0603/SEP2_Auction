@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class CreateLoginViewModel
 {
-  private StringProperty headerProperty, firstnameProperty, lastnameProperty, emailProperty, dateProperty, passwordProperty, repasswordProperty, phoneProperty, errorProperty;
+  private StringProperty headerProperty, firstnameProperty, lastnameProperty, emailProperty, passwordProperty, repasswordProperty, phoneProperty, errorProperty;
   private AuctionModel model;
   private ViewModelState viewState;
   private LocalDate birthDate;
@@ -32,8 +32,6 @@ public class CreateLoginViewModel
     repasswordProperty = new SimpleStringProperty();
     phoneProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
-
-    //dateProperty = new SimpleStringProperty();
     birthDate=null;
 
     reset();
@@ -48,6 +46,7 @@ public class CreateLoginViewModel
     repasswordProperty.set("");
     phoneProperty.set("");
     errorProperty.set("");
+    birthDate=null;
   }
 
   public boolean createUser()
@@ -62,6 +61,7 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getLocalizedMessage());
+      //e.printStackTrace();
       return false;
     }
     return true;
@@ -88,50 +88,46 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getLocalizedMessage());
+      //e.printStackTrace();
       return false;
     }
 
     //  ViewState
   }
 
-  public StringProperty firstnameProperty()
+  public StringProperty getFirstNameProperty()
   {
     return firstnameProperty;
   }
 
-  public StringProperty lastnameProperty()
+  public StringProperty getLastNameProperty()
   {
     return lastnameProperty;
   }
 
-  public StringProperty emailProperty()
+  public StringProperty getEmailProperty()
   {
     return emailProperty;
   }
 
-  public StringProperty passwordProperty()
+  public StringProperty getPasswordProperty()
   {
     return passwordProperty;
   }
 
-  public StringProperty repasswordProperty()
+  public StringProperty getRepasswordProperty()
   {
     return repasswordProperty;
   }
 
-  public StringProperty phoneProperty()
+  public StringProperty getPhoneProperty()
   {
     return phoneProperty;
   }
 
-  public StringProperty errorProperty()
+  public StringProperty getErrorProperty()
   {
     return errorProperty;
-  }
-
-  public StringProperty dateProperty()
-  {
-    return dateProperty;
   }
 
   public void receiveBirthDate(LocalDate date)
