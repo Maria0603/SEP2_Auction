@@ -102,8 +102,13 @@ public class AuctionServer
   public synchronized String login(String email, String password) throws SQLException {
     System.out.println("AuctionServer: " + email + ", " + password);
     return model.login(email,password);
-
   }
+
+  @Override public AuctionList getPreviousBids(String bidder) throws SQLException
+  {
+    return model.getPreviousBids(bidder);
+  }
+
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException

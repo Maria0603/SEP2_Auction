@@ -29,6 +29,18 @@ public class FixedPaneViewModel implements PropertyChangeListener
     //  Just setting the email
     emailProperty.set(state.getUserEmail());
   }
+  public void allAuctions()
+  {
+    state.setAllAuctions();
+  }
+  public void myBids()
+  {
+    state.setBids();
+  }
+  public void myCreatedAuctions()
+  {
+    state.setCreatedAuctions();
+  }
 
   public StringProperty getEmailProperty()
   {

@@ -127,6 +127,20 @@ public class AuctionClient
     }
   }
 
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    try
+    {
+      return server.getPreviousBids(bidder);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {

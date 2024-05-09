@@ -64,7 +64,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.login(email,password);
   }
 
-
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    return client.getPreviousBids(bidder);
+  }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException

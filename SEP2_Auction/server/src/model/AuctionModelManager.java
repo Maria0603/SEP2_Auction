@@ -31,22 +31,23 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     Auction auction = auctionDatabase.saveAuction(title, description,
         reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
     property.firePropertyChange("Auction", null, auction);
+    ServerTimer timer=new ServerTimer(auction.getStartTime(), auction.getEndTime(), auction.getID());
+    timer.addListener("End", this);
+    new Thread(timer).start();
 
     // auction.addListener("Time", this);
-    auction.addListener("End", this);
+    //auction.addListener("End", this);
     return auction;
   }
 
   @Override public synchronized Auction getAuction(int ID) throws SQLException
   {
-    System.out.println("server received a request in getAuctionById");
     return auctionDatabase.getAuctionById(ID);
   }
 
   @Override public synchronized AuctionList getOngoingAuctions()
       throws SQLException
   {
-    System.out.println("server received a request in getOngoingAuctions");
     return auctionDatabase.getOngoingAuctions();
   }
 
@@ -82,6 +83,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     //  TODO: add validation in database
     return auctionDatabase.login(email,password);
   }
+  @Override public AuctionList getPreviousBids(String bidder) throws SQLException
+  {
+    return auctionDatabase.getPreviousBids(bidder);
+  }
 
   @Override public synchronized void addListener(String propertyName,
       PropertyChangeListener listener)
@@ -97,7 +102,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public synchronized void propertyChange(PropertyChangeEvent evt)
   {
-
     if (evt.getPropertyName().equals("End"))
     {
       try

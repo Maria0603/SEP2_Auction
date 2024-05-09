@@ -21,6 +21,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   private PropertyChangeSupport property;
   private ArrayList<Thread> timers;
 
+  private AuctionList previousBids;
+
   public CacheProxy() throws SQLException, IOException
   {
     property = new PropertyChangeSupport(this);
@@ -118,6 +120,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   }
 
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    return modelManager.getPreviousBids(bidder);
+  }
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {
@@ -138,7 +146,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         ongoingAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
       case "End":
-        ongoingAuctionsCache.removeAuction((Auction) evt.getNewValue());
+        ongoingAuctionsCache.removeAuction(Integer.parseInt(evt.getOldValue().toString()));
         //closedAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
       case "Notification":

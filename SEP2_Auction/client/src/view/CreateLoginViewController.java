@@ -62,6 +62,7 @@ public class CreateLoginViewController
     phoneField.textProperty().bindBidirectional(viewModel.getPhoneProperty());
     errorLabel.textProperty().bindBidirectional(viewModel.getErrorProperty());
 
+    datePicker.getEditor().setDisable(true);
     //  reset(windowType);
     errorLabel.setText("");
   }

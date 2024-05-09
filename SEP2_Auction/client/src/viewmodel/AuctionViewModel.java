@@ -110,6 +110,7 @@ public class AuctionViewModel implements PropertyChangeListener
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
+      incomingBidProperty.set(0);
       //e.printStackTrace();
     }
     if (errorProperty.get().isEmpty() && bid != null

@@ -21,4 +21,5 @@ public interface AuctionPersistence
   Bid getCurrentBidForAuction(int auctionId) throws SQLException;
   User createUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException;
   String login(String email, String password) throws SQLException;
+  AuctionList getPreviousBids(String bidder) throws SQLException;
 }

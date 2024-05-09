@@ -24,6 +24,8 @@ public interface AuctionRemote extends Remote
   String addUser(String firstname,String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws RemoteException, SQLException;
   String login(String email, String password) throws RemoteException, SQLException;
 
+  AuctionList getPreviousBids(String bidder) throws RemoteException, SQLException;
+
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   boolean removeListener(GeneralListener<String, Object> listener,

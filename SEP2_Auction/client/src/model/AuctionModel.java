@@ -20,5 +20,7 @@ public interface AuctionModel extends NamedPropertyChangeSubject
 
   String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException;
   String login(String email, String password) throws SQLException;
+
+  AuctionList getPreviousBids(String bidder) throws SQLException;
 }
 

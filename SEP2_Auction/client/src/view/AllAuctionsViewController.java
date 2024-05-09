@@ -43,14 +43,14 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
-    loadOngoingAuctions();
+    loadAuctions();
     //other bindings to be inserted
 
   }
 
   public void reset(WindowType type) {
     switch (type) {
-      case ALL_AUCTIONS -> {
+      case ALL_AUCTIONS, BIDS -> {
         auctionCards.clear();
         //loadOngoingAuctions();
       }
@@ -62,7 +62,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     return root;
   }
 
-  public void loadOngoingAuctions() {
+  public void loadAuctions() {
     clearGrid();
     try {
 

@@ -149,57 +149,24 @@ public class AuctionDatabase implements AuctionPersistence
       return null;
   }
 
-  private byte[] downloadImageFromRepository(String imagePath)
+  private Auction getCardAuctionById(int id) throws SQLException
   {
-    try
+    String sql =
+        "SELECT ID, title, current_bid, image_data, end_time\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
+    ArrayList<Object[]> results = database.query(sql, id);
+    for (int i = 0; i < results.size(); i++)
     {
-      BufferedImage image = ImageIO.read(new File(imagePath));
-
-      ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
-      ImageIO.write(image, "jpg", outStreamObj);
-
-      byte[] byteArray = outStreamObj.toByteArray();
-      return byteArray;
-
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
+        Object[] row = results.get(i);
+        String title = row[1].toString();
+        int currentBid = Integer.parseInt(row[2].toString());
+        String imagePath = row[3].toString();
+        byte[] imageData = downloadImageFromRepository(imagePath);
+        Time auctionEnd = Time.valueOf(row[4].toString());
+        return new Auction(id, title, currentBid, auctionEnd, imageData);
     }
     return null;
   }
 
-  private String saveImageToRepository(byte[] imageBytes, String imageTitle)
-  {
-    String pathToImage = null;
-    try
-    {
-      ByteArrayInputStream inStreamObj = new ByteArrayInputStream(imageBytes);
-      BufferedImage newImage = ImageIO.read(inStreamObj);
-
-      pathToImage = "server/images/" + imageTitle + ".jpg";
-      ImageIO.write(newImage, "jpg", new File(pathToImage));
-    }
-    catch (IOException e)
-    {
-      e.printStackTrace();
-    }
-    return pathToImage;
-  }
-
-  @Override public void markAsClosed(int id) throws SQLException
-  {
-    try (Connection connection = getConnection())
-    {
-      String sql = "UPDATE auction SET status='CLOSED'\n" + "WHERE ID=?;";
-      database.update(sql, id);
-      /*
-       * PreparedStatement statement =
-       * connection.prepareStatement(sql);statement.setInt(1,
-       * id);statement.executeUpdate();
-       */
-    }
-  }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
@@ -282,6 +249,11 @@ public class AuctionDatabase implements AuctionPersistence
     updateCurrentBid(bid);
     return bid;
   }
+  @Override public void markAsClosed(int id) throws SQLException
+  {
+    String sql = "UPDATE auction SET status='CLOSED'\n" + "WHERE ID=?;";
+    database.update(sql, id);
+  }
 
   @Override public Bid getCurrentBidForAuction(int auctionId)
       throws SQLException
@@ -315,7 +287,7 @@ public class AuctionDatabase implements AuctionPersistence
     String sqlUser =
         "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
-    String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n"; //the correct line
+    String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n";
 
     checkFirstName(firstname);
     checkLastName(lastname);
@@ -337,6 +309,22 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("Credentials do not match");
     }
       return email;
+  }
+
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    String sql="SELECT bid.auction_id\n" + "FROM bid\n"
+        + "WHERE participant_email=?;";
+    ArrayList<Object[]> results = database.query(sql, bidder);
+    AuctionList auctions = new AuctionList();
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      int id = Integer.parseInt(row[0].toString());
+      auctions.addAuction(getCardAuctionById(id));
+    }
+    return auctions;
   }
 
   private boolean isEmailInTheSystem(String email) throws SQLException
@@ -529,6 +517,43 @@ public class AuctionDatabase implements AuctionPersistence
       if (age < 18)
         throw new SQLException("You must be over 18 years old.");
     }
+  }
+  private byte[] downloadImageFromRepository(String imagePath)
+  {
+    try
+    {
+      BufferedImage image = ImageIO.read(new File(imagePath));
+
+      ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
+      ImageIO.write(image, "jpg", outStreamObj);
+
+      byte[] byteArray = outStreamObj.toByteArray();
+      return byteArray;
+
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private String saveImageToRepository(byte[] imageBytes, String imageTitle)
+  {
+    String pathToImage = null;
+    try
+    {
+      ByteArrayInputStream inStreamObj = new ByteArrayInputStream(imageBytes);
+      BufferedImage newImage = ImageIO.read(inStreamObj);
+
+      pathToImage = "server/images/" + imageTitle + ".jpg";
+      ImageIO.write(newImage, "jpg", new File(pathToImage));
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+    return pathToImage;
   }
 
 }

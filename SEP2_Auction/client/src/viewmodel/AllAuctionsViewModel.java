@@ -18,8 +18,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
-public class AllAuctionsViewModel implements PropertyChangeListener,
-    NamedPropertyChangeSubject
+public class AllAuctionsViewModel
+    implements PropertyChangeListener, NamedPropertyChangeSubject
 {
   private AuctionModel model;
   private ViewModelState state;
@@ -56,19 +56,71 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
     return null;
   }
 
-  private void fillAuctionCards(){
-    AuctionList list = this.getOngoingAuctions();
-    for (int i = 0; i < list.getSize(); i++)
+  public AuctionList getPreviousBids()
+  {
+    try
     {
-      auctionCards.add(list.getAuction(i));
+      return model.getPreviousBids(state.getUserEmail());
     }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  /*public AuctionList getCreatedAuctions()
+  {
+    try
+    {
+      return model.getCreatedAuctions(state.getUserEmail());
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }*/
+
+  private void fillAuctionCards()
+  {
+    AuctionList list;
+    if (state.getAllAuctions())
+    {
+      list = getOngoingAuctions();
+      for (int i = 0; i < list.getSize(); i++)
+      {
+        auctionCards.add(list.getAuction(i));
+      }
+    }
+    else if (state.getBids())
+    {
+      list = getPreviousBids();
+      for (int i = 0; i < list.getSize(); i++)
+      {
+        auctionCards.add(list.getAuction(i));
+      }
+    }
+    /////////////////////////////////////////////////////
+    else if(state.getCreatedAuctions())
+    {
+      list = this.getOngoingAuctions();
+      for (int i = 0; i < list.getSize(); i++)
+      {
+        auctionCards.add(list.getAuction(i));
+      }
+    }
+    //////////////////////////////////////////////////////
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    switch (evt.getPropertyName()) {
+    switch (evt.getPropertyName())
+    {
       case "Auction":
-        auctionCards.add((Auction) evt.getNewValue());
+        if(state.getAllAuctions())
+        {
+          auctionCards.add((Auction) evt.getNewValue());
+        }
         property.firePropertyChange(evt);
         break;
       case "End":
@@ -76,17 +128,20 @@ public class AllAuctionsViewModel implements PropertyChangeListener,
     }
   }
 
-  public ObservableList<Auction> getAuctionCards() {
+  public ObservableList<Auction> getAuctionCards()
+  {
     return auctionCards;
   }
 
   @Override synchronized public void addListener(String propertyName,
-      PropertyChangeListener listener) {
+      PropertyChangeListener listener)
+  {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
   @Override public synchronized void removeListener(String propertyName,
-      PropertyChangeListener listener) {
+      PropertyChangeListener listener)
+  {
     property.removePropertyChangeListener(propertyName, listener);
   }
 }
