@@ -196,7 +196,15 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         //but if we placed our first bid for an auction, we add it in cache
         else if(bid.getBidder().equals(userEmail) && !previousBids.contains(bid.getAuctionId()))
         {
-          previousBids.addAuction(previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()));
+          //previousBids.addAuction(previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()));
+          try
+          {
+            previousBids.addAuction(modelManager.getAuction(bid.getAuctionId()));
+          }
+          catch (SQLException e)
+          {
+            //
+          }
         }
 
         break;
