@@ -299,7 +299,7 @@ public class AuctionDatabase implements AuctionPersistence
     database.update(sqlUser, email, password, phone, firstname, lastname);
     Date date=Date.valueOf(birthday);
     database.update(sqlParticipant, email, date);
-    return new User(firstname, lastname, email, password, phone, birthday);
+    return new User(firstname, lastname, email, password, phone, birthday, null);
   }
 
   @Override public String login(String email, String password)
@@ -337,6 +337,38 @@ public class AuctionDatabase implements AuctionPersistence
         + "WHERE users.user_email=?;";
     database.update(sql, newPassword, userEmail);
   }
+
+  @Override public User getParticipant(String email) throws SQLException
+  {
+    User user=getUser(email);
+    if(user!=null)
+    {
+      String sql = "SELECT participant.birth_date FROM participant WHERE user_email='222@';\n";
+      ArrayList<Object[]> results = database.query(sql, email);
+      for (int i = 0; i < results.size(); i++)
+      {
+        Object[] row = results.get(i);
+        Date birthday=Date.valueOf(row[0].toString());
+        return new User(user.getFirstname(), user.getLastname(), email, null, user.getPhone(), birthday.toLocalDate(), null);
+      }
+    }
+    return null;
+  }
+  private User getUser(String email) throws SQLException
+  {
+    String sql="SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
+    ArrayList<Object[]> results = database.query(sql, email);
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      String phone=row[0].toString();
+      String firstName=row[1].toString();
+      String lastName=row[2].toString();
+      return new User(firstName, lastName, email, null, phone, null, null);
+    }
+    return null;
+  }
+
   private void validateNewPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
   {

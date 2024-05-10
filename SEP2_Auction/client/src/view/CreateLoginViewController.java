@@ -1,5 +1,6 @@
 package view;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
@@ -60,6 +61,7 @@ public class CreateLoginViewController
     errorLabel.textProperty().bindBidirectional(viewModel.getErrorProperty());
     headerLabel.textProperty().bindBidirectional(viewModel.getHeaderProperty());
 
+    Bindings.bindBidirectional(datePicker.valueProperty(), viewModel.getBirthDate());
     //to control the visibility from the view model
     //login components
     emailField.visibleProperty().bindBidirectional(viewModel.getLoginVisibility());
@@ -117,6 +119,9 @@ public class CreateLoginViewController
       case RESET_PASSWORD:
         viewModel.setForResetPassword();
         break;
+      case DISPLAY_PROFILE:
+        viewModel.setForDisplayProfile();
+        break;
     }
   }
 
@@ -127,8 +132,6 @@ public class CreateLoginViewController
 
   @FXML public void confirmButtonPressed()
   {
-    viewModel.receiveBirthDate(datePicker.getValue());
-    datePicker.setValue(null);
     viewModel.confirm();
     if(errorLabel.getText().isEmpty())
       viewHandler.openView(WindowType.ALL_AUCTIONS);

@@ -1,5 +1,7 @@
 package viewmodel;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -15,6 +17,8 @@ public class FixedPaneViewModel implements PropertyChangeListener
   private AuctionModel model;
   private ViewModelState state;
 
+  private BooleanProperty buttonsDisabled;
+
   public FixedPaneViewModel(AuctionModel model, ViewModelState state)
   {
     this.state = state;
@@ -23,12 +27,28 @@ public class FixedPaneViewModel implements PropertyChangeListener
     emailProperty = new SimpleStringProperty();
     notificationsButtonBackgroundProperty=new SimpleStringProperty();
     notificationsButtonBackgroundProperty.set("");
+    buttonsDisabled=new SimpleBooleanProperty();
   }
+
 
   public void reset()
   {
     //  Just setting the email
     emailProperty.set(state.getUserEmail());
+  }
+  public void sellItem()
+  {
+    //if(state.getSelectedAuction()==null)
+      //buttonsDisabled.set(false);
+    buttonsDisabled.set(true);
+  }
+  public void setForDisplayProfile()
+  {
+
+  }
+  public void leaveAuctionView()
+  {
+    buttonsDisabled.set(false);
   }
   public void allAuctions()
   {
@@ -50,6 +70,10 @@ public class FixedPaneViewModel implements PropertyChangeListener
   public StringProperty getNotificationsButtonBackgroundProperty()
   {
     return notificationsButtonBackgroundProperty;
+  }
+  public BooleanProperty getButtonsDisabled()
+  {
+    return buttonsDisabled;
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt)

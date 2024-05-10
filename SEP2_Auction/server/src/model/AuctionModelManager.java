@@ -122,4 +122,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     // model manager property fires auction events further
     property.firePropertyChange(evt);
   }
+  @Override public User getParticipant(String email) throws SQLException
+  {
+    return auctionDatabase.getParticipant(email);
+  }
 }

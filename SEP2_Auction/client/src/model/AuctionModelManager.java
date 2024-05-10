@@ -76,6 +76,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
+  @Override public User getParticipant(String email) throws SQLException
+  {
+    return client.getParticipant(email);
+  }
+
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException
   {

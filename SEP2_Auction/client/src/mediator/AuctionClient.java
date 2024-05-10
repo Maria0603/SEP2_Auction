@@ -154,6 +154,19 @@ public class AuctionClient
     }
   }
 
+  @Override public User getParticipant(String email) throws SQLException
+  {
+    try
+    {
+      return server.getParticipant(email);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {

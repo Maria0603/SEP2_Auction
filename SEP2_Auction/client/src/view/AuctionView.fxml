@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="auctionScrollPane" hbarPolicy="NEVER" prefHeight="740.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
+<ScrollPane fx:id="auctionScrollPane" hbarPolicy="NEVER" prefHeight="721.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
    <content>
       <AnchorPane fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1060.0" prefWidth="1085.0">
          <children>
@@ -73,7 +73,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" promptText="max. 2000000000" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -98,7 +98,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" promptText="max. 2000000000" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -126,7 +126,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" promptText="> 0" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="&gt; 0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>

@@ -25,4 +25,5 @@ public interface AuctionPersistence
 
   void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
       throws SQLException;
+  User getParticipant(String email) throws SQLException;
 }

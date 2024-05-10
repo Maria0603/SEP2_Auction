@@ -1,4 +1,3 @@
-
 package view;
 
 import javafx.event.ActionEvent;
@@ -30,11 +29,9 @@ public class FixedPaneViewHandler
   private AuctionViewController auctionViewController;
   private AllAuctionsViewController allAuctionsViewController;
   private AllAccounts_NotificationsViewController allAccountsNotificationsViewController;
+  private CreateLoginViewController createLoginViewController;
   private Region root;
 
-  //we have access to the ViewModelFactory because this controller is kind of ViewHandler for its embedded views
-  //we pass the id to pass it to the right controller;
-  //that controller will set the scene for displaying or starting an auction, depending on the id
   private ViewModelFactory viewModelFactory;
 
   public void init(ViewHandler viewHandler,
@@ -47,7 +44,24 @@ public class FixedPaneViewHandler
     this.viewHandler = viewHandler;
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
-    notificationsButton.styleProperty().bindBidirectional(fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
+    notificationsButton.styleProperty().bindBidirectional(
+        fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
+    allAuctionsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    myAuctions_allAccountsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    myBidsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    myProfile_settingsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    notificationsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    logOutButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    moderatorInfoButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    sellItemButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
     reset(windowType);
   }
 
@@ -58,60 +72,24 @@ public class FixedPaneViewHandler
 
   public void reset(WindowType windowType)
   {
-
     fixedPaneViewModel.reset();
     notificationsButton.setStyle("");
     switch (windowType)
     {
       case START_AUCTION -> sellItemButtonPressed();
-      case DISPLAY_AUCTION ->
-      {
-        try
-        {
-          FXMLLoader loader = new FXMLLoader(
-              getClass().getResource("AuctionView.fxml"));
-          Region root = loader.load();
-          borderPane.setCenter(root);
-          auctionViewController = loader.getController();
-          auctionViewController.init(viewHandler,
-              viewModelFactory.getAuctionViewModel(), root, windowType);
-
-          allAuctionsButton.setDisable(false);
-          myAuctions_allAccountsButton.setDisable(false);
-          myBidsButton.setDisable(false);
-          myProfile_settingsButton.setDisable(false);
-          notificationsButton.setDisable(false);
-          logOutButton.setDisable(false);
-          moderatorInfoButton.setDisable(false);
-          sellItemButton.setDisable(false);
-
-
-        }
-        catch (Exception e)
-        {
-          e.printStackTrace();
-        }
-      }
+      case DISPLAY_AUCTION -> displayAuction();
       case ALL_AUCTIONS -> allAuctionsButtonPressed();
       case NOTIFICATIONS -> notificationsButtonPressed();
+      case BIDS -> myBidsButtonPressed();
+      case DISPLAY_PROFILE -> myProfile_settingsButtonPressed();
     }
 
   }
 
   @FXML Region sellItemButtonPressed()
   {
-    //to prevent leaving the auction creation, we disable the buttons;
-    //the user can still leave by pressing the Cancel or Back button
-    allAuctionsButton.setDisable(true);
-    myAuctions_allAccountsButton.setDisable(true);
-    myBidsButton.setDisable(true);
-    myProfile_settingsButton.setDisable(true);
-    notificationsButton.setDisable(true);
-    logOutButton.setDisable(true);
-    moderatorInfoButton.setDisable(true);
-    sellItemButton.setDisable(true);
+    fixedPaneViewModel.sellItem();
 
-    //the logic we would have in the ViewHandler - kind of
     if (auctionViewController == null)
     {
       try
@@ -123,7 +101,8 @@ public class FixedPaneViewHandler
         auctionViewController = loader.getController();
 
         auctionViewController.init(viewHandler,
-            viewModelFactory.getAuctionViewModel(), root, WindowType.START_AUCTION);
+            viewModelFactory.getAuctionViewModel(), root,
+            WindowType.START_AUCTION);
       }
       catch (Exception e)
       {
@@ -145,20 +124,38 @@ public class FixedPaneViewHandler
     return loadGrid(WindowType.ALL_AUCTIONS);
   }
 
-  private Region loadGrid(WindowType windowType)
+  private void displayAuction()
+  {
+    try
+    {
+      FXMLLoader loader = new FXMLLoader(
+          getClass().getResource("AuctionView.fxml"));
+      Region root = loader.load();
+      borderPane.setCenter(root);
+      auctionViewController = loader.getController();
+      auctionViewController.init(viewHandler,
+          viewModelFactory.getAuctionViewModel(), root,
+          WindowType.DISPLAY_AUCTION);
+
+      fixedPaneViewModel.leaveAuctionView();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  private void leaveAuction()
   {
     if (auctionViewController != null)
       auctionViewController.leaveAuctionView();
-    allAuctionsButton.setDisable(false);
-    myAuctions_allAccountsButton.setDisable(false);
-    myBidsButton.setDisable(false);
-    myProfile_settingsButton.setDisable(false);
-    notificationsButton.setDisable(false);
-    logOutButton.setDisable(false);
-    moderatorInfoButton.setDisable(false);
-    sellItemButton.setDisable(false);
+  }
 
-    //the logic we would have in the ViewHandler - kind of
+  private Region loadGrid(WindowType windowType)
+  {
+    leaveAuction();
+    fixedPaneViewModel.leaveAuctionView();
+
     if (allAuctionsViewController == null)
     {
       try
@@ -190,11 +187,13 @@ public class FixedPaneViewHandler
 
   @FXML void logOutButtonPressed(ActionEvent event)
   {
+    leaveAuction();
     viewHandler.openView(WindowType.LOG_IN);
   }
 
   @FXML void moderatorInfoButtonPressed(ActionEvent event)
   {
+    leaveAuction();
 
   }
 
@@ -203,13 +202,40 @@ public class FixedPaneViewHandler
     fixedPaneViewModel.myCreatedAuctions();
   }
 
-  @FXML void myProfile_settingsButtonPressed(ActionEvent event)
+  @FXML Region myProfile_settingsButtonPressed()
   {
+    leaveAuction();
+    fixedPaneViewModel.setForDisplayProfile();
 
+    if (createLoginViewController == null)
+    {
+      try
+      {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("CreateAccountEditProfileView.fxml"));
+        Region root = loader.load();
+        createLoginViewController = loader.getController();
+
+        createLoginViewController.init(viewHandler,
+            viewModelFactory.getCreateLoginViewModel(), root, WindowType.DISPLAY_PROFILE);
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+    else
+    {
+      createLoginViewController.reset(WindowType.DISPLAY_PROFILE);
+    }
+    borderPane.setCenter(createLoginViewController.getRoot());
+    return createLoginViewController.getRoot();
   }
 
   @FXML Region notificationsButtonPressed()
   {
+    leaveAuction();
+
     //notificationsButton.setStyle("-fx-background-color: #ffffff;");
     notificationsButton.setStyle("");
     if (allAccountsNotificationsViewController == null)
@@ -222,7 +248,9 @@ public class FixedPaneViewHandler
         borderPane.setCenter(root);
         allAccountsNotificationsViewController = loader.getController();
 
-        allAccountsNotificationsViewController.init(viewHandler, viewModelFactory.getAllAccountsNotificationsViewModel(), root, WindowType.NOTIFICATIONS);
+        allAccountsNotificationsViewController.init(viewHandler,
+            viewModelFactory.getAllAccountsNotificationsViewModel(), root,
+            WindowType.NOTIFICATIONS);
 
       }
       catch (Exception e)
@@ -239,7 +267,7 @@ public class FixedPaneViewHandler
     return allAuctionsViewController.getRoot();
   }
 
-  @FXML public Region myBidsButtonPressed(ActionEvent actionEvent)
+  @FXML public Region myBidsButtonPressed()
   {
     fixedPaneViewModel.myBids();
     return loadGrid(WindowType.BIDS);

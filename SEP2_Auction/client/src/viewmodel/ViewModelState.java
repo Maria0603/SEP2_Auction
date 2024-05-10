@@ -13,13 +13,14 @@ public class ViewModelState
   private String userEmail;
   //for windows
   private boolean bids, createdAuctions, allAuctions;
-  private boolean create, login, resetPassword, edit;
+  private boolean create, login, resetPassword, edit, display;
 
   public ViewModelState()
   {
     selectedAuction = null;
     userEmail=null;
     setAllAuctions();
+    setCreate();
   }
 
   public void setAuction(Auction auction)
@@ -65,28 +66,33 @@ public class ViewModelState
   {
     setAllCreatedBids(true, false, false);
   }
-  private void setCreateLoginResetEdit(boolean create, boolean login, boolean reset, boolean edit)
+  private void setCreateLoginResetEditDisplay(boolean create, boolean login, boolean reset, boolean edit, boolean display)
   {
     this.create=create;
     this.login=login;
     this.resetPassword=reset;
     this.edit=edit;
+    this.display=display;
   }
   public void setCreate()
   {
-    setCreateLoginResetEdit(true, false, false, false);
+    setCreateLoginResetEditDisplay(true, false, false, false, false);
   }
   public void setLogin()
   {
-    setCreateLoginResetEdit(false, true, false, false);
+    setCreateLoginResetEditDisplay(false, true, false, false, false);
   }
   public void setResetPassword()
   {
-    setCreateLoginResetEdit(false, false, true, false);
+    setCreateLoginResetEditDisplay(false, false, true, false, false);
   }
   public void setEdit()
   {
-    setCreateLoginResetEdit(false, false, false, true);
+    setCreateLoginResetEditDisplay(false, false, false, true, false);
+  }
+  public void setDisplay()
+  {
+    setCreateLoginResetEditDisplay(false, false, false, false, true);
   }
 
   public boolean getBids()

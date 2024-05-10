@@ -1,10 +1,9 @@
 package viewmodel;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.util.StringConverter;
 import model.AuctionModel;
+import model.User;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ public class CreateLoginViewModel
   private StringProperty headerProperty, firstNameProperty, lastNameProperty, emailProperty, passwordProperty, repasswordProperty, phoneProperty, errorProperty;
   private AuctionModel model;
   private ViewModelState viewState;
-  private LocalDate birthDate;
+  private ObjectProperty<LocalDate> birthDate;
 
   private BooleanProperty informationVisibility; //first name, last name, phone, birthday
   private BooleanProperty loginVisibility; //email, password
@@ -39,7 +38,7 @@ public class CreateLoginViewModel
     repasswordProperty = new SimpleStringProperty();
     phoneProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
-    birthDate=null;
+    birthDate=new SimpleObjectProperty<>();
 
     informationVisibility=new SimpleBooleanProperty();
     loginVisibility=new SimpleBooleanProperty();
@@ -65,7 +64,7 @@ public class CreateLoginViewModel
     repasswordProperty.set("");
     phoneProperty.set("");
     errorProperty.set("");
-    birthDate=null;
+    birthDate.set(LocalDate.now());
   }
   public void setForCreate()
   {
@@ -91,7 +90,7 @@ public class CreateLoginViewModel
     {
       String email=model.addUser(firstNameProperty.get().trim(),
           lastNameProperty.get().trim(), emailProperty.get().trim(),
-          passwordProperty.get(), repasswordProperty.get(), phoneProperty.get().trim(), birthDate);
+          passwordProperty.get(), repasswordProperty.get(), phoneProperty.get().trim(), birthDate.get());
       viewState.setUserEmail(email);
     }
     catch (SQLException e)
@@ -163,6 +162,39 @@ public class CreateLoginViewModel
       errorProperty.set(e.getMessage());
     }
   }
+  public void setForDisplayProfile()
+  {
+    viewState.setDisplay();
+
+    resetPasswordButtonVisibility.set(true);
+    login_createButtonVisibility.set(true);
+    login_createButtonText.set("Edit");
+    informationVisibility.set(true);
+    loginVisibility.set(true);
+    resetPasswordVisibility.set(false);
+    birthdayVisibility.set(true);
+    errorProperty.set("");
+    headerProperty.set("Your profile");
+    emailLabelText.set("Email");
+    cancelButtonVisibility.set(false);
+    displayProfile();
+  }
+  private void displayProfile()
+  {
+    try
+    {
+      User user=model.getParticipant(viewState.getUserEmail());
+      firstNameProperty.set(user.getFirstname());
+      lastNameProperty.set(user.getLastname());
+      emailProperty.set(user.getEmail());
+      phoneProperty.set(user.getPhone());
+      birthDate.set(user.getBirthday());
+    }
+    catch (SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+  }
   public void confirm()
   {
     if(viewState.isResetPassword())
@@ -208,9 +240,9 @@ public class CreateLoginViewModel
     return errorProperty;
   }
 
-  public void receiveBirthDate(LocalDate date)
+  public ObjectProperty<LocalDate> getBirthDate()
   {
-    this.birthDate=date;
+    return birthDate;
   }
   public BooleanProperty getLoginVisibility()
   {

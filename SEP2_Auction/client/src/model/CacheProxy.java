@@ -138,6 +138,11 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
+  @Override public User getParticipant(String email) throws SQLException
+  {
+    return modelManager.getParticipant(email);
+  }
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {
