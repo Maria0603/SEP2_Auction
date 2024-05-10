@@ -2,25 +2,30 @@ CREATE SCHEMA IF NOT EXISTS sprint1database;
 SET SCHEMA 'sprint1database';
 
 
-CREATE DOMAIN email VARCHAR(100);
+CREATE DOMAIN email VARCHAR(200);
+CREATE DOMAIN first_last_name VARCHAR(100);
 
 DROP TABLE Auction CASCADE;
 DROP TABLE Users CASCADE;
 DROP TABLE Bid CASCADE;
 DROP TABLE Notification CASCADE;
 DROP TABLE participant CASCADE;
+DROP TABLE moderator;
 
 CREATE TABLE users (
   user_email email PRIMARY KEY,
   password VARCHAR(255) NOT NULL,
-  phone_number VARCHAR(255),
-  first_name VARCHAR(255),
-  last_name VARCHAR(255)
+  phone_number VARCHAR(20),
+  first_name first_last_name,
+  last_name first_last_name
 );
+
+SELECT phone_number, first_name, last_name FROM users WHERE user_email='222@';
+SELECT participant.birth_date FROM participant WHERE user_email='222@';
 
 CREATE TABLE participant(
     user_email email PRIMARY KEY,
-    birth_date DATE,
+    birth_date DATE NOT NULL,
     --rate INTEGER,
     FOREIGN KEY (user_email) references users (user_email)
 );
@@ -62,3 +67,15 @@ CREATE TABLE notification (
   time TIME,
   FOREIGN KEY (receiver) REFERENCES participant(user_email)
 );
+
+CREATE TABLE moderator (
+  moderator_email email PRIMARY KEY, --we provide the moderator with this
+  personal_email email,
+  FOREIGN KEY (moderator_email) REFERENCES users(user_email)
+);
+
+--RUN THESE
+INSERT INTO users(user_email, password, phone_number, first_name, last_name)
+VALUES ('bob@bidhub', '1234', null, null, null);
+INSERT INTO moderator (moderator_email, personal_email)
+VALUES ('bob@bidhub', null);

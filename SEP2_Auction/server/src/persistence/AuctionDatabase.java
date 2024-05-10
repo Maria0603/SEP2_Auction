@@ -26,7 +26,7 @@ public class AuctionDatabase implements AuctionPersistence
   private static final String USER = "postgres";
 
   //so the moderator just logs in, and then they can change their password
-  private static final String MODERATOR_EMAIL="bob@";
+  private static final String MODERATOR_EMAIL="bob@bidhub";
   private static final String MODERATOR_TEMPORARY_PASSWORD="1234";
 
   // private static final String PASSWORD = "1706";
@@ -38,12 +38,6 @@ public class AuctionDatabase implements AuctionPersistence
   {
     this.database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
     Class.forName(DRIVER);
-    /*String sql1="INSERT INTO users(user_email, password, phone_number, first_name, last_name)\n"
-        + "VALUES ('bob@bidhub', '1234', null, null, null);\n";
-    String sql2= "INSERT INTO moderator (moderator_email, personal_email)\n"
-        + "VALUES ('bob@bidhub', null);";
-    database.update(sql1);
-    database.update(sql2);*/
   }
 
   private Connection getConnection() throws SQLException
@@ -463,8 +457,8 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("The moderator cannot place bids.");
     if (participantEmail.equals(currentBidder))
       throw new SQLException("You are the current bidder.");
-    //if(participantEmail.equals(seller))
-      //throw new SQLException("You cannot bid for your item");
+    if(participantEmail.equals(seller))
+      throw new SQLException("You cannot bid for your item");
     if (currentBid > 0)
     {
       if (bidAmount <= currentBid + increment)

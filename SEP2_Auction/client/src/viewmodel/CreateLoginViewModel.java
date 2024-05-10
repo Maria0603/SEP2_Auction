@@ -60,14 +60,6 @@ public class CreateLoginViewModel
 
     reset();
   }
-  public BooleanProperty getDisableProperty()
-  {
-    return disableProperty;
-  }
-  public BooleanProperty getConfirmButtonVisibility()
-  {
-    return confirmButtonVisibility;
-  }
 
 
   public void reset()
@@ -117,7 +109,7 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      e.printStackTrace();
+      //e.printStackTrace();
     }
     if(errorProperty.get().isEmpty())
     {
@@ -163,7 +155,7 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      e.printStackTrace();
+      //e.printStackTrace();
     }
     if(errorProperty.get().isEmpty())
     {
@@ -205,7 +197,7 @@ public class CreateLoginViewModel
     catch(SQLException e)
     {
       errorProperty.set(e.getMessage());
-      e.printStackTrace();
+      //e.printStackTrace();
     }
     if(errorProperty.get().isEmpty())
     {
@@ -254,7 +246,7 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      e.printStackTrace();
+      //e.printStackTrace();
     }
   }
   public void confirm()
@@ -350,5 +342,13 @@ public class CreateLoginViewModel
   public BooleanProperty getPasswordVisibility()
   {
     return passwordVisibility;
+  }
+  public BooleanProperty getDisableProperty()
+  {
+    return disableProperty;
+  }
+  public BooleanProperty getConfirmButtonVisibility()
+  {
+    return confirmButtonVisibility;
   }
 }
