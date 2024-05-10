@@ -57,4 +57,11 @@ public class AuctionList implements Serializable
       s.append(auctions.get(i)).append('\n');
     return s.toString();
   }
+  public boolean contains(int auctionId)
+  {
+    for(int i=0; i<auctions.size(); i++)
+      if(auctions.get(i).getID()==auctionId)
+        return true;
+    return false;
+  }
 }

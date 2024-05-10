@@ -22,6 +22,7 @@ public class FixedPaneViewModel implements PropertyChangeListener
     model.addListener("Notification", this);
     emailProperty = new SimpleStringProperty();
     notificationsButtonBackgroundProperty=new SimpleStringProperty();
+    notificationsButtonBackgroundProperty.set("");
   }
 
   public void reset()

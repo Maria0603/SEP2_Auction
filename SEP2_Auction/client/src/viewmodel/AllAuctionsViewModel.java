@@ -88,26 +88,35 @@ public class AllAuctionsViewModel
     if (state.getAllAuctions())
     {
       list = getOngoingAuctions();
-      for (int i = 0; i < list.getSize(); i++)
+      if(list!=null)
       {
-        auctionCards.add(list.getAuction(i));
+        for (int i = 0; i < list.getSize(); i++)
+        {
+          auctionCards.add(list.getAuction(i));
+        }
       }
     }
     else if (state.getBids())
     {
       list = getPreviousBids();
-      for (int i = 0; i < list.getSize(); i++)
+      if(list!=null)
       {
-        auctionCards.add(list.getAuction(i));
+        for (int i = 0; i < list.getSize(); i++)
+        {
+          auctionCards.add(list.getAuction(i));
+        }
       }
     }
     /////////////////////////////////////////////////////
     else if(state.getCreatedAuctions())
     {
       list = this.getOngoingAuctions();
-      for (int i = 0; i < list.getSize(); i++)
+      if(list!=null)
       {
-        auctionCards.add(list.getAuction(i));
+        for (int i = 0; i < list.getSize(); i++)
+        {
+          auctionCards.add(list.getAuction(i));
+        }
       }
     }
     //////////////////////////////////////////////////////

@@ -23,7 +23,8 @@ public class ViewModelFactory
     fixedPaneViewModel = new FixedPaneViewModel(this.model, viewModelState);
     allAuctionsViewModel = new AllAuctionsViewModel(this.model, viewModelState);
 
-    allAccountsNotificationsViewModel=new AllAccounts_NotificationsViewModel(this.model, viewModelState);
+    allAccountsNotificationsViewModel = new AllAccounts_NotificationsViewModel(
+        this.model, viewModelState);
 
     createLoginViewModel = new CreateLoginViewModel(this.model, viewModelState);
 
@@ -54,6 +55,9 @@ public class ViewModelFactory
     return allAccountsNotificationsViewModel;
   }
 
-  public CreateLoginViewModel getCreateLoginViewModel() {return createLoginViewModel;}
+  public CreateLoginViewModel getCreateLoginViewModel()
+  {
+    return createLoginViewModel;
+  }
 
 }

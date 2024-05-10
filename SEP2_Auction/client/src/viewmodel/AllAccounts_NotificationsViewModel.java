@@ -63,9 +63,12 @@ public class AllAccounts_NotificationsViewModel
       {
         //we need the accounts
         list = model.getNotifications(viewModelState.getUserEmail());
-        for (int i = 0; i < list.getSize(); i++)
+        if(list!=null)
         {
-          notifications.add(new NotificationViewModel(list.getNotification(i)));
+          for (int i = 0; i < list.getSize(); i++)
+          {
+            notifications.add(new NotificationViewModel(list.getNotification(i)));
+          }
         }
       }
       catch (SQLException e)
@@ -89,7 +92,6 @@ public class AllAccounts_NotificationsViewModel
   {
     switch (evt.getPropertyName())
     {
-
       case "Notification":
         if (evt.getNewValue() != null)
         {

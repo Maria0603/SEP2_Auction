@@ -40,7 +40,6 @@ public class AuctionViewModel implements PropertyChangeListener
 
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
   private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;
-  ;
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
@@ -66,6 +65,7 @@ public class AuctionViewModel implements PropertyChangeListener
     incomingBidProperty = new SimpleIntegerProperty();
     currentBidProperty = new SimpleIntegerProperty();
     currentBidderProperty = new SimpleStringProperty();
+    model.addListener("Bid", this);
     //model.addListener("Time", this);
     //model.addListener("End", this);
     reset();
@@ -138,7 +138,6 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void reset()
   {
-    model.addListener("Bid", this);
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null)
     {
@@ -425,6 +424,8 @@ public class AuctionViewModel implements PropertyChangeListener
         break;
       case "Bid":
         Bid bid = (Bid) event.getNewValue();
+        System.out.println("bid in view model"+ bid.getBidAmount());
+
         if (idProperty.get() == bid.getAuctionId())
         {
           Platform.runLater(() -> {

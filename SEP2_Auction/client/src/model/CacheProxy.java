@@ -31,7 +31,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.addListener("Bid", this);
     modelManager.addListener("Notification", this);
 
-    ongoingAuctionsCache = modelManager.getOngoingAuctions();
+    ongoingAuctionsCache = null;
     previouslyOpenedAuctions =new AuctionList();
     timers=new ArrayList<>();
 
@@ -79,6 +79,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
+    if(ongoingAuctionsCache==null)
+      ongoingAuctionsCache = modelManager.getOngoingAuctions();
     return ongoingAuctionsCache;
   }
 
@@ -165,16 +167,36 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
           notifications.addNotification(notification);
         break;
       case "Bid":
+        //we receive a bid
         Bid bid=(Bid)evt.getNewValue();
+        //System.out.println("bid in cache"+ bid.getBidAmount());
+
+        //obviously, for an ongoing auction, so we update the cache
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
 
-        previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
-        previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+        //if we opened it before, we update that cache too
+        if(previouslyOpenedAuctions.contains(bid.getAuctionId()))
+        {
+          previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+          previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+        }
+        //if someone else placed a bid for an auction where we previously bid
+        //we update the cache
+        if(previousBids.contains(bid.getAuctionId()))
+        {
+          previousBids.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+          previousBids.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        }
+        //but if we placed our first bid for an auction, we add it in cache
+        else if(bid.getBidder().equals(userEmail) && !previousBids.contains(bid.getAuctionId()))
+        {
+          previousBids.addAuction(previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()));
+        }
 
         break;
     }
-    property.firePropertyChange(evt);
+    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
   }
 }
 
