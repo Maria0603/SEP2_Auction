@@ -26,8 +26,8 @@ public class AuctionDatabase implements AuctionPersistence
   private static final String USER = "postgres";
 
   //so the moderator just logs in, and then they can change their password
-  private static final String MODERATOR_EMAIL="bob@bidhub";
-  private static final String MODERATOR_TEMPORARY_PASSWORD="1234";
+  private static final String MODERATOR_EMAIL = "bob@bidhub";
+  private static final String MODERATOR_TEMPORARY_PASSWORD = "1234";
 
   // private static final String PASSWORD = "1706";
   private static final String PASSWORD = "344692StupidPass";
@@ -112,65 +112,64 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public synchronized Auction getAuctionById(int id)
       throws SQLException
   {
-      String sql =
-          "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
-      ArrayList<Object[]> results = database.query(sql, id);
-      for (int i = 0; i < results.size(); i++)
+    String sql =
+        "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
+    ArrayList<Object[]> results = database.query(sql, id);
+    for (int i = 0; i < results.size(); i++)
+    {
+      try
       {
-        try
+        Object[] row = results.get(i);
+        String title = row[1].toString();
+        String description = row[2].toString();
+        int reservePrice = Integer.parseInt(row[3].toString());
+        int buyoutPrice = Integer.parseInt(row[4].toString());
+        int minimumIncrement = Integer.parseInt(row[5].toString());
+        int currentBid = Integer.parseInt(row[6].toString());
+        String currentBidder = null;
+        if (row[7] != null)
         {
-          Object[] row = results.get(i);
-          String title = row[1].toString();
-          String description = row[2].toString();
-          int reservePrice = Integer.parseInt(row[3].toString());
-          int buyoutPrice = Integer.parseInt(row[4].toString());
-          int minimumIncrement = Integer.parseInt(row[5].toString());
-          int currentBid = Integer.parseInt(row[6].toString());
-          String currentBidder=null;
-          if(row[7]!=null)
-          {
-            currentBidder = row[7].toString();
-          }
-          String imagePath = row[8].toString();
-          byte[] imageData = downloadImageFromRepository(imagePath);
+          currentBidder = row[7].toString();
+        }
+        String imagePath = row[8].toString();
+        byte[] imageData = downloadImageFromRepository(imagePath);
 
-          String status = row[9].toString();
-          Time auctionStart = Time.valueOf(row[10].toString());
-          Time auctionEnd = Time.valueOf(row[11].toString());
-          String seller=row[12].toString(); //the correct line
-          //String seller = null;
-          return new Auction(id, title, description, reservePrice, buyoutPrice,
-              minimumIncrement, auctionStart, auctionEnd, currentBid,
-              currentBidder, seller, imageData, status);
-        }
-        catch (Exception e)
-        {
-          // maybe throw exception with "No auction with this id", but for testing:
-          e.printStackTrace();
-        }
+        String status = row[9].toString();
+        Time auctionStart = Time.valueOf(row[10].toString());
+        Time auctionEnd = Time.valueOf(row[11].toString());
+        String seller = row[12].toString(); //the correct line
+        //String seller = null;
+        return new Auction(id, title, description, reservePrice, buyoutPrice,
+            minimumIncrement, auctionStart, auctionEnd, currentBid,
+            currentBidder, seller, imageData, status);
       }
+      catch (Exception e)
+      {
+        // maybe throw exception with "No auction with this id", but for testing:
+        e.printStackTrace();
+      }
+    }
     System.out.println("request for auction by ID in database");
     return null;
   }
 
   private Auction getCardAuctionById(int id) throws SQLException
   {
-    String sql =
-        "SELECT ID, title, current_bid, image_data, end_time\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
+    String sql = "SELECT ID, title, current_bid, image_data, end_time\n"
+        + "FROM sprint1database.auction\n" + "WHERE id=?;";
     ArrayList<Object[]> results = database.query(sql, id);
     for (int i = 0; i < results.size(); i++)
     {
-        Object[] row = results.get(i);
-        String title = row[1].toString();
-        int currentBid = Integer.parseInt(row[2].toString());
-        String imagePath = row[3].toString();
-        byte[] imageData = downloadImageFromRepository(imagePath);
-        Time auctionEnd = Time.valueOf(row[4].toString());
-        return new Auction(id, title, currentBid, auctionEnd, imageData);
+      Object[] row = results.get(i);
+      String title = row[1].toString();
+      int currentBid = Integer.parseInt(row[2].toString());
+      String imagePath = row[3].toString();
+      byte[] imageData = downloadImageFromRepository(imagePath);
+      Time auctionEnd = Time.valueOf(row[4].toString());
+      return new Auction(id, title, currentBid, auctionEnd, imageData);
     }
     return null;
   }
-
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
@@ -235,15 +234,15 @@ public class AuctionDatabase implements AuctionPersistence
       Object[] row = results.get(i);
 
       int currentBid = Integer.parseInt(row[0].toString());
-      String currentBidder=null;
-      if(row[1]!=null)
+      String currentBidder = null;
+      if (row[1] != null)
       {
         currentBidder = row[1].toString();
       }
       int reservePrice = Integer.parseInt(row[2].toString());
       int increment = Integer.parseInt(row[3].toString());
       String status = row[4].toString();
-      String seller=row[5].toString();
+      String seller = row[5].toString();
       checkBid(bidAmount, participantEmail, currentBid, currentBidder,
           reservePrice, increment, status, seller);
     }
@@ -253,6 +252,7 @@ public class AuctionDatabase implements AuctionPersistence
     updateCurrentBid(bid);
     return bid;
   }
+
   @Override public void markAsClosed(int id) throws SQLException
   {
     String sql = "UPDATE auction SET status='CLOSED'\n" + "WHERE ID=?;";
@@ -267,7 +267,7 @@ public class AuctionDatabase implements AuctionPersistence
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
-      if(row[1]!=null)
+      if (row[1] != null)
       {
         int currentBid = Integer.parseInt(row[0].toString());
         String currentBidder = row[1].toString();
@@ -285,7 +285,8 @@ public class AuctionDatabase implements AuctionPersistence
   }
 
   @Override public User createUser(String firstname, String lastname,
-      String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException
+      String email, String password, String repeatedPassword, String phone,
+      LocalDate birthday) throws SQLException
   {
 
     String sqlUser =
@@ -300,9 +301,9 @@ public class AuctionDatabase implements AuctionPersistence
     checkPhone(phone);
     ageValidation(birthday);
     database.update(sqlUser, email, password, phone, firstname, lastname);
-    Date date=Date.valueOf(birthday);
+    Date date = Date.valueOf(birthday);
     database.update(sqlParticipant, email, date);
-    return new User(firstname, lastname, email, password, phone, birthday, null);
+    return new User(firstname, lastname, email, password, phone, birthday);
   }
 
   @Override public String login(String email, String password)
@@ -312,13 +313,13 @@ public class AuctionDatabase implements AuctionPersistence
     {
       throw new SQLException("Credentials do not match");
     }
-      return email;
+    return email;
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
-    String sql="SELECT DISTINCT bid.auction_id\n" + "FROM bid\n"
+    String sql = "SELECT DISTINCT bid.auction_id\n" + "FROM bid\n"
         + "WHERE participant_email=?;";
     ArrayList<Object[]> results = database.query(sql, bidder);
     AuctionList auctions = new AuctionList();
@@ -336,23 +337,23 @@ public class AuctionDatabase implements AuctionPersistence
       String newPassword, String repeatPassword) throws SQLException
   {
     validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
-    String sql="UPDATE users SET password=?\n"
-        + "WHERE users.user_email=?;";
+    String sql = "UPDATE users SET password=?\n" + "WHERE users.user_email=?;";
     database.update(sql, newPassword, userEmail);
   }
 
   @Override public User getParticipant(String email) throws SQLException
   {
-    User user=getUser(email);
-    if(user!=null)
+    User user = getUser(email);
+    if (user != null)
     {
       String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
       ArrayList<Object[]> results = database.query(sql, email);
       for (int i = 0; i < results.size(); i++)
       {
         Object[] row = results.get(i);
-        Date birthday=Date.valueOf(row[0].toString());
-        return new User(user.getFirstname(), user.getLastname(), email, null, user.getPhone(), birthday.toLocalDate(), null);
+        Date birthday = Date.valueOf(row[0].toString());
+        return new User(user.getFirstname(), user.getLastname(), email, null,
+            user.getPhone(), birthday.toLocalDate());
       }
     }
     return null;
@@ -363,29 +364,65 @@ public class AuctionDatabase implements AuctionPersistence
     return isEmailIn(email, "moderator_email", "moderator");
   }
 
+  @Override public User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    if (validateForLogin(oldEmail, password))
+    {
+      checkFirstName(firstname);
+      checkLastName(lastname);
+      checkEmail(email);
+      checkPassword(password, password);
+      checkPhone(phone);
+      ageValidation(birthday);
+      String sqlUser =
+          "UPDATE users SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
+              + "WHERE user_email=?;";
+      String sqlParticipantOrModerator;
+
+      database.update(sqlUser, email, phone, firstname, lastname, oldEmail);
+      if (oldEmail.equals(MODERATOR_EMAIL))
+      {
+        sqlParticipantOrModerator = "UPDATE moderator SET personal_email=?\n"
+            + "WHERE moderator_email=?;";
+        database.update(sqlParticipantOrModerator, email, oldEmail);
+      }
+      else
+      {
+        sqlParticipantOrModerator =
+            "UPDATE participant SET birth_date=?\n" + "WHERE user_email=?;";
+        Date date = Date.valueOf(birthday);
+        database.update(sqlParticipantOrModerator, date, email);
+      }
+      return new User(firstname, lastname, email, password, phone, birthday);
+    }
+    throw new SQLException("Wrong password");
+  }
+
   private User getUser(String email) throws SQLException
   {
-    String sql="SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
+    String sql = "SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
     ArrayList<Object[]> results = database.query(sql, email);
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
-      String phone=null;
-      if(row[0]!=null)
+      String phone = null;
+      if (row[0] != null)
       {
-        phone=row[0].toString();
+        phone = row[0].toString();
       }
-      String firstName=null;
-      if(row[1]!=null)
+      String firstName = null;
+      if (row[1] != null)
       {
-        firstName=row[1].toString();
+        firstName = row[1].toString();
       }
-      String lastName=null;
-      if(row[2]!=null)
+      String lastName = null;
+      if (row[2] != null)
       {
-        lastName=row[2].toString();
+        lastName = row[2].toString();
       }
-      return new User(firstName, lastName, email, null, phone, null, null);
+      return new User(firstName, lastName, email, null, phone, null);
     }
     return null;
   }
@@ -394,20 +431,22 @@ public class AuctionDatabase implements AuctionPersistence
       String newPassword, String repeatPassword) throws SQLException
   {
     checkPassword(newPassword, repeatPassword);
-    String sql="SELECT users.password FROM users\n" + "WHERE user_email=?;";
+    String sql = "SELECT users.password FROM users\n" + "WHERE user_email=?;";
     ArrayList<Object[]> result = database.query(sql, userEmail);
     for (int i = 0; i < result.size(); i++)
     {
       Object[] row = result.get(i);
-      String retrievedOldPassword=row[0].toString();
-      if(!retrievedOldPassword.equals(oldPassword))
+      String retrievedOldPassword = row[0].toString();
+      if (!retrievedOldPassword.equals(oldPassword))
         throw new SQLException("The old password is incorrect.");
-      if(oldPassword.equals(newPassword))
-        throw new SQLException("The new password and the old one are the same.");
+      if (oldPassword.equals(newPassword))
+        throw new SQLException(
+            "The new password and the old one are the same.");
     }
   }
 
-  private boolean isEmailIn(String email, String field, String table) throws SQLException
+  private boolean isEmailIn(String email, String field, String table)
+      throws SQLException
   {
     int count = 0;
     String sql = "SELECT count(*) FROM " + table + " WHERE " + field + " =?";
@@ -448,16 +487,16 @@ public class AuctionDatabase implements AuctionPersistence
   }
 
   private void checkBid(int bidAmount, String participantEmail, int currentBid,
-      String currentBidder, int reservePrice, int increment, String status, String seller)
-      throws SQLException
+      String currentBidder, int reservePrice, int increment, String status,
+      String seller) throws SQLException
   {
     if (!status.equals("ONGOING"))
       throw new SQLException("The auction is closed.");
-    if(participantEmail.equals(MODERATOR_EMAIL))
+    if (participantEmail.equals(MODERATOR_EMAIL))
       throw new SQLException("The moderator cannot place bids.");
     if (participantEmail.equals(currentBidder))
       throw new SQLException("You are the current bidder.");
-    if(participantEmail.equals(seller))
+    if (participantEmail.equals(seller))
       throw new SQLException("You cannot bid for your item");
     if (currentBid > 0)
     {
@@ -465,8 +504,7 @@ public class AuctionDatabase implements AuctionPersistence
         throw new SQLException("Your bid is not high enough.");
     }
     if (bidAmount < reservePrice)
-      throw new SQLException(
-              "Your bid must be at least the reserve price.");
+      throw new SQLException("Your bid must be at least the reserve price.");
   }
 
   private String checkTitle(String title) throws SQLException
@@ -562,7 +600,8 @@ public class AuctionDatabase implements AuctionPersistence
     }
   }
 
-  private void checkPassword(String password, String repeatedPassword) throws SQLException
+  private void checkPassword(String password, String repeatedPassword)
+      throws SQLException
   {
     if (password.isEmpty())
     {
@@ -573,7 +612,7 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException(
           "The password must be at least 3 characters long.");
     }
-    if(!password.equals(repeatedPassword))
+    if (!password.equals(repeatedPassword))
       throw new SQLException("The passwords don't match.");
   }
 
@@ -600,6 +639,7 @@ public class AuctionDatabase implements AuctionPersistence
         throw new SQLException("You must be over 18 years old.");
     }
   }
+
   private byte[] downloadImageFromRepository(String imagePath)
   {
     try

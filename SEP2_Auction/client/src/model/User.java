@@ -11,15 +11,13 @@ public class User implements Serializable {
     //////////////////////////////////////////////////////////////////
     private String firstname, lastname, email, password, phone;
     private LocalDate birthday;
-    private String nickname;
-    public User(String firstname, String lastname, String email, String password, String phone, LocalDate birthday, String nickname){
+    public User(String firstname, String lastname, String email, String password, String phone, LocalDate birthday){
         setFirstname(firstname);
         setLastname(lastname);
         setEmail(email);
         setPassword(password);
         setPhone(phone);
         setBirthday(birthday);
-        setNickname(nickname);
     }
     public void setFirstname(String firstname){
 
@@ -42,17 +40,10 @@ public class User implements Serializable {
 
         this.phone = phone;
     }
-    public void setNickname(String nickname)
-    {
-        this.nickname=nickname;
-    }
+
     public void setBirthday(LocalDate birthday)
     {
         this.birthday = birthday;
-    }
-    public String getNickname()
-    {
-        return nickname;
     }
     public LocalDate getBirthday()
     {

@@ -25,5 +25,6 @@ public interface AuctionModel extends NamedPropertyChangeSubject
       throws SQLException;
   User getParticipant(String email) throws SQLException;
   boolean isModerator(String email) throws SQLException;
+  User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws SQLException;
 }
 

@@ -127,6 +127,13 @@ public class AuctionServer
     return model.isModerator(email);
   }
 
+  @Override public User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws RemoteException, SQLException
+  {
+    return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
+  }
+
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException
   {

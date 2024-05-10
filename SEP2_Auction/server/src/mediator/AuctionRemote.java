@@ -1,6 +1,7 @@
 package mediator;
 
 import model.*;
+import utility.observer.javaobserver.NamedPropertyChangeSubject;
 import utility.observer.listener.GeneralListener;
 
 import java.rmi.Remote;
@@ -29,7 +30,7 @@ public interface AuctionRemote extends Remote
       throws RemoteException, SQLException;
   User getParticipant(String email) throws RemoteException, SQLException;
   boolean isModerator(String email) throws RemoteException, SQLException;
-
+  User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws RemoteException, SQLException;
 
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;

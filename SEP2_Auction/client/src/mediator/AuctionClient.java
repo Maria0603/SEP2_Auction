@@ -180,6 +180,22 @@ public class AuctionClient
     return false;
   }
 
+  @Override public User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    try
+    {
+      return server.editInformation(oldEmail, firstname, lastname, email,
+          password, phone, birthday);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {

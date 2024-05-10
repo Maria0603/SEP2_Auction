@@ -20,14 +20,14 @@ CREATE TABLE users (
   last_name first_last_name
 );
 
-SELECT phone_number, first_name, last_name FROM users WHERE user_email='222@';
-SELECT participant.birth_date FROM participant WHERE user_email='222@';
+UPDATE users SET user_email='666@', phone_number='666666666', first_name='66666', last_name='66666'
+WHERE user_email='111@';
 
 CREATE TABLE participant(
     user_email email PRIMARY KEY,
     birth_date DATE NOT NULL,
     --rate INTEGER,
-    FOREIGN KEY (user_email) references users (user_email)
+    FOREIGN KEY (user_email) references users (user_email) ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS auction(
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS auction(
    end_time TIME NOT NULL,
    creator_email email NOT NULL,
    --moderator_email email NOT NULL,
-   FOREIGN KEY (creator_email) references participant(user_email)
+   FOREIGN KEY (creator_email) references participant(user_email) ON UPDATE CASCADE
    --FOREIGN KEY (moderator_email) references moderator
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE bid (
   participant_email email NOT NULL,
   auction_id INTEGER NOT NULL,
   bid_amount INTEGER CHECK (bid_amount>0) NOT NULL,
-  FOREIGN KEY (participant_email) REFERENCES participant(user_email),
+  FOREIGN KEY (participant_email) REFERENCES participant(user_email) ON UPDATE CASCADE,
   FOREIGN KEY (auction_id) REFERENCES auction(id)
 );
 
@@ -65,7 +65,7 @@ CREATE TABLE notification (
   content VARCHAR(1000),
   date DATE,
   time TIME,
-  FOREIGN KEY (receiver) REFERENCES participant(user_email)
+  FOREIGN KEY (receiver) REFERENCES participant(user_email) ON UPDATE CASCADE
 );
 
 CREATE TABLE moderator (
@@ -74,8 +74,10 @@ CREATE TABLE moderator (
   FOREIGN KEY (moderator_email) REFERENCES users(user_email)
 );
 
---RUN THESE
+--RUN THIS
 INSERT INTO users(user_email, password, phone_number, first_name, last_name)
 VALUES ('bob@bidhub', '1234', null, null, null);
 INSERT INTO moderator (moderator_email, personal_email)
 VALUES ('bob@bidhub', null);
+
+DELETE FROM users WHERE user_email='bob@bidhub';

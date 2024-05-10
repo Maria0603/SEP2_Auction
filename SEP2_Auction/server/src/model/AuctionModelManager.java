@@ -131,4 +131,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     return auctionDatabase.isModerator(email);
   }
+
+  @Override public User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    return auctionDatabase.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
+  }
 }
