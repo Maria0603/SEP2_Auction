@@ -143,6 +143,11 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     return modelManager.getParticipant(email);
   }
 
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    return modelManager.isModerator(email);
+  }
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {

@@ -14,11 +14,13 @@ public class ViewModelState
   //for windows
   private boolean bids, createdAuctions, allAuctions;
   private boolean create, login, resetPassword, edit, display;
+  private boolean moderator;
 
   public ViewModelState()
   {
     selectedAuction = null;
     userEmail=null;
+    moderator=false;
     setAllAuctions();
     setCreate();
   }
@@ -41,6 +43,14 @@ public class ViewModelState
 
   public String getUserEmail() {
     return userEmail;
+  }
+  public void setModerator(boolean isModerator)
+  {
+    this.moderator=isModerator;
+  }
+  public boolean isModerator()
+  {
+    return moderator;
   }
 
   public void setUserEmail(String userEmail) {
@@ -127,6 +137,10 @@ public class ViewModelState
   public boolean isEdit()
   {
     return edit;
+  }
+  public boolean isDisplay()
+  {
+    return display;
   }
 
 

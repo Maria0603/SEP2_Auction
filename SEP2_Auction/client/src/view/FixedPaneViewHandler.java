@@ -62,6 +62,9 @@ public class FixedPaneViewHandler
         .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
     sellItemButton.disableProperty()
         .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+
+    notificationsButton.visibleProperty().bindBidirectional(fixedPaneViewModel.getDisplayButtons());
+    sellItemButton.visibleProperty().bindBidirectional(fixedPaneViewModel.getDisplayButtons());
     reset(windowType);
   }
 

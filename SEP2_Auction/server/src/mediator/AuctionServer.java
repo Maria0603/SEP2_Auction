@@ -116,9 +116,15 @@ public class AuctionServer
     model.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
-  @Override public User getParticipant(String email) throws RemoteException, SQLException
+  @Override public synchronized User getParticipant(String email) throws RemoteException, SQLException
   {
     return model.getParticipant(email);
+  }
+
+  @Override public synchronized boolean isModerator(String email)
+      throws RemoteException, SQLException
+  {
+    return model.isModerator(email);
   }
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,

@@ -110,7 +110,9 @@ public class AllAuctionsViewModel
     /////////////////////////////////////////////////////
     else if(state.getCreatedAuctions())
     {
-      list = this.getOngoingAuctions();
+
+      //list=getCreatedAuctions(); //the correct line
+      list = getOngoingAuctions();
       if(list!=null)
       {
         for (int i = 0; i < list.getSize(); i++)

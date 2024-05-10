@@ -167,6 +167,19 @@ public class AuctionClient
     return null;
   }
 
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    try
+    {
+      return server.isModerator(email);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {

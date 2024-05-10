@@ -81,6 +81,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getParticipant(email);
   }
 
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    return client.isModerator(email);
+  }
+
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException
   {

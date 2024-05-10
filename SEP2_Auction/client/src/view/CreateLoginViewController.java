@@ -9,6 +9,8 @@ import viewmodel.CreateLoginViewModel;
 
 import javafx.scene.control.*;
 
+import java.util.Optional;
+
 public class CreateLoginViewController
 {
   //  Labels
@@ -173,8 +175,8 @@ public class CreateLoginViewController
         confirmButton.setLayoutY(580);
         resetPasswordButton.setLayoutY(580);
         resetPasswordButton.setLayoutX(440);
-        //cancelButton.setLayoutY(580);
-        //cancelButton.setLayoutX(810);
+        cancelButton.setLayoutY(580);
+        cancelButton.setLayoutX(810);
         //cancelButton.setVisible(true);
         errorLabel.setLayoutY(510);
         errorLabel.setLayoutX(55);
@@ -197,7 +199,16 @@ public class CreateLoginViewController
 
   @FXML public void cancelButtonPressed()
   {
-    //errorLabel.setText("CANCEL BUTTON: to be implemented");
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Confirmation");
+    alert.setHeaderText("Are you sure you want to leave?");
+    Optional<ButtonType> result = alert.showAndWait();
+    ////////////////////////////////////////////////////////
+    if (result.isPresent() && result.get() == ButtonType.OK)
+    {
+      viewHandler.openView(WindowType.DISPLAY_PROFILE);
+    }
+    ////////////////////////////////////////////////////////
   }
 
   @FXML public void resetPasswordButtonPressed()

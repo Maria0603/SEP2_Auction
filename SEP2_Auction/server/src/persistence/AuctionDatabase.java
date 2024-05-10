@@ -25,6 +25,10 @@ public class AuctionDatabase implements AuctionPersistence
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
   private static final String USER = "postgres";
 
+  //so the moderator just logs in, and then they can change their password
+  private static final String MODERATOR_EMAIL="bob@";
+  private static final String MODERATOR_TEMPORARY_PASSWORD="1234";
+
   // private static final String PASSWORD = "1706";
   private static final String PASSWORD = "344692StupidPass";
 
@@ -34,6 +38,12 @@ public class AuctionDatabase implements AuctionPersistence
   {
     this.database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
     Class.forName(DRIVER);
+    /*String sql1="INSERT INTO users(user_email, password, phone_number, first_name, last_name)\n"
+        + "VALUES ('bob@bidhub', '1234', null, null, null);\n";
+    String sql2= "INSERT INTO moderator (moderator_email, personal_email)\n"
+        + "VALUES ('bob@bidhub', null);";
+    database.update(sql1);
+    database.update(sql2);*/
   }
 
   private Connection getConnection() throws SQLException
@@ -48,7 +58,6 @@ public class AuctionDatabase implements AuctionPersistence
   {
     try (Connection connection = getConnection())
     {
-
       checkAuctionTime(auctionTime);
       String sql =
           "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time, creator_email) \n"
@@ -354,6 +363,12 @@ public class AuctionDatabase implements AuctionPersistence
     }
     return null;
   }
+
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    return isEmailIn(email, "moderator_email", "moderator");
+  }
+
   private User getUser(String email) throws SQLException
   {
     String sql="SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
@@ -361,9 +376,21 @@ public class AuctionDatabase implements AuctionPersistence
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
-      String phone=row[0].toString();
-      String firstName=row[1].toString();
-      String lastName=row[2].toString();
+      String phone=null;
+      if(row[0]!=null)
+      {
+        phone=row[0].toString();
+      }
+      String firstName=null;
+      if(row[1]!=null)
+      {
+        firstName=row[1].toString();
+      }
+      String lastName=null;
+      if(row[2]!=null)
+      {
+        lastName=row[2].toString();
+      }
       return new User(firstName, lastName, email, null, phone, null, null);
     }
     return null;
@@ -386,10 +413,10 @@ public class AuctionDatabase implements AuctionPersistence
     }
   }
 
-  private boolean isEmailInTheSystem(String email) throws SQLException
+  private boolean isEmailIn(String email, String field, String table) throws SQLException
   {
     int count = 0;
-    String sql = "SELECT count(*) FROM users WHERE user_email=?;";
+    String sql = "SELECT count(*) FROM " + table + " WHERE " + field + " =?";
     ArrayList<Object[]> result = database.query(sql, email);
     for (int i = 0; i < result.size(); i++)
     {
@@ -432,6 +459,8 @@ public class AuctionDatabase implements AuctionPersistence
   {
     if (!status.equals("ONGOING"))
       throw new SQLException("The auction is closed.");
+    if(participantEmail.equals(MODERATOR_EMAIL))
+      throw new SQLException("The moderator cannot place bids.");
     if (participantEmail.equals(currentBidder))
       throw new SQLException("You are the current bidder.");
     //if(participantEmail.equals(seller))
@@ -533,7 +562,7 @@ public class AuctionDatabase implements AuctionPersistence
     {
       throw new SQLException("Email must be in 'name@domain' format.");
     }
-    if (isEmailInTheSystem(email))
+    if (isEmailIn(email, "user_email", "users"))
     {
       throw new SQLException("Email is already in the system. Please login.");
     }

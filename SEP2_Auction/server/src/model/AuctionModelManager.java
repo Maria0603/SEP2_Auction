@@ -126,4 +126,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     return auctionDatabase.getParticipant(email);
   }
+
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    return auctionDatabase.isModerator(email);
+  }
 }

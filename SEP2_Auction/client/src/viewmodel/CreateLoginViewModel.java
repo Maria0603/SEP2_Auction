@@ -112,6 +112,7 @@ public class CreateLoginViewModel
           lastNameProperty.get().trim(), emailProperty.get().trim(),
           passwordProperty.get(), repasswordProperty.get(), phoneProperty.get().trim(), birthDate.get());
       viewState.setUserEmail(email);
+      viewState.setModerator(model.isModerator(email));
     }
     catch (SQLException e)
     {
@@ -156,6 +157,8 @@ public class CreateLoginViewModel
           passwordProperty.get());
       //  Giving the viewState all the user info from the model=>takes from servers database
       viewState.setUserEmail(user);
+
+      viewState.setModerator(model.isModerator(user));
     }
     catch (SQLException e)
     {
@@ -237,12 +240,16 @@ public class CreateLoginViewModel
   {
     try
     {
+      birthDate.set(null);
       User user=model.getParticipant(viewState.getUserEmail());
-      firstNameProperty.set(user.getFirstname());
-      lastNameProperty.set(user.getLastname());
-      emailProperty.set(user.getEmail());
-      phoneProperty.set(user.getPhone());
-      birthDate.set(user.getBirthday());
+      if(user!=null)
+      {
+        firstNameProperty.set(user.getFirstname());
+        lastNameProperty.set(user.getLastname());
+        emailProperty.set(user.getEmail());
+        phoneProperty.set(user.getPhone());
+        birthDate.set(user.getBirthday());
+      }
     }
     catch (SQLException e)
     {

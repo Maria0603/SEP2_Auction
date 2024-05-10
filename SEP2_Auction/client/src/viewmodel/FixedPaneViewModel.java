@@ -10,6 +10,7 @@ import model.Notification;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 
 public class FixedPaneViewModel implements PropertyChangeListener
 {
@@ -17,7 +18,10 @@ public class FixedPaneViewModel implements PropertyChangeListener
   private AuctionModel model;
   private ViewModelState state;
 
+  //all button in the fixed pane
   private BooleanProperty buttonsDisabled;
+  //notification and sell item buttons, for moderator
+  private BooleanProperty displayButtons;
 
   public FixedPaneViewModel(AuctionModel model, ViewModelState state)
   {
@@ -28,6 +32,11 @@ public class FixedPaneViewModel implements PropertyChangeListener
     notificationsButtonBackgroundProperty=new SimpleStringProperty();
     notificationsButtonBackgroundProperty.set("");
     buttonsDisabled=new SimpleBooleanProperty();
+    displayButtons =new SimpleBooleanProperty();
+  }
+  public BooleanProperty getDisplayButtons()
+  {
+    return displayButtons;
   }
 
 
@@ -38,21 +47,39 @@ public class FixedPaneViewModel implements PropertyChangeListener
   }
   public void sellItem()
   {
-    //if(state.getSelectedAuction()==null)
-      //buttonsDisabled.set(false);
     buttonsDisabled.set(true);
   }
   public void setForDisplayProfile()
   {
-
+    state.setDisplay();
+  }
+  public void setForResetPassword()
+  {
+    buttonsDisabled.set(true);
+    state.setResetPassword();
   }
   public void leaveAuctionView()
   {
-    buttonsDisabled.set(false);
+      buttonsDisabled.set(false);
+      if(state.isModerator())
+        displayButtons.set(false);
+      else displayButtons.set(true);
   }
   public void allAuctions()
   {
     state.setAllAuctions();
+    try
+    {
+      if(model.isModerator(state.getUserEmail()))
+      {
+        state.setModerator(true);
+        //buttonsDisabled.set(true);
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
   }
   public void myBids()
   {
