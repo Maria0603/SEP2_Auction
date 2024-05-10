@@ -75,6 +75,10 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   public void loadAuctions() {
     allAuctionsViewModel.fillAuctionCards();
     clearGrid();
+    renderGreedWithCards(this.auctionCards);
+  }
+
+  private void renderGreedWithCards(ObservableList<Auction> auctionCards){
     try {
       int totalElements = auctionCards.size();
       int numRows = (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
@@ -145,18 +149,8 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   @FXML
   public void searchPressed(ActionEvent actionEvent) throws IOException {
     clearGrid();
-    ArrayList<Auction> searchResults = allAuctionsViewModel.searchAuctions();
-
-    int resultIndex = 0;
-    for (int row = 0; row < getNumberOfRowsInGrid(); row++) {
-      for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-
-        addNewCardToGrid(searchResults.get(resultIndex), column, row);
-        resultIndex++;
-      }
-
-    }
-
+    ObservableList<Auction> searchResults = allAuctionsViewModel.searchAuctions();
+    renderGreedWithCards(searchResults);
   }
 
   private int getLinearIndex(int row, int col) {

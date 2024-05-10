@@ -16,7 +16,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class AllAuctionsViewModel
     implements PropertyChangeListener, NamedPropertyChangeSubject {
@@ -63,14 +62,15 @@ public class AllAuctionsViewModel
     return null;
   }
 
-  public ArrayList<Auction> searchAuctions() {
-    AuctionList list = this.getOngoingAuctions();
-    ArrayList<Auction> result = new ArrayList<>();
+  public ObservableList<Auction> searchAuctions() {
+    AuctionList upToDateCards = getAuctionListByState();
     String mask = searchInputField.get();
 
-    for (int i = 0; i < list.getSize(); i++) {
-      Auction auction = list.getAuction(i);
-      System.out.println(auction);
+    ObservableList<Auction> result = FXCollections.observableArrayList();
+
+    for (int i = 0; i < upToDateCards.getSize(); i++) {
+      Auction auction = upToDateCards.getAuction(i);
+
       if (auction.isMatchesSearchMask(mask)) {
         result.add(auction);
       }
@@ -103,7 +103,8 @@ public class AllAuctionsViewModel
 
   public void fillAuctionCards() {
     auctionCards.clear();
-    AuctionList list;
+    AuctionList list = new AuctionList();
+
     if (state.getAllAuctions()) {
       list = getOngoingAuctions();
       for (int i = 0; i < list.getSize(); i++) {
@@ -124,6 +125,24 @@ public class AllAuctionsViewModel
     }
     //////////////////////////////////////////////////////
   }
+
+  private AuctionList getAuctionListByState(){
+    AuctionList list = new AuctionList();
+    if (state.getAllAuctions()) {
+      list = getOngoingAuctions();
+
+    } else if (state.getBids()) {
+      list = getPreviousBids();
+
+    }
+    else if (state.getCreatedAuctions()) {
+      list = this.getOngoingAuctions();
+
+    }
+    return list;
+  }
+
+
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
