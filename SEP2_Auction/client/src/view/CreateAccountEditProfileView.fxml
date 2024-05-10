@@ -12,13 +12,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="createAccount_editProfileAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1330.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CreateLoginViewController">
+<AnchorPane fx:id="createAccount_editProfileAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1330.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CreateLoginViewController">
    <children>
       <VBox layoutX="-1.0" layoutY="105.0" prefHeight="408.0" prefWidth="1330.0">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="1081.0">
                <children>
-                  <Label id="email_oldPasswordLabel" fx:id="firstnameLabel" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="170.0" text="First name">
+                  <Label id="email_oldPasswordLabel" fx:id="firstNameLabel" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="170.0" text="First name">
                      <HBox.margin>
                         <Insets left="50.0" right="50.0" />
                      </HBox.margin>
@@ -26,7 +26,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField id="email_oldPasswordTextField" fx:id="firstnameField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
+                  <TextField id="email_oldPasswordTextField" fx:id="firstNameField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -38,7 +38,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="818.0">
                <children>
-                  <Label id="password_newPasswordLabel" fx:id="lastnameLabel" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="170.0" text="Last name">
+                  <Label id="password_newPasswordLabel" fx:id="lastNameLabel" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="170.0" text="Last name">
                      <HBox.margin>
                         <Insets left="50.0" right="50.0" />
                      </HBox.margin>
@@ -46,7 +46,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField id="password_newPasswordTextField" fx:id="lastnameField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
+                  <TextField id="password_newPasswordTextField" fx:id="lastNameField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
                      <cursor>
                         <Cursor fx:constant="TEXT" />
                      </cursor>
@@ -127,7 +127,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <PasswordField fx:id="repasswordField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0" />
+                  <PasswordField fx:id="repeatPasswordField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0" />
                </children>
             </HBox>
          </children>
@@ -137,7 +137,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
       </Label>
-      <Button id="resetPassword_loginButton" fx:id="createAccount_SaveChangesButton" alignment="CENTER" contentDisplay="CENTER" layoutX="78.0" layoutY="658.0" mnemonicParsing="false" onAction="#createAccount_SaveChangesButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Create account" textAlignment="CENTER">
+      <Button id="resetPassword_loginButton" fx:id="confirmButton" alignment="CENTER" contentDisplay="CENTER" layoutX="78.0" layoutY="658.0" mnemonicParsing="false" onAction="#confirmButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Confirm" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
@@ -166,7 +166,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button id="login_createAccountButton" fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1104.0" layoutY="27.0" mnemonicParsing="false" onAction="#loginButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Login" textAlignment="CENTER">
+      <Button id="login_createAccountButton" fx:id="login_createAccountButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1104.0" layoutY="27.0" mnemonicParsing="false" onAction="#loginButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Login" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>

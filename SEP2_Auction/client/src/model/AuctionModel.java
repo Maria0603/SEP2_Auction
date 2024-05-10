@@ -17,10 +17,11 @@ public interface AuctionModel extends NamedPropertyChangeSubject
   NotificationList getNotifications(String receiver) throws SQLException;
   Bid placeBid(String bidder, int bidValue, int auctionId) throws SQLException;
 
-
   String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException;
   String login(String email, String password) throws SQLException;
 
   AuctionList getPreviousBids(String bidder) throws SQLException;
+  void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
+      throws SQLException;
 }
 

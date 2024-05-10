@@ -70,6 +70,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getPreviousBids(bidder);
   }
 
+  @Override public void resetPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
+    client.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
+  }
+
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException
   {

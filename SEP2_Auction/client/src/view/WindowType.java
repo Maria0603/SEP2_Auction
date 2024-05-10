@@ -7,5 +7,7 @@ public enum WindowType {
   LOG_IN,
   SIGN_UP,
   NOTIFICATIONS,
-  BIDS
+  BIDS,
+  DISPLAY_PROFILE,
+  RESET_PASSWORD
 }

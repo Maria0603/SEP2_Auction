@@ -329,6 +329,31 @@ public class AuctionDatabase implements AuctionPersistence
     return auctions;
   }
 
+  @Override public void resetPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
+    validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
+    String sql="UPDATE users SET password=?\n"
+        + "WHERE users.user_email=?;";
+    database.update(sql, newPassword, userEmail);
+  }
+  private void validateNewPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
+    checkPassword(newPassword, repeatPassword);
+    String sql="SELECT users.password FROM users\n" + "WHERE user_email=?;";
+    ArrayList<Object[]> result = database.query(sql, userEmail);
+    for (int i = 0; i < result.size(); i++)
+    {
+      Object[] row = result.get(i);
+      String retrievedOldPassword=row[0].toString();
+      if(!retrievedOldPassword.equals(oldPassword))
+        throw new SQLException("The old password is incorrect.");
+      if(oldPassword.equals(newPassword))
+        throw new SQLException("The new password and the old one are the same.");
+    }
+  }
+
   private boolean isEmailInTheSystem(String email) throws SQLException
   {
     int count = 0;

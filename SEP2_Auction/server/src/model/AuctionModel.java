@@ -21,5 +21,7 @@ public interface AuctionModel extends NamedPropertyChangeSubject
   String login(String email, String password) throws SQLException;
 
   AuctionList getPreviousBids(String bidder) throws SQLException;
+  void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
+      throws SQLException;
 }
 

@@ -141,6 +141,19 @@ public class AuctionClient
     return null;
   }
 
+  @Override public void resetPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
+    try
+    {
+      server.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {
