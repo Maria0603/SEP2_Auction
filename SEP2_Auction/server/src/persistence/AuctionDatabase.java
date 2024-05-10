@@ -343,7 +343,7 @@ public class AuctionDatabase implements AuctionPersistence
     User user=getUser(email);
     if(user!=null)
     {
-      String sql = "SELECT participant.birth_date FROM participant WHERE user_email='222@';\n";
+      String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
       ArrayList<Object[]> results = database.query(sql, email);
       for (int i = 0; i < results.size(); i++)
       {

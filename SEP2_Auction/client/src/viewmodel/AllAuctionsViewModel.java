@@ -60,8 +60,6 @@ public class AllAuctionsViewModel
   {
     try
     {
-      System.out.println(model.getPreviousBids(state.getUserEmail()));
-      System.out.println(state.getUserEmail());
       return model.getPreviousBids(state.getUserEmail());
     }
     catch (SQLException e)

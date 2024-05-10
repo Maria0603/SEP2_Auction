@@ -82,6 +82,7 @@ public class FixedPaneViewHandler
       case NOTIFICATIONS -> notificationsButtonPressed();
       case BIDS -> myBidsButtonPressed();
       case DISPLAY_PROFILE -> myProfile_settingsButtonPressed();
+      case CREATED_AUCTIONS -> myAuctions_allAccountsButtonPressed();
     }
 
   }
@@ -197,9 +198,10 @@ public class FixedPaneViewHandler
 
   }
 
-  @FXML void myAuctions_allAccountsButtonPressed(ActionEvent event)
+  @FXML Region myAuctions_allAccountsButtonPressed()
   {
     fixedPaneViewModel.myCreatedAuctions();
+    return loadGrid(WindowType.CREATED_AUCTIONS);
   }
 
   @FXML Region myProfile_settingsButtonPressed()

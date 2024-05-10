@@ -1,7 +1,6 @@
 package viewmodel;
 
 import javafx.beans.property.*;
-import javafx.util.StringConverter;
 import model.AuctionModel;
 import model.User;
 
@@ -16,7 +15,8 @@ public class CreateLoginViewModel
   private ObjectProperty<LocalDate> birthDate;
 
   private BooleanProperty informationVisibility; //first name, last name, phone, birthday
-  private BooleanProperty loginVisibility; //email, password
+  private BooleanProperty emailVisibility; //email
+  private BooleanProperty passwordVisibility; //password
   private BooleanProperty resetPasswordVisibility; //repeat password - special case
   private BooleanProperty birthdayVisibility; //special case for moderator
 
@@ -25,6 +25,9 @@ public class CreateLoginViewModel
   private BooleanProperty login_createButtonVisibility;
   private BooleanProperty resetPasswordButtonVisibility;
   private BooleanProperty cancelButtonVisibility;
+  private BooleanProperty confirmButtonVisibility;
+
+  private BooleanProperty disableProperty;
 
   public CreateLoginViewModel(AuctionModel model, ViewModelState viewState)
   {
@@ -41,7 +44,8 @@ public class CreateLoginViewModel
     birthDate=new SimpleObjectProperty<>();
 
     informationVisibility=new SimpleBooleanProperty();
-    loginVisibility=new SimpleBooleanProperty();
+    emailVisibility =new SimpleBooleanProperty();
+    passwordVisibility=new SimpleBooleanProperty();
     resetPasswordVisibility=new SimpleBooleanProperty();
     birthdayVisibility=new SimpleBooleanProperty();
 
@@ -50,8 +54,19 @@ public class CreateLoginViewModel
     resetPasswordButtonVisibility=new SimpleBooleanProperty();
     emailLabelText=new SimpleStringProperty();
     cancelButtonVisibility=new SimpleBooleanProperty();
+    confirmButtonVisibility=new SimpleBooleanProperty();
+
+    disableProperty=new SimpleBooleanProperty();
 
     reset();
+  }
+  public BooleanProperty getDisableProperty()
+  {
+    return disableProperty;
+  }
+  public BooleanProperty getConfirmButtonVisibility()
+  {
+    return confirmButtonVisibility;
   }
 
 
@@ -69,18 +84,23 @@ public class CreateLoginViewModel
   public void setForCreate()
   {
     viewState.setCreate();
+    reset();
     login_createButtonVisibility.set(true);
     resetPasswordButtonVisibility.set(false);
     login_createButtonText.set("Login");
 
     informationVisibility.set(true);
-    loginVisibility.set(true);
+    emailVisibility.set(true);
+    passwordVisibility.set(true);
     resetPasswordVisibility.set(true);
     birthdayVisibility.set(true);
+    confirmButtonVisibility.set(true);
+
     errorProperty.set("");
     headerProperty.set("Create account");
     emailLabelText.set("Email");
     cancelButtonVisibility.set(false);
+    disableProperty.set(false);
   }
 
   private void createUser()
@@ -96,24 +116,34 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
+      e.printStackTrace();
+    }
+    if(errorProperty.get().isEmpty())
+    {
+      reset();
     }
   }
 
   public void setForLogin()
   {
     viewState.setLogin();
+    reset();
     login_createButtonVisibility.set(true);
     resetPasswordButtonVisibility.set(false);
     resetPasswordVisibility.set(false);
     informationVisibility.set(false);
-    loginVisibility.set(true);
+    emailVisibility.set(true);
+    passwordVisibility.set(true);
+    confirmButtonVisibility.set(true);
+
     birthdayVisibility.set(false);
     login_createButtonText.set("Create account");
     headerProperty.set("Login");
     errorProperty.set("");
     emailLabelText.set("Email");
     cancelButtonVisibility.set(false);
+    disableProperty.set(false);
+
 
   }
 
@@ -130,25 +160,37 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
+      e.printStackTrace();
+    }
+    if(errorProperty.get().isEmpty())
+    {
+      reset();
     }
 
     //  ViewState
   }
   public void setForResetPassword()
   {
+    errorProperty.set("");
     viewState.setResetPassword();
+
+    reset();
     headerProperty.set("Reset password");
     resetPasswordVisibility.set(true);
-    loginVisibility.set(true);
+    emailVisibility.set(true);
+    passwordVisibility.set(true);
     informationVisibility.set(false);
     birthdayVisibility.set(false);
     resetPasswordButtonVisibility.set(false);
     login_createButtonVisibility.set(false);
     cancelButtonVisibility.set(true);
+    confirmButtonVisibility.set(true);
+
 
 
     emailLabelText.set("Old password");
+    disableProperty.set(false);
+
   }
   private void resetPassword()
   {
@@ -160,6 +202,11 @@ public class CreateLoginViewModel
     catch(SQLException e)
     {
       errorProperty.set(e.getMessage());
+      e.printStackTrace();
+    }
+    if(errorProperty.get().isEmpty())
+    {
+      reset();
     }
   }
   public void setForDisplayProfile()
@@ -170,15 +217,22 @@ public class CreateLoginViewModel
     login_createButtonVisibility.set(true);
     login_createButtonText.set("Edit");
     informationVisibility.set(true);
-    loginVisibility.set(true);
+    emailVisibility.set(true);
     resetPasswordVisibility.set(false);
     birthdayVisibility.set(true);
     errorProperty.set("");
     headerProperty.set("Your profile");
     emailLabelText.set("Email");
     cancelButtonVisibility.set(false);
+    passwordVisibility.set(false);
+    confirmButtonVisibility.set(false);
+
+
+
+    disableProperty.set(true);
     displayProfile();
   }
+
   private void displayProfile()
   {
     try
@@ -193,6 +247,7 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
+      e.printStackTrace();
     }
   }
   public void confirm()
@@ -244,9 +299,9 @@ public class CreateLoginViewModel
   {
     return birthDate;
   }
-  public BooleanProperty getLoginVisibility()
+  public BooleanProperty getEmailVisibility()
   {
-    return loginVisibility;
+    return emailVisibility;
   }
   public BooleanProperty getInformationVisibility()
   {
@@ -284,5 +339,9 @@ public class CreateLoginViewModel
   public StringProperty getHeaderProperty()
   {
     return headerProperty;
+  }
+  public BooleanProperty getPasswordVisibility()
+  {
+    return passwordVisibility;
   }
 }
