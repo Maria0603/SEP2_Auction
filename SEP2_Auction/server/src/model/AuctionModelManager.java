@@ -80,7 +80,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override
   public synchronized String login(String email, String password) throws SQLException {
-    //  TODO: add validation in database
     return auctionDatabase.login(email,password);
   }
   @Override public AuctionList getPreviousBids(String bidder) throws SQLException
@@ -113,6 +112,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       try
       {
         auctionDatabase.markAsClosed((int) evt.getOldValue());
+        sendContactInformation((int) evt.getOldValue());
       }
       catch (SQLException e)
       {
@@ -130,5 +130,23 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public boolean isModerator(String email) throws SQLException
   {
     return auctionDatabase.isModerator(email);
+  }
+
+  private void sendContactInformation(int id) throws SQLException {
+    Auction auction = auctionDatabase.getAuctionById(id);
+    String seller = auction.getSeller();
+    String bidder = auction.getCurrentBidder();
+    int bid = auction.getCurrentBid();
+
+    String contentForSeller = "Your Auction has ended, CurrentHighest bidder: " + bidder + ", with bid of " + bid + "." + "\n" +
+                              "Bidder: " + bidder;
+    String contentForBidder = "You've won an Auction (id:" + id + "), with bid: " + bid + "."  + "\n" +
+                              "Seller: " + seller;
+
+    Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller);
+    Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder);
+
+    property.firePropertyChange("Notification", null, notificationOne);
+    property.firePropertyChange("Notification", null, notificationTwo);
   }
 }
