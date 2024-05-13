@@ -54,14 +54,14 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    /*Auction auction;
+    Auction auction;
     try
     {
       auction = previouslyOpenedAuctions.getAuctionByID(ID);
       for(int i=0; i<timers.size(); i++)
         if(timers.get(i).getId()==ID)
           timers.get(i).start();
-      //else timers.get(i).interrupt();
+      else timers.get(i).interrupt();
     }
     catch(IllegalArgumentException e)
     {
@@ -77,7 +77,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       t.start();
     }
 
-    return auction;*/
+    return auction;
+    /*
     Auction auction = modelManager.getAuction(ID);
     Timer timer = new Timer(
         timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1, ID);
@@ -87,7 +88,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     //add timer to cache
     //timers.add(t);
     t.start();
-    return auction;
+    return auction;*/
   }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
@@ -100,13 +101,17 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
-    /*
-    if(notifications.getSize()==0 && receiver.equals(userEmail))
+    if(receiver.equals(userEmail))
     {
-      notifications = modelManager.getNotifications(receiver);
+      if (notifications.getSize() == 0)
+      {
+        notifications = modelManager.getNotifications(receiver);
+      }
+      return notifications;
     }
-    return notifications;*/
-    return modelManager.getNotifications(receiver);
+    return null;
+
+    //return modelManager.getNotifications(receiver);
   }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
@@ -129,8 +134,9 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       String email, String password, String repeatedPassword, String phone,
       LocalDate birthday) throws SQLException
   {
-    return modelManager.addUser(firstname, lastname, email, password,
+    userEmail = modelManager.addUser(firstname, lastname, email, password,
         repeatedPassword, phone, birthday);
+    return userEmail;
   }
 
   @Override public String login(String email, String password)
@@ -143,24 +149,30 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
-    /*if(previousBids.getSize()==0 && bidder.equals(userEmail))
+    if(bidder.equals(userEmail))
     {
-      previousBids= modelManager.getPreviousBids(bidder);
+      if (previousBids.getSize() == 0)
+      {
+        previousBids = modelManager.getPreviousBids(bidder);
+      } return previousBids;
     }
-    return previousBids;*/
-    return modelManager.getPreviousBids(bidder);
+    return null;
+    //return modelManager.getPreviousBids(bidder);
   }
 
   @Override public AuctionList getCreatedAuctions(String seller)
       throws SQLException
   {
-    /*
-    if(createdAuctions.getSize()==0)
+    if(seller.equals(userEmail))
     {
-      createdAuctions = modelManager.getCreatedAuctions(seller);
+      if (createdAuctions.getSize() == 0)
+      {
+        createdAuctions = modelManager.getCreatedAuctions(seller);
+      }
+      return createdAuctions;
     }
-    return createdAuctions;*/
-    return modelManager.getCreatedAuctions(seller);
+    return null;
+    //return modelManager.getCreatedAuctions(seller);
   }
 
   @Override public void resetPassword(String userEmail, String oldPassword,
@@ -210,18 +222,21 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     switch (evt.getPropertyName())
     {
       case "Auction":
-        ongoingAuctionsCache.addAuction((Auction) evt.getNewValue());
+        Auction auction=(Auction) evt.getNewValue();
+        ongoingAuctionsCache.addAuction(auction);
+        if(userEmail.equals(auction.getSeller()))
+          createdAuctions.addAuction(auction);
         break;
       case "End":
         ongoingAuctionsCache.removeAuction(
             Integer.parseInt(evt.getOldValue().toString()));
         //closedAuctionsCache.addAuction((Auction) evt.getNewValue());
         break;
-      /*case "Notification":
+      case "Notification":
         Notification notification=(Notification) evt.getNewValue();
         if(notification.getReceiver().equals(userEmail))
           notifications.addNotification(notification);
-        break;*/
+        break;
       case "Bid":
         //we receive a bid
         Bid bid = (Bid) evt.getNewValue();
@@ -232,7 +247,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
             .setCurrentBid(bid.getBidAmount());
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId())
             .setCurrentBidder(bid.getBidder());
-/*
+
         //if we opened it before, we update that cache too
         if(previouslyOpenedAuctions.contains(bid.getAuctionId()))
         {
@@ -249,17 +264,21 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         //but if we placed our first bid for an auction, we add it in cache
         else if(bid.getBidder().equals(userEmail) && !previousBids.contains(bid.getAuctionId()))
         {
-          //previousBids.addAuction(previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()));
-          try
+          previousBids.addAuction(previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()));
+          /*try
           {
             previousBids.addAuction(modelManager.getAuction(bid.getAuctionId()));
           }
           catch (SQLException e)
           {
             //
-          }
+          }*/
         }
-*/
+        if(createdAuctions.contains(bid.getAuctionId()))
+        {
+          createdAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+          createdAuctions.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        }
         break;
       case "Edit":
         //TODO instead: look through ongoing auctions and update them if the current bidder is the one who changed the email address

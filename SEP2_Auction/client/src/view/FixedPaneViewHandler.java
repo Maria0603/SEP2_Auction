@@ -47,6 +47,7 @@ public class FixedPaneViewHandler
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
     notificationsButton.styleProperty().bindBidirectional(
         fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
+    notificationsButton.setStyle("");
 
     bindVisibleProperty();
     bindDisableProperty();
@@ -62,7 +63,6 @@ public class FixedPaneViewHandler
   public void reset(WindowType windowType)
   {
     fixedPaneViewModel.reset();
-    notificationsButton.setStyle("");
     switch (windowType)
     {
       case START_AUCTION -> sellItemButtonPressed();
