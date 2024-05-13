@@ -73,7 +73,7 @@ public class AllAuctionsViewModel
 
   public ObservableList<Auction> searchAuctions() {
     AuctionList upToDateCards = getAuctionListByState();
-    String mask = searchInputField.get();
+    String mask = searchInputField.get().trim();
 
     ObservableList<Auction> result = FXCollections.observableArrayList();
 
