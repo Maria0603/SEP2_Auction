@@ -109,6 +109,12 @@ public class AuctionServer
     return model.getPreviousBids(bidder);
   }
 
+  @Override public AuctionList getCreatedAuctions(String seller)
+      throws RemoteException, SQLException
+  {
+    return model.getCreatedAuctions(seller);
+  }
+
   @Override public synchronized void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword)
       throws RemoteException, SQLException

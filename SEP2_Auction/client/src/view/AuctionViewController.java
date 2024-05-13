@@ -60,6 +60,7 @@ public class AuctionViewController
   private ViewHandler viewHandler;
   private FileChooser fileChooser;
 
+  //TODO: this class needs cleaning; visible property must be set in the view model instead
   //initializations and bindings
   public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel,
       Region root, WindowType windowType)
@@ -192,12 +193,6 @@ public class AuctionViewController
   private void setForDisplay()
   {
     anchorPane.setPrefHeight(960);
-    sellerRateLabel.setLayoutY(sellerRateLabel.getLayoutY() - 100);
-    ratingLabel.setLayoutY(ratingLabel.getLayoutY() - 100);
-
-    somethingWrongLabel.setLayoutY(somethingWrongLabel.getLayoutY() - 100);
-    reasonTextArea.setLayoutY(reasonTextArea.getLayoutY() - 100);
-    deleteButton.setLayoutY(deleteButton.getLayoutY() - 100);
 
     titleTextArea.setDisable(true);
     descriptionTextArea.setDisable(true);

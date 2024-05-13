@@ -68,7 +68,7 @@ public class AllAuctionsViewModel
     }
     return null;
   }
-  /*public AuctionList getCreatedAuctions()
+  public AuctionList getCreatedAuctions()
   {
     try
     {
@@ -79,7 +79,7 @@ public class AllAuctionsViewModel
       e.printStackTrace();
     }
     return null;
-  }*/
+  }
 
   public void fillAuctionCards()
   {
@@ -107,12 +107,9 @@ public class AllAuctionsViewModel
         }
       }
     }
-    /////////////////////////////////////////////////////
     else if(state.getCreatedAuctions())
     {
-
-      //list=getCreatedAuctions(); //the correct line
-      list = getOngoingAuctions();
+      list=getCreatedAuctions();
       if(list!=null)
       {
         for (int i = 0; i < list.getSize(); i++)
@@ -121,7 +118,6 @@ public class AllAuctionsViewModel
         }
       }
     }
-    //////////////////////////////////////////////////////
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt)

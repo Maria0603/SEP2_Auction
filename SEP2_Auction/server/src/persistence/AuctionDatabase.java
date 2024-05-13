@@ -155,17 +155,17 @@ public class AuctionDatabase implements AuctionPersistence
 
   private Auction getCardAuctionById(int id) throws SQLException
   {
-    String sql = "SELECT ID, title, current_bid, image_data, end_time\n"
+    String sql = "SELECT title, current_bid, image_data, end_time\n"
         + "FROM sprint1database.auction\n" + "WHERE id=?;";
     ArrayList<Object[]> results = database.query(sql, id);
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
-      String title = row[1].toString();
-      int currentBid = Integer.parseInt(row[2].toString());
-      String imagePath = row[3].toString();
+      String title = row[0].toString();
+      int currentBid = Integer.parseInt(row[1].toString());
+      String imagePath = row[2].toString();
       byte[] imageData = downloadImageFromRepository(imagePath);
-      Time auctionEnd = Time.valueOf(row[4].toString());
+      Time auctionEnd = Time.valueOf(row[3].toString());
       return new Auction(id, title, currentBid, auctionEnd, imageData);
     }
     return null;
@@ -173,13 +173,17 @@ public class AuctionDatabase implements AuctionPersistence
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
-    String sql = "SELECT ID, title, current_bid, image_data, end_time FROM sprint1database.auction WHERE status='ONGOING';";
+    String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
+    return getAuctions(sql, null);
+    /*
     ArrayList<Object[]> results = database.query(sql);
     AuctionList auctions = new AuctionList();
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
       int id = Integer.parseInt(row[0].toString());
+      auctions.addAuction(getCardAuctionById(id));
+      /*
       String title = row[1].toString();
       int currentBid = Integer.parseInt(row[2].toString());
       String imagePath = row[3].toString();
@@ -189,7 +193,7 @@ public class AuctionDatabase implements AuctionPersistence
           new Auction(id, title, currentBid, auctionEnd, imageData));
     }
     System.out.println("request for ongoing auctions in database");
-    return auctions;
+    return auctions;*/
   }
 
   @Override public NotificationList getNotifications(String receiver)
@@ -321,7 +325,23 @@ public class AuctionDatabase implements AuctionPersistence
   {
     String sql = "SELECT DISTINCT bid.auction_id\n" + "FROM bid\n"
         + "WHERE participant_email=?;";
-    ArrayList<Object[]> results = database.query(sql, bidder);
+    return getAuctions(sql, bidder);
+  }
+
+  @Override public AuctionList getCreatedAuctions(String seller)
+      throws SQLException
+  {
+    String sql = "SELECT ID from auction WHERE creator_email=?;";
+    return getAuctions(sql, seller);
+  }
+
+  private AuctionList getAuctions(String sql, String user) throws SQLException
+  {
+    ArrayList<Object[]> results;
+    if(user==null)
+      results = database.query(sql);
+    else
+      results = database.query(sql, user);
     AuctionList auctions = new AuctionList();
     for (int i = 0; i < results.size(); i++)
     {
@@ -329,7 +349,7 @@ public class AuctionDatabase implements AuctionPersistence
       int id = Integer.parseInt(row[0].toString());
       auctions.addAuction(getCardAuctionById(id));
     }
-    System.out.println("request for previous bids in database");
+    System.out.println("request for auctions in database");
     return auctions;
   }
 
@@ -372,7 +392,8 @@ public class AuctionDatabase implements AuctionPersistence
     {
       checkFirstName(firstname);
       checkLastName(lastname);
-      checkEmail(email);
+      if(!oldEmail.equals(email))
+        checkEmail(email);
       checkPassword(password, password);
       checkPhone(phone);
       ageValidation(birthday);
@@ -459,17 +480,20 @@ public class AuctionDatabase implements AuctionPersistence
     return count > 0;
   }
 
-  private boolean isPhoneInTheSystem(String phone) throws SQLException
+  private String isPhoneInTheSystem(String phone) throws SQLException
   {
     int count = 0;
-    String sql = "SELECT count(*) FROM users WHERE phone_number=?;";
+    String sql = "SELECT user_email, count(*) FROM users\n"
+        + "WHERE phone_number=?\n" + "GROUP BY user_email;";
     ArrayList<Object[]> result = database.query(sql, phone);
     for (int i = 0; i < result.size(); i++)
     {
       Object[] row = result.get(i);
-      count = Integer.parseInt(row[0].toString());
+      count = Integer.parseInt(row[1].toString());
+      if(count>0)
+        return row[0].toString();
     }
-    return count > 0;
+    return null;
   }
 
   private boolean validateForLogin(String email, String password)
@@ -596,7 +620,7 @@ public class AuctionDatabase implements AuctionPersistence
     }
     if (isEmailIn(email, "user_email", "users"))
     {
-      throw new SQLException("Email is already in the system. Please login.");
+      throw new SQLException("Email is already in the system.");
     }
   }
 
@@ -622,7 +646,7 @@ public class AuctionDatabase implements AuctionPersistence
     {
       throw new SQLException("Invalid phone number.");
     }
-    if (isPhoneInTheSystem(phone))
+    if (isPhoneInTheSystem(phone)!=null)
     {
       throw new SQLException("This phone number is already in the system.");
     }

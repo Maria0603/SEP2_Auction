@@ -86,6 +86,8 @@ public class FixedPaneViewHandler
       case BIDS -> myBidsButtonPressed();
       case DISPLAY_PROFILE -> myProfile_settingsButtonPressed();
       case CREATED_AUCTIONS -> myAuctions_allAccountsButtonPressed();
+      case RESET_PASSWORD -> resetPassword();
+      case EDIT_PROFILE -> editProfile();
     }
 
   }
@@ -93,8 +95,10 @@ public class FixedPaneViewHandler
   @FXML Region sellItemButtonPressed()
   {
     fixedPaneViewModel.sellItem();
+    return loadAuctionView(WindowType.START_AUCTION);
 
-    if (auctionViewController == null)
+    //maybe I can delete this
+    /*if (auctionViewController == null)
     {
       try
       {
@@ -119,10 +123,39 @@ public class FixedPaneViewHandler
       auctionViewController.reset(WindowType.START_AUCTION);
 
     }
+    return auctionViewController.getRoot();*/
+  }
+
+  private Region loadAuctionView(WindowType windowType)
+  {
+    if (auctionViewController == null)
+    {
+      try
+      {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("AuctionView.fxml"));
+        Region root = loader.load();
+        borderPane.setCenter(root);
+        auctionViewController = loader.getController();
+
+        auctionViewController.init(viewHandler,
+            viewModelFactory.getAuctionViewModel(), root, windowType);
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+    else
+    {
+      borderPane.setCenter(auctionViewController.getRoot());
+      auctionViewController.reset(windowType);
+
+    }
     return auctionViewController.getRoot();
   }
 
-  @FXML Region allAuctionsButtonPressed()
+  private @FXML Region allAuctionsButtonPressed()
   {
     fixedPaneViewModel.allAuctions();
     return loadGrid(WindowType.ALL_AUCTIONS);
@@ -130,7 +163,9 @@ public class FixedPaneViewHandler
 
   private void displayAuction()
   {
-    try
+    fixedPaneViewModel.leaveAuctionView();
+    loadAuctionView(WindowType.DISPLAY_AUCTION);
+    /*try
     {
       FXMLLoader loader = new FXMLLoader(
           getClass().getResource("AuctionView.fxml"));
@@ -146,7 +181,19 @@ public class FixedPaneViewHandler
     catch (Exception e)
     {
       e.printStackTrace();
-    }
+    }*/
+  }
+  private void editProfile()
+  {
+    leaveAuction();
+    fixedPaneViewModel.setForEditProfile();
+    loadProfile(WindowType.EDIT_PROFILE);
+  }
+  private void resetPassword()
+  {
+    leaveAuction();
+    fixedPaneViewModel.setForResetPassword();
+    loadProfile(WindowType.RESET_PASSWORD);
   }
 
   private void leaveAuction()
@@ -189,28 +236,58 @@ public class FixedPaneViewHandler
     return allAuctionsViewController.getRoot();
   }
 
-  @FXML void logOutButtonPressed(ActionEvent event)
+  private @FXML void logOutButtonPressed(ActionEvent event)
   {
     leaveAuction();
     viewHandler.openView(WindowType.LOG_IN);
   }
 
-  @FXML void moderatorInfoButtonPressed(ActionEvent event)
+  private @FXML void moderatorInfoButtonPressed(ActionEvent event)
   {
     leaveAuction();
-
   }
 
-  @FXML Region myAuctions_allAccountsButtonPressed()
+  private @FXML Region myAuctions_allAccountsButtonPressed()
   {
     fixedPaneViewModel.myCreatedAuctions();
     return loadGrid(WindowType.CREATED_AUCTIONS);
   }
+  private Region loadProfile(WindowType windowType)
+  {
+    leaveAuction();
+    //fixedPaneViewModel.setForDisplayProfile();
 
-  @FXML Region myProfile_settingsButtonPressed()
+    if (createLoginViewController == null)
+    {
+      try
+      {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("CreateAccountEditProfileView.fxml"));
+        Region root = loader.load();
+        createLoginViewController = loader.getController();
+
+        createLoginViewController.init(viewHandler,
+            viewModelFactory.getCreateLoginViewModel(), root, windowType);
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+    }
+    else
+    {
+      createLoginViewController.reset(windowType);
+    }
+    borderPane.setCenter(createLoginViewController.getRoot());
+    return createLoginViewController.getRoot();
+  }
+
+  private @FXML Region myProfile_settingsButtonPressed()
   {
     leaveAuction();
     fixedPaneViewModel.setForDisplayProfile();
+    return loadProfile(WindowType.DISPLAY_PROFILE);
+    /*
 
     if (createLoginViewController == null)
     {
@@ -234,7 +311,7 @@ public class FixedPaneViewHandler
       createLoginViewController.reset(WindowType.DISPLAY_PROFILE);
     }
     borderPane.setCenter(createLoginViewController.getRoot());
-    return createLoginViewController.getRoot();
+    return createLoginViewController.getRoot();*/
   }
 
   @FXML Region notificationsButtonPressed()

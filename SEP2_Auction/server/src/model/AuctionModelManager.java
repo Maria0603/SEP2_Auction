@@ -88,10 +88,32 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getPreviousBids(bidder);
   }
 
+  @Override public AuctionList getCreatedAuctions(String seller)
+      throws SQLException
+  {
+    return auctionDatabase.getCreatedAuctions(seller);
+  }
+
   @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
   {
     auctionDatabase.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
+  }
+  @Override public User getParticipant(String email) throws SQLException
+  {
+    return auctionDatabase.getParticipant(email);
+  }
+
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    return auctionDatabase.isModerator(email);
+  }
+
+  @Override public User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    return auctionDatabase.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
   }
 
   @Override public synchronized void addListener(String propertyName,
@@ -121,21 +143,5 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     }
     // model manager property fires auction events further
     property.firePropertyChange(evt);
-  }
-  @Override public User getParticipant(String email) throws SQLException
-  {
-    return auctionDatabase.getParticipant(email);
-  }
-
-  @Override public boolean isModerator(String email) throws SQLException
-  {
-    return auctionDatabase.isModerator(email);
-  }
-
-  @Override public User editInformation(String oldEmail, String firstname,
-      String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
-  {
-    return auctionDatabase.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
   }
 }

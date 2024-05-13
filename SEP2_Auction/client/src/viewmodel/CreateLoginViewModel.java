@@ -249,6 +249,40 @@ public class CreateLoginViewModel
       //e.printStackTrace();
     }
   }
+  public void setForEditProfile()
+  {
+    viewState.setEdit();
+
+    resetPasswordButtonVisibility.set(false);
+    login_createButtonVisibility.set(false);
+    //login_createButtonText.set("Edit");
+    informationVisibility.set(true);
+    emailVisibility.set(true);
+    resetPasswordVisibility.set(false);
+    birthdayVisibility.set(true);
+    errorProperty.set("");
+    headerProperty.set("Edit profile");
+    emailLabelText.set("Email");
+    cancelButtonVisibility.set(true);
+    passwordProperty.set("");
+    passwordVisibility.set(true);
+    confirmButtonVisibility.set(true);
+
+
+    disableProperty.set(false);
+  }
+  private void edit()
+  {
+    try
+    {
+      model.editInformation(viewState.getUserEmail(), firstNameProperty.get().trim(), lastNameProperty.get().trim(), emailProperty.get().trim(), passwordProperty.get(), phoneProperty.get().trim(), birthDate.get());
+      viewState.setUserEmail(emailProperty.get());
+    }
+    catch(SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+  }
   public void confirm()
   {
     if(viewState.isResetPassword())
@@ -257,6 +291,8 @@ public class CreateLoginViewModel
       createUser();
     else if(viewState.isLogin())
       login();
+    else if(viewState.isEdit())
+      edit();
   }
 
   public StringProperty getFirstNameProperty()

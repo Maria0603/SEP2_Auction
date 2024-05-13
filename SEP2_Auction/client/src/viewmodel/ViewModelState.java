@@ -35,11 +35,6 @@ public class ViewModelState
     return selectedAuction;
   }
 
-  public void wipeAuction()
-  {
-    selectedAuction = null;
-  }
-
 
   public String getUserEmail() {
     return userEmail;

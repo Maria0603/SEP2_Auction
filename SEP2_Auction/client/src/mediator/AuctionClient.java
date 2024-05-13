@@ -141,6 +141,20 @@ public class AuctionClient
     return null;
   }
 
+  @Override public AuctionList getCreatedAuctions(String seller)
+      throws SQLException
+  {
+    try
+    {
+      return server.getCreatedAuctions(seller);
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
   {

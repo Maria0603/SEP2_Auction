@@ -51,12 +51,18 @@ public class FixedPaneViewModel implements PropertyChangeListener
   }
   public void setForDisplayProfile()
   {
+    buttonsDisabled.set(false);
     state.setDisplay();
   }
   public void setForResetPassword()
   {
     buttonsDisabled.set(true);
     state.setResetPassword();
+  }
+  public void setForEditProfile()
+  {
+    buttonsDisabled.set(true);
+    state.setEdit();
   }
   public void leaveAuctionView()
   {

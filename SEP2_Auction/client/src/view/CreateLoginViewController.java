@@ -172,7 +172,6 @@ public class CreateLoginViewController
         //note: hide the confirm button
         login_createAccountButton.setLayoutX(920);
         headerLabel.setLayoutX(400);
-        confirmButton.setLayoutY(580);
         resetPasswordButton.setLayoutY(580);
         resetPasswordButton.setLayoutX(440);
         cancelButton.setLayoutY(580);
@@ -180,6 +179,10 @@ public class CreateLoginViewController
         //cancelButton.setVisible(true);
         errorLabel.setLayoutY(510);
         errorLabel.setLayoutX(55);
+        break;
+
+      case EDIT_PROFILE:
+        viewModel.setForEditProfile();
 
         break;
     }
@@ -223,6 +226,6 @@ public class CreateLoginViewController
     else if (headerLabel.getText().equals("Login"))
       reset(WindowType.SIGN_UP);
     else if(headerLabel.getText().equals("Your profile"))
-      errorLabel.setText("To be implemented");
+      reset(WindowType.EDIT_PROFILE);
   }
 }
