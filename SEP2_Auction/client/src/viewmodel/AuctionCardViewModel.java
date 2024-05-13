@@ -32,6 +32,9 @@ public class AuctionCardViewModel implements PropertyChangeListener
     model.addListener("Bid", this);
   }
 
+
+
+
   public void setData(Auction auction)
   {
     idProperty.set(auction.getID());

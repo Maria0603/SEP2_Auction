@@ -1,8 +1,7 @@
 package viewmodel;
 
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,18 +18,21 @@ import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
 public class AllAuctionsViewModel
-    implements PropertyChangeListener, NamedPropertyChangeSubject
-{
+    implements PropertyChangeListener, NamedPropertyChangeSubject {
   private AuctionModel model;
   private ViewModelState state;
   private PropertyChangeSupport property;
-  @FXML private ScrollPane allAuctionsScrollPane;
-  @FXML private GridPane auctionsGrid;
+  @FXML
+  private ScrollPane allAuctionsScrollPane;
+  @FXML
+  private GridPane auctionsGrid;
 
-  @FXML private ObservableList<Auction> auctionCards;
+  @FXML
+  private StringProperty searchInputField;
+  @FXML
+  private ObservableList<Auction> auctionCards;
 
-  public AllAuctionsViewModel(AuctionModel model, ViewModelState state)
-  {
+  public AllAuctionsViewModel(AuctionModel model, ViewModelState state) {
     this.model = model;
     this.state = state;
 
@@ -40,91 +42,104 @@ public class AllAuctionsViewModel
     model.addListener("End", this);
 
     auctionCards = FXCollections.observableArrayList();
-    fillAuctionCards();
+    searchInputField = new SimpleStringProperty();
+    fillAuctionCardsWithCache();
   }
 
-  public AuctionList getOngoingAuctions()
-  {
-    try
-    {
+  private void fillAuctionCardsWithCache() {
+    AuctionList list = this.getOngoingAuctions();
+    for (int i = 0; i < list.getSize(); i++) {
+      auctionCards.add(list.getAuction(i));
+    }
+  }
+
+  public AuctionList getOngoingAuctions() {
+    try {
       return model.getOngoingAuctions();
-    }
-    catch (SQLException e)
-    {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public AuctionList getPreviousBids()
-  {
-    try
-    {
-      return model.getPreviousBids(state.getUserEmail());
-    }
-    catch (SQLException e)
-    {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  public AuctionList getCreatedAuctions()
-  {
-    try
-    {
+  public AuctionList getCreatedAuctions() {
+    try {
       return model.getCreatedAuctions(state.getUserEmail());
-    }
-    catch (SQLException e)
-    {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public void fillAuctionCards()
-  {
+  public ObservableList<Auction> searchAuctions() {
+    AuctionList upToDateCards = getAuctionListByState();
+    String mask = searchInputField.get();
+
+    ObservableList<Auction> result = FXCollections.observableArrayList();
+
+    for (int i = 0; i < upToDateCards.getSize(); i++) {
+      Auction auction = upToDateCards.getAuction(i);
+
+      if (auction.isMatchesSearchMask(mask)) {
+        result.add(auction);
+      }
+    }
+    return result;
+  }
+
+  public AuctionList getPreviousBids() {
+    try {
+      return model.getPreviousBids(state.getUserEmail());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public void fillAuctionCards() {
     auctionCards.clear();
-    AuctionList list;
-    if (state.getAllAuctions())
-    {
+    AuctionList list = new AuctionList();
+
+    if (state.getAllAuctions()) {
       list = getOngoingAuctions();
-      if (list != null)
-      {
-        for (int i = 0; i < list.getSize(); i++)
-        {
-          auctionCards.add(list.getAuction(i));
-        }
+      for (int i = 0; i < list.getSize(); i++) {
+        auctionCards.add(list.getAuction(i));
       }
-    }
-    else if (state.getBids())
-    {
+    } else if (state.getBids()) {
       list = getPreviousBids();
-      if (list != null)
-      {
-        for (int i = 0; i < list.getSize(); i++)
-        {
+      if (list != null) {
+        for (int i = 0; i < list.getSize(); i++) {
           auctionCards.add(list.getAuction(i));
         }
       }
-    }
-    else if (state.getCreatedAuctions())
-    {
+    } else if (state.getCreatedAuctions()) {
       list = getCreatedAuctions();
-      if (list != null)
-      {
-        for (int i = 0; i < list.getSize(); i++)
-        {
+      if (list != null) {
+        for (int i = 0; i < list.getSize(); i++) {
           auctionCards.add(list.getAuction(i));
         }
       }
     }
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt)
-  {
-    switch (evt.getPropertyName())
-    {
+  private AuctionList getAuctionListByState() {
+    AuctionList list = new AuctionList();
+    if (state.getAllAuctions()) {
+      list = getOngoingAuctions();
+
+    } else if (state.getBids()) {
+      list = getPreviousBids();
+
+    } else if (state.getCreatedAuctions()) {
+      list = this.getOngoingAuctions();
+
+    }
+    return list;
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    switch (evt.getPropertyName()) {
       case "Auction":
         if (state.getAllAuctions())
           auctionCards.add((Auction) evt.getNewValue());
@@ -135,20 +150,23 @@ public class AllAuctionsViewModel
     }
   }
 
-  public ObservableList<Auction> getAuctionCards()
-  {
+  public ObservableList<Auction> getAuctionCards() {
     return auctionCards;
   }
 
-  @Override synchronized public void addListener(String propertyName,
-      PropertyChangeListener listener)
-  {
+  public StringProperty getSearchInputField() {
+    return searchInputField;
+  }
+
+  @Override
+  synchronized public void addListener(String propertyName,
+      PropertyChangeListener listener) {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override public synchronized void removeListener(String propertyName,
-      PropertyChangeListener listener)
-  {
+  @Override
+  public synchronized void removeListener(String propertyName,
+      PropertyChangeListener listener) {
     property.removePropertyChangeListener(propertyName, listener);
   }
 }
