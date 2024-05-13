@@ -45,10 +45,6 @@ public class ServerTimer implements Runnable, NamedPropertyChangeSubject, Serial
         Thread.sleep(timeLeft(start, end) * 1000);
       } catch (InterruptedException e){}
 
-      if(count==60){
-        property.firePropertyChange("End", id, 0);
-      }
-
       if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
       {
         property.firePropertyChange("End", id, 0);
@@ -66,15 +62,10 @@ public class ServerTimer implements Runnable, NamedPropertyChangeSubject, Serial
 //        Thread.sleep(timeLeft(start, end) * 1000);
       } catch (InterruptedException e){}
 
-      if(count==60){
+      if(count==12){
         property.firePropertyChange("End", id, 0);
       }
 
-      if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
-      {
-        property.firePropertyChange("End", id, 0);
-        break;
-      }
     }
   }
   private long timeLeft(Time currentTime, Time end)

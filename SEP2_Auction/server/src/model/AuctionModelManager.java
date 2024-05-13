@@ -155,6 +155,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       try
       {
         auctionDatabase.markAsClosed((int) evt.getOldValue());
+        sendContactInformation((int) evt.getOldValue());
       }
       catch (SQLException e)
       {
@@ -163,5 +164,20 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     }
     // model manager property fires auction events further
     property.firePropertyChange(evt);
+  }
+  private void sendContactInformation(int id) throws SQLException {
+    Auction auction = auctionDatabase.getAuctionById(id);
+    String seller = auction.getSeller();
+    String bidder = auction.getCurrentBidder();
+    int bid = auction.getCurrentBid();
+
+    String contentForSeller = "Your Auction(id: " + id + ") has ended, Final bidder: " + bidder + ", with bid of " + bid + ".";
+    String contentForBidder = "You've won an Auction (id: " + id + "), sold by " + seller + ", with bid: " + bid + ".";
+
+    Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller);
+    Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder);
+
+    property.firePropertyChange("Notification", null, notificationOne);
+    property.firePropertyChange("Notification", null, notificationTwo);
   }
 }
