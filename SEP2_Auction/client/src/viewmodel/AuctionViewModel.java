@@ -53,6 +53,7 @@ public class AuctionViewModel implements PropertyChangeListener
     startAuctionVisibility = new SimpleBooleanProperty();
     disableAsInDisplay = new SimpleBooleanProperty();
     model.addListener("Bid", this);
+    model.addListener("Edit", this);
 
     reset();
   }
@@ -316,6 +317,10 @@ public class AuctionViewModel implements PropertyChangeListener
             currentBidderProperty.set(bid.getBidder());
           });
         }
+        break;
+      case "Edit":
+        if(currentBidderProperty.get().equals(event.getOldValue()))
+          currentBidderProperty.set(event.getNewValue().toString());
         break;
     }
   }

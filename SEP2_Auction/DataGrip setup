@@ -1,14 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS sprint1database;
 SET SCHEMA 'sprint1database';
 
-
 CREATE DOMAIN email VARCHAR(200);
 CREATE DOMAIN first_last_name VARCHAR(100);
 
-DROP TABLE Auction CASCADE;
-DROP TABLE Users CASCADE;
-DROP TABLE Bid CASCADE;
-DROP TABLE Notification CASCADE;
+DROP TABLE auction CASCADE;
+DROP TABLE users CASCADE;
+DROP TABLE bid CASCADE;
+DROP TABLE notification CASCADE;
 DROP TABLE participant CASCADE;
 DROP TABLE moderator;
 
@@ -19,9 +18,6 @@ CREATE TABLE users (
   first_name first_last_name,
   last_name first_last_name
 );
-
-UPDATE users SET user_email='666@', phone_number='666666666', first_name='66666', last_name='66666'
-WHERE user_email='111@';
 
 CREATE TABLE participant(
     user_email email PRIMARY KEY,
@@ -74,10 +70,8 @@ CREATE TABLE moderator (
   FOREIGN KEY (moderator_email) REFERENCES users(user_email)
 );
 
---RUN THIS
+--RUN THESE, RUN THESE, RUN THESE, RUN THESE, RUN THESE
 INSERT INTO users(user_email, password, phone_number, first_name, last_name)
 VALUES ('bob@bidhub', '1234', null, null, null);
 INSERT INTO moderator (moderator_email, personal_email)
 VALUES ('bob@bidhub', null);
-
-DELETE FROM users WHERE user_email='bob@bidhub';

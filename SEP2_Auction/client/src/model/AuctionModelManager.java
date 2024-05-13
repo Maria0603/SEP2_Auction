@@ -23,6 +23,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("End", this);
     client.addListener("Bid", this);
     client.addListener("Notification", this);
+    client.addListener("Edit", this);
   }
 
   @Override public Auction startAuction(String title, String description,

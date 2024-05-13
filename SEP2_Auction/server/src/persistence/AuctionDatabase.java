@@ -208,7 +208,6 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public Bid saveBid(String participantEmail, int bidAmount,
       int auctionId) throws SQLException
   {
-
     String retrieveSql =
         "SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status, auction.creator_email\n"
             + "FROM auction\n" + "WHERE auction.ID=?;";
@@ -272,7 +271,6 @@ public class AuctionDatabase implements AuctionPersistence
       String email, String password, String repeatedPassword, String phone,
       LocalDate birthday) throws SQLException
   {
-
     String sqlUser =
         "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
@@ -691,8 +689,7 @@ public class AuctionDatabase implements AuctionPersistence
       ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
       ImageIO.write(image, "jpg", outStreamObj);
 
-      byte[] byteArray = outStreamObj.toByteArray();
-      return byteArray;
+      return outStreamObj.toByteArray();
 
     }
     catch (IOException e)

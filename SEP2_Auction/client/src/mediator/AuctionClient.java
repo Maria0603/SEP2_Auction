@@ -40,6 +40,8 @@ public class AuctionClient
       server.addListener(this, "End");
       server.addListener(this,"Bid");
       server.addListener(this, "Notification");
+      server.addListener(this, "Edit");
+
     }
     catch (Exception e)
     {
