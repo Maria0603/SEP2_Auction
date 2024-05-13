@@ -138,10 +138,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     String bidder = auction.getCurrentBidder();
     int bid = auction.getCurrentBid();
 
-    String contentForSeller = "Your Auction has ended, CurrentHighest bidder: " + bidder + ", with bid of " + bid + "." + "\n" +
-                              "Bidder: " + bidder;
-    String contentForBidder = "You've won an Auction (id:" + id + "), with bid: " + bid + "."  + "\n" +
-                              "Seller: " + seller;
+    String contentForSeller = "Your Auction(id: " + id + ") has ended, Final bidder: " + bidder + ", with bid of " + bid + ".";
+    String contentForBidder = "You've won an Auction (id: " + id + "), sold by " + seller + ", with bid: " + bid + ".";
 
     Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller);
     Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder);

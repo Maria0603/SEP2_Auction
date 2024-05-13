@@ -105,7 +105,13 @@ public class FixedPaneViewModel implements PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    if(emailProperty.get().equals(((Notification)evt.getNewValue()).getReceiver()))
+    //  TODO: To be combined
+    if(evt.getPropertyName().equals("Notification")){
       notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");
+    }
+
+    if(emailProperty.get().equals(((Notification)evt.getNewValue()).getReceiver())) {
+      notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");
+    }
   }
 }

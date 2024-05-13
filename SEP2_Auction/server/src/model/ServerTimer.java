@@ -7,6 +7,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.Timer;
 
 public class ServerTimer
     implements Runnable, NamedPropertyChangeSubject, Serializable
@@ -14,11 +15,11 @@ public class ServerTimer
   private int id;
   private PropertyChangeSupport property;
   Time start, end;
+  int count = 0;
   ///////////////////////////////////////////////////////////////////
   //do not change this number
   //private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
-
   public ServerTimer(Time start, Time end, int id)
   {
     this.start = start;
@@ -38,12 +39,15 @@ public class ServerTimer
     {
       try
       {
-        Thread.sleep(timeLeft(start, end) * 1000);
+        System.out.println("Count" + count++);
+        Thread.sleep(1000);
+//        Thread.sleep(timeLeft(start, end) * 1000);
+      } catch (InterruptedException e){}
+
+      if(count==60){
+        property.firePropertyChange("End", id, 0);
       }
-      catch (InterruptedException e)
-      {
-        //
-      }
+
       if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
       {
         property.firePropertyChange("End", id, 0);
