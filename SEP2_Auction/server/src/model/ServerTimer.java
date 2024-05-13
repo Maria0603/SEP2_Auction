@@ -9,8 +9,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Timer;
 
-public class ServerTimer
-    implements Runnable, NamedPropertyChangeSubject, Serializable
+public class ServerTimer implements Runnable, NamedPropertyChangeSubject, Serializable
 {
   private int id;
   private PropertyChangeSupport property;
@@ -35,6 +34,29 @@ public class ServerTimer
 
   @Override public void run()
   {
+//    RunningFunctionality();
+    RunningFunctionality1();
+  }
+  private void RunningFunctionality(){
+    while (timeLeft(start, end) > 0)
+    {
+      try
+      {
+        Thread.sleep(timeLeft(start, end) * 1000);
+      } catch (InterruptedException e){}
+
+      if(count==60){
+        property.firePropertyChange("End", id, 0);
+      }
+
+      if (LocalTime.now().isAfter(end.toLocalTime()) || start.equals(end))
+      {
+        property.firePropertyChange("End", id, 0);
+        break;
+      }
+    }
+  }
+  private void RunningFunctionality1(){
     while (timeLeft(start, end) > 0)
     {
       try
@@ -55,7 +77,6 @@ public class ServerTimer
       }
     }
   }
-
   private long timeLeft(Time currentTime, Time end)
   {
     long currentSeconds = currentTime.toLocalTime().toSecondOfDay();
