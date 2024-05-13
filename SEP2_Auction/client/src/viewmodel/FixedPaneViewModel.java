@@ -29,63 +29,51 @@ public class FixedPaneViewModel implements PropertyChangeListener
     this.model = model;
     model.addListener("Notification", this);
     emailProperty = new SimpleStringProperty();
-    notificationsButtonBackgroundProperty = new SimpleStringProperty();
+    notificationsButtonBackgroundProperty=new SimpleStringProperty();
     notificationsButtonBackgroundProperty.set("");
-    buttonsDisabled = new SimpleBooleanProperty();
-    displayButtons = new SimpleBooleanProperty();
+    buttonsDisabled=new SimpleBooleanProperty();
+    displayButtons =new SimpleBooleanProperty();
   }
-
   public BooleanProperty getDisplayButtons()
   {
     return displayButtons;
   }
+
 
   public void reset()
   {
     //  Just setting the email
     emailProperty.set(state.getUserEmail());
   }
-
   public void sellItem()
   {
     buttonsDisabled.set(true);
   }
-
   public void setForDisplayProfile()
   {
-    buttonsDisabled.set(false);
     state.setDisplay();
   }
-
   public void setForResetPassword()
   {
     buttonsDisabled.set(true);
     state.setResetPassword();
   }
-
-  public void setForEditProfile()
-  {
-    buttonsDisabled.set(true);
-    state.setEdit();
-  }
-
   public void leaveAuctionView()
   {
-    buttonsDisabled.set(false);
-    if (state.isModerator())
-      displayButtons.set(false);
-    else
-      displayButtons.set(true);
+      buttonsDisabled.set(false);
+      if(state.isModerator())
+        displayButtons.set(false);
+      else displayButtons.set(true);
   }
-
   public void allAuctions()
   {
     state.setAllAuctions();
     try
     {
-      if (model.isModerator(state.getUserEmail()))
+      if(model.isModerator(state.getUserEmail()))
       {
         state.setModerator(true);
+        //buttonsDisabled.set(true);
       }
     }
     catch (SQLException e)
@@ -93,32 +81,23 @@ public class FixedPaneViewModel implements PropertyChangeListener
       e.printStackTrace();
     }
   }
-
   public void myBids()
   {
     state.setBids();
   }
-
   public void myCreatedAuctions()
   {
     state.setCreatedAuctions();
-  }
-
-  public void setModeratorInfo()
-  {
-    state.setLookingAtModerator(true);
   }
 
   public StringProperty getEmailProperty()
   {
     return emailProperty;
   }
-
   public StringProperty getNotificationsButtonBackgroundProperty()
   {
     return notificationsButtonBackgroundProperty;
   }
-
   public BooleanProperty getButtonsDisabled()
   {
     return buttonsDisabled;
@@ -126,9 +105,13 @@ public class FixedPaneViewModel implements PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    if (emailProperty.get()
-        .equals(((Notification) evt.getNewValue()).getReceiver()))
-      notificationsButtonBackgroundProperty.set(
-          "-fx-background-color: #ff0000; ");
+    //  TODO: To be combined
+    if(evt.getPropertyName().equals("Notification")){
+      notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");
+    }
+
+    if(emailProperty.get().equals(((Notification)evt.getNewValue()).getReceiver())) {
+      notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");
+    }
   }
 }
