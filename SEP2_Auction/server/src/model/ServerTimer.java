@@ -34,10 +34,6 @@ public class ServerTimer implements Runnable, NamedPropertyChangeSubject, Serial
 
   @Override public void run()
   {
-//    RunningFunctionality();
-    RunningFunctionality1();
-  }
-  private void RunningFunctionality(){
     while (timeLeft(start, end) > 0)
     {
       try
@@ -50,22 +46,6 @@ public class ServerTimer implements Runnable, NamedPropertyChangeSubject, Serial
         property.firePropertyChange("End", id, 0);
         break;
       }
-    }
-  }
-  private void RunningFunctionality1(){
-    while (timeLeft(start, end) > 0)
-    {
-      try
-      {
-        System.out.println("Count" + count++);
-        Thread.sleep(1000);
-//        Thread.sleep(timeLeft(start, end) * 1000);
-      } catch (InterruptedException e){}
-
-      if(count==12){
-        property.firePropertyChange("End", id, 0);
-      }
-
     }
   }
   private long timeLeft(Time currentTime, Time end)
