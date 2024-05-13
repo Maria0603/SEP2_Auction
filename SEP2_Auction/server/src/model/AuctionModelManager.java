@@ -10,7 +10,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -101,7 +100,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
   @Override public User getParticipant(String email) throws SQLException
   {
-    return auctionDatabase.getParticipant(email);
+    return auctionDatabase.getUserInfo(email);
   }
 
   @Override public boolean isModerator(String email) throws SQLException

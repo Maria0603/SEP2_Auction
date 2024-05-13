@@ -76,7 +76,15 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     }
 
     return auction;*/
-      return modelManager.getAuction(ID);
+    Auction auction = modelManager.getAuction(ID);
+    Timer timer = new Timer(timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1, ID);
+    timer.addListener("Time", this);
+    timer.addListener("End", this);
+    Thread t = new Thread(timer, String.valueOf(ID));
+    //add timer to cache
+    //timers.add(t);
+    t.start();
+    return auction;
   }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException

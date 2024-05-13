@@ -214,7 +214,7 @@ public class CreateLoginViewModel
     informationVisibility.set(true);
     emailVisibility.set(true);
     resetPasswordVisibility.set(false);
-    birthdayVisibility.set(true);
+    birthdayVisibility.set(!viewState.isModerator());
     errorProperty.set("");
     headerProperty.set("Your profile");
     emailLabelText.set("Email");
@@ -259,7 +259,7 @@ public class CreateLoginViewModel
     informationVisibility.set(true);
     emailVisibility.set(true);
     resetPasswordVisibility.set(false);
-    birthdayVisibility.set(true);
+    birthdayVisibility.set(!viewState.isModerator());
     errorProperty.set("");
     headerProperty.set("Edit profile");
     emailLabelText.set("Email");
@@ -268,19 +268,21 @@ public class CreateLoginViewModel
     passwordVisibility.set(true);
     confirmButtonVisibility.set(true);
 
-
     disableProperty.set(false);
   }
   private void edit()
   {
+    errorProperty.set("");
     try
     {
       model.editInformation(viewState.getUserEmail(), firstNameProperty.get().trim(), lastNameProperty.get().trim(), emailProperty.get().trim(), passwordProperty.get(), phoneProperty.get().trim(), birthDate.get());
-      viewState.setUserEmail(emailProperty.get());
+      if(!viewState.isModerator())
+        viewState.setUserEmail(emailProperty.get());
     }
     catch(SQLException e)
     {
       errorProperty.set(e.getMessage());
+      //e.printStackTrace();
     }
   }
   public void confirm()

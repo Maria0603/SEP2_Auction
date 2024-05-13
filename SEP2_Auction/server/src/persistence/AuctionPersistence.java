@@ -4,8 +4,6 @@ import model.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 public interface AuctionPersistence
 {
@@ -26,7 +24,7 @@ public interface AuctionPersistence
 
   void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
       throws SQLException;
-  User getParticipant(String email) throws SQLException;
+  User getUserInfo(String email) throws SQLException;
   boolean isModerator(String email) throws SQLException;
 
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws SQLException;

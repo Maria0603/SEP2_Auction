@@ -175,25 +175,6 @@ public class AuctionDatabase implements AuctionPersistence
   {
     String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
     return getAuctions(sql, null);
-    /*
-    ArrayList<Object[]> results = database.query(sql);
-    AuctionList auctions = new AuctionList();
-    for (int i = 0; i < results.size(); i++)
-    {
-      Object[] row = results.get(i);
-      int id = Integer.parseInt(row[0].toString());
-      auctions.addAuction(getCardAuctionById(id));
-      /*
-      String title = row[1].toString();
-      int currentBid = Integer.parseInt(row[2].toString());
-      String imagePath = row[3].toString();
-      byte[] imageData = downloadImageFromRepository(imagePath);
-      Time auctionEnd = Time.valueOf(row[4].toString());
-      auctions.addAuction(
-          new Auction(id, title, currentBid, auctionEnd, imageData));
-    }
-    System.out.println("request for ongoing auctions in database");
-    return auctions;*/
   }
 
   @Override public NotificationList getNotifications(String receiver)
@@ -338,7 +319,7 @@ public class AuctionDatabase implements AuctionPersistence
   private AuctionList getAuctions(String sql, String user) throws SQLException
   {
     ArrayList<Object[]> results;
-    if(user==null)
+    if (user == null)
       results = database.query(sql);
     else
       results = database.query(sql, user);
@@ -361,20 +342,47 @@ public class AuctionDatabase implements AuctionPersistence
     database.update(sql, newPassword, userEmail);
   }
 
-  @Override public User getParticipant(String email) throws SQLException
+  @Override public User getUserInfo(String email) throws SQLException
   {
     User user = getUser(email);
     if (user != null)
     {
-      String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
-      ArrayList<Object[]> results = database.query(sql, email);
-      for (int i = 0; i < results.size(); i++)
+      if (email.equals(MODERATOR_EMAIL))
       {
-        Object[] row = results.get(i);
-        Date birthday = Date.valueOf(row[0].toString());
-        return new User(user.getFirstname(), user.getLastname(), email, null,
-            user.getPhone(), birthday.toLocalDate());
+        return new User(user.getFirstname(), user.getLastname(),
+            getModeratorInfo(), null, user.getPhone(), null);
       }
+      else
+      {
+        Date birthday=getParticipantInfo(email);
+        return new User(user.getFirstname(), user.getLastname(), email, null,
+              user.getPhone(), birthday.toLocalDate());
+        }
+      }
+    return null;
+  }
+
+  private Date getParticipantInfo(String email) throws SQLException
+  {
+    String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
+    ArrayList<Object[]> results = database.query(sql, email);
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      return Date.valueOf(row[0].toString());
+    }
+    return null;
+  }
+
+  private String getModeratorInfo() throws SQLException
+  {
+    String sql = "SELECT personal_email FROM moderator WHERE moderator_email=?;\n";
+    ArrayList<Object[]> results = database.query(sql, MODERATOR_EMAIL);
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      if (row[0] != null)
+        return row[0].toString();
     }
     return null;
   }
@@ -392,25 +400,31 @@ public class AuctionDatabase implements AuctionPersistence
     {
       checkFirstName(firstname);
       checkLastName(lastname);
-      if(!oldEmail.equals(email))
+      if (!oldEmail.equals(email))
         checkEmail(email);
       checkPassword(password, password);
-      checkPhone(phone);
       ageValidation(birthday);
+      String isPhoneTaken = isPhoneInTheSystem(phone);
+      if (isPhoneTaken != null)
+        if (!isPhoneTaken.equals(oldEmail))
+          throw new SQLException("This phone number is taken.");
       String sqlUser =
           "UPDATE users SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
               + "WHERE user_email=?;";
       String sqlParticipantOrModerator;
 
-      database.update(sqlUser, email, phone, firstname, lastname, oldEmail);
       if (oldEmail.equals(MODERATOR_EMAIL))
       {
+        database.update(sqlUser, oldEmail, phone, firstname, lastname,
+            oldEmail);
+
         sqlParticipantOrModerator = "UPDATE moderator SET personal_email=?\n"
             + "WHERE moderator_email=?;";
         database.update(sqlParticipantOrModerator, email, oldEmail);
       }
       else
       {
+        database.update(sqlUser, email, phone, firstname, lastname, oldEmail);
         sqlParticipantOrModerator =
             "UPDATE participant SET birth_date=?\n" + "WHERE user_email=?;";
         Date date = Date.valueOf(birthday);
@@ -483,14 +497,15 @@ public class AuctionDatabase implements AuctionPersistence
   private String isPhoneInTheSystem(String phone) throws SQLException
   {
     int count = 0;
-    String sql = "SELECT user_email, count(*) FROM users\n"
-        + "WHERE phone_number=?\n" + "GROUP BY user_email;";
+    String sql =
+        "SELECT user_email, count(*) FROM users\n" + "WHERE phone_number=?\n"
+            + "GROUP BY user_email;";
     ArrayList<Object[]> result = database.query(sql, phone);
     for (int i = 0; i < result.size(); i++)
     {
       Object[] row = result.get(i);
       count = Integer.parseInt(row[1].toString());
-      if(count>0)
+      if (count > 0)
         return row[0].toString();
     }
     return null;
@@ -646,7 +661,7 @@ public class AuctionDatabase implements AuctionPersistence
     {
       throw new SQLException("Invalid phone number.");
     }
-    if (isPhoneInTheSystem(phone)!=null)
+    if (isPhoneInTheSystem(phone) != null)
     {
       throw new SQLException("This phone number is already in the system.");
     }

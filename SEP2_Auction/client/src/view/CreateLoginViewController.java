@@ -179,6 +179,7 @@ public class CreateLoginViewController
         //cancelButton.setVisible(true);
         errorLabel.setLayoutY(510);
         errorLabel.setLayoutX(55);
+        confirmButton.setLayoutY(580);
         break;
 
       case EDIT_PROFILE:
