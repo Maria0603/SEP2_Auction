@@ -42,9 +42,35 @@ public class AllAccounts_NotificationsViewController
     this.root = root;
     this.allAccountsNotificationsViewModel = allAccountsNotificationsViewModel;
     this.viewHandler = viewHandler;
-    errorLabel.textProperty().bindBidirectional(this.allAccountsNotificationsViewModel.getErrorProperty());
+    errorLabel.textProperty().bindBidirectional(
+        this.allAccountsNotificationsViewModel.getErrorProperty());
     reset(windowType);
-    notifications_accountsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelected(newVal));
+    notifications_accountsTableView.getSelectionModel().selectedItemProperty()
+        .addListener(
+            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelected(
+                newVal));
+    //visibility controlled from the view model
+    ban_openNotificationButton.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    unbanButton.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    emailColumn.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    ratingColumn.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    reason_contentLabel.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    reason_contentTextArea.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    searchButton.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    searchTextField.visibleProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+
+    firstName_dateTimeColumn.textProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getFirstColumnNameProperty());
+    lastName_contentColumn.textProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getSecondColumnNameProperty());
   }
 
   public void reset(WindowType windowType)
@@ -71,26 +97,22 @@ public class AllAccounts_NotificationsViewController
     lastName_contentColumn.setPrefWidth(865);
     lastName_contentColumn.setCellValueFactory(
         cellData -> cellData.getValue().getContentProperty());
-    ban_openNotificationButton.setVisible(false);
-    unbanButton.setVisible(false);
-    emailColumn.setVisible(false);
-    ratingColumn.setVisible(false);
-    reason_contentLabel.setVisible(false);
-    reason_contentTextArea.setVisible(false);
-    searchButton.setVisible(false);
-    searchTextField.setVisible(false);
-
-    firstName_dateTimeColumn.setText("Date and time");
-    lastName_contentColumn.setText("Content");
+    allAccountsNotificationsViewModel.setForNotifications();
 
     notifications_accountsTableView.setLayoutX(15);
     notifications_accountsTableView.setPrefWidth(1050);
   }
+
+  private void setForAccounts()
+  {
+    //take a look here:
+    allAccountsNotificationsViewModel.setForAccounts();
+  }
+
   public Region getRoot()
   {
     return root;
   }
-
 
   @FXML void searchButtonPressed(ActionEvent event)
   {
