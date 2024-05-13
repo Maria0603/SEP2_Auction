@@ -68,6 +68,7 @@ public class AllAuctionsViewModel
     }
     return null;
   }
+
   public AuctionList getCreatedAuctions()
   {
     try
@@ -88,7 +89,7 @@ public class AllAuctionsViewModel
     if (state.getAllAuctions())
     {
       list = getOngoingAuctions();
-      if(list!=null)
+      if (list != null)
       {
         for (int i = 0; i < list.getSize(); i++)
         {
@@ -99,7 +100,7 @@ public class AllAuctionsViewModel
     else if (state.getBids())
     {
       list = getPreviousBids();
-      if(list!=null)
+      if (list != null)
       {
         for (int i = 0; i < list.getSize(); i++)
         {
@@ -107,10 +108,10 @@ public class AllAuctionsViewModel
         }
       }
     }
-    else if(state.getCreatedAuctions())
+    else if (state.getCreatedAuctions())
     {
-      list=getCreatedAuctions();
-      if(list!=null)
+      list = getCreatedAuctions();
+      if (list != null)
       {
         for (int i = 0; i < list.getSize(); i++)
         {
@@ -125,10 +126,8 @@ public class AllAuctionsViewModel
     switch (evt.getPropertyName())
     {
       case "Auction":
-        if(state.getAllAuctions())
-        {
+        if (state.getAllAuctions())
           auctionCards.add((Auction) evt.getNewValue());
-        }
         property.firePropertyChange(evt);
         break;
       case "End":

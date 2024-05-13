@@ -17,7 +17,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-public class AllAuctionsViewController implements PropertyChangeListener {
+public class AllAuctionsViewController implements PropertyChangeListener
+{
   @FXML private ScrollPane allAuctionsScrollPane;
   @FXML private GridPane auctionsGrid;
 
@@ -30,50 +31,56 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   private ViewModelFactory viewModelFactory;
 
   public void init(ViewHandler viewHandler, ViewModelFactory viewModelFactory,
-      Region root, WindowType windowType) {
+      Region root, WindowType windowType)
+  {
     this.root = root;
     this.viewHandler = viewHandler;
     this.viewModelFactory = viewModelFactory;
     this.allAuctionsViewModel = viewModelFactory.getAllAuctionsViewModel();
 
     auctionCards = FXCollections.observableArrayList();
-    Bindings.bindContent(auctionCards, this.allAuctionsViewModel.getAuctionCards());
+    Bindings.bindContent(auctionCards,
+        this.allAuctionsViewModel.getAuctionCards());
 
     this.allAuctionsViewModel.addListener("Auction", this);
     this.allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
     loadAuctions();
-    //other bindings to be inserted
-
   }
 
-  public void reset(WindowType type) {
-    switch (type) {
-      case ALL_AUCTIONS, BIDS, CREATED_AUCTIONS -> {
-        loadAuctions();
-      }
+  public void reset(WindowType type)
+  {
+    switch (type)
+    {
+      case ALL_AUCTIONS, BIDS, CREATED_AUCTIONS -> loadAuctions();
 
     }
   }
 
-  public Region getRoot() {
+  public Region getRoot()
+  {
     return root;
   }
 
-  public void loadAuctions() {
+  public void loadAuctions()
+  {
     allAuctionsViewModel.fillAuctionCards();
     clearGrid();
-    try {
+    try
+    {
       int totalElements = auctionCards.size();
       int numRows = (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
 
       int listIndex = auctionCards.size() - 1;
 
-      for (int row = 0; row < numRows; row++) {
-        for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+      for (int row = 0; row < numRows; row++)
+      {
+        for (int column = 0; column < NUMBER_OF_COLUMNS; column++)
+        {
 
-          if(listIndex >= 0){
+          if (listIndex >= 0)
+          {
 
             addNewCardToGrid(auctionCards.get(listIndex), column, row);
             listIndex--;
@@ -81,13 +88,15 @@ public class AllAuctionsViewController implements PropertyChangeListener {
         }
       }
     }
-    catch (IOException e) {
+    catch (IOException e)
+    {
       ///
     }
   }
 
   private void addNewCardToGrid(Auction auction, int column, int row)
-      throws IOException {
+      throws IOException
+  {
 
     AuctionCardViewController newCardController = initNewCard();
     newCardController.setData(auction);
@@ -97,8 +106,8 @@ public class AllAuctionsViewController implements PropertyChangeListener {
 
   }
 
-
-  private AuctionCardViewController initNewCard() throws IOException {
+  private AuctionCardViewController initNewCard() throws IOException
+  {
     FXMLLoader load = new FXMLLoader();
     load.setLocation(getClass().getResource("AuctionCardView.fxml"));
 
@@ -111,23 +120,29 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     return auctionCardViewController;
   }
 
-  private void clearGrid() {
+  private void clearGrid()
+  {
     auctionsGrid.getChildren().clear();
     auctionsGrid.getRowConstraints().clear();
     auctionsGrid.getColumnConstraints().clear();
   }
 
-  private int getNumberOfRowsInGrid(){
+  private int getNumberOfRowsInGrid()
+  {
     int totalElements = auctionCards.size();
     return (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt) {
-    switch (evt.getPropertyName()) {
-      case "Auction" -> {
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
+    switch (evt.getPropertyName())
+    {
+      case "Auction" ->
+      {
         ///here we can trigger grid to add new card to the tail
       }
-      case "End" -> {
+      case "End" ->
+      {
       }
     }
   }

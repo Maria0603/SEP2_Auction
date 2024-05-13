@@ -42,29 +42,15 @@ public class FixedPaneViewHandler
     this.viewModelFactory = viewModelFactory;
     this.fixedPaneViewModel = fixedPaneViewModel;
     this.viewHandler = viewHandler;
+
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
     notificationsButton.styleProperty().bindBidirectional(
         fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
-    allAuctionsButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    myAuctions_allAccountsButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    myBidsButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    myProfile_settingsButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    notificationsButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    logOutButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    moderatorInfoButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
-    sellItemButton.disableProperty()
-        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
 
-    notificationsButton.visibleProperty().bindBidirectional(fixedPaneViewModel.getDisplayButtons());
-    sellItemButton.visibleProperty().bindBidirectional(fixedPaneViewModel.getDisplayButtons());
+    bindVisibleProperty();
+    bindDisableProperty();
+
     reset(windowType);
   }
 
@@ -89,12 +75,6 @@ public class FixedPaneViewHandler
       case EDIT_PROFILE -> editProfile();
       case RESET_PASSWORD -> resetPassword();
     }
-  }
-
-  @FXML Region sellItemButtonPressed()
-  {
-    fixedPaneViewModel.sellItem();
-    return loadAuctionView(WindowType.START_AUCTION);
   }
 
   private Region loadAuctionView(WindowType windowType)
@@ -126,23 +106,19 @@ public class FixedPaneViewHandler
     return auctionViewController.getRoot();
   }
 
-  private @FXML Region allAuctionsButtonPressed()
-  {
-    fixedPaneViewModel.allAuctions();
-    return loadGrid(WindowType.ALL_AUCTIONS);
-  }
-
   private void displayAuction()
   {
     fixedPaneViewModel.leaveAuctionView();
     loadAuctionView(WindowType.DISPLAY_AUCTION);
   }
+
   private void editProfile()
   {
     leaveAuction();
     fixedPaneViewModel.setForEditProfile();
     loadProfile(WindowType.EDIT_PROFILE);
   }
+
   private void resetPassword()
   {
     leaveAuction();
@@ -186,8 +162,19 @@ public class FixedPaneViewHandler
       borderPane.setCenter(allAuctionsViewController.getRoot());
       allAuctionsViewController.reset(windowType);
     }
-    //allAuctionsViewController.loadAuctions();
     return allAuctionsViewController.getRoot();
+  }
+
+  private @FXML Region allAuctionsButtonPressed()
+  {
+    fixedPaneViewModel.allAuctions();
+    return loadGrid(WindowType.ALL_AUCTIONS);
+  }
+
+  @FXML Region sellItemButtonPressed()
+  {
+    fixedPaneViewModel.sellItem();
+    return loadAuctionView(WindowType.START_AUCTION);
   }
 
   private @FXML void logOutButtonPressed(ActionEvent event)
@@ -208,6 +195,7 @@ public class FixedPaneViewHandler
     fixedPaneViewModel.myCreatedAuctions();
     return loadGrid(WindowType.CREATED_AUCTIONS);
   }
+
   private Region loadProfile(WindowType windowType)
   {
     leaveAuction();
@@ -218,7 +206,8 @@ public class FixedPaneViewHandler
       try
       {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("CreateAccountEditProfileView.fxml"));
+        loader.setLocation(
+            getClass().getResource("CreateAccountEditProfileView.fxml"));
         Region root = loader.load();
         createLoginViewController = loader.getController();
 
@@ -282,6 +271,34 @@ public class FixedPaneViewHandler
   {
     fixedPaneViewModel.myBids();
     return loadGrid(WindowType.BIDS);
+  }
+
+  private void bindDisableProperty()
+  {
+    allAuctionsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    myAuctions_allAccountsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    myBidsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    myProfile_settingsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    notificationsButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    logOutButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    moderatorInfoButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+    sellItemButton.disableProperty()
+        .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
+  }
+
+  private void bindVisibleProperty()
+  {
+    notificationsButton.visibleProperty()
+        .bindBidirectional(fixedPaneViewModel.getDisplayButtons());
+    sellItemButton.visibleProperty()
+        .bindBidirectional(fixedPaneViewModel.getDisplayButtons());
   }
 
 }

@@ -7,29 +7,23 @@ import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
 import model.Bid;
-import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 public class AuctionViewModel implements PropertyChangeListener
 {
 
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
   private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;
+  private BooleanProperty startAuctionVisibility, disableAsInDisplay;
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
@@ -55,11 +49,18 @@ public class AuctionViewModel implements PropertyChangeListener
     incomingBidProperty = new SimpleIntegerProperty();
     currentBidProperty = new SimpleIntegerProperty();
     currentBidderProperty = new SimpleStringProperty();
+
+    startAuctionVisibility = new SimpleBooleanProperty();
+    disableAsInDisplay = new SimpleBooleanProperty();
     model.addListener("Bid", this);
-    //model.addListener("Time", this);
-    //model.addListener("End", this);
+
     reset();
-    //importButtonVisible=new SimpleBooleanProperty();
+  }
+
+  public void setForStart()
+  {
+    startAuctionVisibility.set(true);
+    disableAsInDisplay.set(false);
   }
 
   public void startAuction()
@@ -110,6 +111,7 @@ public class AuctionViewModel implements PropertyChangeListener
       currentBidderProperty.set(bid.getBidder());
       incomingBidProperty.set(0);
     }
+
   }
 
   private byte[] imageToByteArray(Image image) throws IOException
@@ -128,9 +130,12 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void reset()
   {
+    errorProperty.set("");
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null)
     {
+      startAuctionVisibility.set(false);
+      disableAsInDisplay.set(true);
       //when we open an auction, we listen to the updating time
       model.addListener("Time", this);
       model.addListener("End", this);
@@ -143,8 +148,8 @@ public class AuctionViewModel implements PropertyChangeListener
           selectedAuction.getPriceConstraint().getReservePrice());
       buyoutPriceProperty.set(
           selectedAuction.getPriceConstraint().getBuyoutPrice());
-      incrementProperty.set(selectedAuction.getPriceConstraint()
-          .getMinimumIncrement());
+      incrementProperty.set(
+          selectedAuction.getPriceConstraint().getMinimumIncrement());
       imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
       currentBidderProperty.set(selectedAuction.getCurrentBidder());
       currentBidProperty.set(selectedAuction.getCurrentBid());
@@ -155,24 +160,18 @@ public class AuctionViewModel implements PropertyChangeListener
     }
   }
 
-  public void setForStart()
-  {
-
-  }
-
-
   public void leaveAuctionView()
   {
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
     model.removeListener("End", this);
+    errorProperty.set("");
   }
 
   public void wipe()
   {
     headerProperty.set("Start auction");
     idProperty.set(0);
-    //currentBidProperty.set(0);
     buyoutPriceProperty.set(0);
     descriptionProperty.set("");
     errorProperty.set("");
@@ -182,7 +181,7 @@ public class AuctionViewModel implements PropertyChangeListener
     reservePriceProperty.set(0);
     timeProperty.set(0);
     titleProperty.set("");
-    //currentBidderProperty.set("No bidder");
+    imageProperty.set(null);
   }
 
   public ObjectProperty<Image> getImageProperty()
@@ -265,6 +264,15 @@ public class AuctionViewModel implements PropertyChangeListener
     return incomingBidProperty;
   }
 
+  public BooleanProperty getStartAuctionVisibility()
+  {
+    return startAuctionVisibility;
+  }
+
+  public BooleanProperty getDisableAsInDisplay()
+  {
+    return disableAsInDisplay;
+  }
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {
@@ -273,7 +281,6 @@ public class AuctionViewModel implements PropertyChangeListener
     switch (event.getPropertyName())
     {
       case "Time":
-        //System.out.println(event.getOldValue());
         if (idProperty.get() == Integer.parseInt(
             event.getOldValue().toString()))
         {
@@ -291,8 +298,7 @@ public class AuctionViewModel implements PropertyChangeListener
         break;
       case "Bid":
         Bid bid = (Bid) event.getNewValue();
-        System.out.println("bid in view model"+ bid.getBidAmount());
-        if((state.getSelectedAuction().getID())==bid.getAuctionId())
+        if ((state.getSelectedAuction().getID()) == bid.getAuctionId())
         {
           try
           {

@@ -31,16 +31,7 @@ public class AuctionCardViewController
     this.viewHandler = viewHandler;
     this.root = root;
     this.auctionCardViewModel = auctionCardViewModel;
-    Bindings.bindBidirectional(idLabel.textProperty(),
-        auctionCardViewModel.getIdProperty(), new IntStringConverter());
-    Bindings.bindBidirectional(currentBidLabel.textProperty(),
-        auctionCardViewModel.getCurrentBidProperty(), new IntStringConverter());
-    endTimeLabel.textProperty()
-        .bindBidirectional(auctionCardViewModel.getTimerCountdownProperty());
-    titleLabel.textProperty()
-        .bindBidirectional(auctionCardViewModel.getTitleProperty());
-    Bindings.bindBidirectional(imageImageView.imageProperty(),
-        auctionCardViewModel.getImageProperty());
+    bindValues();
   }
 
   public void setData(Auction auction)
@@ -53,10 +44,23 @@ public class AuctionCardViewController
     return root;
   }
 
-  @FXML public void cardSelected(MouseEvent mouseEvent)
+  @FXML public void cardSelected()
   {
-    //TODO: to set the view state - for Mariia?
     auctionCardViewModel.cardSelected();
     viewHandler.openView(WindowType.DISPLAY_AUCTION);
+  }
+
+  private void bindValues()
+  {
+    Bindings.bindBidirectional(idLabel.textProperty(),
+        auctionCardViewModel.getIdProperty(), new IntStringConverter());
+    Bindings.bindBidirectional(currentBidLabel.textProperty(),
+        auctionCardViewModel.getCurrentBidProperty(), new IntStringConverter());
+    endTimeLabel.textProperty()
+        .bindBidirectional(auctionCardViewModel.getTimerCountdownProperty());
+    titleLabel.textProperty()
+        .bindBidirectional(auctionCardViewModel.getTitleProperty());
+    Bindings.bindBidirectional(imageImageView.imageProperty(),
+        auctionCardViewModel.getImageProperty());
   }
 }

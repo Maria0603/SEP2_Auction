@@ -41,26 +41,25 @@ public class CreateLoginViewModel
     repasswordProperty = new SimpleStringProperty();
     phoneProperty = new SimpleStringProperty();
     errorProperty = new SimpleStringProperty();
-    birthDate=new SimpleObjectProperty<>();
+    birthDate = new SimpleObjectProperty<>();
 
-    informationVisibility=new SimpleBooleanProperty();
-    emailVisibility =new SimpleBooleanProperty();
-    passwordVisibility=new SimpleBooleanProperty();
-    resetPasswordVisibility=new SimpleBooleanProperty();
-    birthdayVisibility=new SimpleBooleanProperty();
+    informationVisibility = new SimpleBooleanProperty();
+    emailVisibility = new SimpleBooleanProperty();
+    passwordVisibility = new SimpleBooleanProperty();
+    resetPasswordVisibility = new SimpleBooleanProperty();
+    birthdayVisibility = new SimpleBooleanProperty();
 
-    login_createButtonText=new SimpleStringProperty();
-    login_createButtonVisibility=new SimpleBooleanProperty();
-    resetPasswordButtonVisibility=new SimpleBooleanProperty();
-    emailLabelText=new SimpleStringProperty();
-    cancelButtonVisibility=new SimpleBooleanProperty();
-    confirmButtonVisibility=new SimpleBooleanProperty();
+    login_createButtonText = new SimpleStringProperty();
+    login_createButtonVisibility = new SimpleBooleanProperty();
+    resetPasswordButtonVisibility = new SimpleBooleanProperty();
+    emailLabelText = new SimpleStringProperty();
+    cancelButtonVisibility = new SimpleBooleanProperty();
+    confirmButtonVisibility = new SimpleBooleanProperty();
 
-    disableProperty=new SimpleBooleanProperty();
+    disableProperty = new SimpleBooleanProperty();
 
     reset();
   }
-
 
   public void reset()
   {
@@ -73,6 +72,7 @@ public class CreateLoginViewModel
     errorProperty.set("");
     birthDate.set(LocalDate.now());
   }
+
   public void setForCreate()
   {
     viewState.setCreate();
@@ -100,9 +100,10 @@ public class CreateLoginViewModel
     errorProperty.set("");
     try
     {
-      String email=model.addUser(firstNameProperty.get().trim(),
+      String email = model.addUser(firstNameProperty.get().trim(),
           lastNameProperty.get().trim(), emailProperty.get().trim(),
-          passwordProperty.get(), repasswordProperty.get(), phoneProperty.get().trim(), birthDate.get());
+          passwordProperty.get(), repasswordProperty.get(),
+          phoneProperty.get().trim(), birthDate.get());
       viewState.setUserEmail(email);
       viewState.setModerator(model.isModerator(email));
     }
@@ -111,7 +112,7 @@ public class CreateLoginViewModel
       errorProperty.set(e.getMessage());
       //e.printStackTrace();
     }
-    if(errorProperty.get().isEmpty())
+    if (errorProperty.get().isEmpty())
     {
       reset();
     }
@@ -137,7 +138,6 @@ public class CreateLoginViewModel
     cancelButtonVisibility.set(false);
     disableProperty.set(false);
 
-
   }
 
   private void login()
@@ -157,13 +157,14 @@ public class CreateLoginViewModel
       errorProperty.set(e.getMessage());
       //e.printStackTrace();
     }
-    if(errorProperty.get().isEmpty())
+    if (errorProperty.get().isEmpty())
     {
       reset();
     }
 
     //  ViewState
   }
+
   public void setForResetPassword()
   {
     errorProperty.set("");
@@ -181,29 +182,30 @@ public class CreateLoginViewModel
     cancelButtonVisibility.set(true);
     confirmButtonVisibility.set(true);
 
-
-
     emailLabelText.set("Old password");
     disableProperty.set(false);
 
   }
+
   private void resetPassword()
   {
     errorProperty.set("");
     try
     {
-      model.resetPassword(viewState.getUserEmail(), emailProperty.get(), passwordProperty.get(), repasswordProperty.get());
+      model.resetPassword(viewState.getUserEmail(), emailProperty.get(),
+          passwordProperty.get(), repasswordProperty.get());
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
       //e.printStackTrace();
     }
-    if(errorProperty.get().isEmpty())
+    if (errorProperty.get().isEmpty())
     {
       reset();
     }
   }
+
   public void setForDisplayProfile()
   {
     viewState.setDisplay();
@@ -222,8 +224,6 @@ public class CreateLoginViewModel
     passwordVisibility.set(false);
     confirmButtonVisibility.set(false);
 
-
-
     disableProperty.set(true);
     displayProfile();
   }
@@ -234,15 +234,16 @@ public class CreateLoginViewModel
     {
       birthDate.set(null);
       User userToBeDisplayed;
-      if(viewState.isLookingAtModerator())
+      if (viewState.isLookingAtModerator())
       {
         setForDisplayModeratorInfo();
         userToBeDisplayed = model.getModeratorInfo();
         viewState.setLookingAtModerator(false);
       }
-      else userToBeDisplayed=model.getUser(viewState.getUserEmail());
+      else
+        userToBeDisplayed = model.getUser(viewState.getUserEmail());
 
-      if(userToBeDisplayed!=null)
+      if (userToBeDisplayed != null)
       {
         firstNameProperty.set(userToBeDisplayed.getFirstname());
         lastNameProperty.set(userToBeDisplayed.getLastname());
@@ -257,6 +258,7 @@ public class CreateLoginViewModel
       //e.printStackTrace();
     }
   }
+
   private void setForDisplayModeratorInfo()
   {
     birthdayVisibility.set(false);
@@ -264,6 +266,7 @@ public class CreateLoginViewModel
     login_createButtonVisibility.set(false);
     headerProperty.set("Moderator's information");
   }
+
   public void setForEditProfile()
   {
     viewState.setEdit();
@@ -285,30 +288,35 @@ public class CreateLoginViewModel
 
     disableProperty.set(false);
   }
+
   private void edit()
   {
     errorProperty.set("");
     try
     {
-      model.editInformation(viewState.getUserEmail(), firstNameProperty.get().trim(), lastNameProperty.get().trim(), emailProperty.get().trim(), passwordProperty.get(), phoneProperty.get().trim(), birthDate.get());
-      if(!viewState.isModerator())
+      model.editInformation(viewState.getUserEmail(),
+          firstNameProperty.get().trim(), lastNameProperty.get().trim(),
+          emailProperty.get().trim(), passwordProperty.get(),
+          phoneProperty.get().trim(), birthDate.get());
+      if (!viewState.isModerator())
         viewState.setUserEmail(emailProperty.get());
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
       //e.printStackTrace();
     }
   }
+
   public void confirm()
   {
-    if(viewState.isResetPassword())
+    if (viewState.isResetPassword())
       resetPassword();
     else if (viewState.isCreate())
       createUser();
-    else if(viewState.isLogin())
+    else if (viewState.isLogin())
       login();
-    else if(viewState.isEdit())
+    else if (viewState.isEdit())
       edit();
   }
 
@@ -351,30 +359,37 @@ public class CreateLoginViewModel
   {
     return birthDate;
   }
+
   public BooleanProperty getEmailVisibility()
   {
     return emailVisibility;
   }
+
   public BooleanProperty getInformationVisibility()
   {
     return informationVisibility;
   }
+
   public BooleanProperty getResetPasswordVisibility()
   {
     return resetPasswordVisibility;
   }
+
   public BooleanProperty getBirthdayVisibility()
   {
     return birthdayVisibility;
   }
+
   public StringProperty getLogin_createButtonText()
   {
     return login_createButtonText;
   }
+
   public BooleanProperty getResetPasswordButtonVisibility()
   {
     return resetPasswordButtonVisibility;
   }
+
   public BooleanProperty getLogin_createButtonVisibility()
   {
     return login_createButtonVisibility;
@@ -384,22 +399,27 @@ public class CreateLoginViewModel
   {
     return emailLabelText;
   }
+
   public BooleanProperty getCancelButtonVisibility()
   {
     return cancelButtonVisibility;
   }
+
   public StringProperty getHeaderProperty()
   {
     return headerProperty;
   }
+
   public BooleanProperty getPasswordVisibility()
   {
     return passwordVisibility;
   }
+
   public BooleanProperty getDisableProperty()
   {
     return disableProperty;
   }
+
   public BooleanProperty getConfirmButtonVisibility()
   {
     return confirmButtonVisibility;
