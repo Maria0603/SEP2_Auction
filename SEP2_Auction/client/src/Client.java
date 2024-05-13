@@ -1,6 +1,6 @@
 import javafx.application.Application;
 
-public class Main
+public class Client
 {
   public static void main(String[] args)
   {
