@@ -15,12 +15,14 @@ public class ViewModelState
   private boolean bids, createdAuctions, allAuctions;
   private boolean create, login, resetPassword, edit, display;
   private boolean moderator;
+  private boolean lookingAtModerator;
 
   public ViewModelState()
   {
     selectedAuction = null;
     userEmail=null;
     moderator=false;
+    lookingAtModerator=false;
     setAllAuctions();
     setCreate();
   }
@@ -42,6 +44,15 @@ public class ViewModelState
   public void setModerator(boolean isModerator)
   {
     this.moderator=isModerator;
+  }
+
+  public void setLookingAtModerator(boolean looking)
+  {
+    this.lookingAtModerator=looking;
+  }
+  public boolean isLookingAtModerator()
+  {
+    return lookingAtModerator;
   }
   public boolean isModerator()
   {

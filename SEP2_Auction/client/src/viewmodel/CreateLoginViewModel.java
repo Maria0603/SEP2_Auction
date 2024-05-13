@@ -233,14 +233,22 @@ public class CreateLoginViewModel
     try
     {
       birthDate.set(null);
-      User user=model.getParticipant(viewState.getUserEmail());
-      if(user!=null)
+      User userToBeDisplayed;
+      if(viewState.isLookingAtModerator())
       {
-        firstNameProperty.set(user.getFirstname());
-        lastNameProperty.set(user.getLastname());
-        emailProperty.set(user.getEmail());
-        phoneProperty.set(user.getPhone());
-        birthDate.set(user.getBirthday());
+        setForDisplayModeratorInfo();
+        userToBeDisplayed = model.getModeratorInfo();
+        viewState.setLookingAtModerator(false);
+      }
+      else userToBeDisplayed=model.getUser(viewState.getUserEmail());
+
+      if(userToBeDisplayed!=null)
+      {
+        firstNameProperty.set(userToBeDisplayed.getFirstname());
+        lastNameProperty.set(userToBeDisplayed.getLastname());
+        emailProperty.set(userToBeDisplayed.getEmail());
+        phoneProperty.set(userToBeDisplayed.getPhone());
+        birthDate.set(userToBeDisplayed.getBirthday());
       }
     }
     catch (SQLException e)
@@ -248,6 +256,13 @@ public class CreateLoginViewModel
       errorProperty.set(e.getMessage());
       //e.printStackTrace();
     }
+  }
+  private void setForDisplayModeratorInfo()
+  {
+    birthdayVisibility.set(false);
+    resetPasswordButtonVisibility.set(false);
+    login_createButtonVisibility.set(false);
+    headerProperty.set("Moderator's information");
   }
   public void setForEditProfile()
   {

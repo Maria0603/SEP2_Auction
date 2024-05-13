@@ -30,7 +30,9 @@ public interface AuctionRemote extends Remote
 
   void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
       throws RemoteException, SQLException;
-  User getParticipant(String email) throws RemoteException, SQLException;
+  User getUser(String email) throws RemoteException, SQLException;
+  User getModeratorInfo() throws RemoteException, SQLException;
+
   boolean isModerator(String email) throws RemoteException, SQLException;
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws RemoteException, SQLException;
 

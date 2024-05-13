@@ -12,7 +12,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.time.ZoneId;
 import java.util.ArrayList;
 
 import utility.persistence.MyDatabase;
@@ -350,7 +349,7 @@ public class AuctionDatabase implements AuctionPersistence
       if (email.equals(MODERATOR_EMAIL))
       {
         return new User(user.getFirstname(), user.getLastname(),
-            getModeratorInfo(), null, user.getPhone(), null);
+            getModeratorSpecificInfo(), null, user.getPhone(), null);
       }
       else
       {
@@ -360,6 +359,10 @@ public class AuctionDatabase implements AuctionPersistence
         }
       }
     return null;
+  }
+  @Override public User getModeratorInfo() throws SQLException
+  {
+    return getUserInfo(MODERATOR_EMAIL);
   }
 
   private Date getParticipantInfo(String email) throws SQLException
@@ -374,7 +377,7 @@ public class AuctionDatabase implements AuctionPersistence
     return null;
   }
 
-  private String getModeratorInfo() throws SQLException
+  private String getModeratorSpecificInfo() throws SQLException
   {
     String sql = "SELECT personal_email FROM moderator WHERE moderator_email=?;\n";
     ArrayList<Object[]> results = database.query(sql, MODERATOR_EMAIL);

@@ -16,7 +16,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class AuctionServer
     implements AuctionRemote, RemoteSubject<String, Object>,
@@ -122,9 +121,14 @@ public class AuctionServer
     model.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
-  @Override public synchronized User getParticipant(String email) throws RemoteException, SQLException
+  @Override public synchronized User getUser(String email) throws RemoteException, SQLException
   {
-    return model.getParticipant(email);
+    return model.getUser(email);
+  }
+
+  @Override public User getModeratorInfo() throws SQLException
+  {
+    return model.getModeratorInfo();
   }
 
   @Override public synchronized boolean isModerator(String email)

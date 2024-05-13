@@ -95,6 +95,10 @@ public class FixedPaneViewModel implements PropertyChangeListener
   {
     state.setCreatedAuctions();
   }
+  public void setModeratorInfo()
+  {
+      state.setLookingAtModerator(true);
+  }
 
   public StringProperty getEmailProperty()
   {

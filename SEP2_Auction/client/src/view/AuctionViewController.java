@@ -206,6 +206,7 @@ public class AuctionViewController
     currentBidderTextLabel.setVisible(true);
     currentBidTextLabel.setVisible(true);
     bidLabel.setVisible(true);
+    incomingBidTextField.setVisible(true);
     //bidTextField.setVisible(true);
     //bidTextField.requestFocus();
     placeBidButton.setVisible(true);

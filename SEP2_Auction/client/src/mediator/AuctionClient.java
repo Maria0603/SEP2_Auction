@@ -168,11 +168,23 @@ public class AuctionClient
     }
   }
 
-  @Override public User getParticipant(String email) throws SQLException
+  @Override public User getUser(String email) throws SQLException
   {
     try
     {
-      return server.getParticipant(email);
+      return server.getUser(email);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  @Override public User getModeratorInfo() throws SQLException
+  {
+    try
+    {
+      return server.getModeratorInfo();
     }
     catch(RemoteException e)
     {

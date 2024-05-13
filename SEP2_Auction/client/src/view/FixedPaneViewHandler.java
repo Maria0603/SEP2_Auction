@@ -81,49 +81,20 @@ public class FixedPaneViewHandler
     {
       case START_AUCTION -> sellItemButtonPressed();
       case DISPLAY_AUCTION -> displayAuction();
-      case ALL_AUCTIONS -> allAuctionsButtonPressed();
       case NOTIFICATIONS -> notificationsButtonPressed();
+      case ALL_AUCTIONS -> allAuctionsButtonPressed();
       case BIDS -> myBidsButtonPressed();
-      case DISPLAY_PROFILE -> myProfile_settingsButtonPressed();
       case CREATED_AUCTIONS -> myAuctions_allAccountsButtonPressed();
-      case RESET_PASSWORD -> resetPassword();
+      case DISPLAY_PROFILE -> myProfile_settingsButtonPressed();
       case EDIT_PROFILE -> editProfile();
+      case RESET_PASSWORD -> resetPassword();
     }
-
   }
 
   @FXML Region sellItemButtonPressed()
   {
     fixedPaneViewModel.sellItem();
     return loadAuctionView(WindowType.START_AUCTION);
-
-    //maybe I can delete this
-    /*if (auctionViewController == null)
-    {
-      try
-      {
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("AuctionView.fxml"));
-        Region root = loader.load();
-        borderPane.setCenter(root);
-        auctionViewController = loader.getController();
-
-        auctionViewController.init(viewHandler,
-            viewModelFactory.getAuctionViewModel(), root,
-            WindowType.START_AUCTION);
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    else
-    {
-      borderPane.setCenter(auctionViewController.getRoot());
-      auctionViewController.reset(WindowType.START_AUCTION);
-
-    }
-    return auctionViewController.getRoot();*/
   }
 
   private Region loadAuctionView(WindowType windowType)
@@ -165,23 +136,6 @@ public class FixedPaneViewHandler
   {
     fixedPaneViewModel.leaveAuctionView();
     loadAuctionView(WindowType.DISPLAY_AUCTION);
-    /*try
-    {
-      FXMLLoader loader = new FXMLLoader(
-          getClass().getResource("AuctionView.fxml"));
-      Region root = loader.load();
-      borderPane.setCenter(root);
-      auctionViewController = loader.getController();
-      auctionViewController.init(viewHandler,
-          viewModelFactory.getAuctionViewModel(), root,
-          WindowType.DISPLAY_AUCTION);
-
-      fixedPaneViewModel.leaveAuctionView();
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }*/
   }
   private void editProfile()
   {
@@ -245,6 +199,8 @@ public class FixedPaneViewHandler
   private @FXML void moderatorInfoButtonPressed(ActionEvent event)
   {
     leaveAuction();
+    fixedPaneViewModel.setModeratorInfo();
+    reset(WindowType.DISPLAY_PROFILE);
   }
 
   private @FXML Region myAuctions_allAccountsButtonPressed()
@@ -287,38 +243,11 @@ public class FixedPaneViewHandler
     leaveAuction();
     fixedPaneViewModel.setForDisplayProfile();
     return loadProfile(WindowType.DISPLAY_PROFILE);
-    /*
-
-    if (createLoginViewController == null)
-    {
-      try
-      {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("CreateAccountEditProfileView.fxml"));
-        Region root = loader.load();
-        createLoginViewController = loader.getController();
-
-        createLoginViewController.init(viewHandler,
-            viewModelFactory.getCreateLoginViewModel(), root, WindowType.DISPLAY_PROFILE);
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-    }
-    else
-    {
-      createLoginViewController.reset(WindowType.DISPLAY_PROFILE);
-    }
-    borderPane.setCenter(createLoginViewController.getRoot());
-    return createLoginViewController.getRoot();*/
   }
 
   @FXML Region notificationsButtonPressed()
   {
     leaveAuction();
-
-    //notificationsButton.setStyle("-fx-background-color: #ffffff;");
     notificationsButton.setStyle("");
     if (allAccountsNotificationsViewController == null)
     {

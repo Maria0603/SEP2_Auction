@@ -7,13 +7,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -82,9 +77,14 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
-  @Override public User getParticipant(String email) throws SQLException
+  @Override public User getUser(String email) throws SQLException
   {
-    return client.getParticipant(email);
+    return client.getUser(email);
+  }
+
+  @Override public User getModeratorInfo() throws SQLException
+  {
+    return client.getModeratorInfo();
   }
 
   @Override public boolean isModerator(String email) throws SQLException

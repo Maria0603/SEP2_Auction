@@ -98,9 +98,14 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     auctionDatabase.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
-  @Override public User getParticipant(String email) throws SQLException
+  @Override public User getUser(String email) throws SQLException
   {
     return auctionDatabase.getUserInfo(email);
+  }
+
+  @Override public User getModeratorInfo() throws SQLException
+  {
+    return auctionDatabase.getModeratorInfo();
   }
 
   @Override public boolean isModerator(String email) throws SQLException

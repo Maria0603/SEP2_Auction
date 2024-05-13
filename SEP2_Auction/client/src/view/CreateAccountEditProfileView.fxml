@@ -132,7 +132,7 @@
             </HBox>
          </children>
       </VBox>
-      <Label id="headerLabel" fx:id="headerLabel" alignment="CENTER" layoutX="564.0" layoutY="35.0" prefHeight="34.0" prefWidth="246.0" text="Create account">
+      <Label id="headerLabel" fx:id="headerLabel" alignment="CENTER" layoutX="507.0" layoutY="35.0" prefHeight="34.0" prefWidth="317.0" text="Create account">
          <font>
             <Font name="System Bold" size="23.0" />
          </font>
