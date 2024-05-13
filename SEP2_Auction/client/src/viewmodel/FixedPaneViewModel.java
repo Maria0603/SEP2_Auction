@@ -102,7 +102,15 @@ public class FixedPaneViewModel implements PropertyChangeListener
   {
     return buttonsDisabled;
   }
-
+  public void setForEditProfile()
+  {
+    buttonsDisabled.set(true);
+    state.setEdit();
+  }
+  public void setModeratorInfo()
+  {
+    state.setLookingAtModerator(true);
+  }
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     //  TODO: To be combined
