@@ -27,8 +27,8 @@ public class AuctionDatabase implements AuctionPersistence {
   private static final String MODERATOR_EMAIL = "bob@bidhub";
   private static final String MODERATOR_TEMPORARY_PASSWORD = "1234";
 
-  private static final String PASSWORD = "1706";
-  // private static final String PASSWORD = "344692StupidPass";
+  //private static final String PASSWORD = "1706";
+   private static final String PASSWORD = "344692StupidPass";
   // private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
@@ -285,6 +285,12 @@ public class AuctionDatabase implements AuctionPersistence {
       throws SQLException {
     String sql = "SELECT ID from auction WHERE creator_email=?;";
     return getAuctions(sql, seller);
+  }
+
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    String sql="SELECT ID FROM sprint1database.auction;";
+    return getAuctions(sql, null);
   }
 
   private AuctionList getAuctions(String sql, String user) throws SQLException {

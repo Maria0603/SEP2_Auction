@@ -106,6 +106,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.placeBid(bidder, bidValue, auctionId);
   }
 
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    return client.getAllAuctions();
+  }
+
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {

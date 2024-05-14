@@ -47,6 +47,7 @@ public class FixedPaneViewHandler
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
     notificationsButton.styleProperty().bindBidirectional(
         fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
+    notificationsButton.setStyle("");
 
     bindVisibleProperty();
     bindDisableProperty();

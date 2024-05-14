@@ -51,6 +51,7 @@ public class FixedPaneViewModel implements PropertyChangeListener
   }
   public void setForDisplayProfile()
   {
+    buttonsDisabled.set(false);
     state.setDisplay();
   }
   public void setForResetPassword()
@@ -73,7 +74,6 @@ public class FixedPaneViewModel implements PropertyChangeListener
       if(model.isModerator(state.getUserEmail()))
       {
         state.setModerator(true);
-        //buttonsDisabled.set(true);
       }
     }
     catch (SQLException e)
@@ -114,9 +114,8 @@ public class FixedPaneViewModel implements PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     //  TODO: To be combined
-    if(evt.getPropertyName().equals("Notification")){
-      notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");
-    }
+    //if(evt.getPropertyName().equals("Notification")){
+      //notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");}
 
     if(emailProperty.get().equals(((Notification)evt.getNewValue()).getReceiver())) {
       notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");

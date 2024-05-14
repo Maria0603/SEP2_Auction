@@ -91,41 +91,41 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.login(email, password);
   }
 
-  @Override public AuctionList getPreviousBids(String bidder)
+  @Override public synchronized AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
     return auctionDatabase.getPreviousBids(bidder);
   }
 
-  @Override public AuctionList getCreatedAuctions(String seller)
+  @Override public synchronized AuctionList getCreatedAuctions(String seller)
       throws SQLException
   {
     return auctionDatabase.getCreatedAuctions(seller);
   }
 
-  @Override public void resetPassword(String userEmail, String oldPassword,
+  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
   {
     auctionDatabase.resetPassword(userEmail, oldPassword, newPassword,
         repeatPassword);
   }
 
-  @Override public User getUser(String email) throws SQLException
+  @Override public synchronized User getUser(String email) throws SQLException
   {
     return auctionDatabase.getUserInfo(email);
   }
 
-  @Override public User getModeratorInfo() throws SQLException
+  @Override public synchronized User getModeratorInfo() throws SQLException
   {
     return auctionDatabase.getModeratorInfo();
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public synchronized boolean isModerator(String email) throws SQLException
   {
     return auctionDatabase.isModerator(email);
   }
 
-  @Override public User editInformation(String oldEmail, String firstname,
+  @Override public synchronized User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
       LocalDate birthday) throws SQLException
   {
@@ -134,6 +134,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     if (!oldEmail.equals(email))
       property.firePropertyChange("Edit", oldEmail, email);
     return user;
+  }
+
+  @Override public synchronized AuctionList getAllAuctions() throws SQLException
+  {
+    return auctionDatabase.getAllAuctions();
   }
 
   @Override public synchronized void addListener(String propertyName,

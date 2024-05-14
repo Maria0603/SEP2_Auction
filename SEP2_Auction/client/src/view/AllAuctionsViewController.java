@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import model.Auction;
-import utility.IntStringConverter;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 import javafx.geometry.Insets;
@@ -19,7 +18,6 @@ import javafx.geometry.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class AllAuctionsViewController implements PropertyChangeListener {
   @FXML
@@ -74,10 +72,10 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   public void loadAuctions() {
     allAuctionsViewModel.fillAuctionCards();
     clearGrid();
-    renderGreedWithCards(this.auctionCards);
+    renderGridWithCards(this.auctionCards);
   }
 
-  private void renderGreedWithCards(ObservableList<Auction> auctionCards) {
+  private void renderGridWithCards(ObservableList<Auction> auctionCards) {
     try {
       int totalElements = auctionCards.size();
       int numRows = (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
@@ -150,7 +148,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
   public void searchPressed(ActionEvent actionEvent) throws IOException {
     clearGrid();
     ObservableList<Auction> searchResults = allAuctionsViewModel.searchAuctions();
-    renderGreedWithCards(searchResults);
+    renderGridWithCards(searchResults);
   }
 
   private int getLinearIndex(int row, int col) {

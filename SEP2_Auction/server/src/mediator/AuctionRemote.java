@@ -35,7 +35,7 @@ public interface AuctionRemote extends Remote
 
   boolean isModerator(String email) throws RemoteException, SQLException;
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws RemoteException, SQLException;
-
+  AuctionList getAllAuctions() throws RemoteException, SQLException;
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   boolean removeListener(GeneralListener<String, Object> listener,

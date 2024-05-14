@@ -1,4 +1,3 @@
-
 package mediator;
 
 import model.*;
@@ -143,6 +142,11 @@ public class AuctionServer
       LocalDate birthday) throws RemoteException, SQLException
   {
     return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
+  }
+
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    return model.getAllAuctions();
   }
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
