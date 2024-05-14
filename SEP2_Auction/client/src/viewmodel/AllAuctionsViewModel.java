@@ -1,8 +1,5 @@
 package viewmodel;
 
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -55,6 +52,18 @@ public class AllAuctionsViewModel
     }
     return null;
   }
+  public AuctionList getAllAuctions()
+  {
+    try
+    {
+      return model.getAllAuctions();
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
   public AuctionList getPreviousBids()
   {
@@ -73,6 +82,7 @@ public class AllAuctionsViewModel
   {
     try
     {
+      System.out.println("created auctions from" + state.getUserEmail());
       return model.getCreatedAuctions(state.getUserEmail());
     }
     catch (SQLException e)
@@ -88,7 +98,10 @@ public class AllAuctionsViewModel
     AuctionList list;
     if (state.getAllAuctions())
     {
-      list = getOngoingAuctions();
+      if(state.isModerator())
+        list=getAllAuctions();
+      else
+        list = getOngoingAuctions();
       if (list != null)
       {
         for (int i = 0; i < list.getSize(); i++)

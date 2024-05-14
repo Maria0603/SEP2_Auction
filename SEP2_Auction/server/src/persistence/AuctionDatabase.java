@@ -313,6 +313,12 @@ public class AuctionDatabase implements AuctionPersistence
     return getAuctions(sql, seller);
   }
 
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    String sql="SELECT ID FROM sprint1database.auction;";
+    return getAuctions(sql, null);
+  }
+
   private AuctionList getAuctions(String sql, String user) throws SQLException
   {
     ArrayList<Object[]> results;
@@ -392,6 +398,7 @@ public class AuctionDatabase implements AuctionPersistence
   {
     return isEmailIn(email, "moderator_email", "moderator");
   }
+
 
   @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,

@@ -100,6 +100,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
   }
 
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    return client.getAllAuctions();
+  }
+
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException
   {

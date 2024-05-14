@@ -145,6 +145,11 @@ public class AuctionServer
     return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
   }
 
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    return model.getAllAuctions();
+  }
+
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException
   {

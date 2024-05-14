@@ -278,6 +278,7 @@ public class AuctionViewModel implements PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent event)
   {
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    System.out.println(event.getPropertyName() + " received in view model");
 
     switch (event.getPropertyName())
     {
@@ -319,8 +320,12 @@ public class AuctionViewModel implements PropertyChangeListener
         }
         break;
       case "Edit":
+        System.out.println("edit received in view model");
         if(currentBidderProperty.get().equals(event.getOldValue()))
+        {
+          state.getSelectedAuction().setCurrentBidder(event.getNewValue().toString());
           currentBidderProperty.set(event.getNewValue().toString());
+        }
         break;
     }
   }
