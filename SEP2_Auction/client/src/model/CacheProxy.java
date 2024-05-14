@@ -32,8 +32,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.addListener("Notification", this);
     modelManager.addListener("Edit", this);
 
-    ongoingAuctionsCache = modelManager.getOngoingAuctions();
-    allAuctionsCache = modelManager.getAllAuctions();
+    ongoingAuctionsCache = new AuctionList();
+    //allAuctionsCache = modelManager.getAllAuctions();
     previouslyOpenedAuctions = new AuctionList();
     timers = new ArrayList<>();
 
@@ -117,6 +117,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   {
     userEmail = modelManager.addUser(firstname, lastname, email, password,
         repeatedPassword, phone, birthday);
+    ongoingAuctionsCache = modelManager.getOngoingAuctions();
     notifications = modelManager.getNotifications(userEmail);
     createdAuctions = modelManager.getCreatedAuctions(userEmail);
     previousBids = modelManager.getPreviousBids(userEmail);
@@ -126,6 +127,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   @Override public String login(String email, String password)
       throws SQLException
   {
+    ongoingAuctionsCache = modelManager.getOngoingAuctions();
     userEmail = modelManager.login(email, password);
     notifications = modelManager.getNotifications(userEmail);
     createdAuctions = modelManager.getCreatedAuctions(userEmail);
@@ -177,7 +179,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
 
   @Override public AuctionList getAllAuctions() throws SQLException
   {
-    return allAuctionsCache;
+    return modelManager.getAllAuctions();
+    //return allAuctionsCache;
   }
 
   @Override public void addListener(String propertyName,
@@ -200,7 +203,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       {
         Auction auction = (Auction) evt.getNewValue();
         ongoingAuctionsCache.addAuction(auction);
-        allAuctionsCache.addAuction(auction);
+        //allAuctionsCache.addAuction(auction);
         if (userEmail.equals(auction.getSeller()))
           createdAuctions.addAuction(auction);
       }
@@ -228,8 +231,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId())
             .setCurrentBidder(bid.getBidder());
 
-        allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
-        allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+        //allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        //allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
 
         //if we opened it before, we update that cache too
         if (previouslyOpenedAuctions.contains(bid.getAuctionId()))
@@ -274,7 +277,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
             createdAuctions = modelManager.getCreatedAuctions(userEmail);
             previousBids = modelManager.getPreviousBids(userEmail);
             ongoingAuctionsCache = modelManager.getOngoingAuctions();
-            allAuctionsCache = modelManager.getAllAuctions();
+            //allAuctionsCache = modelManager.getAllAuctions();
           }
           catch (SQLException e)
           {

@@ -319,10 +319,15 @@ public class AuctionViewModel implements PropertyChangeListener
         }
         break;
       case "Edit":
-        if(currentBidderProperty.get().equals(event.getOldValue()))
+        if (currentBidderProperty.get().equals(event.getOldValue()))
         {
-          state.getSelectedAuction().setCurrentBidder(event.getNewValue().toString());
-          currentBidderProperty.set(event.getNewValue().toString());
+          System.out.println("changed for " + idProperty.get() + " - from "
+              + currentBidderProperty.get());
+          state.getSelectedAuction()
+              .setCurrentBidder(event.getNewValue().toString());
+          Platform.runLater(
+              () -> currentBidderProperty.set(event.getNewValue().toString()));
+          System.out.println("to " + currentBidderProperty.get());
         }
         break;
     }
