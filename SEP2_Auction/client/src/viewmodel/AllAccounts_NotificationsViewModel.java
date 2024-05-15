@@ -1,10 +1,7 @@
 package viewmodel;
 
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.AuctionModel;
@@ -24,6 +21,8 @@ public class AllAccounts_NotificationsViewModel
   private final AuctionModel model;
   private ViewModelState viewModelState;
   private StringProperty errorProperty;
+  private BooleanProperty allFieldsVisibility;
+  private StringProperty firstColumnNameProperty, secondColumnNameProperty;
 
   public AllAccounts_NotificationsViewModel(AuctionModel model,
       ViewModelState viewModelState)
@@ -34,6 +33,11 @@ public class AllAccounts_NotificationsViewModel
     notifications = FXCollections.observableArrayList();
     selectedRowProperty = new SimpleObjectProperty<>();
     errorProperty = new SimpleStringProperty();
+
+    //to control the visibility from the view model
+    allFieldsVisibility = new SimpleBooleanProperty();
+    firstColumnNameProperty = new SimpleStringProperty();
+    secondColumnNameProperty = new SimpleStringProperty();
     reset();
   }
 
@@ -53,6 +57,18 @@ public class AllAccounts_NotificationsViewModel
     selectedRowProperty.set(notification);
   }
 
+  public void setForNotifications()
+  {
+    allFieldsVisibility.set(false);
+    firstColumnNameProperty.set("Date and time");
+    secondColumnNameProperty.set("Content");
+  }
+
+  public void setForAccounts()
+  {
+    allFieldsVisibility.set(true);
+  }
+
   private void loadNotifications()
   {
     if (viewModelState.getUserEmail() != null)
@@ -61,11 +77,14 @@ public class AllAccounts_NotificationsViewModel
       NotificationList list;
       try
       {
-        //we need the accounts
         list = model.getNotifications(viewModelState.getUserEmail());
-        for (int i = 0; i < list.getSize(); i++)
+        if (list != null)
         {
-          notifications.add(new NotificationViewModel(list.getNotification(i)));
+          for (int i = 0; i < list.getSize(); i++)
+          {
+            notifications.add(
+                new NotificationViewModel(list.getNotification(i)));
+          }
         }
       }
       catch (SQLException e)
@@ -80,6 +99,21 @@ public class AllAccounts_NotificationsViewModel
     return errorProperty;
   }
 
+  public BooleanProperty getAllFieldsVisibility()
+  {
+    return allFieldsVisibility;
+  }
+
+  public StringProperty getFirstColumnNameProperty()
+  {
+    return firstColumnNameProperty;
+  }
+
+  public StringProperty getSecondColumnNameProperty()
+  {
+    return secondColumnNameProperty;
+  }
+
   public void addNotification(NotificationViewModel notification)
   {
     notifications.add(notification);
@@ -89,14 +123,13 @@ public class AllAccounts_NotificationsViewModel
   {
     switch (evt.getPropertyName())
     {
-
       case "Notification":
         if (evt.getNewValue() != null)
         {
           Notification notification = (Notification) evt.getNewValue();
-          if (notification.getReceiver()
-              .equals(viewModelState.getUserEmail()))
-            Platform.runLater(() -> addNotification(new NotificationViewModel(notification)));
+          if (notification.getReceiver().equals(viewModelState.getUserEmail()))
+            Platform.runLater(
+                () -> addNotification(new NotificationViewModel(notification)));
         }
         break;
     }

@@ -1,4 +1,3 @@
-
 package view;
 
 import javafx.fxml.FXMLLoader;
@@ -21,20 +20,17 @@ public class ViewHandler {
 
   public void start(Stage primaryStage) {
     this.primaryStage = primaryStage;
-    //openView("startAuction");
-    //openView("allAuctions");
-//    openView(WindowType.ALL_AUCTIONS);
     openView(WindowType.SIGN_UP);
   }
 
   public void openView(WindowType type) {
     Region root = null;
     switch (type) {
-      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS ->{
+      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS, CREATED_AUCTIONS, DISPLAY_PROFILE -> {
         root = loadFixedPaneView("FixedPaneView.fxml", type);
       }
       case SIGN_UP, LOG_IN -> {
-        root = loadCreateLoginView("CreateAccountEditProfileView.fxml",type);
+        root = loadCreateLoginView("CreateAccountEditProfileView.fxml", type);
       }
       default -> {
         System.out.println("Unexpected value: " + type);
@@ -47,17 +43,14 @@ public class ViewHandler {
       title += root.getUserData();
     }
 
-
     primaryStage.setTitle(title);
     primaryStage.setScene(currentScene);
     primaryStage.show();
   }
 
-
   public void closeView() {
     primaryStage.close();
   }
-
 
   private Region loadFixedPaneView(String fxmlFile, WindowType windowType) {
     if (fixedPaneViewController == null) {
@@ -70,16 +63,15 @@ public class ViewHandler {
         fixedPaneViewController.init(this,
             viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root,
             windowType);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    }
-    else {
+    } else {
       fixedPaneViewController.reset(windowType);
     }
     return fixedPaneViewController.getRoot();
   }
+
   private Region loadCreateLoginView(String fxmlFile, WindowType windowType) {
     if (createLoginViewController == null) {
       try {
@@ -89,22 +81,13 @@ public class ViewHandler {
         createLoginViewController = loader.getController();
 
         createLoginViewController.init(this,
-                viewModelFactory.getCreateLoginViewModel(), root,
-                windowType);
-      }
-      catch (Exception e) {
+            viewModelFactory.getCreateLoginViewModel(), root, windowType);
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    }
-    else {
+    } else {
       createLoginViewController.reset(windowType);
     }
     return createLoginViewController.getRoot();
   }
 }
-
-
-
-
-
-

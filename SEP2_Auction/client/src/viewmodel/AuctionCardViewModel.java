@@ -32,6 +32,9 @@ public class AuctionCardViewModel implements PropertyChangeListener
     model.addListener("Bid", this);
   }
 
+
+
+
   public void setData(Auction auction)
   {
     idProperty.set(auction.getID());
@@ -86,7 +89,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    Bid bid=(Bid)evt.getNewValue();
+    Bid bid = (Bid) evt.getNewValue();
     if (idProperty.get() == bid.getAuctionId())
       Platform.runLater(() -> currentBidProperty.set(bid.getBidAmount()));
   }

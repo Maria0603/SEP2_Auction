@@ -40,6 +40,7 @@ public class User implements Serializable {
 
         this.phone = phone;
     }
+
     public void setBirthday(LocalDate birthday)
     {
         this.birthday = birthday;

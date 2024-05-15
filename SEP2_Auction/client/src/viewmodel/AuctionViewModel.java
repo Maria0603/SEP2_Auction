@@ -7,43 +7,28 @@ import javafx.scene.image.Image;
 import model.Auction;
 import model.AuctionModel;
 import model.Bid;
-import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 public class AuctionViewModel implements PropertyChangeListener
 {
 
-  private BooleanProperty importButtonVisible, timeLabelVisible, timeTextFieldVisible, startAuctionButtonVisible, cancelButtonVisible;
-  private BooleanProperty timerCountdownLabelVisible, currentBidderLabelVisible, currentBidLabelVisible, currentBidderTextLabelVisible;
-  private BooleanProperty currentBidTextLabelVisible;
-  private BooleanProperty hoursLabelVisible;
-  private BooleanProperty bidLabelVisible;
-  private BooleanProperty placeBidButtonVisible;
-  private BooleanProperty buyNowButtonVisible;
-  private BooleanProperty somethingWrongLabelVisible;
-  private BooleanProperty sellerRateLabelVisible, ratingLabelVisible, deleteButtonVisible, reasonTextAreaVisible, incomingBidTextFieldVisible;
-
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
   private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;
-  ;
+  private BooleanProperty startAuctionVisibility, disableAsInDisplay;
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
+  private BooleanProperty isSold;
 
   public AuctionViewModel(AuctionModel model, ViewModelState state)
   {
@@ -66,10 +51,33 @@ public class AuctionViewModel implements PropertyChangeListener
     incomingBidProperty = new SimpleIntegerProperty();
     currentBidProperty = new SimpleIntegerProperty();
     currentBidderProperty = new SimpleStringProperty();
-    //model.addListener("Time", this);
-    //model.addListener("End", this);
+
+    startAuctionVisibility = new SimpleBooleanProperty();
+    disableAsInDisplay = new SimpleBooleanProperty();
+    isSold = new SimpleBooleanProperty(false);
+    model.addListener("Bid", this);
+    model.addListener("Edit", this);
+
     reset();
-    //importButtonVisible=new SimpleBooleanProperty();
+  }
+
+  public BooleanProperty isSoldProperty() {
+    return isSold;
+  }
+
+  public boolean isSold() {
+    return isSold.get();
+  }
+
+  public void setSold(boolean sold) {
+    isSold.set(sold);
+  }
+
+
+  public void setForStart()
+  {
+    startAuctionVisibility.set(true);
+    disableAsInDisplay.set(false);
   }
 
   public void startAuction()
@@ -110,6 +118,7 @@ public class AuctionViewModel implements PropertyChangeListener
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
+      incomingBidProperty.set(0);
       //e.printStackTrace();
     }
     if (errorProperty.get().isEmpty() && bid != null
@@ -120,6 +129,29 @@ public class AuctionViewModel implements PropertyChangeListener
       incomingBidProperty.set(0);
     }
   }
+
+  public void buyOut() {
+    errorProperty.set("");
+    try {
+
+      if (currentBidProperty.get() == 0 && !isSold.get()) {
+        model.buyOut(state.getUserEmail(), idProperty.get());
+        setSold(true); //disabled
+        //removing listeners
+        model.removeListener("Time", this);
+        model.removeListener("End", this);
+      } else {
+        errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
+      }
+    } catch (SQLException e) {
+      errorProperty.set(e.getMessage());
+      System.out.println(errorProperty.get());
+      e.printStackTrace();
+    } catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   private byte[] imageToByteArray(Image image) throws IOException
   {
@@ -137,10 +169,12 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void reset()
   {
-    model.addListener("Bid", this);
+    errorProperty.set("");
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null)
     {
+      startAuctionVisibility.set(false);
+      disableAsInDisplay.set(true);
       //when we open an auction, we listen to the updating time
       model.addListener("Time", this);
       model.addListener("End", this);
@@ -153,8 +187,8 @@ public class AuctionViewModel implements PropertyChangeListener
           selectedAuction.getPriceConstraint().getReservePrice());
       buyoutPriceProperty.set(
           selectedAuction.getPriceConstraint().getBuyoutPrice());
-      incrementProperty.set(state.getSelectedAuction().getPriceConstraint()
-          .getMinimumIncrement());
+      incrementProperty.set(
+          selectedAuction.getPriceConstraint().getMinimumIncrement());
       imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
       currentBidderProperty.set(selectedAuction.getCurrentBidder());
       currentBidProperty.set(selectedAuction.getCurrentBid());
@@ -165,46 +199,18 @@ public class AuctionViewModel implements PropertyChangeListener
     }
   }
 
-  public void setForStart()
-  {
-    importButtonVisible.set(false);
-    timeLabelVisible.set(true);
-    timeTextFieldVisible.set(true);
-    startAuctionButtonVisible.set(true);
-    cancelButtonVisible.set(true);
-    timerCountdownLabelVisible.set(false);
-    currentBidderLabelVisible.set(false);
-    currentBidLabelVisible.set(false);
-    currentBidderTextLabelVisible.set(false);
-    currentBidTextLabelVisible.set(false);
-    bidLabelVisible.set(false);
-    placeBidButtonVisible.set(false);
-    buyNowButtonVisible.set(false);
-    somethingWrongLabelVisible.set(false);
-    sellerRateLabelVisible.set(false);
-    ratingLabelVisible.set(false);
-    deleteButtonVisible.set(false);
-    reasonTextAreaVisible.set(false);
-    incomingBidTextFieldVisible.set(false);
-  }
-
-  public BooleanProperty getImportButtonVisible()
-  {
-    return importButtonVisible;
-  }
-
   public void leaveAuctionView()
   {
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
     model.removeListener("End", this);
+    errorProperty.set("");
   }
 
   public void wipe()
   {
     headerProperty.set("Start auction");
     idProperty.set(0);
-    currentBidProperty.set(0);
     buyoutPriceProperty.set(0);
     descriptionProperty.set("");
     errorProperty.set("");
@@ -214,7 +220,7 @@ public class AuctionViewModel implements PropertyChangeListener
     reservePriceProperty.set(0);
     timeProperty.set(0);
     titleProperty.set("");
-    currentBidderProperty.set("No bidder");
+    imageProperty.set(null);
   }
 
   public ObjectProperty<Image> getImageProperty()
@@ -297,116 +303,24 @@ public class AuctionViewModel implements PropertyChangeListener
     return incomingBidProperty;
   }
 
-  public BooleanProperty timeLabelVisibleProperty()
+  public BooleanProperty getStartAuctionVisibility()
   {
-    return timeLabelVisible;
+    return startAuctionVisibility;
   }
 
-
-  public BooleanProperty timeTextFieldVisibleProperty()
+  public BooleanProperty getDisableAsInDisplay()
   {
-    return timeTextFieldVisible;
-  }
-
-
-  public BooleanProperty startAuctionButtonVisibleProperty()
-  {
-    return startAuctionButtonVisible;
-  }
-
-  public BooleanProperty cancelButtonVisibleProperty()
-  {
-    return cancelButtonVisible;
-  }
-
-  public BooleanProperty timerCountdownLabelVisibleProperty()
-  {
-    return timerCountdownLabelVisible;
-  }
-
-  public BooleanProperty currentBidderLabelVisibleProperty()
-  {
-    return currentBidderLabelVisible;
-  }
-  public BooleanProperty currentBidLabelVisibleProperty()
-  {
-    return currentBidLabelVisible;
-  }
-
-  public BooleanProperty currentBidderTextLabelVisibleProperty()
-  {
-    return currentBidderTextLabelVisible;
-  }
-
-  public BooleanProperty currentBidTextLabelVisibleProperty()
-  {
-    return currentBidTextLabelVisible;
-  }
-  public BooleanProperty bidLabelVisibleProperty()
-  {
-    return bidLabelVisible;
-  }
-
-
-  public BooleanProperty placeBidButtonVisibleProperty()
-  {
-    return placeBidButtonVisible;
-  }
-
-
-  public BooleanProperty buyNowButtonVisibleProperty()
-  {
-    return buyNowButtonVisible;
-  }
-
-
-  public BooleanProperty somethingWrongLabelVisibleProperty()
-  {
-    return somethingWrongLabelVisible;
-  }
-
-
-  public BooleanProperty sellerRateLabelVisibleProperty()
-  {
-    return sellerRateLabelVisible;
-  }
-
-  public BooleanProperty ratingLabelVisibleProperty()
-  {
-    return ratingLabelVisible;
-  }
-
-
-  public BooleanProperty deleteButtonVisibleProperty()
-  {
-    return deleteButtonVisible;
-  }
-
-
-  public BooleanProperty reasonTextAreaVisibleProperty()
-  {
-    return reasonTextAreaVisible;
-  }
-
-
-  public BooleanProperty incomingBidTextFieldVisibleProperty()
-  {
-    return incomingBidTextFieldVisible;
-  }
-
-  public BooleanProperty hoursLabelVisibleProperty()
-  {
-    return hoursLabelVisible;
+    return disableAsInDisplay;
   }
 
   @Override public void propertyChange(PropertyChangeEvent event)
   {
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    System.out.println(event.getPropertyName() + " received in view model");
 
     switch (event.getPropertyName())
     {
       case "Time":
-        //System.out.println(event.getOldValue());
         if (idProperty.get() == Integer.parseInt(
             event.getOldValue().toString()))
         {
@@ -424,12 +338,31 @@ public class AuctionViewModel implements PropertyChangeListener
         break;
       case "Bid":
         Bid bid = (Bid) event.getNewValue();
+        if ((state.getSelectedAuction().getID()) == bid.getAuctionId())
+        {
+          try
+          {
+            state.setAuction(model.getAuction(bid.getAuctionId()));
+          }
+          catch (SQLException e)
+          {
+            e.printStackTrace();
+          }
+        }
         if (idProperty.get() == bid.getAuctionId())
         {
           Platform.runLater(() -> {
             currentBidProperty.set(bid.getBidAmount());
             currentBidderProperty.set(bid.getBidder());
           });
+        }
+        break;
+      case "Edit":
+        System.out.println("edit received in view model");
+        if(currentBidderProperty.get().equals(event.getOldValue()))
+        {
+          state.getSelectedAuction().setCurrentBidder(event.getNewValue().toString());
+          currentBidderProperty.set(event.getNewValue().toString());
         }
         break;
     }

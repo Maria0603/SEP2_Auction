@@ -40,6 +40,8 @@ public class AuctionClient
       server.addListener(this, "End");
       server.addListener(this,"Bid");
       server.addListener(this, "Notification");
+      server.addListener(this, "Edit");
+
     }
     catch (Exception e)
     {
@@ -125,6 +127,137 @@ public class AuctionClient
     } catch (RemoteException e) {
       return null;
     }
+  }
+
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    try
+    {
+      return server.getPreviousBids(bidder);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public AuctionList getCreatedAuctions(String seller)
+      throws SQLException
+  {
+    try
+    {
+      return server.getCreatedAuctions(seller);
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public void resetPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
+    try
+    {
+      server.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  @Override public User getUser(String email) throws SQLException
+  {
+    try
+    {
+      return server.getUser(email);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  @Override public User getModeratorInfo() throws SQLException
+  {
+    try
+    {
+      return server.getModeratorInfo();
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public boolean isModerator(String email) throws SQLException
+  {
+    try
+    {
+      return server.isModerator(email);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  @Override public User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    try
+    {
+      return server.editInformation(oldEmail, firstname, lastname, email,
+          password, phone, birthday);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    try
+    {
+      return server.getAllAuctions();
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+  @Override public AuctionList getAllAuctions() throws SQLException
+  {
+    try
+    {
+      return server.getAllAuctions();
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public void buyOut(String bidder, int auctionId)
+      throws RemoteException ,SQLException {
+    try {
+      server.buyOut(bidder, auctionId);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+
   }
 
   @Override public void addListener(String s,

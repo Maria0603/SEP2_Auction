@@ -10,7 +10,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -29,58 +28,136 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       throws SQLException
   {
     Auction auction = auctionDatabase.saveAuction(title, description,
-        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
+        reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData,
+        seller);
     property.firePropertyChange("Auction", null, auction);
+    ServerTimer timer = new ServerTimer(auction.getStartTime(),
+        auction.getEndTime(), auction.getID());
+    timer.addListener("End", this);
+    new Thread(timer).start();
 
     // auction.addListener("Time", this);
-    auction.addListener("End", this);
+    //auction.addListener("End", this);
     return auction;
   }
 
   @Override public synchronized Auction getAuction(int ID) throws SQLException
   {
-    System.out.println("server received a request in getAuctionById");
     return auctionDatabase.getAuctionById(ID);
   }
 
   @Override public synchronized AuctionList getOngoingAuctions()
       throws SQLException
   {
-    System.out.println("server received a request in getOngoingAuctions");
     return auctionDatabase.getOngoingAuctions();
   }
 
-
-  @Override public synchronized NotificationList getNotifications(String receiver)
-      throws SQLException
+  @Override public synchronized NotificationList getNotifications(
+      String receiver) throws SQLException
   {
     return auctionDatabase.getNotifications(receiver);
   }
 
-  @Override public synchronized Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws SQLException {
+  @Override public synchronized Bid placeBid(String bidder, int bidValue,
+      int auctionId) throws SQLException
+  {
     //we extract the existing bidder
-    Bid existingBid=auctionDatabase.getCurrentBidForAuction(auctionId);
+    Bid existingBid = auctionDatabase.getCurrentBidForAuction(auctionId);
     Bid bid = auctionDatabase.saveBid(bidder, bidValue, auctionId);
     //if they exist, we send the notification in the event
-    if(existingBid!=null)
+    if (existingBid != null)
     {
-      Notification notification= auctionDatabase.saveNotification("Your bid has been beaten for auction ID: "+ auctionId+".",
+      Notification notification = auctionDatabase.saveNotification(
+          "Your bid has been beaten for auction ID: " + auctionId + ".",
           existingBid.getBidder());
       property.firePropertyChange("Notification", null, notification);
     }
-      property.firePropertyChange("Bid", null, bid);
+    property.firePropertyChange("Bid", null, bid);
     return bid;
-  }
-  @Override
-  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
-    return auctionDatabase.createUser(firstname,lastname,email,password, repeatedPassword,phone, birthday).getEmail();
   }
 
   @Override
-  public synchronized String login(String email, String password) throws SQLException {
+  public void buyOut(String current_bider, int auctionId) throws SQLException {
+    try {
+      auctionDatabase.buyOut(current_bider, auctionId);
+      Auction auction = auctionDatabase.getAuctionById(auctionId);
+      property.firePropertyChange("End", auctionId, auction);
+
+      // Send notification to the buyer
+      Notification notification = auctionDatabase.saveNotification(
+          "Congratulations! You have successfully bought out the item.",
+          current_bider);
+      property.firePropertyChange("Notification", null, notification);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override public synchronized String addUser(String firstname,
+      String lastname, String email, String password, String repeatedPassword,
+      String phone, LocalDate birthday) throws SQLException
+  {
+    return auctionDatabase.createUser(firstname, lastname, email, password,
+        repeatedPassword, phone, birthday).getEmail();
+  }
+
+  @Override public synchronized String login(String email, String password)
+      throws SQLException
+  {
     //  TODO: add validation in database
-    return auctionDatabase.login(email,password);
+    return auctionDatabase.login(email, password);
+  }
+
+  @Override public synchronized AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    return auctionDatabase.getPreviousBids(bidder);
+  }
+
+  @Override public synchronized AuctionList getCreatedAuctions(String seller)
+      throws SQLException
+  {
+    return auctionDatabase.getCreatedAuctions(seller);
+  }
+
+  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
+    auctionDatabase.resetPassword(userEmail, oldPassword, newPassword,
+        repeatPassword);
+  }
+
+  @Override public synchronized User getUser(String email) throws SQLException
+  {
+    return auctionDatabase.getUserInfo(email);
+  }
+
+  @Override public synchronized User getModeratorInfo() throws SQLException
+  {
+    return auctionDatabase.getModeratorInfo();
+  }
+
+  @Override public synchronized boolean isModerator(String email) throws SQLException
+  {
+    return auctionDatabase.isModerator(email);
+  }
+
+  @Override public synchronized User editInformation(String oldEmail, String firstname,
+      String lastname, String email, String password, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    User user = auctionDatabase.editInformation(oldEmail, firstname, lastname,
+        email, password, phone, birthday);
+    if (!oldEmail.equals(email))
+    {
+      property.firePropertyChange("Edit", oldEmail, email);
+    }
+    return user;
+  }
+
+  @Override public synchronized AuctionList getAllAuctions() throws SQLException
+  {
+    return auctionDatabase.getAllAuctions();
   }
 
   @Override public synchronized void addListener(String propertyName,
@@ -97,12 +174,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override public synchronized void propertyChange(PropertyChangeEvent evt)
   {
-
     if (evt.getPropertyName().equals("End"))
     {
       try
       {
         auctionDatabase.markAsClosed((int) evt.getOldValue());
+        sendContactInformation((int) evt.getOldValue());
       }
       catch (SQLException e)
       {
@@ -111,5 +188,20 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     }
     // model manager property fires auction events further
     property.firePropertyChange(evt);
+  }
+  private void sendContactInformation(int id) throws SQLException {
+    Auction auction = auctionDatabase.getAuctionById(id);
+    String seller = auction.getSeller();
+    String bidder = auction.getCurrentBidder();
+    int bid = auction.getCurrentBid();
+
+    String contentForSeller = "Your Auction(id: " + id + ") has ended, Final bidder: " + bidder + ", with bid of " + bid + ".";
+    String contentForBidder = "You've won an Auction (id: " + id + "), sold by " + seller + ", with bid: " + bid + ".";
+
+    Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller);
+    Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder);
+
+    property.firePropertyChange("Notification", null, notificationOne);
+    property.firePropertyChange("Notification", null, notificationTwo);
   }
 }

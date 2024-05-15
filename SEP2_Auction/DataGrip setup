@@ -1,28 +1,29 @@
 CREATE SCHEMA IF NOT EXISTS sprint1database;
 SET SCHEMA 'sprint1database';
 
+CREATE DOMAIN email VARCHAR(200);
+CREATE DOMAIN first_last_name VARCHAR(100);
 
-CREATE DOMAIN email VARCHAR(100);
-
-DROP TABLE Auction CASCADE;
-DROP TABLE Users CASCADE;
-DROP TABLE Bid CASCADE;
-DROP TABLE Notification CASCADE;
+DROP TABLE auction CASCADE;
+DROP TABLE users CASCADE;
+DROP TABLE bid CASCADE;
+DROP TABLE notification CASCADE;
 DROP TABLE participant CASCADE;
+DROP TABLE moderator;
 
 CREATE TABLE users (
   user_email email PRIMARY KEY,
   password VARCHAR(255) NOT NULL,
-  phone_number VARCHAR(255),
-  first_name VARCHAR(255),
-  last_name VARCHAR(255)
+  phone_number VARCHAR(20),
+  first_name first_last_name,
+  last_name first_last_name
 );
 
 CREATE TABLE participant(
     user_email email PRIMARY KEY,
-    birth_date DATE,
+    birth_date DATE NOT NULL,
     --rate INTEGER,
-    FOREIGN KEY (user_email) references users (user_email)
+    FOREIGN KEY (user_email) references users (user_email) ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS auction(
@@ -40,17 +41,17 @@ CREATE TABLE IF NOT EXISTS auction(
    end_time TIME NOT NULL,
    creator_email email NOT NULL,
    --moderator_email email NOT NULL,
-   FOREIGN KEY (creator_email) references participant(user_email)
+   FOREIGN KEY (creator_email) references participant(user_email) ON UPDATE CASCADE,
+   FOREIGN KEY (current_bidder) references participant(user_email) ON UPDATE CASCADE
    --FOREIGN KEY (moderator_email) references moderator
 );
-
 
 CREATE TABLE bid (
   bid_id SERIAL PRIMARY KEY,
   participant_email email NOT NULL,
   auction_id INTEGER NOT NULL,
   bid_amount INTEGER CHECK (bid_amount>0) NOT NULL,
-  FOREIGN KEY (participant_email) REFERENCES participant(user_email),
+  FOREIGN KEY (participant_email) REFERENCES participant(user_email) ON UPDATE CASCADE,
   FOREIGN KEY (auction_id) REFERENCES auction(id)
 );
 
@@ -60,5 +61,18 @@ CREATE TABLE notification (
   content VARCHAR(1000),
   date DATE,
   time TIME,
-  FOREIGN KEY (receiver) REFERENCES participant(user_email)
+  FOREIGN KEY (receiver) REFERENCES participant(user_email) ON UPDATE CASCADE
 );
+
+CREATE TABLE moderator (
+  moderator_email email PRIMARY KEY, --we provide the moderator with this
+  personal_email email,
+  FOREIGN KEY (moderator_email) REFERENCES users(user_email)
+);
+
+--RUN THESE, RUN THESE, RUN THESE, RUN THESE, RUN THESE
+INSERT INTO users(user_email, password, phone_number, first_name, last_name)
+VALUES ('bob@bidhub', '1234', null, null, null);
+INSERT INTO moderator (moderator_email, personal_email)
+VALUES ('bob@bidhub', null);
+
