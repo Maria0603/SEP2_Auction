@@ -193,10 +193,6 @@ public class AuctionViewController {
                 }
         }
 
-        @FXML
-        void buyNowButtonPressed(ActionEvent event) {
-
-        }
 
         @FXML
         void onEnter(ActionEvent event) {
