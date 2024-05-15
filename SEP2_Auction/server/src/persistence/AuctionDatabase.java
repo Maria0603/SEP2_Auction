@@ -26,9 +26,8 @@ public class AuctionDatabase implements AuctionPersistence {
   // so the moderator just logs in, and then they can change their password
   private static final String MODERATOR_EMAIL = "bob@bidhub";
   private static final String MODERATOR_TEMPORARY_PASSWORD = "1234";
-
-  // private static final String PASSWORD = "1706";
-  private static final String PASSWORD = "344692StupidPass";
+  private static final String PASSWORD = "1706";
+ // private static final String PASSWORD = "344692StupidPass";
   // private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {

@@ -236,20 +236,6 @@ public class AuctionClient
     return null;
   }
 
-
-  @Override public AuctionList getAllAuctions() throws SQLException
-  {
-    try
-    {
-      return server.getAllAuctions();
-    }
-    catch(RemoteException e)
-    {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   @Override public void buyOut(String bidder, int auctionId)
       throws RemoteException ,SQLException {
     try {
