@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -133,6 +134,19 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     previousBids=modelManager.getPreviousBids(userEmail);
     return userEmail;
   }
+
+  @Override public void buyOut(String bidder, int auctionId)
+      throws RemoteException, SQLException {
+    try {
+      modelManager.buyOut(bidder, auctionId);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException

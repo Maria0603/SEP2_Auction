@@ -28,6 +28,7 @@ public interface AuctionPersistence
   User getModeratorInfo() throws SQLException;
   boolean isModerator(String email) throws SQLException;
   AuctionList getAllAuctions() throws SQLException;
-
+  void setBuyer(int auctionId, String current_bider) throws SQLException;
+  void buyOut(String bidder, int auctionId) throws SQLException;
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws SQLException;
 }

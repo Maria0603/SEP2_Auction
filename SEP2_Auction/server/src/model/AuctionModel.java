@@ -2,6 +2,7 @@ package model;
 
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -28,5 +29,7 @@ public interface AuctionModel extends NamedPropertyChangeSubject
   boolean isModerator(String email) throws SQLException;
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws SQLException;
   AuctionList getAllAuctions() throws SQLException;
+  void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
+
 }
 

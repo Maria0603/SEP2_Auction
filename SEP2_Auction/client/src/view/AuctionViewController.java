@@ -160,9 +160,12 @@ public class AuctionViewController
     }
   }
 
-  @FXML void buyNowButtonPressed(ActionEvent event)
-  {
-
+  @FXML
+  void buyNowButtonPressed(ActionEvent event) {
+    auctionViewModel.buyOut();
+    if (auctionViewModel.isSold()) {
+      setAsSold();
+    }
   }
 
   @FXML void onEnter(ActionEvent event)
@@ -270,4 +273,18 @@ public class AuctionViewController
         .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
   }
 
+  public void setAsSold() {
+    try {
+      placeBidButton.setDisable(true);
+      buyNowButton.setDisable(true);
+      incomingBidTextField.setDisable(true);
+      reasonTextArea.setDisable(true);
+
+      errorLabel.setText("This item is sold.");
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      errorLabel.setText("Error occurred while marking the item as sold.");
+    }
+  }
 }

@@ -237,6 +237,16 @@ public class AuctionClient
     return null;
   }
 
+  @Override public void buyOut(String bidder, int auctionId)
+      throws RemoteException ,SQLException {
+    try {
+      server.buyOut(bidder, auctionId);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {

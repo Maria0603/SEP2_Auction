@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -110,6 +111,13 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     return client.placeBid(bidder, bidValue, auctionId);
   }
+
+  @Override public void buyOut(String bidder, int auctionId)
+      throws RemoteException,SQLException
+  {
+    client.buyOut(bidder, auctionId);
+  }
+
 
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
