@@ -79,10 +79,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override
   public void buyOut(String current_bider, int auctionId) throws SQLException {
     try {
-      auctionDatabase.markAsClosed(auctionId);
-
+      auctionDatabase.buyOut(current_bider, auctionId);
       Auction auction = auctionDatabase.getAuctionById(auctionId);
-
       property.firePropertyChange("End", auctionId, auction);
 
       // Send notification to the buyer

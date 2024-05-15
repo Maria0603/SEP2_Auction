@@ -163,6 +163,7 @@ public class AuctionViewController
   @FXML
   void buyNowButtonPressed(ActionEvent event) {
     auctionViewModel.buyOut();
+
     if (auctionViewModel.isSold()) {
       setAsSold();
     }

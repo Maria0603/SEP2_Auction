@@ -98,7 +98,6 @@ public class AuctionServer
   public synchronized String buyOut(String bidder, int auctionId)
       throws RemoteException, SQLException {
     try {
-
       model.buyOut(bidder, auctionId);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -106,9 +105,6 @@ public class AuctionServer
     }
     return "Buyout successful!";
   }
-
-
-
 
   @Override
   public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {

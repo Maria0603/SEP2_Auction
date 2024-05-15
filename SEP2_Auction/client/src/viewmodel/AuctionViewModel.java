@@ -133,10 +133,11 @@ public class AuctionViewModel implements PropertyChangeListener
   public void buyOut() {
     errorProperty.set("");
     try {
-      // Ensure buyout only if there are no bids and the auction is not sold
+
       if (currentBidProperty.get() == 0 && !isSold.get()) {
         model.buyOut(state.getUserEmail(), idProperty.get());
-        setSold(true); // Mark the item as sold
+        setSold(true); //disabled
+        //removing listeners
         model.removeListener("Time", this);
         model.removeListener("End", this);
       } else {
@@ -144,6 +145,7 @@ public class AuctionViewModel implements PropertyChangeListener
       }
     } catch (SQLException e) {
       errorProperty.set(e.getMessage());
+      System.out.println(errorProperty.get());
       e.printStackTrace();
     } catch (RemoteException e) {
       throw new RuntimeException(e);
