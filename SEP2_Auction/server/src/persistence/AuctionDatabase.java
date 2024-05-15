@@ -27,8 +27,8 @@ public class AuctionDatabase implements AuctionPersistence {
   private static final String MODERATOR_EMAIL = "bob@bidhub";
   private static final String MODERATOR_TEMPORARY_PASSWORD = "1234";
 
-  //private static final String PASSWORD = "1706";
-   private static final String PASSWORD = "344692StupidPass";
+  // private static final String PASSWORD = "1706";
+  private static final String PASSWORD = "344692StupidPass";
   // private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
@@ -287,9 +287,9 @@ public class AuctionDatabase implements AuctionPersistence {
     return getAuctions(sql, seller);
   }
 
-  @Override public AuctionList getAllAuctions() throws SQLException
-  {
-    String sql="SELECT ID FROM sprint1database.auction;";
+  @Override
+  public AuctionList getAllAuctions() throws SQLException {
+    String sql = "SELECT ID FROM sprint1database.auction;";
     return getAuctions(sql, null);
   }
 
@@ -475,6 +475,27 @@ public class AuctionDatabase implements AuctionPersistence {
       count = Integer.parseInt(row[0].toString());
     }
     return count > 0;
+  }
+
+  @Override
+  public void setBuyer(int auctionId, String current_bider) throws SQLException {
+    String sql = "UPDATE auction SET current_bidder = ? WHERE id = ?";
+    database.update(sql, current_bider, auctionId);
+  }
+
+  @Override
+  public void buyOut(String bidder, int auctionId) throws SQLException {
+    Auction auction = getAuctionById(auctionId);
+    if (auction != null) {
+      String sql = "UPDATE auction SET status='CLOSED', current_bidder=?, current_bid=buyout_price WHERE ID=?;";
+      database.update(sql, bidder, auctionId);
+
+      auction.setStatus("CLOSED");
+
+      setBuyer(auctionId, bidder);
+    } else {
+      throw new SQLException("Auction does not exist or has already ended.");
+    }
   }
 
   private void checkBid(int bidAmount, String participantEmail, int currentBid,

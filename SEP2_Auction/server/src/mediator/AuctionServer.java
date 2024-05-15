@@ -92,6 +92,19 @@ public class AuctionServer
   {
     return model.placeBid(bidder, bidValue, auctionId);
   }
+
+  @Override
+  public synchronized String buyOut(String bidder, int auctionId)
+      throws RemoteException, SQLException {
+    try {
+      model.buyOut(bidder, auctionId);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return "Failed to process buyout";
+    }
+    return "Buyout successful!";
+  }
+
   @Override
   public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
     return model.addUser(firstname,lastname,email,password, repeatedPassword, phone, birthday);

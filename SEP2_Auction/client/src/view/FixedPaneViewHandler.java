@@ -63,7 +63,6 @@ public class FixedPaneViewHandler
   public void reset(WindowType windowType)
   {
     fixedPaneViewModel.reset();
-    notificationsButton.setStyle("");
     switch (windowType)
     {
       case START_AUCTION -> sellItemButtonPressed();

@@ -14,6 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,7 @@ public class AuctionViewModel implements PropertyChangeListener
   private ObjectProperty<Image> imageProperty;
   private AuctionModel model;
   private ViewModelState state;
+  private BooleanProperty isSold;
 
   public AuctionViewModel(AuctionModel model, ViewModelState state)
   {
@@ -52,11 +54,25 @@ public class AuctionViewModel implements PropertyChangeListener
 
     startAuctionVisibility = new SimpleBooleanProperty();
     disableAsInDisplay = new SimpleBooleanProperty();
+    isSold = new SimpleBooleanProperty(false);
     model.addListener("Bid", this);
     model.addListener("Edit", this);
 
     reset();
   }
+
+  public BooleanProperty isSoldProperty() {
+    return isSold;
+  }
+
+  public boolean isSold() {
+    return isSold.get();
+  }
+
+  public void setSold(boolean sold) {
+    isSold.set(sold);
+  }
+
 
   public void setForStart()
   {
@@ -112,8 +128,30 @@ public class AuctionViewModel implements PropertyChangeListener
       currentBidderProperty.set(bid.getBidder());
       incomingBidProperty.set(0);
     }
-
   }
+
+  public void buyOut() {
+    errorProperty.set("");
+    try {
+
+      if (currentBidProperty.get() == 0 && !isSold.get()) {
+        model.buyOut(state.getUserEmail(), idProperty.get());
+        setSold(true); //disabled
+        //removing listeners
+        model.removeListener("Time", this);
+        model.removeListener("End", this);
+      } else {
+        errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
+      }
+    } catch (SQLException e) {
+      errorProperty.set(e.getMessage());
+      System.out.println(errorProperty.get());
+      e.printStackTrace();
+    } catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   private byte[] imageToByteArray(Image image) throws IOException
   {
@@ -278,6 +316,7 @@ public class AuctionViewModel implements PropertyChangeListener
   @Override public void propertyChange(PropertyChangeEvent event)
   {
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    System.out.println(event.getPropertyName() + " received in view model");
 
     switch (event.getPropertyName())
     {
@@ -319,6 +358,7 @@ public class AuctionViewModel implements PropertyChangeListener
         }
         break;
       case "Edit":
+        System.out.println("edit received in view model");
         if(currentBidderProperty.get().equals(event.getOldValue()))
         {
           state.getSelectedAuction().setCurrentBidder(event.getNewValue().toString());

@@ -76,6 +76,23 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return bid;
   }
 
+  @Override
+  public void buyOut(String current_bider, int auctionId) throws SQLException {
+    try {
+      auctionDatabase.buyOut(current_bider, auctionId);
+      Auction auction = auctionDatabase.getAuctionById(auctionId);
+      property.firePropertyChange("End", auctionId, auction);
+
+      // Send notification to the buyer
+      Notification notification = auctionDatabase.saveNotification(
+          "Congratulations! You have successfully bought out the item.",
+          current_bider);
+      property.firePropertyChange("Notification", null, notification);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
   @Override public synchronized String addUser(String firstname,
       String lastname, String email, String password, String repeatedPassword,
       String phone, LocalDate birthday) throws SQLException
@@ -132,7 +149,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     User user = auctionDatabase.editInformation(oldEmail, firstname, lastname,
         email, password, phone, birthday);
     if (!oldEmail.equals(email))
+    {
       property.firePropertyChange("Edit", oldEmail, email);
+    }
     return user;
   }
 

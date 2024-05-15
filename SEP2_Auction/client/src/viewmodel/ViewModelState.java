@@ -64,7 +64,9 @@ public class ViewModelState
 
   public void setUserEmail(String userEmail)
   {
+    System.out.println("before" + this.userEmail);
     this.userEmail = userEmail;
+    System.out.println("after" + this.userEmail);
   }
 
   private void setAllCreatedBids(boolean all, boolean created, boolean bids)
