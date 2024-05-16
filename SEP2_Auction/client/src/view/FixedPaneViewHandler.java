@@ -49,7 +49,7 @@ public class FixedPaneViewHandler {
         fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
     notificationsButton.setStyle("");
 
-    setModeratorAppearanceBindings();
+    setModeratorAppearanceRelatedBindings();
     bindDisableProperty();
 
     reset(windowType);
@@ -66,8 +66,8 @@ public class FixedPaneViewHandler {
       case DISPLAY_AUCTION -> displayAuction();
       case NOTIFICATIONS -> notificationsButtonPressed();
       case ALL_AUCTIONS -> allAuctionsButtonPressed();
-      case BIDS -> myBidsButtonPressed();
-      case CREATED_AUCTIONS -> myAuctions_allAccountsButtonPressed();
+      case MY_BIDS -> myBidsButtonPressed();
+      case MY_AUCTIONS -> myAuctions_allAccountsButtonPressed();
       case DISPLAY_PROFILE -> myProfile_settingsButtonPressed();
       case EDIT_PROFILE -> editProfile();
       case RESET_PASSWORD -> resetPassword();
@@ -169,9 +169,11 @@ public class FixedPaneViewHandler {
     reset(WindowType.DISPLAY_PROFILE);
   }
 
+
   private @FXML Region myAuctions_allAccountsButtonPressed() {
+
     fixedPaneViewModel.myCreatedAuctions();
-    return loadGrid(WindowType.CREATED_AUCTIONS);
+    return loadGrid(WindowType.MY_AUCTIONS);
   }
 
   private Region loadProfile(WindowType windowType) {
@@ -236,7 +238,7 @@ public class FixedPaneViewHandler {
 
   @FXML public Region myBidsButtonPressed() {
     fixedPaneViewModel.myBids();
-    return loadGrid(WindowType.BIDS);
+    return loadGrid(WindowType.MY_BIDS);
   }
 
   private void bindDisableProperty() {
@@ -258,7 +260,7 @@ public class FixedPaneViewHandler {
         .bindBidirectional(fixedPaneViewModel.getButtonsDisabled());
   }
 
-  private void setModeratorAppearanceBindings() {
+  private void setModeratorAppearanceRelatedBindings() {
     notificationsButton.visibleProperty().bindBidirectional(fixedPaneViewModel.getNotificationsButtonVisibility());
     sellItemButton.visibleProperty().bindBidirectional(fixedPaneViewModel.getSellItemButtonVisibility());
     myBidsButton.visibleProperty().bind(fixedPaneViewModel.getMyBidsButtonVisibility());

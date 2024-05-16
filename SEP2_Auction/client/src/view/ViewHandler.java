@@ -26,7 +26,7 @@ public class ViewHandler {
   public void openView(WindowType type) {
     Region root = null;
     switch (type) {
-      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS, CREATED_AUCTIONS, DISPLAY_PROFILE -> {
+      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS, MY_AUCTIONS, DISPLAY_PROFILE -> {
         root = loadFixedPaneView("FixedPaneView.fxml", type);
       }
       case SIGN_UP, LOG_IN -> {

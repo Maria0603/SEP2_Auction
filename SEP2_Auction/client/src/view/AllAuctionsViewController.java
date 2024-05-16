@@ -60,7 +60,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
 
   public void reset(WindowType type) {
     switch (type) {
-      case ALL_AUCTIONS, BIDS, CREATED_AUCTIONS -> loadAuctions();
+      case ALL_AUCTIONS, MY_BIDS, MY_AUCTIONS -> loadAuctions();
 
     }
   }

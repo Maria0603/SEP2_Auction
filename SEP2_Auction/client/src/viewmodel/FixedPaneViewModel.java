@@ -19,9 +19,6 @@ public class FixedPaneViewModel implements PropertyChangeListener {
 
   //all button in the fixed pane
   private BooleanProperty buttonsDisabled;
-
-  //notification and sell item buttons, for moderator
- // private BooleanProperty displayButtons;
   private BooleanProperty myBidsButtonVisibility, sellItemButtonVisibility, notificationsButtonVisibility;
 
   public FixedPaneViewModel(AuctionModel model, ViewModelState state) {
