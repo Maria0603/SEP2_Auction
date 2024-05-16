@@ -18,12 +18,15 @@ public class FixedPaneViewHandler
   @FXML private Pane changePane;
   @FXML private Button logOutButton;
   @FXML private Button moderatorInfoButton;
-  @FXML private Button myAuctions_allAccountsButton;
   @FXML private Button myBidsButton;
   @FXML private Button myProfile_settingsButton;
   @FXML private Label emailLabel;
   @FXML private Button notificationsButton;
   @FXML private Button sellItemButton;
+
+  @FXML private Button myAuctions_allAccountsButton;
+
+
   private ViewHandler viewHandler;
   private FixedPaneViewModel fixedPaneViewModel;
   private AuctionViewController auctionViewController;
@@ -31,7 +34,6 @@ public class FixedPaneViewHandler
   private AllAccounts_NotificationsViewController allAccountsNotificationsViewController;
   private CreateLoginViewController createLoginViewController;
   private Region root;
-
   private ViewModelFactory viewModelFactory;
 
   public void init(ViewHandler viewHandler,
@@ -43,11 +45,14 @@ public class FixedPaneViewHandler
     this.fixedPaneViewModel = fixedPaneViewModel;
     this.viewHandler = viewHandler;
 
-    emailLabel.textProperty()
-        .bindBidirectional(fixedPaneViewModel.getEmailProperty());
+    emailLabel.textProperty().bindBidirectional(fixedPaneViewModel.getEmailProperty());
+    myAuctions_allAccountsButton.textProperty().bindBidirectional(fixedPaneViewModel.getTitleOf_myAuctions_allAuctionsButton());
+
     notificationsButton.styleProperty().bindBidirectional(
         fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
     notificationsButton.setStyle("");
+
+    myBidsButton.visibleProperty().bind(fixedPaneViewModel.getMyBidsButtonVisibilityProperty());
 
     bindVisibleProperty();
     bindDisableProperty();

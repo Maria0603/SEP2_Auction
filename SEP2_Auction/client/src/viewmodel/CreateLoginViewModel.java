@@ -145,11 +145,9 @@ public class CreateLoginViewModel
     errorProperty.set("");
     try
     {
-      String user = model.login(emailProperty.get().trim(),
-          passwordProperty.get());
+      String user = model.login(emailProperty.get().trim(), passwordProperty.get());
       //  Giving the viewState all the user info from the model=>takes from servers database
       viewState.setUserEmail(user);
-
       viewState.setModerator(model.isModerator(user));
     }
     catch (SQLException e)
