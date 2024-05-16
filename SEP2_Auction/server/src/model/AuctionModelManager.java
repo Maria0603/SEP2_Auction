@@ -81,11 +81,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     try {
       auctionDatabase.buyOut(current_bider, auctionId);
       Auction auction = auctionDatabase.getAuctionById(auctionId);
+      property.firePropertyChange("Time", null, auction.getStartTime());
       property.firePropertyChange("End", auctionId, auction);
 
       // Send notification to the buyer
       Notification notification = auctionDatabase.saveNotification(
-          "Congratulations! You have successfully bought out the item.",
+          "Congratulations! You have successfully bought out the item on id: " + auctionId,
           current_bider);
       property.firePropertyChange("Notification", null, notification);
     } catch (SQLException e) {

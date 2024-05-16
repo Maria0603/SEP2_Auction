@@ -124,10 +124,12 @@ public class AuctionViewModel implements PropertyChangeListener
 
       if (currentBidProperty.get() == 0 && !isSold.get()) {
         model.buyOut(state.getUserEmail(), idProperty.get());
-        reset(); //disabled
+        isSold.set(true);
         //removing listeners
         model.removeListener("Time", this);
         model.removeListener("End", this);
+        Platform.runLater(() -> timerProperty.set("AUCTION CLOSED"));
+        reset(); //disable
       } else {
         errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
       }
@@ -309,7 +311,7 @@ public class AuctionViewModel implements PropertyChangeListener
     switch (event.getPropertyName())
     {
       case "Time":
-        if (idProperty.get() == Integer.parseInt(
+        if (!isSold.get() && idProperty.get() == Integer.parseInt(
             event.getOldValue().toString()))
         {
           LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
