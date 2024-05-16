@@ -19,9 +19,10 @@ public class FixedPaneViewModel implements PropertyChangeListener {
 
   //all button in the fixed pane
   private BooleanProperty buttonsDisabled;
+
   //notification and sell item buttons, for moderator
-  private BooleanProperty displayButtons;
-  private BooleanProperty myBidsButtonVisibilityProperty;
+ // private BooleanProperty displayButtons;
+  private BooleanProperty myBidsButtonVisibility, sellItemButtonVisibility, notificationsButtonVisibility;
 
   public FixedPaneViewModel(AuctionModel model, ViewModelState state) {
     this.state = state;
@@ -33,26 +34,36 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     notificationsButtonBackgroundProperty.set("");
 
     buttonsDisabled = new SimpleBooleanProperty();
-    displayButtons = new SimpleBooleanProperty();
-    myBidsButtonVisibilityProperty = new SimpleBooleanProperty();
+
+    sellItemButtonVisibility = new SimpleBooleanProperty();
+    notificationsButtonVisibility = new SimpleBooleanProperty();
+    myBidsButtonVisibility = new SimpleBooleanProperty();
   }
 
-  public BooleanProperty getDisplayButtons() {
-    return displayButtons;
-  }
 
   public void reset() {
     emailProperty.set(state.getUserEmail());
 
     if(state.isModerator()){
-      setWindowAppearanceForModerator();
+      setAppearanceForModerator();
+    }
+    else {
+      setAppearanceForUser();
     }
   }
 
-  private void setWindowAppearanceForModerator(){
-    //TODO: add
+  private void setAppearanceForModerator(){
     titleOf_myAuctions_allAuctionsButton.set("Accounts");
-    myBidsButtonVisibilityProperty.set(false);
+    myBidsButtonVisibility.set(false);
+    sellItemButtonVisibility.set(false);
+    notificationsButtonVisibility.set(false);
+  }
+
+  private void setAppearanceForUser(){
+    titleOf_myAuctions_allAuctionsButton.set("My auctions");
+    myBidsButtonVisibility.set(true);
+    sellItemButtonVisibility.set(true);
+    notificationsButtonVisibility.set(true);
   }
 
   public void sellItem() {
@@ -69,12 +80,9 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     state.setResetPassword();
   }
 
+  //TODO: refactor
   public void leaveAuctionView() {
     buttonsDisabled.set(false);
-    if (state.isModerator())
-      displayButtons.set(false);
-    else
-      displayButtons.set(true);
   }
 
   public void allAuctions() {
@@ -113,8 +121,17 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     return buttonsDisabled;
   }
 
-  public BooleanProperty getMyBidsButtonVisibilityProperty(){
-    return myBidsButtonVisibilityProperty;
+  public BooleanProperty getMyBidsButtonVisibility(){
+    return myBidsButtonVisibility;
+  }
+
+
+  public BooleanProperty getSellItemButtonVisibility() {
+    return sellItemButtonVisibility;
+  }
+
+  public BooleanProperty getNotificationsButtonVisibility() {
+    return notificationsButtonVisibility;
   }
 
   public void setForEditProfile() {
