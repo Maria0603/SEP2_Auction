@@ -61,18 +61,6 @@ public class AuctionViewModel implements PropertyChangeListener
     reset();
   }
 
-  public BooleanProperty isSoldProperty() {
-    return isSold;
-  }
-
-  public boolean isSold() {
-    return isSold.get();
-  }
-
-  public void setSold(boolean sold) {
-    isSold.set(sold);
-  }
-
 
   public void setForStart()
   {
@@ -136,7 +124,7 @@ public class AuctionViewModel implements PropertyChangeListener
 
       if (currentBidProperty.get() == 0 && !isSold.get()) {
         model.buyOut(state.getUserEmail(), idProperty.get());
-        setSold(true); //disabled
+        reset(); //disabled
         //removing listeners
         model.removeListener("Time", this);
         model.removeListener("End", this);
