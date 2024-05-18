@@ -10,7 +10,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -21,10 +20,10 @@ public class AllAccounts_NotificationsViewController
   @FXML private Label errorLabel;
 
   @FXML public VBox tableViewVBox;
-  @FXML private TableView<NotificationViewModel> notifications_accountsTableView;
+  @FXML private TableView<NotificationViewModel> notificationsTableView;
   @FXML private TableColumn<NotificationViewModel, String> emailColumn;
-  @FXML private TableColumn<NotificationViewModel, String> firstName_dateTimeColumn;
-  @FXML private TableColumn<NotificationViewModel, String> lastName_contentColumn;
+  @FXML private TableColumn<NotificationViewModel, String> dateTimeColumn;
+  @FXML private TableColumn<NotificationViewModel, String> contentColumn;
   @FXML private TableColumn<NotificationViewModel, String> ratingColumn;
 
   @FXML private Button ban_openNotificationButton;
@@ -53,7 +52,7 @@ public class AllAccounts_NotificationsViewController
   public void reset(WindowType windowType)
   {
     allAccountsNotificationsViewModel.reset();
-    notifications_accountsTableView.getSelectionModel().clearSelection();
+    notificationsTableView.getSelectionModel().clearSelection();
     switch (windowType) {
       case NOTIFICATIONS -> setForNotifications();
       case ALL_ACCOUNTS -> setForAccounts();
@@ -64,32 +63,33 @@ public class AllAccounts_NotificationsViewController
   {
     tableViewVBox.getChildren().remove(1);
     setDataForNotificationTable();
-    tableViewVBox.getChildren().add(notifications_accountsTableView);
+    tableViewVBox.getChildren().add(notificationsTableView);
   }
 
   private void setDataForNotificationTable(){
-    notifications_accountsTableView.setItems(
+    notificationsTableView.setItems(
         allAccountsNotificationsViewModel.getNotifications());
-    firstName_dateTimeColumn.setCellValueFactory(
+    dateTimeColumn.setCellValueFactory(
         cellData -> cellData.getValue().getDateTimeProperty());
-    lastName_contentColumn.setPrefWidth(865);
-    lastName_contentColumn.setCellValueFactory(
+    contentColumn.setPrefWidth(865);
+    contentColumn.setCellValueFactory(
         cellData -> cellData.getValue().getContentProperty());
     allAccountsNotificationsViewModel.setForNotifications();
 
-    notifications_accountsTableView.setLayoutX(15);
-    notifications_accountsTableView.setPrefWidth(1050);
+    notificationsTableView.setLayoutX(15);
+    notificationsTableView.setPrefWidth(1050);
   }
 
   private void setForAccounts()
   {
     allAccountsNotificationsViewModel.setForAccounts();
-    tableViewVBox.getChildren().remove(0);
     TableView<AccountViewModel> accountTableView = createAccountTableView();
+
+    tableViewVBox.getChildren().remove(0);
     accountTableView.setItems(allAccountsNotificationsViewModel.getAllAccounts());
     tableViewVBox.getChildren().add(accountTableView);
   }
-
+  
 
   private TableView<AccountViewModel> createAccountTableView() {
     TableView<AccountViewModel> tableView = new TableView<>();
@@ -137,14 +137,14 @@ public class AllAccounts_NotificationsViewController
 
   private void bindValues()
   {
-    notifications_accountsTableView.getSelectionModel().selectedItemProperty()
+    notificationsTableView.getSelectionModel().selectedItemProperty()
         .addListener(
             (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelected(
                 newVal));
 
-    firstName_dateTimeColumn.textProperty().bindBidirectional(
+    dateTimeColumn.textProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getFirstColumnNameProperty());
-    lastName_contentColumn.textProperty().bindBidirectional(
+    contentColumn.textProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getSecondColumnNameProperty());
     errorLabel.textProperty().bindBidirectional(
         this.allAccountsNotificationsViewModel.getErrorProperty());
