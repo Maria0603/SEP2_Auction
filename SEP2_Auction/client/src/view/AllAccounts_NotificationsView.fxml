@@ -47,7 +47,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <TextField fx:id="searchTextField" layoutX="14.0" layoutY="60.0" onAction="#searchField" prefHeight="25.0" prefWidth="252.0" promptText="Search by email..." />
+      <TextField fx:id="searchTextField" layoutX="14.0" layoutY="60.0" prefHeight="25.0" prefWidth="252.0" promptText="Search by email..." />
       <Button fx:id="searchButton" layoutX="202.0" layoutY="92.0" mnemonicParsing="false" onAction="#searchButtonPressed" prefHeight="30.0" prefWidth="64.0" text="Search">
          <font>
             <Font size="14.0" />

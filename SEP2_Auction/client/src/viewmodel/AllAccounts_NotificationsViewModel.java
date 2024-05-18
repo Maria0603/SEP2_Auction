@@ -26,6 +26,7 @@ public class AllAccounts_NotificationsViewModel
   private StringProperty errorProperty;
   private BooleanProperty allFieldsVisibility;
   private StringProperty firstColumnNameProperty, secondColumnNameProperty;
+  private StringProperty searchFieldProperty;
 
   public AllAccounts_NotificationsViewModel(AuctionModel model,
       ViewModelState viewModelState) {
@@ -36,6 +37,7 @@ public class AllAccounts_NotificationsViewModel
     allAccounts = FXCollections.observableArrayList();
     selectedRowProperty = new SimpleObjectProperty<>();
     errorProperty = new SimpleStringProperty();
+    searchFieldProperty = new SimpleStringProperty();
 
     //to control the visibility from the view model
     allFieldsVisibility = new SimpleBooleanProperty();
@@ -105,6 +107,30 @@ public class AllAccounts_NotificationsViewModel
     }
   }
 
+  public void search() {
+    ObservableList<AccountViewModel> searchedAccounts = searchAccounts(searchFieldProperty.get());
+    allAccounts.clear();
+    allAccounts.addAll(searchedAccounts);
+  }
+
+  private ObservableList<AccountViewModel> searchAccounts(String query) {
+    ObservableList<AccountViewModel> results = FXCollections.observableArrayList();
+    String lowerCaseQuery = query.toLowerCase();
+
+    for (AccountViewModel account : allAccounts) {
+      if (account.getEmailProperty().get().toLowerCase()
+          .contains(lowerCaseQuery) || account.getFirstNameProperty().get()
+          .toLowerCase().contains(lowerCaseQuery)
+          || account.getLastNameProperty().get().toLowerCase()
+          .contains(lowerCaseQuery)) {
+        results.add(account);
+        System.out.println(account);
+      }
+    }
+
+    return results;
+  }
+
   public StringProperty getErrorProperty() {
     return errorProperty;
   }
@@ -119,6 +145,14 @@ public class AllAccounts_NotificationsViewModel
 
   public StringProperty getSecondColumnNameProperty() {
     return secondColumnNameProperty;
+  }
+
+  public StringProperty getSearchFieldProperty() {
+    return searchFieldProperty;
+  }
+
+  public void setAllAccounts(ObservableList<AccountViewModel> newData) {
+    allAccounts = newData;
   }
 
   public void addNotification(NotificationViewModel notification) {
