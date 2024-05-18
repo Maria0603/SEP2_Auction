@@ -10,24 +10,25 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import model.AuctionModel;
-import model.Notification;
-import viewmodel.AllAccounts_NotificationsViewModel;
-import viewmodel.AuctionViewModel;
-import viewmodel.NotificationViewModel;
+import javafx.scene.layout.VBox;
+import viewmodel.*;
 
 public class AllAccounts_NotificationsViewController
 {
   @FXML private Label errorLabel;
+
+  @FXML public VBox tableViewVBox;
   @FXML private TableView<NotificationViewModel> notifications_accountsTableView;
-  @FXML private Button ban_openNotificationButton;
-  @FXML private Pane ban_unban_notificationsPane;
   @FXML private TableColumn<NotificationViewModel, String> emailColumn;
   @FXML private TableColumn<NotificationViewModel, String> firstName_dateTimeColumn;
   @FXML private TableColumn<NotificationViewModel, String> lastName_contentColumn;
   @FXML private TableColumn<NotificationViewModel, String> ratingColumn;
+
+  @FXML private Button ban_openNotificationButton;
+  @FXML private Pane ban_unban_notificationsPane;
   @FXML private Label reason_contentLabel;
   @FXML private TextArea reason_contentTextArea;
   @FXML private Button searchButton;
@@ -53,19 +54,20 @@ public class AllAccounts_NotificationsViewController
   {
     allAccountsNotificationsViewModel.reset();
     notifications_accountsTableView.getSelectionModel().clearSelection();
-    switch (windowType)
-    {
-      case NOTIFICATIONS:
-        setForNotifications();
-        break;
-      //case ACCOUNTS:
-      //setForAccounts();
-      //break;
+    switch (windowType) {
+      case NOTIFICATIONS -> setForNotifications();
+      case ALL_ACCOUNTS -> setForAccounts();
     }
   }
 
   private void setForNotifications()
   {
+    tableViewVBox.getChildren().remove(1);
+    setDataForNotificationTable();
+    tableViewVBox.getChildren().add(notifications_accountsTableView);
+  }
+
+  private void setDataForNotificationTable(){
     notifications_accountsTableView.setItems(
         allAccountsNotificationsViewModel.getNotifications());
     firstName_dateTimeColumn.setCellValueFactory(
@@ -81,9 +83,34 @@ public class AllAccounts_NotificationsViewController
 
   private void setForAccounts()
   {
-    //take a look here:
     allAccountsNotificationsViewModel.setForAccounts();
+    tableViewVBox.getChildren().remove(0);
+    TableView<AccountViewModel> accountTableView = createAccountTableView();
+    accountTableView.setItems(allAccountsNotificationsViewModel.getAllAccounts());
+    tableViewVBox.getChildren().add(accountTableView);
   }
+
+
+  private TableView<AccountViewModel> createAccountTableView() {
+    TableView<AccountViewModel> tableView = new TableView<>();
+
+    TableColumn<AccountViewModel, String> emailColumn = new TableColumn<>("Email");
+    emailColumn.setCellValueFactory(cellData -> cellData.getValue().getEmailProperty());
+    emailColumn.setPrefWidth(181);
+
+    TableColumn<AccountViewModel, String> firstNameColumn = new TableColumn<>("First Name");
+    firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFirstNameProperty());
+    firstNameColumn.setPrefWidth(231);
+
+    TableColumn<AccountViewModel, String> lastNameColumn = new TableColumn<>("Last Name");
+    lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().getLastNameProperty());
+    emailColumn.setPrefWidth(390);
+
+    tableView.getColumns().addAll(emailColumn, firstNameColumn, lastNameColumn);
+
+    return tableView;
+  }
+
 
   public Region getRoot()
   {

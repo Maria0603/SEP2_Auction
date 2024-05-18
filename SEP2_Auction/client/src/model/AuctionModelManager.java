@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener {
   private PropertyChangeSupport property;
@@ -115,6 +116,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   public void buyOut(String bidder, int auctionId)
       throws RemoteException, SQLException {
     client.buyOut(bidder, auctionId);
+  }
+
+  @Override public ArrayList<User> getAllUsers()
+      throws RemoteException, SQLException {
+    return client.getAllUsers();
   }
 
   @Override

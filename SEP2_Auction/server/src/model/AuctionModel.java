@@ -5,6 +5,7 @@ import utility.observer.javaobserver.NamedPropertyChangeSubject;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public interface AuctionModel extends NamedPropertyChangeSubject {
   Auction startAuction(String title, String description, int reservePrice,
@@ -41,6 +42,8 @@ public interface AuctionModel extends NamedPropertyChangeSubject {
       LocalDate birthday) throws SQLException;
 
   AuctionList getAllAuctions() throws SQLException;
+
+  ArrayList<User> getAllUsers() throws SQLException;
 
   void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
 

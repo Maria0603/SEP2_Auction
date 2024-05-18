@@ -15,6 +15,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class AuctionServer
     implements AuctionRemote, RemoteSubject<String, Object>,
@@ -103,6 +104,10 @@ public class AuctionServer
       return "Failed to process buyout";
     }
     return "Buyout successful!";
+  }
+
+  @Override public ArrayList<User> getAllUsers() throws SQLException {
+    return model.getAllUsers();
   }
 
   @Override

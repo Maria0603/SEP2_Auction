@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 import utility.observer.event.ObserverEvent;
@@ -244,6 +245,19 @@ public class AuctionClient
       e.printStackTrace();
     }
 
+  }
+
+  @Override public ArrayList<User> getAllUsers()
+      throws RemoteException, SQLException {
+    try
+    {
+      return server.getAllUsers();
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @Override public void addListener(String s,

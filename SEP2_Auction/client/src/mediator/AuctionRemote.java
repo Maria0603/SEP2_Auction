@@ -8,6 +8,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 public interface AuctionRemote extends Remote
@@ -41,5 +42,7 @@ public interface AuctionRemote extends Remote
   boolean removeListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   String buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
+
+  ArrayList<User> getAllUsers() throws RemoteException, SQLException;
 
 }

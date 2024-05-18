@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -159,6 +160,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public synchronized AuctionList getAllAuctions() throws SQLException
   {
     return auctionDatabase.getAllAuctions();
+  }
+
+  @Override public ArrayList<User> getAllUsers() throws SQLException {
+    return auctionDatabase.getAllUsers();
   }
 
   @Override public synchronized void addListener(String propertyName,

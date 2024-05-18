@@ -141,6 +141,11 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     }
   }
 
+  @Override public ArrayList<User> getAllUsers()
+      throws RemoteException, SQLException {
+    return modelManager.getAllUsers();
+  }
+
   @Override
   public AuctionList getPreviousBids(String bidder)
       throws SQLException {

@@ -50,7 +50,7 @@ public class FixedPaneViewModel implements PropertyChangeListener {
   }
 
   private void setAppearanceForModerator(){
-    titleOf_myAuctions_allAuctionsButton.set("Accounts");
+    titleOf_myAuctions_allAuctionsButton.set("All Accounts");
     myBidsButtonVisibility.set(false);
     sellItemButtonVisibility.set(false);
     notificationsButtonVisibility.set(false);
@@ -129,6 +129,10 @@ public class FixedPaneViewModel implements PropertyChangeListener {
 
   public BooleanProperty getNotificationsButtonVisibility() {
     return notificationsButtonVisibility;
+  }
+
+  public boolean isModerator(){
+    return state.isModerator();
   }
 
   public void setForEditProfile() {

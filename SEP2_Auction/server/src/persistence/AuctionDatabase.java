@@ -27,7 +27,7 @@ public class AuctionDatabase implements AuctionPersistence {
   private static final String MODERATOR_EMAIL = "bob@bidhub";
   private static final String MODERATOR_TEMPORARY_PASSWORD = "1234";
   private static final String PASSWORD = "1706";
- // private static final String PASSWORD = "344692StupidPass";
+  // private static final String PASSWORD = "344692StupidPass";
   // private static final String PASSWORD = "2031";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException {
@@ -39,15 +39,15 @@ public class AuctionDatabase implements AuctionPersistence {
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
 
-  @Override
-  public synchronized Auction saveAuction(String title,
+  @Override public synchronized Auction saveAuction(String title,
       String description, int reservePrice, int buyoutPrice,
       int minimumIncrement, int auctionTime, byte[] imageData, String seller)
       throws SQLException {
     try (Connection connection = getConnection()) {
       checkAuctionTime(auctionTime);
-      String sql = "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time, creator_email) \n"
-          + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+      String sql =
+          "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time, creator_email) \n"
+              + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
       PreparedStatement statement = connection.prepareStatement(sql,
           PreparedStatement.RETURN_GENERATED_KEYS);
@@ -92,16 +92,17 @@ public class AuctionDatabase implements AuctionPersistence {
         return new Auction(id, title, description, reservePrice, buyoutPrice,
             minimumIncrement, start, end, 0, "No bidder", seller, imageData,
             "ONGOING");
-      } else {
+      }
+      else {
         throw new SQLException("No key generated");
       }
     }
   }
 
-  @Override
-  public synchronized Auction getAuctionById(int id)
+  @Override public synchronized Auction getAuctionById(int id)
       throws SQLException {
-    String sql = "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
+    String sql =
+        "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
     ArrayList<Object[]> results = database.query(sql, id);
     for (int i = 0; i < results.size(); i++) {
       try {
@@ -127,7 +128,8 @@ public class AuctionDatabase implements AuctionPersistence {
         return new Auction(id, title, description, reservePrice, buyoutPrice,
             minimumIncrement, auctionStart, auctionEnd, currentBid,
             currentBidder, seller, imageData, status);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         // maybe throw exception with "No auction with this id", but for testing:
         e.printStackTrace();
       }
@@ -152,14 +154,12 @@ public class AuctionDatabase implements AuctionPersistence {
     return null;
   }
 
-  @Override
-  public AuctionList getOngoingAuctions() throws SQLException {
+  @Override public AuctionList getOngoingAuctions() throws SQLException {
     String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
     return getAuctions(sql, null);
   }
 
-  @Override
-  public NotificationList getNotifications(String receiver)
+  @Override public NotificationList getNotifications(String receiver)
       throws SQLException {
     String sql = "SELECT * FROM notification WHERE receiver=?;";
     ArrayList<Object[]> results = database.query(sql, receiver);
@@ -175,8 +175,7 @@ public class AuctionDatabase implements AuctionPersistence {
     return notifications;
   }
 
-  @Override
-  public Notification saveNotification(String content,
+  @Override public Notification saveNotification(String content,
       String receiver) throws SQLException {
     String sql = "INSERT INTO notification(receiver, content, date, time) VALUES (?, ?, ?, ?);";
     Date date = Date.valueOf(LocalDate.now());
@@ -186,11 +185,11 @@ public class AuctionDatabase implements AuctionPersistence {
     return new Notification(date + " " + time, content, receiver);
   }
 
-  @Override
-  public Bid saveBid(String participantEmail, int bidAmount,
+  @Override public Bid saveBid(String participantEmail, int bidAmount,
       int auctionId) throws SQLException {
-    String retrieveSql = "SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status, auction.creator_email\n"
-        + "FROM auction\n" + "WHERE auction.ID=?;";
+    String retrieveSql =
+        "SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status, auction.creator_email\n"
+            + "FROM auction\n" + "WHERE auction.ID=?;";
     ArrayList<Object[]> results = database.query(retrieveSql, auctionId);
     for (int i = 0; i < results.size(); i++) {
       Object[] row = results.get(i);
@@ -214,14 +213,12 @@ public class AuctionDatabase implements AuctionPersistence {
     return bid;
   }
 
-  @Override
-  public void markAsClosed(int id) throws SQLException {
+  @Override public void markAsClosed(int id) throws SQLException {
     String sql = "UPDATE auction SET status='CLOSED'\n" + "WHERE ID=?;";
     database.update(sql, id);
   }
 
-  @Override
-  public Bid getCurrentBidForAuction(int auctionId)
+  @Override public Bid getCurrentBidForAuction(int auctionId)
       throws SQLException {
     String sql = "SELECT current_bid, current_bidder FROM auction WHERE ID=?;";
     ArrayList<Object[]> results = database.query(sql, auctionId);
@@ -242,12 +239,12 @@ public class AuctionDatabase implements AuctionPersistence {
         currentBid.getAuctionId());
   }
 
-  @Override
-  public User createUser(String firstname, String lastname,
+  @Override public User createUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
       LocalDate birthday) throws SQLException {
-    String sqlUser = "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
-        + "VALUES(?,?,?,?,?);";
+    String sqlUser =
+        "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
+            + "VALUES(?,?,?,?,?);";
     String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n";
 
     checkFirstName(firstname);
@@ -262,8 +259,7 @@ public class AuctionDatabase implements AuctionPersistence {
     return new User(firstname, lastname, email, password, phone, birthday);
   }
 
-  @Override
-  public String login(String email, String password)
+  @Override public String login(String email, String password)
       throws SQLException {
     if (!validateForLogin(email, password)) {
       throw new SQLException("Credentials do not match");
@@ -271,23 +267,20 @@ public class AuctionDatabase implements AuctionPersistence {
     return email;
   }
 
-  @Override
-  public AuctionList getPreviousBids(String bidder)
+  @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException {
     String sql = "SELECT DISTINCT bid.auction_id\n" + "FROM bid\n"
         + "WHERE participant_email=?;";
     return getAuctions(sql, bidder);
   }
 
-  @Override
-  public AuctionList getCreatedAuctions(String seller)
+  @Override public AuctionList getCreatedAuctions(String seller)
       throws SQLException {
     String sql = "SELECT ID from auction WHERE creator_email=?;";
     return getAuctions(sql, seller);
   }
 
-  @Override
-  public AuctionList getAllAuctions() throws SQLException {
+  @Override public AuctionList getAllAuctions() throws SQLException {
     String sql = "SELECT ID FROM sprint1database.auction;";
     return getAuctions(sql, null);
   }
@@ -308,22 +301,46 @@ public class AuctionDatabase implements AuctionPersistence {
     return auctions;
   }
 
-  @Override
-  public void resetPassword(String userEmail, String oldPassword,
+  @Override public ArrayList<User> getAllUsers() throws SQLException {
+    String sql = "SELECT user_email, phone_number, first_name, last_name FROM users";
+    return getAllUsersQuery(sql);
+  }
+
+  private ArrayList<User> getAllUsersQuery(String sql) throws SQLException {
+    ArrayList<Object[]> queryResults = database.query(sql);
+
+    ArrayList<User> output = new ArrayList<>();
+    String phone, firstName, lastName, email;
+
+    for (Object[] userData : queryResults) {
+
+      email = userData[0].toString();
+      phone = userData[1].toString();
+      firstName = userData[2].toString();
+      lastName = userData[3].toString();
+
+      output.add(new User(firstName, lastName, email, null, phone, null));
+    }
+    System.out.println("request for all users in database");
+    return output;
+  }
+
+
+  @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException {
     validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
     String sql = "UPDATE users SET password=?\n" + "WHERE users.user_email=?;";
     database.update(sql, newPassword, userEmail);
   }
 
-  @Override
-  public User getUserInfo(String email) throws SQLException {
+  @Override public User getUserInfo(String email) throws SQLException {
     User user = getUser(email);
     if (user != null) {
       if (email.equals(MODERATOR_EMAIL)) {
         return new User(user.getFirstname(), user.getLastname(),
             getModeratorSpecificInfo(), null, user.getPhone(), null);
-      } else {
+      }
+      else {
         Date birthday = getParticipantInfo(email);
         return new User(user.getFirstname(), user.getLastname(), email, null,
             user.getPhone(), birthday.toLocalDate());
@@ -332,8 +349,7 @@ public class AuctionDatabase implements AuctionPersistence {
     return null;
   }
 
-  @Override
-  public User getModeratorInfo() throws SQLException {
+  @Override public User getModeratorInfo() throws SQLException {
     return getUserInfo(MODERATOR_EMAIL);
   }
 
@@ -358,13 +374,11 @@ public class AuctionDatabase implements AuctionPersistence {
     return null;
   }
 
-  @Override
-  public boolean isModerator(String email) throws SQLException {
+  @Override public boolean isModerator(String email) throws SQLException {
     return isEmailIn(email, "moderator_email", "moderator");
   }
 
-  @Override
-  public User editInformation(String oldEmail, String firstname,
+  @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
       LocalDate birthday) throws SQLException {
     if (validateForLogin(oldEmail, password)) {
@@ -378,8 +392,9 @@ public class AuctionDatabase implements AuctionPersistence {
       if (isPhoneTaken != null)
         if (!isPhoneTaken.equals(oldEmail))
           throw new SQLException("This phone number is taken.");
-      String sqlUser = "UPDATE users SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
-          + "WHERE user_email=?;";
+      String sqlUser =
+          "UPDATE users SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
+              + "WHERE user_email=?;";
       String sqlParticipantOrModerator;
 
       if (oldEmail.equals(MODERATOR_EMAIL)) {
@@ -389,9 +404,11 @@ public class AuctionDatabase implements AuctionPersistence {
         sqlParticipantOrModerator = "UPDATE moderator SET personal_email=?\n"
             + "WHERE moderator_email=?;";
         database.update(sqlParticipantOrModerator, email, oldEmail);
-      } else {
+      }
+      else {
         database.update(sqlUser, email, phone, firstname, lastname, oldEmail);
-        sqlParticipantOrModerator = "UPDATE participant SET birth_date=?\n" + "WHERE user_email=?;";
+        sqlParticipantOrModerator =
+            "UPDATE participant SET birth_date=?\n" + "WHERE user_email=?;";
         Date date = Date.valueOf(birthday);
         database.update(sqlParticipantOrModerator, date, email);
       }
@@ -452,8 +469,9 @@ public class AuctionDatabase implements AuctionPersistence {
 
   private String isPhoneInTheSystem(String phone) throws SQLException {
     int count = 0;
-    String sql = "SELECT user_email, count(*) FROM users\n" + "WHERE phone_number=?\n"
-        + "GROUP BY user_email;";
+    String sql =
+        "SELECT user_email, count(*) FROM users\n" + "WHERE phone_number=?\n"
+            + "GROUP BY user_email;";
     ArrayList<Object[]> result = database.query(sql, phone);
     for (int i = 0; i < result.size(); i++) {
       Object[] row = result.get(i);
@@ -476,14 +494,14 @@ public class AuctionDatabase implements AuctionPersistence {
     return count > 0;
   }
 
-  @Override
-  public void setBuyer(int auctionId, String current_bider) throws SQLException {
+  @Override public void setBuyer(int auctionId, String current_bider)
+      throws SQLException {
     String sql = "UPDATE auction SET current_bidder = ? WHERE id = ?";
     database.update(sql, current_bider, auctionId);
   }
 
-  @Override
-  public void buyOut(String bidder, int auctionId) throws SQLException {
+  @Override public void buyOut(String bidder, int auctionId)
+      throws SQLException {
     Auction auction = getAuctionById(auctionId);
     if (auction != null) {
       String sql = "UPDATE auction SET status='CLOSED', current_bidder=?, current_bid=buyout_price WHERE ID=?;";
@@ -492,7 +510,8 @@ public class AuctionDatabase implements AuctionPersistence {
       auction.setStatus("CLOSED");
 
       setBuyer(auctionId, bidder);
-    } else {
+    }
+    else {
       throw new SQLException("Auction does not exist or has already ended.");
     }
   }
@@ -634,7 +653,8 @@ public class AuctionDatabase implements AuctionPersistence {
 
       return outStreamObj.toByteArray();
 
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       e.printStackTrace();
     }
     return null;
@@ -648,7 +668,8 @@ public class AuctionDatabase implements AuctionPersistence {
 
       pathToImage = "server/images/" + imageTitle + ".jpg";
       ImageIO.write(newImage, "jpg", new File(pathToImage));
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       e.printStackTrace();
     }
     return pathToImage;

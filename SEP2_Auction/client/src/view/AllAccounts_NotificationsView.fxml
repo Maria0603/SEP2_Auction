@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <Pane fx:id="ban_unban_notificationsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="678.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAccounts_NotificationsViewController">
@@ -26,14 +27,18 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="notifications_accountsTableView" layoutX="286.0" layoutY="4.0" prefHeight="641.0" prefWidth="804.0">
-        <columns>
-          <TableColumn fx:id="firstName_dateTimeColumn" prefWidth="181.60003662109375" text="First name" />
-            <TableColumn fx:id="lastName_contentColumn" prefWidth="153.5999755859375" text="Last name" />
-            <TableColumn fx:id="emailColumn" prefWidth="390.4000244140625" text="Email" />
-            <TableColumn fx:id="ratingColumn" prefWidth="77.60003662109375" text="Rating" />
-        </columns>
-      </TableView>
+      <VBox fx:id="tableViewVBox" layoutX="286.0" layoutY="4.0">
+         <children>
+            <TableView fx:id="notifications_accountsTableView" prefHeight="641.0" prefWidth="804.0">
+              <columns>
+                <TableColumn fx:id="firstName_dateTimeColumn" prefWidth="181.60003662109375" text="First name" />
+                  <TableColumn fx:id="lastName_contentColumn" prefWidth="153.5999755859375" text="Last name" />
+                  <TableColumn fx:id="emailColumn" prefWidth="390.4000244140625" text="Email" />
+                  <TableColumn fx:id="ratingColumn" prefWidth="77.60003662109375" text="Rating" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
       <Button fx:id="unbanButton" layoutX="155.0" layoutY="3.0" mnemonicParsing="false" onAction="#unbanButtonPressed" prefHeight="50.0" prefWidth="111.0" text="Unban">
          <font>
             <Font size="18.0" />
