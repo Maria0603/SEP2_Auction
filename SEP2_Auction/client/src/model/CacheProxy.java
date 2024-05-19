@@ -31,6 +31,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     modelManager.addListener("Bid", this);
     modelManager.addListener("Notification", this);
     modelManager.addListener("Edit", this);
+    modelManager.addListener("BuyOut", this);
 
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
     allAuctionsCache = modelManager.getAllAuctions();
@@ -44,8 +45,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     userEmail = null;
   }
 
-  @Override
-  public Auction startAuction(String title, String description,
+  @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       byte[] imageData, String seller)
       throws SQLException, ClassNotFoundException {
@@ -53,8 +53,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
   }
 
-  @Override
-  public Auction getAuction(int ID) throws SQLException {
+  @Override public Auction getAuction(int ID) throws SQLException {
     Auction auction;
     try {
       auction = previouslyOpenedAuctions.getAuctionByID(ID);
@@ -63,7 +62,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
           timers.get(i).start();
         else
           timers.get(i).interrupt();
-    } catch (IllegalArgumentException e) {
+    }
+    catch (IllegalArgumentException e) {
       auction = modelManager.getAuction(ID);
       // add auction to cache
       previouslyOpenedAuctions.addAuction(auction);
@@ -82,18 +82,15 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
   }
 
-  @Override
-  public AuctionList getOngoingAuctions() throws SQLException {
+  @Override public AuctionList getOngoingAuctions() throws SQLException {
     return ongoingAuctionsCache;
   }
 
-  @Override
-  public NotificationList getNotifications(String receiver) {
+  @Override public NotificationList getNotifications(String receiver) {
     return notifications;
   }
 
-  @Override
-  public Bid placeBid(String bidder, int bidValue, int auctionId)
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException {
     return modelManager.placeBid(bidder, bidValue, auctionId);
   }
@@ -107,8 +104,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
       return endSeconds - currentSeconds;
   }
 
-  @Override
-  public String addUser(String firstname, String lastname,
+  @Override public String addUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
       LocalDate birthday) throws SQLException {
     userEmail = modelManager.addUser(firstname, lastname, email, password,
@@ -119,8 +115,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     return userEmail;
   }
 
-  @Override
-  public String login(String email, String password)
+  @Override public String login(String email, String password)
       throws SQLException {
     userEmail = modelManager.login(email, password);
     notifications = modelManager.getNotifications(userEmail);
@@ -129,79 +124,69 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     return userEmail;
   }
 
-  @Override
-  public void buyOut(String bidder, int auctionId)
+  @Override public void buyOut(String bidder, int auctionId)
       throws RemoteException, SQLException {
     try {
       modelManager.buyOut(bidder, auctionId);
-    } catch (SQLException e) {
+    }
+    catch (SQLException e) {
       e.printStackTrace();
-    } catch (RemoteException e) {
+    }
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
 
-  @Override
-  public AuctionList getPreviousBids(String bidder)
+  @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException {
     return previousBids;
   }
 
-  @Override
-  public AuctionList getCreatedAuctions(String seller)
+  @Override public AuctionList getCreatedAuctions(String seller)
       throws SQLException {
     return createdAuctions;
   }
 
-  @Override
-  public void resetPassword(String userEmail, String oldPassword,
+  @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException {
     modelManager.resetPassword(userEmail, oldPassword, newPassword,
         repeatPassword);
   }
 
-  @Override
-  public User getUser(String email) throws SQLException {
+  @Override public User getUser(String email) throws SQLException {
     return modelManager.getUser(email);
   }
 
-  @Override
-  public User getModeratorInfo() throws SQLException {
+  @Override public User getModeratorInfo() throws SQLException {
     return modelManager.getModeratorInfo();
   }
 
-  @Override
-  public boolean isModerator(String email) throws SQLException {
+  @Override public boolean isModerator(String email) throws SQLException {
     return modelManager.isModerator(email);
   }
 
-  @Override
-  public User editInformation(String oldEmail, String firstname,
+  @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
       LocalDate birthday) throws SQLException {
     return modelManager.editInformation(oldEmail, firstname, lastname, email,
         password, phone, birthday);
   }
 
-  @Override
-  public AuctionList getAllAuctions() throws SQLException {
+  @Override public AuctionList getAllAuctions() throws SQLException {
     return allAuctionsCache;
   }
 
-  @Override
-  public void addListener(String propertyName,
+  @Override public void addListener(String propertyName,
       PropertyChangeListener listener) {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void removeListener(String propertyName,
+  @Override public void removeListener(String propertyName,
       PropertyChangeListener listener) {
     property.removePropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
+  @Override public void propertyChange(PropertyChangeEvent evt) {
     switch (evt.getPropertyName()) {
       case "Auction" -> {
         Auction auction = (Auction) evt.getNewValue();
@@ -231,8 +216,10 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId())
             .setCurrentBidder(bid.getBidder());
 
-        allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
-        allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+        allAuctionsCache.getAuctionByID(bid.getAuctionId())
+            .setCurrentBid(bid.getBidAmount());
+        allAuctionsCache.getAuctionByID(bid.getAuctionId())
+            .setCurrentBidder(bid.getBidder());
 
         // if we opened it before, we update that cache too
         if (previouslyOpenedAuctions.contains(bid.getAuctionId())) {
@@ -271,12 +258,22 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
             previousBids = modelManager.getPreviousBids(userEmail);
             ongoingAuctionsCache = modelManager.getOngoingAuctions();
             allAuctionsCache = modelManager.getAllAuctions();
-          } catch (SQLException e) {
+          }
+          catch (SQLException e) {
             e.printStackTrace();
           }
         }
       }
+      case "BuyOut" -> {
+        Auction boughtOutAuction = (Auction) evt.getNewValue();
+        if (boughtOutAuction.getCurrentBidder().equals(userEmail)) {
+          previousBids.addAuction(boughtOutAuction);
+          System.out.println("received buyout");
+          System.out.println(previousBids.toString());
+        }
+      }
     }
-    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
+        evt.getNewValue());
   }
 }

@@ -35,6 +35,7 @@ public class AuctionServer
     model.addListener("Bid", this);
     model.addListener("Notification", this);
     model.addListener("Edit", this);
+    model.addListener("BuyOut", this);
 
     startRegistry();
     startServer();

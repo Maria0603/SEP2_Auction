@@ -41,6 +41,7 @@ public class AuctionClient
       server.addListener(this,"Bid");
       server.addListener(this, "Notification");
       server.addListener(this, "Edit");
+      server.addListener(this, "BuyOut");
 
     }
     catch (Exception e)
@@ -263,6 +264,9 @@ public class AuctionClient
   {
     property.firePropertyChange(event.getPropertyName(), event.getValue1(),
         event.getValue2());
+    if(event.getPropertyName().equals("BuyOut")){
+      System.out.println("received buyout" + " auction client" + event.getValue2().toString());
+    }
   }
 
 }
