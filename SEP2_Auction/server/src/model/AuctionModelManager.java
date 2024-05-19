@@ -197,15 +197,15 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
   private void sendContactInformation(int id) throws SQLException {
     Auction auction = auctionDatabase.getAuctionById(id);
-    String seller = auction.getSeller();
-    String bidder = auction.getCurrentBidder();
+    User seller = auctionDatabase.getUserInfo(auction.getSeller());
+    User bidder = auctionDatabase.getUserInfo(auction.getCurrentBidder());
     int bid = auction.getCurrentBid();
 
-    String contentForSeller = "Your Auction(id: " + id + ") has ended, Final bidder: " + bidder + ", with bid of " + bid + ".";
-    String contentForBidder = "You've won an Auction (id: " + id + "), sold by " + seller + ", with bid: " + bid + ".";
+    String contentForSeller = "Your Auction(id: "+id+") has ended, Final bidder: "+bidder+"("+bidder.getPhone()+"), with bid of "+bid+".";
+    String contentForBidder = "You've won an Auction(id: "+id+"), sold by "+seller+"("+seller.getPhone()+"), with bid: "+bid+".";
 
-    Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller);
-    Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder);
+    Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller.getEmail());
+    Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder.getEmail());
 
     property.firePropertyChange("Notification", null, notificationOne);
     property.firePropertyChange("Notification", null, notificationTwo);
