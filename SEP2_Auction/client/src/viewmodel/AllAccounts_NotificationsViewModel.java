@@ -137,6 +137,7 @@ public class AllAccounts_NotificationsViewModel
   }
   public void ban()
   {
+    errorProperty.set("");
     try
     {
       ///////////////////////////////////////////////////////////////////
@@ -150,6 +151,7 @@ public class AllAccounts_NotificationsViewModel
   }
   public void unban()
   {
+    errorProperty.set("");
     try
     {
       ///////////////////////////////////////////////////////////////////

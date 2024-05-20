@@ -54,7 +54,7 @@ public class AuctionViewModel implements PropertyChangeListener
 
     startAuctionVisibility = new SimpleBooleanProperty();
     disableAsInDisplay = new SimpleBooleanProperty();
-    isSold = new SimpleBooleanProperty(false);
+    isSold = new SimpleBooleanProperty();
     model.addListener("Bid", this);
     model.addListener("Edit", this);
 

@@ -293,8 +293,9 @@ public class AuctionDatabase implements AuctionPersistence
     {
       throw new SQLException("Credentials do not match");
     }
-    if(isBanned(email))
-      throw new SQLException(extractBanningReason(email));
+    if (isBanned(email))
+      throw new SQLException(
+          "Account closed. Reason: " + extractBanningReason(email));
     return email;
   }
 
@@ -339,13 +340,13 @@ public class AuctionDatabase implements AuctionPersistence
 
   @Override public ArrayList<User> getAllUsers() throws SQLException
   {
-    String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!='bob@bidhub';\n";
+    String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";
     return getAllUsersQuery(sql);
   }
 
   private ArrayList<User> getAllUsersQuery(String sql) throws SQLException
   {
-    ArrayList<Object[]> queryResults = database.query(sql);
+    ArrayList<Object[]> queryResults = database.query(sql, MODERATOR_EMAIL);
 
     ArrayList<User> output = new ArrayList<>();
     String phone, firstName, lastName, email;
@@ -481,6 +482,8 @@ public class AuctionDatabase implements AuctionPersistence
 
     String sql = "INSERT INTO banned_participant(user_email, reason) VALUES (?, ?);\n";
     database.update(sql, participantEmail, reason);
+    throw new SQLException(
+        "Account linked to email " + participantEmail + " successfully banned.");
   }
 
   private void checkBanningReason(String reason) throws SQLException
@@ -529,6 +532,8 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("This participant is not banned.");
     String sql = "DELETE FROM banned_participant WHERE user_email=?;\n";
     database.update(sql, participantEmail);
+    throw new SQLException(
+        "Account linked to email " + participantEmail + " successfully unbanned.");
   }
 
   private User getUser(String email) throws SQLException

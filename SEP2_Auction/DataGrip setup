@@ -4,12 +4,14 @@ SET SCHEMA 'sprint1database';
 CREATE DOMAIN email VARCHAR(200);
 CREATE DOMAIN first_last_name VARCHAR(100);
 
+
 DROP TABLE auction CASCADE;
 DROP TABLE users CASCADE;
 DROP TABLE bid CASCADE;
 DROP TABLE notification CASCADE;
 DROP TABLE participant CASCADE;
 DROP TABLE moderator;
+DROP TABLE banned_participant CASCADE ;
 
 CREATE TABLE users (
   user_email email PRIMARY KEY,
@@ -62,6 +64,12 @@ CREATE TABLE notification (
   date DATE,
   time TIME,
   FOREIGN KEY (receiver) REFERENCES participant(user_email) ON UPDATE CASCADE
+);
+
+CREATE TABLE banned_participant (
+  user_email email,
+  reason VARCHAR(600),
+  FOREIGN KEY (user_email) references participant(user_email)
 );
 
 CREATE TABLE moderator (
