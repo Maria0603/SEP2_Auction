@@ -49,6 +49,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
     try
     {
       state.setAuction(model.getAuction(idProperty.get()));
+
     }
     catch (SQLException e)
     {
