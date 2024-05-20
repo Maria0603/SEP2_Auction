@@ -2,7 +2,6 @@
 
 package view;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,7 +15,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import viewmodel.*;
 
-public class AllAccounts_NotificationsViewController {
+public class AllAccounts_NotificationsViewController
+{
   @FXML private Label errorLabel;
 
   @FXML public VBox tableViewVBox;
@@ -43,7 +43,8 @@ public class AllAccounts_NotificationsViewController {
 
   public void init(ViewHandler viewHandler,
       AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel,
-      Region root, WindowType windowType) {
+      Region root, WindowType windowType)
+  {
     this.root = root;
     this.allAccountsNotificationsViewModel = allAccountsNotificationsViewModel;
     this.viewHandler = viewHandler;
@@ -56,22 +57,30 @@ public class AllAccounts_NotificationsViewController {
     reset(windowType);
   }
 
-  public void reset(WindowType windowType) {
+  public void reset(WindowType windowType)
+  {
     allAccountsNotificationsViewModel.reset();
     notificationsTableView.getSelectionModel().clearSelection();
-    switch (windowType) {
+    switch (windowType)
+    {
       case NOTIFICATIONS -> setForNotifications();
       case ALL_ACCOUNTS -> setForAccounts();
     }
   }
 
-  private void setForNotifications() {
+  private void setForNotifications()
+  {
     tableViewVBox.getChildren().remove(1);
     setDataForNotificationTable();
     tableViewVBox.getChildren().add(notificationsTableView);
+    notificationsTableView.getSelectionModel().selectedItemProperty()
+        .addListener(
+            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedNotification(
+                newVal));
   }
 
-  private void setDataForNotificationTable() {
+  private void setDataForNotificationTable()
+  {
     notificationsTableView.setItems(
         allAccountsNotificationsViewModel.getNotifications());
     dateTimeColumn.setCellValueFactory(
@@ -85,16 +94,22 @@ public class AllAccounts_NotificationsViewController {
     notificationsTableView.setPrefWidth(1050);
   }
 
-  private void setForAccounts() {
+  private void setForAccounts()
+  {
     allAccountsNotificationsViewModel.setForAccounts();
 
     tableViewVBox.getChildren().remove(0);
     accountTableView.setItems(
         allAccountsNotificationsViewModel.getAllAccounts());
     tableViewVBox.getChildren().add(accountTableView);
+    accountTableView.getSelectionModel().selectedItemProperty()
+        .addListener(
+            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedAccount(
+                newVal));
   }
 
-  private TableView<AccountViewModel> initAccountTableView() {
+  private void initAccountTableView()
+  {
     this.accountTableView = new TableView<>();
 
     this.emailColumn = new TableColumn<>("Email");
@@ -105,11 +120,12 @@ public class AllAccounts_NotificationsViewController {
     accountTableView.getColumns()
         .addAll(emailColumn, firstNameColumn, lastNameColumn);
 
-    return accountTableView;
   }
 
-  private void setAccountTableViewData() {
-    accountTableView.setItems(allAccountsNotificationsViewModel.getAllAccounts());
+  private void setAccountTableViewData()
+  {
+    accountTableView.setItems(
+        allAccountsNotificationsViewModel.getAllAccounts());
     emailColumn.setCellValueFactory(
         cellData -> cellData.getValue().getEmailProperty());
     firstNameColumn.setCellValueFactory(
@@ -118,27 +134,35 @@ public class AllAccounts_NotificationsViewController {
         cellData -> cellData.getValue().getLastNameProperty());
   }
 
-  public Region getRoot() {
+  public Region getRoot()
+  {
     return root;
   }
 
-  @FXML void searchButtonPressed(ActionEvent event) {
+  @FXML void searchButtonPressed(ActionEvent event)
+  {
     allAccountsNotificationsViewModel.search();
     setAccountTableViewData();
 
   }
 
-  public void ban_openNotificationButtonPressed(ActionEvent actionEvent) {
+  public void ban_openNotificationButtonPressed()
+  {
+    allAccountsNotificationsViewModel.ban();
   }
 
-  public void unbanButtonPressed(ActionEvent actionEvent) {
+  public void unbanButtonPressed()
+  {
+    allAccountsNotificationsViewModel.unban();
   }
 
-  private void bindValues() {
-    notificationsTableView.getSelectionModel().selectedItemProperty()
+  private void bindValues()
+  {
+
+    /*notificationsTableView.getSelectionModel().selectedItemProperty()
         .addListener(
             (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelected(
-                newVal));
+                newVal));*/
 
     dateTimeColumn.textProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getFirstColumnNameProperty());
@@ -148,9 +172,12 @@ public class AllAccounts_NotificationsViewController {
         this.allAccountsNotificationsViewModel.getErrorProperty());
     searchTextField.textProperty().bindBidirectional(
         this.allAccountsNotificationsViewModel.getSearchFieldProperty());
+    reason_contentTextArea.textProperty().bindBidirectional(
+        allAccountsNotificationsViewModel.getReasonProperty());
   }
 
-  private void bindVisibleProperty() {
+  private void bindVisibleProperty()
+  {
     //visibility controlled from the view model
     ban_openNotificationButton.visibleProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getAllFieldsVisibility());

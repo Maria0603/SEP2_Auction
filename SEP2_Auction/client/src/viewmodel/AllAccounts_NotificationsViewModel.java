@@ -8,11 +8,9 @@ import model.AuctionModel;
 import model.Notification;
 import model.NotificationList;
 import model.User;
-import view.AllAccounts_NotificationsViewController;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -20,24 +18,28 @@ public class AllAccounts_NotificationsViewModel
     implements PropertyChangeListener {
   private ObservableList<NotificationViewModel> notifications;
   private ObservableList<AccountViewModel> allAccounts;
-  private ObjectProperty<NotificationViewModel> selectedRowProperty;
+  private ObjectProperty<NotificationViewModel> selectedRowNotificationProperty;
+  private ObjectProperty<AccountViewModel> selectedRowAccountProperty;
   private final AuctionModel model;
   private ViewModelState viewModelState;
   private StringProperty errorProperty;
   private BooleanProperty allFieldsVisibility;
   private StringProperty firstColumnNameProperty, secondColumnNameProperty;
-  private StringProperty searchFieldProperty;
+  private StringProperty searchFieldProperty, reasonProperty;
 
   public AllAccounts_NotificationsViewModel(AuctionModel model,
       ViewModelState viewModelState) {
     this.model = model;
     this.model.addListener("Notification", this);
+    this.model.addListener("Ban", this);
     this.viewModelState = viewModelState;
     notifications = FXCollections.observableArrayList();
     allAccounts = FXCollections.observableArrayList();
-    selectedRowProperty = new SimpleObjectProperty<>();
+    selectedRowNotificationProperty = new SimpleObjectProperty<>();
+    selectedRowAccountProperty=new SimpleObjectProperty<>();
     errorProperty = new SimpleStringProperty();
     searchFieldProperty = new SimpleStringProperty();
+    reasonProperty=new SimpleStringProperty();
 
     //to control the visibility from the view model
     allFieldsVisibility = new SimpleBooleanProperty();
@@ -69,13 +71,16 @@ public class AllAccounts_NotificationsViewModel
         allAccounts.add(new AccountViewModel(user));
       }
     }
-    catch (SQLException | RemoteException e) {
+    catch (SQLException e) {
       errorProperty.set(e.getMessage());
     }
   }
 
-  public void setSelected(NotificationViewModel notification) {
-    selectedRowProperty.set(notification);
+  public void setSelectedNotification(NotificationViewModel notification) {
+    selectedRowNotificationProperty.set(notification);
+  }
+  public void setSelectedAccount(AccountViewModel account) {
+    selectedRowAccountProperty.set(account);
   }
 
   public void setForNotifications() {
@@ -130,6 +135,32 @@ public class AllAccounts_NotificationsViewModel
 
     return results;
   }
+  public void ban()
+  {
+    try
+    {
+      ///////////////////////////////////////////////////////////////////
+      model.banParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get(),reasonProperty.get().trim());
+      /////////////////////////////////////////////////////////////////
+    }
+    catch(SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+  }
+  public void unban()
+  {
+    try
+    {
+      ///////////////////////////////////////////////////////////////////
+      model.unbanParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get());
+      /////////////////////////////////////////////////////////////////
+    }
+    catch(SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+  }
 
   public StringProperty getErrorProperty() {
     return errorProperty;
@@ -150,10 +181,15 @@ public class AllAccounts_NotificationsViewModel
   public StringProperty getSearchFieldProperty() {
     return searchFieldProperty;
   }
+  public StringProperty getReasonProperty()
+  {
+    return reasonProperty;
+  }
 
   public void setAllAccounts(ObservableList<AccountViewModel> newData) {
     allAccounts = newData;
   }
+
 
   public void addNotification(NotificationViewModel notification) {
     notifications.add(notification);

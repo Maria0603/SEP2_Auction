@@ -31,6 +31,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     modelManager.addListener("Bid", this);
     modelManager.addListener("Notification", this);
     modelManager.addListener("Edit", this);
+    modelManager.addListener("Ban", this);
+    modelManager.addListener("Reset", this);
 
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
     allAuctionsCache = modelManager.getAllAuctions();
@@ -131,18 +133,12 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
   @Override
   public void buyOut(String bidder, int auctionId)
-      throws RemoteException, SQLException {
-    try {
+      throws SQLException {
       modelManager.buyOut(bidder, auctionId);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override public ArrayList<User> getAllUsers()
-      throws RemoteException, SQLException {
+      throws SQLException {
     return modelManager.getAllUsers();
   }
 
@@ -191,6 +187,22 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
   @Override
   public AuctionList getAllAuctions() throws SQLException {
     return allAuctionsCache;
+  }
+  @Override public void banParticipant(String moderatorEmail,
+      String participantEmail, String reason) throws SQLException
+  {
+    modelManager.banParticipant(moderatorEmail, participantEmail, reason);
+  }
+
+  @Override public String extractBanningReason(String email) throws SQLException
+  {
+    return modelManager.extractBanningReason(email);
+  }
+
+  @Override public void unbanParticipant(String moderatorEmail,
+      String participantEmail) throws SQLException
+  {
+    modelManager.unbanParticipant(moderatorEmail, participantEmail);
   }
 
   @Override

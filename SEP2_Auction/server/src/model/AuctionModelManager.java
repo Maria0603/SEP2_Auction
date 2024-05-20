@@ -165,6 +165,23 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public ArrayList<User> getAllUsers() throws SQLException {
     return auctionDatabase.getAllUsers();
   }
+  @Override public void banParticipant(String moderatorEmail,
+      String participantEmail, String reason) throws SQLException
+  {
+    auctionDatabase.banParticipant(moderatorEmail, participantEmail, reason);
+    property.firePropertyChange("Ban", null, participantEmail);
+  }
+
+  @Override public String extractBanningReason(String email) throws SQLException
+  {
+    return auctionDatabase.extractBanningReason(email);
+  }
+
+  @Override public void unbanParticipant(String moderatorEmail,
+      String participantEmail) throws SQLException
+  {
+    auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
+  }
 
   @Override public synchronized void addListener(String propertyName,
       PropertyChangeListener listener)

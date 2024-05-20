@@ -24,6 +24,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("Bid", this);
     client.addListener("Notification", this);
     client.addListener("Edit", this);
+    client.addListener("Ban", this);
+    client.addListener("Reset", this);
   }
 
   @Override
@@ -114,13 +116,29 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 
   @Override
   public void buyOut(String bidder, int auctionId)
-      throws RemoteException, SQLException {
+      throws SQLException {
     client.buyOut(bidder, auctionId);
   }
 
   @Override public ArrayList<User> getAllUsers()
-      throws RemoteException, SQLException {
+      throws SQLException {
     return client.getAllUsers();
+  }
+  @Override public void banParticipant(String moderatorEmail,
+      String participantEmail, String reason) throws SQLException
+  {
+    client.banParticipant(moderatorEmail, participantEmail, reason);
+  }
+
+  @Override public String extractBanningReason(String email) throws SQLException
+  {
+    return client.extractBanningReason(email);
+  }
+
+  @Override public void unbanParticipant(String moderatorEmail,
+      String participantEmail) throws SQLException
+  {
+    client.unbanParticipant(moderatorEmail, participantEmail);
   }
 
   @Override

@@ -133,13 +133,13 @@ public class AuctionViewModel implements PropertyChangeListener
       } else {
         errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
       }
-    } catch (SQLException e) {
+    } catch (SQLException e)
+    {
       errorProperty.set(e.getMessage());
-      System.out.println(errorProperty.get());
-      e.printStackTrace();
-    } catch (RemoteException e) {
-      throw new RuntimeException(e);
+      //System.out.println(errorProperty.get());
+      //e.printStackTrace();
     }
+
   }
 
 

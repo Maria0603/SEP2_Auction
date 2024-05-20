@@ -36,6 +36,8 @@ public class AuctionServer
     model.addListener("Bid", this);
     model.addListener("Notification", this);
     model.addListener("Edit", this);
+    model.addListener("Ban", this);
+    model.addListener("Reset", this);
 
     startRegistry();
     startServer();
@@ -165,6 +167,24 @@ public class AuctionServer
   @Override public AuctionList getAllAuctions() throws SQLException
   {
     return model.getAllAuctions();
+  }
+  @Override public void banParticipant(String moderatorEmail,
+      String participantEmail, String reason)
+      throws RemoteException, SQLException
+  {
+    model.banParticipant(moderatorEmail, participantEmail, reason);
+  }
+
+  @Override public String extractBanningReason(String email)
+      throws RemoteException, SQLException
+  {
+    return model.extractBanningReason(email);
+  }
+
+  @Override public void unbanParticipant(String moderatorEmail,
+      String participantEmail) throws RemoteException, SQLException
+  {
+    model.unbanParticipant(moderatorEmail, participantEmail);
   }
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,

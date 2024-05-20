@@ -42,6 +42,8 @@ public class AuctionClient
       server.addListener(this,"Bid");
       server.addListener(this, "Notification");
       server.addListener(this, "Edit");
+      server.addListener(this, "Ban");
+      server.addListener(this, "Reset");
 
     }
     catch (Exception e)
@@ -238,7 +240,7 @@ public class AuctionClient
   }
 
   @Override public void buyOut(String bidder, int auctionId)
-      throws RemoteException ,SQLException {
+      throws SQLException {
     try {
       server.buyOut(bidder, auctionId);
     } catch (RemoteException e) {
@@ -248,7 +250,7 @@ public class AuctionClient
   }
 
   @Override public ArrayList<User> getAllUsers()
-      throws RemoteException, SQLException {
+      throws SQLException {
     try
     {
       return server.getAllUsers();
@@ -258,6 +260,44 @@ public class AuctionClient
       e.printStackTrace();
     }
     return null;
+  }
+  @Override public void banParticipant(String moderatorEmail,
+      String participantEmail, String reason) throws SQLException
+  {
+    try
+    {
+      server.banParticipant(moderatorEmail, participantEmail, reason);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
+  @Override public String extractBanningReason(String email) throws SQLException
+  {
+    try
+    {
+      return server.extractBanningReason(email);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public void unbanParticipant(String moderatorEmail,
+      String participantEmail) throws SQLException
+  {
+    try
+    {
+      server.unbanParticipant(moderatorEmail, participantEmail);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
   }
 
   @Override public void addListener(String s,
