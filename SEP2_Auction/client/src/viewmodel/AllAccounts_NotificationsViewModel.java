@@ -82,15 +82,20 @@ public class AllAccounts_NotificationsViewModel
   }
   public void setSelectedAccount(AccountViewModel account) {
     selectedRowAccountProperty.set(account);
-    try
+    if(selectedRowAccountProperty.getValue()==null)
+      errorProperty.set("Select an account.");
+    else
     {
-      reasonProperty.set(model.extractBanningReason(
-          selectedRowAccountProperty.getValue().getEmailProperty().get()));
-      errorProperty.set("");
-    }
-    catch(SQLException e)
-    {
-      errorProperty.set(e.getMessage());
+      try
+      {
+        reasonProperty.set(model.extractBanningReason(
+            selectedRowAccountProperty.getValue().getEmailProperty().get()));
+        errorProperty.set("");
+      }
+      catch (SQLException e)
+      {
+        errorProperty.set(e.getMessage());
+      }
     }
 
   }
@@ -149,28 +154,41 @@ public class AllAccounts_NotificationsViewModel
   }
   public void ban()
   {
-    errorProperty.set("");
-    try
+    if(selectedRowAccountProperty.getValue()==null)
+      errorProperty.set("Select an account.");
+    else
     {
-      model.banParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get(), reasonProperty.get());
-      reasonProperty.set("");
-    }
-    catch(SQLException e)
-    {
-      errorProperty.set(e.getMessage());
+      errorProperty.set("");
+      try
+      {
+        model.banParticipant(viewModelState.getUserEmail(),
+            selectedRowAccountProperty.getValue().getEmailProperty().get(),
+            reasonProperty.get());
+        reasonProperty.set("");
+      }
+      catch (SQLException e)
+      {
+        errorProperty.set(e.getMessage());
+      }
     }
   }
   public void unban()
   {
-    errorProperty.set("");
-    try
+    if(selectedRowAccountProperty.getValue()==null)
+      errorProperty.set("Select an account.");
+    else
     {
-      model.unbanParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get());
-      reasonProperty.set("");
-    }
-    catch(SQLException e)
-    {
-      errorProperty.set(e.getMessage());
+      errorProperty.set("");
+      try
+      {
+        model.unbanParticipant(viewModelState.getUserEmail(),
+            selectedRowAccountProperty.getValue().getEmailProperty().get());
+        reasonProperty.set("");
+      }
+      catch (SQLException e)
+      {
+        errorProperty.set(e.getMessage());
+      }
     }
   }
 

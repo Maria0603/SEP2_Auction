@@ -1,5 +1,8 @@
 package view;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +47,14 @@ public class FixedPaneViewHandler {
 
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
-
+    fixedPaneViewModel.getBannedProperty().addListener(new ChangeListener<Boolean>() {
+      @Override
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        if (newValue) {
+          Platform.runLater(() -> logOutButtonPressed());
+        }
+      }
+    });
     notificationsButton.styleProperty().bindBidirectional(
         fixedPaneViewModel.getNotificationsButtonBackgroundProperty());
     notificationsButton.setStyle("");
@@ -158,7 +168,7 @@ public class FixedPaneViewHandler {
     return loadAuctionView(WindowType.START_AUCTION);
   }
 
-  @FXML private void logOutButtonPressed(ActionEvent event) {
+  @FXML private void logOutButtonPressed() {
     leaveAuction();
     viewHandler.openView(WindowType.LOG_IN);
   }

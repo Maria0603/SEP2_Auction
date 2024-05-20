@@ -127,6 +127,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     auctionDatabase.resetPassword(userEmail, oldPassword, newPassword,
         repeatPassword);
+    property.firePropertyChange("Reset", null, userEmail);
   }
 
   @Override public synchronized User getUser(String email) throws SQLException
@@ -168,8 +169,17 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
-    auctionDatabase.banParticipant(moderatorEmail, participantEmail, reason);
-    property.firePropertyChange("Ban", null, participantEmail);
+    try
+    {
+      auctionDatabase.banParticipant(moderatorEmail, participantEmail, reason);
+    }
+    catch(SQLException e)
+    {
+      if(e.getMessage().contains("successfully"))
+        property.firePropertyChange("Ban", null, participantEmail);
+      throw new SQLException(e.getMessage());
+    }
+
   }
 
   @Override public String extractBanningReason(String email) throws SQLException
@@ -180,7 +190,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public void unbanParticipant(String moderatorEmail,
       String participantEmail) throws SQLException
   {
-    auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
+      auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
   }
 
   @Override public synchronized void addListener(String propertyName,

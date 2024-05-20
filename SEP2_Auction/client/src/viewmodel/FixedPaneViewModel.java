@@ -20,11 +20,14 @@ public class FixedPaneViewModel implements PropertyChangeListener {
   //all button in the fixed pane
   private BooleanProperty buttonsDisabled;
   private BooleanProperty myBidsButtonVisibility, sellItemButtonVisibility, notificationsButtonVisibility;
+  private BooleanProperty bannedProperty;
 
   public FixedPaneViewModel(AuctionModel model, ViewModelState state) {
     this.state = state;
     this.model = model;
     model.addListener("Notification", this);
+    model.addListener("Ban", this);
+    model.addListener("Reset", this);
     emailProperty = new SimpleStringProperty();
     titleOf_myAuctions_allAuctionsButton = new SimpleStringProperty();
     notificationsButtonBackgroundProperty = new SimpleStringProperty();
@@ -35,6 +38,8 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     sellItemButtonVisibility = new SimpleBooleanProperty();
     notificationsButtonVisibility = new SimpleBooleanProperty();
     myBidsButtonVisibility = new SimpleBooleanProperty();
+    bannedProperty=new SimpleBooleanProperty();
+    bannedProperty.set(false);
   }
 
 
@@ -139,20 +144,30 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     buttonsDisabled.set(true);
     state.setEdit();
   }
+  public BooleanProperty getBannedProperty()
+  {
+    return bannedProperty;
+  }
 
   public void setModeratorInfo() {
     state.setLookingAtModerator(true);
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt) {
-    //  TODO: To be combined
-    //if(evt.getPropertyName().equals("Notification")){
-    //notificationsButtonBackgroundProperty.set("-fx-background-color: #ff0000; ");}
 
-    if (emailProperty.get()
-        .equals(((Notification) evt.getNewValue()).getReceiver())) {
-      notificationsButtonBackgroundProperty.set(
-          "-fx-background-color: #ff0000; ");
+    switch (evt.getPropertyName())
+    {
+      case "Notification":
+        if (emailProperty.get().equals(((Notification) evt.getNewValue()).getReceiver()))
+        {
+          notificationsButtonBackgroundProperty.set(
+              "-fx-background-color: #ff0000; ");
+        }
+        break;
+      case "Ban", "Reset":
+        if(emailProperty.get().equals(evt.getNewValue()))
+          bannedProperty.set(true);
+        break;
     }
   }
 }
