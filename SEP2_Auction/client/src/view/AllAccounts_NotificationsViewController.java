@@ -159,11 +159,6 @@ public class AllAccounts_NotificationsViewController
   private void bindValues()
   {
 
-    /*notificationsTableView.getSelectionModel().selectedItemProperty()
-        .addListener(
-            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelected(
-                newVal));*/
-
     dateTimeColumn.textProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getFirstColumnNameProperty());
     contentColumn.textProperty().bindBidirectional(

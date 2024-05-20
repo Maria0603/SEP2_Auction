@@ -488,10 +488,10 @@ public class AuctionDatabase implements AuctionPersistence
 
   private void checkBanningReason(String reason) throws SQLException
   {
+    if(reason==null || reason.length()<3)
+      throw new SQLException("The reason is too short.");
     if (reason.length() > 600)
       throw new SQLException("The reason is too long.");
-    if (reason.length() < 3)
-      throw new SQLException("The reason is too short.");
   }
 
   private boolean isBanned(String email) throws SQLException

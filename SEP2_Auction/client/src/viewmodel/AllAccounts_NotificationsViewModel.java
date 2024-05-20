@@ -57,7 +57,8 @@ public class AllAccounts_NotificationsViewModel
   }
 
   public void reset() {
-    errorProperty.set(null);
+    errorProperty.set("");
+    reasonProperty.set("");
     loadNotifications();
     loadAllAccounts();
   }
@@ -81,6 +82,17 @@ public class AllAccounts_NotificationsViewModel
   }
   public void setSelectedAccount(AccountViewModel account) {
     selectedRowAccountProperty.set(account);
+    try
+    {
+      reasonProperty.set(model.extractBanningReason(
+          selectedRowAccountProperty.getValue().getEmailProperty().get()));
+      errorProperty.set("");
+    }
+    catch(SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+
   }
 
   public void setForNotifications() {
@@ -140,9 +152,8 @@ public class AllAccounts_NotificationsViewModel
     errorProperty.set("");
     try
     {
-      ///////////////////////////////////////////////////////////////////
-      model.banParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get(),reasonProperty.get().trim());
-      /////////////////////////////////////////////////////////////////
+      model.banParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get(), reasonProperty.get());
+      reasonProperty.set("");
     }
     catch(SQLException e)
     {
@@ -154,9 +165,8 @@ public class AllAccounts_NotificationsViewModel
     errorProperty.set("");
     try
     {
-      ///////////////////////////////////////////////////////////////////
       model.unbanParticipant(viewModelState.getUserEmail(), selectedRowAccountProperty.getValue().getEmailProperty().get());
-      /////////////////////////////////////////////////////////////////
+      reasonProperty.set("");
     }
     catch(SQLException e)
     {
