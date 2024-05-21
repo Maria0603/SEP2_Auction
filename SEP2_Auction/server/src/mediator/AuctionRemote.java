@@ -41,7 +41,8 @@ public interface AuctionRemote extends Remote
       String... propertyNames) throws RemoteException;
   boolean removeListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
-  String buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
+
+void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
   ArrayList<User> getAllUsers() throws RemoteException, SQLException;
   void banParticipant(String moderatorEmail, String participantEmail, String reason) throws RemoteException, SQLException;
   String extractBanningReason(String email) throws RemoteException, SQLException;
