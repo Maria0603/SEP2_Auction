@@ -55,6 +55,7 @@ public class AuctionViewModel implements PropertyChangeListener {
     isSold = new SimpleBooleanProperty(false);
     model.addListener("Bid", this);
     model.addListener("Edit", this);
+    model.addListener("BuyOut", this);
 
     reset();
   }
@@ -160,6 +161,7 @@ public class AuctionViewModel implements PropertyChangeListener {
     }
 
     if (selectedAuction != null && isSold.get()) {
+      leaveAuctionView();
       System.out.println(isSold.get());
       startAuctionVisibility.set(false);
       disableAsInDisplay.set(true);
@@ -304,21 +306,21 @@ public class AuctionViewModel implements PropertyChangeListener {
     System.out.println(event.getPropertyName() + " received in view model");
 
     switch (event.getPropertyName()) {
-      case "Time":
+      case "Time" -> {
         if (!isSold.get() && idProperty.get() == Integer.parseInt(
             event.getOldValue().toString())) {
           LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
           Platform.runLater(
               () -> timerProperty.set(time.format(timeFormatter)));
         }
-        break;
-      case "End":
+      }
+      case "End" -> {
         if (idProperty.get() == Integer.parseInt(
             event.getOldValue().toString())) {
           Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
         }
-        break;
-      case "Bid":
+      }
+      case "Bid" -> {
         Bid bid = (Bid) event.getNewValue();
         if ((state.getSelectedAuction().getID()) == bid.getAuctionId()) {
           try {
@@ -334,15 +336,23 @@ public class AuctionViewModel implements PropertyChangeListener {
             currentBidderProperty.set(bid.getBidder());
           });
         }
-        break;
-      case "Edit":
+      }
+      case "Edit" -> {
         System.out.println("edit received in view model");
         if (currentBidderProperty.get().equals(event.getOldValue())) {
           state.getSelectedAuction()
               .setCurrentBidder(event.getNewValue().toString());
           currentBidderProperty.set(event.getNewValue().toString());
         }
-        break;
+      }
+      case "BuyOut" -> {
+        Auction boughtOutAuction = (Auction) event.getNewValue();
+        boughtOutAuction.setStatus("CLOSED");
+        isSold.set(true);
+        leaveAuctionView();
+        state.setAuction(boughtOutAuction);
+        reset();
+      }
     }
   }
 

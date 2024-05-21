@@ -58,7 +58,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     try {
       auction = previouslyOpenedAuctions.getAuctionByID(ID);
       for (int i = 0; i < timers.size(); i++)
-        if (timers.get(i).getId() == ID)
+        if (timers.get(i).getId() == ID && auction.getStatus().equals("ONGOING"))
           timers.get(i).start();
         else
           timers.get(i).interrupt();
@@ -67,15 +67,18 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
       auction = modelManager.getAuction(ID);
       // add auction to cache
       previouslyOpenedAuctions.addAuction(auction);
-      Timer timer = new Timer(
-          timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1,
-          ID);
-      timer.addListener("Time", this);
-      timer.addListener("End", this);
-      Thread t = new Thread(timer, String.valueOf(ID));
-      // add timer to cache
-      timers.add(t);
-      t.start();
+      if(auction.getStatus().equals("ONGOING")){
+        Timer timer = new Timer(
+            timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1,
+            ID);
+        timer.addListener("Time", this);
+        timer.addListener("End", this);
+        Thread t = new Thread(timer, String.valueOf(ID));
+        // add timer to cache
+        timers.add(t);
+        t.start();
+      }
+
     }
 
     return auction;
@@ -126,15 +129,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
   @Override public void buyOut(String bidder, int auctionId)
       throws RemoteException, SQLException {
-    try {
       modelManager.buyOut(bidder, auctionId);
-    }
-    catch (SQLException e) {
-      e.printStackTrace();
-    }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
@@ -266,10 +261,17 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
       }
       case "BuyOut" -> {
         Auction boughtOutAuction = (Auction) evt.getNewValue();
+        boughtOutAuction.setStatus("CLOSED");
+
+        previouslyOpenedAuctions.closeAuction(boughtOutAuction.getID());
+
         if (boughtOutAuction.getCurrentBidder().equals(userEmail)) {
           previousBids.addAuction(boughtOutAuction);
           System.out.println("received buyout");
           System.out.println(previousBids.toString());
+        }
+        if(boughtOutAuction.getSeller().equals(userEmail)){
+          createdAuctions.closeAuction(boughtOutAuction.getID());
         }
       }
     }

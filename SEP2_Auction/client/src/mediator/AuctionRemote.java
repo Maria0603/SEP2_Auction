@@ -40,6 +40,6 @@ public interface AuctionRemote extends Remote
       String... propertyNames) throws RemoteException;
   boolean removeListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
-  String buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
+  void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
 
 }

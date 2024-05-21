@@ -95,15 +95,10 @@ public class AuctionServer
   }
 
   @Override
-  public synchronized String buyOut(String bidder, int auctionId)
+  public synchronized void buyOut(String bidder, int auctionId)
       throws RemoteException, SQLException {
-    try {
+
       model.buyOut(bidder, auctionId);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return "Failed to process buyout";
-    }
-    return "Buyout successful!";
   }
 
   @Override
