@@ -482,8 +482,14 @@ public class AuctionDatabase implements AuctionPersistence
 
     String sql = "INSERT INTO banned_participant(user_email, reason) VALUES (?, ?);\n";
     database.update(sql, participantEmail, reason);
+    deleteAuctionsStartedBy(participantEmail);
     throw new SQLException(
         "Account linked to email " + participantEmail + " successfully banned.");
+  }
+  private void deleteAuctionsStartedBy(String email) throws SQLException
+  {
+    String sql="DELETE FROM auction WHERE creator_email=?;";
+    database.update(sql, email);
   }
 
   private void checkBanningReason(String reason) throws SQLException

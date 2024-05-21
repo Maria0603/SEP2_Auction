@@ -293,6 +293,20 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
           }
         }
       }
+      case "Ban" ->
+      {
+        try
+        {
+          ongoingAuctionsCache = modelManager.getOngoingAuctions();
+          previousBids=modelManager.getPreviousBids(userEmail);
+          createdAuctions=modelManager.getCreatedAuctions(userEmail);
+          allAuctionsCache=modelManager.getAllAuctions();
+        }
+        catch(SQLException e)
+        {
+          e.printStackTrace();
+        }
+      }
     }
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
   }
