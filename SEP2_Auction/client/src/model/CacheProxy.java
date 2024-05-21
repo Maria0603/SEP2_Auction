@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class CacheProxy implements AuctionModel, PropertyChangeListener {
   private AuctionList ongoingAuctionsCache;
   private AuctionList allAuctionsCache;
-  private AuctionList previouslyOpenedAuctions;
   private NotificationList notifications;
   private AuctionModelManager modelManager;
   private PropertyChangeSupport property;
@@ -36,7 +35,6 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
     allAuctionsCache = modelManager.getAllAuctions();
-    previouslyOpenedAuctions = new AuctionList();
     timers = new ArrayList<>();
 
     notifications = new NotificationList();
@@ -57,31 +55,16 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
   @Override
   public Auction getAuction(int ID) throws SQLException {
-    Auction auction;
-    try {
-      auction = previouslyOpenedAuctions.getAuctionByID(ID);
-      for (int i = 0; i < timers.size(); i++)
-        if (timers.get(i).getId() == ID)
-          timers.get(i).start();
-        else
-          timers.get(i).interrupt();
-    } catch (IllegalArgumentException e) {
-      auction = modelManager.getAuction(ID);
-      // add auction to cache
-      previouslyOpenedAuctions.addAuction(auction);
+    Auction auction= modelManager.getAuction(ID);
       Timer timer = new Timer(
           timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1,
           ID);
       timer.addListener("Time", this);
       timer.addListener("End", this);
       Thread t = new Thread(timer, String.valueOf(ID));
-      // add timer to cache
-      timers.add(t);
       t.start();
-    }
 
     return auction;
-
   }
 
   @Override
@@ -251,13 +234,6 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
         allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
 
-        // if we opened it before, we update that cache too
-        if (previouslyOpenedAuctions.contains(bid.getAuctionId())) {
-          previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId())
-              .setCurrentBid(bid.getBidAmount());
-          previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId())
-              .setCurrentBidder(bid.getBidder());
-        }
         // if someone else placed a bid for an auction where we previously bid
         // we update the cache
         if (previousBids.contains(bid.getAuctionId())) {
@@ -266,12 +242,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
           previousBids.getAuctionByID(bid.getAuctionId())
               .setCurrentBid(bid.getBidAmount());
         }
-        // but if we placed our first bid for an auction, we add it in cache
-        else if (bid.getBidder().equals(userEmail) && !previousBids.contains(
-            bid.getAuctionId())) {
-          previousBids.addAuction(
-              previouslyOpenedAuctions.getAuctionByID(bid.getAuctionId()));
-        }
+
         if (createdAuctions.contains(bid.getAuctionId())) {
           createdAuctions.getAuctionByID(bid.getAuctionId())
               .setCurrentBidder(bid.getBidder());

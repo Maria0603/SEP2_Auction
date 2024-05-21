@@ -483,6 +483,8 @@ public class AuctionDatabase implements AuctionPersistence
     String sql = "INSERT INTO banned_participant(user_email, reason) VALUES (?, ?);\n";
     database.update(sql, participantEmail, reason);
     deleteAuctionsStartedBy(participantEmail);
+    updateCurrentBidAndCurrentBidderAfterBan(participantEmail);
+    deleteBids(participantEmail);
     throw new SQLException(
         "Account linked to email " + participantEmail + " successfully banned.");
   }
@@ -490,6 +492,33 @@ public class AuctionDatabase implements AuctionPersistence
   {
     String sql="DELETE FROM auction WHERE creator_email=?;";
     database.update(sql, email);
+  }
+  private void updateCurrentBidAndCurrentBidderAfterBan(String email) throws SQLException
+  {
+    String sql1="WITH to_be_updated_auctions AS (\n"
+        + "    SELECT a.id AS auction_id, MAX(b.bid_amount) AS new_bid_amount, b.participant_email AS new_bidder\n"
+        + "    FROM auction a\n"
+        + "    LEFT JOIN bid b ON a.id = b.auction_id AND b.participant_email != ?\n"
+        + "    WHERE a.current_bidder = ?\n"
+        + "    GROUP BY a.id, b.participant_email\n"
+        + "    ORDER BY a.id, new_bid_amount DESC\n" + "),\n"
+        + "ordered_auctions AS (\n"
+        + "    SELECT auction_id, new_bid_amount, new_bidder,\n"
+        + "           ROW_NUMBER() OVER (PARTITION BY auction_id ORDER BY new_bid_amount DESC) AS row\n"
+        + "    FROM to_be_updated_auctions\n" + ")\n" + "UPDATE auction\n"
+        + "SET current_bid = CASE\n"
+        + "                      WHEN ordered_auctions.new_bid_amount IS NOT NULL THEN ordered_auctions.new_bid_amount\n"
+        + "                      ELSE 0\n" + "    END,\n"
+        + "    current_bidder = ordered_auctions.new_bidder\n"
+        + "FROM ordered_auctions\n"
+        + "WHERE auction.id = ordered_auctions.auction_id\n"
+        + "AND (ordered_auctions.row = 1 OR ordered_auctions.new_bid_amount IS NULL);";
+    database.update(sql1, email, email);
+  }
+  private void deleteBids(String email) throws SQLException
+  {
+    String sql2="DELETE FROM bid WHERE participant_email=?;";
+    database.update(sql2, email);
   }
 
   private void checkBanningReason(String reason) throws SQLException
