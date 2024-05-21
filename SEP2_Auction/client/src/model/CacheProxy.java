@@ -20,7 +20,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
   private ArrayList<Thread> timers;
   private String userEmail;
 
-  private AuctionList previousBids, createdAuctions;
+  private AuctionList previousBids, createdAuctions, previouslyOpenedAuctions;
 
   public CacheProxy() throws SQLException, IOException {
     property = new PropertyChangeSupport(this);
@@ -41,6 +41,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     notifications = new NotificationList();
     previousBids = new AuctionList();
     createdAuctions = new AuctionList();
+    previouslyOpenedAuctions = new AuctionList();
 
     userEmail = null;
   }
@@ -133,7 +134,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     return modelManager.getAllUsers();
       }
   @Override public void buyOut(String bidder, int auctionId)
-      throws RemoteException, SQLException {
+      throws SQLException {
       modelManager.buyOut(bidder, auctionId);
   }
 
@@ -268,18 +269,17 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
           }
         }
       }
-      case "Ban" ->
-      {
-        try
-        {
+      case "Ban" -> {
+        try {
           ongoingAuctionsCache = modelManager.getOngoingAuctions();
-          previousBids=modelManager.getPreviousBids(userEmail);
-          createdAuctions=modelManager.getCreatedAuctions(userEmail);
-          allAuctionsCache=modelManager.getAllAuctions();
+          previousBids = modelManager.getPreviousBids(userEmail);
+          createdAuctions = modelManager.getCreatedAuctions(userEmail);
+          allAuctionsCache = modelManager.getAllAuctions();
         }
-        catch(SQLException e)
-        {
+        catch (SQLException e) {
           e.printStackTrace();
+        }
+      }
       case "BuyOut" -> {
         Auction boughtOutAuction = (Auction) evt.getNewValue();
         boughtOutAuction.setStatus("CLOSED");

@@ -135,9 +135,6 @@ public class AuctionViewModel implements PropertyChangeListener {
       System.out.println(errorProperty.get());
       e.printStackTrace();
     }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
 
   }
 
