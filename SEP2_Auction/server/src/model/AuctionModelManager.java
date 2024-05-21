@@ -84,8 +84,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       Auction auction = auctionDatabase.getAuctionById(auctionId);
       property.firePropertyChange("Time", null, auction.getStartTime());
       property.firePropertyChange("End", auctionId, auction);
-      property.firePropertyChange("BuyOut", null, auction);
-      System.out.println("received buyout");
 
       // Send notification to the buyer
       Notification notification = auctionDatabase.saveNotification(

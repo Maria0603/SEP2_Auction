@@ -19,7 +19,8 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class AuctionViewModel implements PropertyChangeListener {
+public class AuctionViewModel implements PropertyChangeListener
+{
 
   private StringProperty descriptionProperty, errorProperty, headerProperty, reasonProperty, titleProperty, timerProperty, currentBidderProperty;
   private IntegerProperty idProperty, buyoutPriceProperty, incrementProperty, ratingProperty, reservePriceProperty, timeProperty, incomingBidProperty, currentBidProperty;
@@ -29,7 +30,8 @@ public class AuctionViewModel implements PropertyChangeListener {
   private ViewModelState state;
   private BooleanProperty isSold;
 
-  public AuctionViewModel(AuctionModel model, ViewModelState state) {
+  public AuctionViewModel(AuctionModel model, ViewModelState state)
+  {
     this.model = model;
     this.state = state;
     idProperty = new SimpleIntegerProperty();
@@ -55,23 +57,22 @@ public class AuctionViewModel implements PropertyChangeListener {
     isSold = new SimpleBooleanProperty();
     model.addListener("Bid", this);
     model.addListener("Edit", this);
-    model.addListener("BuyOut", this);
 
     reset();
   }
 
-  private boolean isSoldSelected() {
-    return state.getSelectedAuction().getStatus().equals("CLOSED");
-  }
 
-  public void setForStart() {
+  public void setForStart()
+  {
     startAuctionVisibility.set(true);
     disableAsInDisplay.set(false);
   }
 
-  public void startAuction() {
+  public void startAuction()
+  {
     errorProperty.set("");
-    try {
+    try
+    {
       //we cannot send the null image through model, because it cannot be converted into bytes, so:
       if (imageProperty.get() == null)
         throw new IllegalArgumentException("Please upload an image.");
@@ -83,7 +84,8 @@ public class AuctionViewModel implements PropertyChangeListener {
               state.getUserEmail()).getID()));
     }
     catch (IllegalArgumentException | SQLException | ClassNotFoundException |
-           IOException e) {
+           IOException e)
+    {
       errorProperty.set(e.getMessage());
       titleProperty.set(titleProperty.get().trim());
       descriptionProperty.set(descriptionProperty.get().trim());
@@ -92,20 +94,24 @@ public class AuctionViewModel implements PropertyChangeListener {
     }
   }
 
-  public void placeBid() {
+  public void placeBid()
+  {
     errorProperty.set("");
     Bid bid = null;
-    try {
+    try
+    {
       bid = model.placeBid(state.getUserEmail(), incomingBidProperty.get(),
           idProperty.get());
     }
-    catch (SQLException e) {
+    catch (SQLException e)
+    {
       errorProperty.set(e.getMessage());
       incomingBidProperty.set(0);
       //e.printStackTrace();
     }
     if (errorProperty.get().isEmpty() && bid != null
-        && idProperty.get() == bid.getAuctionId()) {
+        && idProperty.get() == bid.getAuctionId())
+    {
       currentBidProperty.set(bid.getBidAmount());
       currentBidderProperty.set(bid.getBidder());
       incomingBidProperty.set(0);
@@ -124,64 +130,39 @@ public class AuctionViewModel implements PropertyChangeListener {
         model.removeListener("End", this);
         Platform.runLater(() -> timerProperty.set("AUCTION CLOSED"));
         reset(); //disable
+      } else {
+        errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
       }
-      else {
-        errorProperty.set(
-            "Cannot buy now. Bids have already been placed or the item is already sold.");
-      }
-    }
-    catch (SQLException e) {
+    } catch (SQLException e)
+    {
       errorProperty.set(e.getMessage());
-      System.out.println(errorProperty.get());
-      e.printStackTrace();
+      //System.out.println(errorProperty.get());
+      //e.printStackTrace();
     }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
+
   }
 
-  private byte[] imageToByteArray(Image image) throws IOException {
+
+  private byte[] imageToByteArray(Image image) throws IOException
+  {
     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
     return outputStream.toByteArray();
   }
 
-  private Image byteArrayToImage(byte[] imageBytes) {
+  private Image byteArrayToImage(byte[] imageBytes)
+  {
     ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
     return new Image(inputStream);
   }
 
-  public void reset() {
+  public void reset()
+  {
     errorProperty.set("");
     Auction selectedAuction = state.getSelectedAuction();
-
-    if(selectedAuction != null){
-      isSold.set(isSoldSelected());
-    }
-
-    if (selectedAuction != null && isSold.get()) {
-      leaveAuctionView();
-      System.out.println(isSold.get());
-      startAuctionVisibility.set(false);
-      disableAsInDisplay.set(true);
-      errorProperty.set("Auction is Closed.");
-      headerProperty.set("Auction ID:");
-      idProperty.set(selectedAuction.getID());
-      titleProperty.set(selectedAuction.getItem().getTitle());
-      descriptionProperty.set(selectedAuction.getItem().getDescription());
-      reservePriceProperty.set(
-          selectedAuction.getPriceConstraint().getReservePrice());
-      buyoutPriceProperty.set(
-          selectedAuction.getPriceConstraint().getBuyoutPrice());
-      incrementProperty.set(
-          selectedAuction.getPriceConstraint().getMinimumIncrement());
-      imageProperty.set(byteArrayToImage(selectedAuction.getImageData()));
-      currentBidderProperty.set(selectedAuction.getCurrentBidder());
-      currentBidProperty.set(selectedAuction.getCurrentBid());
-    }
-    else if (selectedAuction != null && !isSold.get()) {
-      System.out.println(isSold.get());
+    if (selectedAuction != null)
+    {
       startAuctionVisibility.set(false);
       disableAsInDisplay.set(true);
       //when we open an auction, we listen to the updating time
@@ -202,19 +183,22 @@ public class AuctionViewModel implements PropertyChangeListener {
       currentBidderProperty.set(selectedAuction.getCurrentBidder());
       currentBidProperty.set(selectedAuction.getCurrentBid());
     }
-    else {
+    else
+    {
       wipe();
     }
   }
 
-  public void leaveAuctionView() {
+  public void leaveAuctionView()
+  {
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
     model.removeListener("End", this);
     errorProperty.set("");
   }
 
-  public void wipe() {
+  public void wipe()
+  {
     headerProperty.set("Start auction");
     idProperty.set(0);
     buyoutPriceProperty.set(0);
@@ -229,130 +213,148 @@ public class AuctionViewModel implements PropertyChangeListener {
     imageProperty.set(null);
   }
 
-  public ObjectProperty<Image> getImageProperty() {
+  public ObjectProperty<Image> getImageProperty()
+  {
     return imageProperty;
   }
 
-  public IntegerProperty getIdProperty() {
+  public IntegerProperty getIdProperty()
+  {
     return idProperty;
   }
 
-  public IntegerProperty getRatingProperty() {
+  public IntegerProperty getRatingProperty()
+  {
     return ratingProperty;
   }
 
-  public StringProperty getReasonProperty() {
+  public StringProperty getReasonProperty()
+  {
     return reasonProperty;
   }
 
-  public IntegerProperty getReservePriceProperty() {
+  public IntegerProperty getReservePriceProperty()
+  {
     return reservePriceProperty;
   }
 
-  public IntegerProperty getTimeProperty() {
+  public IntegerProperty getTimeProperty()
+  {
     return timeProperty;
   }
 
-  public StringProperty getTimerProperty() {
+  public StringProperty getTimerProperty()
+  {
     return timerProperty;
   }
 
-  public StringProperty getTitleProperty() {
+  public StringProperty getTitleProperty()
+  {
     return titleProperty;
   }
 
-  public IntegerProperty getCurrentBidProperty() {
+  public IntegerProperty getCurrentBidProperty()
+  {
     return currentBidProperty;
   }
 
-  public StringProperty getCurrentBidderProperty() {
+  public StringProperty getCurrentBidderProperty()
+  {
     return currentBidderProperty;
   }
 
-  public IntegerProperty getBuyoutPriceProperty() {
+  public IntegerProperty getBuyoutPriceProperty()
+  {
     return buyoutPriceProperty;
   }
 
-  public StringProperty getDescriptionProperty() {
+  public StringProperty getDescriptionProperty()
+  {
     return descriptionProperty;
   }
 
-  public StringProperty getErrorProperty() {
+  public StringProperty getErrorProperty()
+  {
     return errorProperty;
   }
 
-  public StringProperty getHeaderProperty() {
+  public StringProperty getHeaderProperty()
+  {
     return headerProperty;
   }
 
-  public IntegerProperty getIncrementProperty() {
+  public IntegerProperty getIncrementProperty()
+  {
     return incrementProperty;
   }
 
-  public IntegerProperty getIncomingBidProperty() {
+  public IntegerProperty getIncomingBidProperty()
+  {
     return incomingBidProperty;
   }
 
-  public BooleanProperty getStartAuctionVisibility() {
+  public BooleanProperty getStartAuctionVisibility()
+  {
     return startAuctionVisibility;
   }
 
-  public BooleanProperty getDisableAsInDisplay() {
+  public BooleanProperty getDisableAsInDisplay()
+  {
     return disableAsInDisplay;
   }
 
-  @Override public void propertyChange(PropertyChangeEvent event) {
+  @Override public void propertyChange(PropertyChangeEvent event)
+  {
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     System.out.println(event.getPropertyName() + " received in view model");
 
-    switch (event.getPropertyName()) {
-      case "Time" -> {
+    switch (event.getPropertyName())
+    {
+      case "Time":
         if (!isSold.get() && idProperty.get() == Integer.parseInt(
-            event.getOldValue().toString())) {
+            event.getOldValue().toString()))
+        {
           LocalTime time = LocalTime.ofSecondOfDay((long) event.getNewValue());
           Platform.runLater(
               () -> timerProperty.set(time.format(timeFormatter)));
         }
-      }
-      case "End" -> {
+        break;
+      case "End":
         if (idProperty.get() == Integer.parseInt(
-            event.getOldValue().toString())) {
+            event.getOldValue().toString()))
+        {
           Platform.runLater(() -> errorProperty.set("AUCTION CLOSED."));
         }
-      }
-      case "Bid" -> {
+        break;
+      case "Bid":
         Bid bid = (Bid) event.getNewValue();
-        if ((state.getSelectedAuction().getID()) == bid.getAuctionId()) {
-          try {
+        if ((state.getSelectedAuction().getID()) == bid.getAuctionId())
+        {
+          try
+          {
             state.setAuction(model.getAuction(bid.getAuctionId()));
           }
-          catch (SQLException e) {
+          catch (SQLException e)
+          {
             e.printStackTrace();
           }
         }
-        if (idProperty.get() == bid.getAuctionId()) {
+        if (idProperty.get() == bid.getAuctionId())
+        {
           Platform.runLater(() -> {
             currentBidProperty.set(bid.getBidAmount());
             currentBidderProperty.set(bid.getBidder());
           });
         }
-      }
-      case "Edit" -> {
+        break;
+      case "Edit":
         System.out.println("edit received in view model");
-        if (currentBidderProperty.get().equals(event.getOldValue())) {
-          state.getSelectedAuction()
-              .setCurrentBidder(event.getNewValue().toString());
+        if(currentBidderProperty.get().equals(event.getOldValue()))
+        {
+          state.getSelectedAuction().setCurrentBidder(event.getNewValue().toString());
           currentBidderProperty.set(event.getNewValue().toString());
         }
-      }
-      case "BuyOut" -> {
-        Auction boughtOutAuction = (Auction) event.getNewValue();
-        boughtOutAuction.setStatus("CLOSED");
-        isSold.set(true);
-        leaveAuctionView();
-        state.setAuction(boughtOutAuction);
-        reset();
-      }
+        break;
     }
   }
 

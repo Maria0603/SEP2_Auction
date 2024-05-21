@@ -39,14 +39,6 @@ public class AuctionList implements Serializable {
     throw new IllegalArgumentException("No auction with this ID.");
   }
 
-  public void closeAuction(int ID){
-    getAuctionByID(ID).setStatus("CLOSED");
-  }
-
-  public void closeAuction(Auction auction){
-    getAuctionByID(auction.getID()).setStatus("CLOSED");
-  }
-
   public Auction getAuction(int index) {
     return auctions.get(index);
   }
