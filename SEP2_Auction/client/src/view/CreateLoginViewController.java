@@ -130,8 +130,11 @@ public class CreateLoginViewController
 
   @FXML public void resetPasswordButtonPressed()
   {
-    if(headerLabel.getText().equals("Edit profile"))
+    if(headerLabel.getText().equals("Edit profile")){
+      viewModel.setForLogin();
       viewModel.deleteAccount();
+      viewHandler.openView(WindowType.LOG_IN);
+    }
     else
       reset(WindowType.RESET_PASSWORD);
   }
