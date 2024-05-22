@@ -45,6 +45,7 @@ public class AuctionClient
       server.addListener(this, "Ban");
       server.addListener(this, "Reset");
       server.addListener(this, "BuyOut");
+      server.addListener(this, "Delete");
 
     }
     catch (Exception e)
@@ -301,6 +302,19 @@ public class AuctionClient
     }
   }
 
+  @Override public void deleteAuction(String moderatorEmail, int auctionId,
+      String reason) throws SQLException
+  {
+    try
+    {
+      server.deleteAuction(moderatorEmail, auctionId, reason);
+    }
+    catch(RemoteException e)
+    {
+      e.printStackTrace();
+    }
+  }
+
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {
@@ -320,6 +334,8 @@ public class AuctionClient
         event.getValue2());
     if(event.getPropertyName().equals("BuyOut")){
       System.out.println("received buyout" + " auction client" + event.getValue2().toString());
+      if(event.getPropertyName().equals("Delete"))
+        System.out.println("delete received in the client");
     }
   }
 

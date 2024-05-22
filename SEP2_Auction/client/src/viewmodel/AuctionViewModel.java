@@ -137,6 +137,19 @@ public class AuctionViewModel implements PropertyChangeListener {
     }
 
   }
+  public void deleteAuction()
+  {
+    if(!errorProperty.get().contains("closed"))
+      errorProperty.set("");
+    try
+    {
+      model.deleteAuction(state.getUserEmail(), idProperty.get(), reasonProperty.get().trim());
+    }
+    catch(SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
+  }
 
   private byte[] imageToByteArray(Image image) throws IOException {
     BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
@@ -152,6 +165,7 @@ public class AuctionViewModel implements PropertyChangeListener {
 
   public void reset() {
     errorProperty.set("");
+    reasonProperty.set("");
     Auction selectedAuction = state.getSelectedAuction();
 
     if(selectedAuction != null){

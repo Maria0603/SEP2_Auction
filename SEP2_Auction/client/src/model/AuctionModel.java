@@ -43,12 +43,12 @@ public interface AuctionModel extends NamedPropertyChangeSubject {
 
   AuctionList getAllAuctions() throws SQLException;
 
+  ArrayList<User> getAllUsers() throws SQLException;
+
   void buyOut(String bidder, int auctionId) throws SQLException;
 
-  ArrayList<User> getAllUsers() throws SQLException;
   void banParticipant(String moderatorEmail, String participantEmail, String reason) throws SQLException;
   String extractBanningReason(String email) throws SQLException;
   void unbanParticipant(String moderatorEmail, String participantEmail) throws SQLException;
-
-
+  void deleteAuction(String moderatorEmail, int auctionId, String reason) throws SQLException;
 }

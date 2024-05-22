@@ -157,7 +157,11 @@ public class AuctionViewController {
     auctionViewModel.placeBid();
   }
 
-  public void deleteButtonPressed(ActionEvent actionEvent) {
+  public void deleteButtonPressed()
+  {
+    auctionViewModel.deleteAuction();
+    if(errorLabel.getText().isEmpty() || errorLabel.getText().contains("closed"))
+      viewHandler.openView(WindowType.ALL_AUCTIONS);
   }
 
   private void bindValues() {

@@ -168,13 +168,13 @@ public class AuctionDatabase implements AuctionPersistence
     return null;
   }
 
-  @Override public AuctionList getOngoingAuctions() throws SQLException
+  @Override public synchronized AuctionList getOngoingAuctions() throws SQLException
   {
     String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
     return getAuctions(sql, null);
   }
 
-  @Override public NotificationList getNotifications(String receiver)
+  @Override public synchronized NotificationList getNotifications(String receiver)
       throws SQLException
   {
     String sql = "SELECT * FROM notification WHERE receiver=?;";
@@ -192,7 +192,7 @@ public class AuctionDatabase implements AuctionPersistence
     return notifications;
   }
 
-  @Override public Notification saveNotification(String content,
+  @Override public synchronized Notification saveNotification(String content,
       String receiver) throws SQLException
   {
     String sql = "INSERT INTO notification(receiver, content, date, time) VALUES (?, ?, ?, ?);";
@@ -203,7 +203,7 @@ public class AuctionDatabase implements AuctionPersistence
     return new Notification(date + " " + time, content, receiver);
   }
 
-  @Override public Bid saveBid(String participantEmail, int bidAmount,
+  @Override public synchronized Bid saveBid(String participantEmail, int bidAmount,
       int auctionId) throws SQLException
   {
     String retrieveSql =
@@ -234,13 +234,13 @@ public class AuctionDatabase implements AuctionPersistence
     return bid;
   }
 
-  @Override public void markAsClosed(int id) throws SQLException
+  @Override public synchronized void markAsClosed(int id) throws SQLException
   {
     String sql = "UPDATE auction SET status='CLOSED'\n" + "WHERE ID=?;";
     database.update(sql, id);
   }
 
-  @Override public Bid getCurrentBidForAuction(int auctionId)
+  @Override public synchronized Bid getCurrentBidForAuction(int auctionId)
       throws SQLException
   {
     String sql = "SELECT current_bid, current_bidder FROM auction WHERE ID=?;";
@@ -265,7 +265,7 @@ public class AuctionDatabase implements AuctionPersistence
         currentBid.getAuctionId());
   }
 
-  @Override public User createUser(String firstname, String lastname,
+  @Override public synchronized User createUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
       LocalDate birthday) throws SQLException
   {
@@ -286,7 +286,7 @@ public class AuctionDatabase implements AuctionPersistence
     return new User(firstname, lastname, email, password, phone, birthday);
   }
 
-  @Override public String login(String email, String password)
+  @Override public synchronized String login(String email, String password)
       throws SQLException
   {
     if (!validateForLogin(email, password))
@@ -299,7 +299,7 @@ public class AuctionDatabase implements AuctionPersistence
     return email;
   }
 
-  @Override public AuctionList getPreviousBids(String bidder)
+  @Override public synchronized AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
     String sql = "SELECT DISTINCT bid.auction_id\n" + "FROM bid\n"
@@ -307,14 +307,14 @@ public class AuctionDatabase implements AuctionPersistence
     return getAuctions(sql, bidder);
   }
 
-  @Override public AuctionList getCreatedAuctions(String seller)
+  @Override public synchronized AuctionList getCreatedAuctions(String seller)
       throws SQLException
   {
     String sql = "SELECT ID from auction WHERE creator_email=?;";
     return getAuctions(sql, seller);
   }
 
-  @Override public AuctionList getAllAuctions() throws SQLException
+  @Override public synchronized AuctionList getAllAuctions() throws SQLException
   {
     String sql = "SELECT ID FROM sprint1database.auction;";
     return getAuctions(sql, null);
@@ -338,7 +338,7 @@ public class AuctionDatabase implements AuctionPersistence
     return auctions;
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException
+  @Override public synchronized ArrayList<User> getAllUsers() throws SQLException
   {
     String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";
     return getAllUsersQuery(sql);
@@ -365,7 +365,7 @@ public class AuctionDatabase implements AuctionPersistence
     return output;
   }
 
-  @Override public void resetPassword(String userEmail, String oldPassword,
+  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
   {
     validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
@@ -373,7 +373,7 @@ public class AuctionDatabase implements AuctionPersistence
     database.update(sql, newPassword, userEmail);
   }
 
-  @Override public User getUserInfo(String email) throws SQLException
+  @Override public synchronized User getUserInfo(String email) throws SQLException
   {
     User user = getUser(email);
     if (user != null)
@@ -393,7 +393,7 @@ public class AuctionDatabase implements AuctionPersistence
     return null;
   }
 
-  @Override public User getModeratorInfo() throws SQLException
+  @Override public synchronized User getModeratorInfo() throws SQLException
   {
     return getUserInfo(MODERATOR_EMAIL);
   }
@@ -423,12 +423,12 @@ public class AuctionDatabase implements AuctionPersistence
     return null;
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public synchronized boolean isModerator(String email) throws SQLException
   {
     return isEmailIn(email, "moderator_email", "moderator");
   }
 
-  @Override public User editInformation(String oldEmail, String firstname,
+  @Override public synchronized User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
       LocalDate birthday) throws SQLException
   {
@@ -471,14 +471,14 @@ public class AuctionDatabase implements AuctionPersistence
     throw new SQLException("Wrong password");
   }
 
-  @Override public void banParticipant(String moderatorEmail,
+  @Override public synchronized void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
     if (!moderatorEmail.equals(MODERATOR_EMAIL))
       throw new SQLException("You cannot ban another participant.");
     if (isBanned(participantEmail))
       throw new SQLException("This participant is already banned.");
-    checkBanningReason(reason);
+    checkReason(reason);
 
     String sql = "INSERT INTO banned_participant(user_email, reason) VALUES (?, ?);\n";
     database.update(sql, participantEmail, reason);
@@ -488,6 +488,18 @@ public class AuctionDatabase implements AuctionPersistence
     throw new SQLException(
         "Account linked to email " + participantEmail + " successfully banned.");
   }
+
+  @Override public synchronized void deleteAuction(String moderatorEmail, int auctionId, String reason) throws SQLException
+  {
+    if(!moderatorEmail.equals(MODERATOR_EMAIL))
+      throw new SQLException("You cannot delete this item.");
+    checkReason(reason);
+    String sql="DELETE FROM auction WHERE ID=?;";
+    database.update(sql, auctionId);
+  }
+
+
+
   private void deleteAuctionsStartedBy(String email) throws SQLException
   {
     String sql="DELETE FROM auction WHERE creator_email=?;";
@@ -521,7 +533,7 @@ public class AuctionDatabase implements AuctionPersistence
     database.update(sql2, email);
   }
 
-  private void checkBanningReason(String reason) throws SQLException
+  private void checkReason(String reason) throws SQLException
   {
     if(reason==null || reason.length()<3)
       throw new SQLException("The reason is too short.");

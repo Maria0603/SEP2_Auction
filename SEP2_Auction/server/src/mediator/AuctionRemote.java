@@ -46,5 +46,7 @@ public interface AuctionRemote extends Remote
   void banParticipant(String moderatorEmail, String participantEmail, String reason) throws RemoteException, SQLException;
   String extractBanningReason(String email) throws RemoteException, SQLException;
   void unbanParticipant(String moderatorEmail, String participantEmail) throws RemoteException, SQLException;
+  void deleteAuction(String moderatorEmail, int auctionId, String reason) throws RemoteException, SQLException;
+
 
 }

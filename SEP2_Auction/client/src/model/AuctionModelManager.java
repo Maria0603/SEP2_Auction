@@ -27,6 +27,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("Ban", this);
     client.addListener("Reset", this);
     client.addListener("BuyOut", this);
+    client.addListener("Delete", this);
   }
 
   @Override
@@ -140,6 +141,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       String participantEmail) throws SQLException
   {
     client.unbanParticipant(moderatorEmail, participantEmail);
+  }
+
+  @Override public void deleteAuction(String moderatorEmail, int auctionId,
+      String reason) throws SQLException
+  {
+    client.deleteAuction(moderatorEmail, auctionId, reason);
   }
 
   @Override
