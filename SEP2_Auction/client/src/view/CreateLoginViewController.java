@@ -130,7 +130,10 @@ public class CreateLoginViewController
 
   @FXML public void resetPasswordButtonPressed()
   {
-    reset(WindowType.RESET_PASSWORD);
+    if(headerLabel.getText().equals("Edit profile"))
+      viewModel.deleteAccount();
+    else
+      reset(WindowType.RESET_PASSWORD);
   }
 
   @FXML public void loginButtonPressed()
@@ -208,6 +211,8 @@ public class CreateLoginViewController
     //special components
     resetPasswordButton.visibleProperty()
         .bindBidirectional(viewModel.getResetPasswordButtonVisibility());
+    resetPasswordButton.textProperty().
+            bindBidirectional(viewModel.getResetPasswordButtonText());
     login_createAccountButton.textProperty()
         .bindBidirectional(viewModel.getLogin_createButtonText());
     login_createAccountButton.visibleProperty()

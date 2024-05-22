@@ -23,6 +23,7 @@ public class CreateLoginViewModel
   private StringProperty emailLabelText;
   private StringProperty login_createButtonText;
   private BooleanProperty login_createButtonVisibility;
+  private StringProperty resetPasswordButtonText;
   private BooleanProperty resetPasswordButtonVisibility;
   private BooleanProperty cancelButtonVisibility;
   private BooleanProperty confirmButtonVisibility;
@@ -51,6 +52,7 @@ public class CreateLoginViewModel
 
     login_createButtonText = new SimpleStringProperty();
     login_createButtonVisibility = new SimpleBooleanProperty();
+    resetPasswordButtonText = new SimpleStringProperty();
     resetPasswordButtonVisibility = new SimpleBooleanProperty();
     emailLabelText = new SimpleStringProperty();
     cancelButtonVisibility = new SimpleBooleanProperty();
@@ -170,6 +172,7 @@ public class CreateLoginViewModel
 
     reset();
     headerProperty.set("Reset password");
+    resetPasswordButtonText.set("Reset Password");
     resetPasswordVisibility.set(true);
     emailVisibility.set(true);
     passwordVisibility.set(true);
@@ -209,6 +212,7 @@ public class CreateLoginViewModel
     viewState.setDisplay();
 
     resetPasswordButtonVisibility.set(true);
+    resetPasswordButtonText.set("Reset Password");
     login_createButtonVisibility.set(true);
     login_createButtonText.set("Edit");
     informationVisibility.set(true);
@@ -269,7 +273,8 @@ public class CreateLoginViewModel
   {
     viewState.setEdit();
 
-    resetPasswordButtonVisibility.set(false);
+    resetPasswordButtonText.set("Delete Account");
+    resetPasswordButtonVisibility.set(true);
     login_createButtonVisibility.set(false);
     //login_createButtonText.set("Edit");
     informationVisibility.set(true);
@@ -287,6 +292,9 @@ public class CreateLoginViewModel
     disableProperty.set(false);
   }
 
+  public void deleteAccount(){
+    System.out.println("VIEWMODEL: call the database to delete an account and log out this guy...");
+  }
   private void edit()
   {
     errorProperty.set("");
@@ -397,7 +405,7 @@ public class CreateLoginViewModel
   {
     return emailLabelText;
   }
-
+  public StringProperty getResetPasswordButtonText(){return resetPasswordButtonText;}
   public BooleanProperty getCancelButtonVisibility()
   {
     return cancelButtonVisibility;
