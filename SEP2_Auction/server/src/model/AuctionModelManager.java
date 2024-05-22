@@ -77,22 +77,23 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return bid;
   }
 
-  @Override
-  public void buyOut(String current_bider, int auctionId) throws SQLException {
-    try {
-      auctionDatabase.buyOut(current_bider, auctionId);
+  @Override public void buyOut(String current_bidder, int auctionId)
+      throws SQLException
+  {
       Auction auction = auctionDatabase.getAuctionById(auctionId);
-      property.firePropertyChange("Time", null, auction.getStartTime());
+      //property.firePropertyChange("Time", null, auction.getStartTime());
+      Bid bid=auctionDatabase.buyOut(current_bidder, auctionId);
+
       property.firePropertyChange("End", auctionId, auction);
+      property.firePropertyChange("Bid", null, bid);
+
 
       // Send notification to the buyer
-      Notification notification = auctionDatabase.saveNotification(
-          "Congratulations! You have successfully bought out the item on id: " + auctionId,
-          current_bider);
-      property.firePropertyChange("Notification", null, notification);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+      //Notification notification = auctionDatabase.saveNotification(
+       //   "Congratulations! You have successfully bought out the item on id: "
+        //      + auctionId, current_bidder);
+      //property.firePropertyChange("Notification", null, notification);
+      sendContactInformation(auctionId);
   }
 
   @Override public synchronized String addUser(String firstname,
@@ -122,8 +123,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getCreatedAuctions(seller);
   }
 
-  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
+  @Override public synchronized void resetPassword(String userEmail,
+      String oldPassword, String newPassword, String repeatPassword)
+      throws SQLException
   {
     auctionDatabase.resetPassword(userEmail, oldPassword, newPassword,
         repeatPassword);
@@ -140,14 +142,15 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getModeratorInfo();
   }
 
-  @Override public synchronized boolean isModerator(String email) throws SQLException
+  @Override public synchronized boolean isModerator(String email)
+      throws SQLException
   {
     return auctionDatabase.isModerator(email);
   }
 
-  @Override public synchronized User editInformation(String oldEmail, String firstname,
-      String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
+  @Override public synchronized User editInformation(String oldEmail,
+      String firstname, String lastname, String email, String password,
+      String phone, LocalDate birthday) throws SQLException
   {
     User user = auctionDatabase.editInformation(oldEmail, firstname, lastname,
         email, password, phone, birthday);
@@ -163,9 +166,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getAllAuctions();
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException {
+  @Override public ArrayList<User> getAllUsers() throws SQLException
+  {
     return auctionDatabase.getAllUsers();
   }
+
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
@@ -173,9 +178,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     {
       auctionDatabase.banParticipant(moderatorEmail, participantEmail, reason);
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
-      if(e.getMessage().contains("successfully"))
+      if (e.getMessage().contains("successfully"))
         property.firePropertyChange("Ban", null, participantEmail);
       throw new SQLException(e.getMessage());
     }
@@ -190,7 +195,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public void unbanParticipant(String moderatorEmail,
       String participantEmail) throws SQLException
   {
-      auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
+    auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
   }
 
   @Override public synchronized void addListener(String propertyName,
@@ -222,17 +227,25 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     // model manager property fires auction events further
     property.firePropertyChange(evt);
   }
-  private void sendContactInformation(int id) throws SQLException {
+
+  private void sendContactInformation(int id) throws SQLException
+  {
     Auction auction = auctionDatabase.getAuctionById(id);
     User seller = auctionDatabase.getUserInfo(auction.getSeller());
     User bidder = auctionDatabase.getUserInfo(auction.getCurrentBidder());
     int bid = auction.getCurrentBid();
 
-    String contentForSeller = "Your Auction(id: "+id+") has ended, Final bidder: "+bidder+"("+bidder.getPhone()+"), with bid of "+bid+".";
-    String contentForBidder = "You've won an Auction(id: "+id+"), sold by "+seller+"("+seller.getPhone()+"), with bid: "+bid+".";
+    String contentForSeller =
+        "Your Auction(id: " + id + ") has ended, Final bidder: " + bidder + "("
+            + bidder.getPhone() + "), with bid of " + bid + ".";
+    String contentForBidder =
+        "You've won an Auction(id: " + id + "), sold by " + seller + "("
+            + seller.getPhone() + "), with bid: " + bid + ".";
 
-    Notification notificationOne = auctionDatabase.saveNotification(contentForSeller,seller.getEmail());
-    Notification notificationTwo = auctionDatabase.saveNotification(contentForBidder,bidder.getEmail());
+    Notification notificationOne = auctionDatabase.saveNotification(
+        contentForSeller, seller.getEmail());
+    Notification notificationTwo = auctionDatabase.saveNotification(
+        contentForBidder, bidder.getEmail());
 
     property.firePropertyChange("Notification", null, notificationOne);
     property.firePropertyChange("Notification", null, notificationTwo);

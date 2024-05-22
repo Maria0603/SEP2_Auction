@@ -61,7 +61,6 @@ public class AuctionViewModel implements PropertyChangeListener
     reset();
   }
 
-
   public void setForStart()
   {
     startAuctionVisibility.set(true);
@@ -118,22 +117,28 @@ public class AuctionViewModel implements PropertyChangeListener
     }
   }
 
-  public void buyOut() {
+  public void buyOut()
+  {
     errorProperty.set("");
-    try {
+    try
+    {
 
-      if (currentBidProperty.get() == 0 && !isSold.get()) {
+      if (currentBidProperty.get() == 0 && !isSold.get())
+      {
         model.buyOut(state.getUserEmail(), idProperty.get());
         isSold.set(true);
         //removing listeners
         model.removeListener("Time", this);
-        model.removeListener("End", this);
-        Platform.runLater(() -> timerProperty.set("AUCTION CLOSED"));
+        //model.removeListener("End", this);
+        //Platform.runLater(() -> errorProperty.set("AUCTION CLOSED"));
         reset(); //disable
-      } else {
-        errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
       }
-    } catch (SQLException e)
+      else
+      {
+        //errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
+      }
+    }
+    catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
       //System.out.println(errorProperty.get());
@@ -141,7 +146,6 @@ public class AuctionViewModel implements PropertyChangeListener
     }
 
   }
-
 
   private byte[] imageToByteArray(Image image) throws IOException
   {
@@ -159,10 +163,12 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void reset()
   {
-    errorProperty.set("");
+    //errorProperty.set("");
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null)
     {
+      if(!state.getSelectedAuction().getStatus().equals("CLOSED"))
+        errorProperty.set("");
       startAuctionVisibility.set(false);
       disableAsInDisplay.set(true);
       //when we open an auction, we listen to the updating time
@@ -194,7 +200,8 @@ public class AuctionViewModel implements PropertyChangeListener
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
     model.removeListener("End", this);
-    errorProperty.set("");
+    if(!state.getSelectedAuction().getStatus().equals("CLOSED"))
+      errorProperty.set("");
   }
 
   public void wipe()
@@ -349,9 +356,10 @@ public class AuctionViewModel implements PropertyChangeListener
         break;
       case "Edit":
         System.out.println("edit received in view model");
-        if(currentBidderProperty.get().equals(event.getOldValue()))
+        if (currentBidderProperty.get().equals(event.getOldValue()))
         {
-          state.getSelectedAuction().setCurrentBidder(event.getNewValue().toString());
+          state.getSelectedAuction()
+              .setCurrentBidder(event.getNewValue().toString());
           currentBidderProperty.set(event.getNewValue().toString());
         }
         break;

@@ -70,7 +70,7 @@ public class TestBid {
   public static void main(String[] args)
       throws SQLException, ClassNotFoundException {
     AuctionDatabase auctionDatabase = new AuctionDatabase();
-    auctionDatabase.setBuyer(1,"mama");
+    //auctionDatabase.setBuyer(1,"mama");
 
   }
 }

@@ -70,7 +70,8 @@ public class AllAccounts_NotificationsViewController
 
   private void setForNotifications()
   {
-    tableViewVBox.getChildren().remove(1);
+    if(!tableViewVBox.getChildren().isEmpty())
+     tableViewVBox.getChildren().remove(0);
     setDataForNotificationTable();
     tableViewVBox.getChildren().add(notificationsTableView);
     notificationsTableView.getSelectionModel().selectedItemProperty()
