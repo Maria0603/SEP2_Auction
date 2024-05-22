@@ -87,11 +87,20 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       property.firePropertyChange("BuyOut", null, auction);
       System.out.println("received buyout");
 
-      // Send notification to the buyer
-      Notification notification = auctionDatabase.saveNotification(
-          "Congratulations! You have successfully bought out the item on id: " + auctionId,
-          current_bider);
-      property.firePropertyChange("Notification", null, notification);
+
+      User seller = auctionDatabase.getUserInfo(auction.getSeller());
+      User buyer = auctionDatabase.getUserInfo(auction.getCurrentBidder());
+      
+      String buyerNotification = "Congratulations! You've bought out item: " + auction.getItem().getTitle()
+              + "(" + auctionId + ") from " + seller.getEmail() + "(" + seller.getPhone() + ")";
+      String sellerNotification = "Item: " + auction.getItem().getTitle() + "(" + auctionId + ") has been bought out by: "
+              + buyer.getEmail() + "(" + buyer.getPhone() + ")";
+
+      Notification notificationOne = auctionDatabase.saveNotification(buyerNotification, buyer.getEmail());
+      Notification notificationTwo = auctionDatabase.saveNotification(sellerNotification, seller.getEmail());
+
+      property.firePropertyChange("Notification", null, notificationOne);
+      property.firePropertyChange("Notification", null, notificationTwo);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -108,7 +117,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public synchronized String login(String email, String password)
       throws SQLException
   {
-    //  TODO: add validation in database
     return auctionDatabase.login(email, password);
   }
 
