@@ -21,10 +21,10 @@ CREATE TABLE users (
   last_name first_last_name
 );
 
+
 CREATE TABLE participant(
     user_email email PRIMARY KEY,
     birth_date DATE NOT NULL,
-    --rate INTEGER,
     FOREIGN KEY (user_email) references users (user_email) ON UPDATE CASCADE
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE bid (
   auction_id INTEGER NOT NULL,
   bid_amount INTEGER CHECK (bid_amount>0) NOT NULL,
   FOREIGN KEY (participant_email) REFERENCES participant(user_email) ON UPDATE CASCADE,
-  FOREIGN KEY (auction_id) REFERENCES auction(id)
+  FOREIGN KEY (auction_id) REFERENCES auction(id) ON DELETE CASCADE
 );
 
 CREATE TABLE notification (
