@@ -97,38 +97,32 @@ public class AuctionServer
   }
 
   @Override
-  public synchronized String buyOut(String bidder, int auctionId)
+  public synchronized void buyOut(String bidder, int auctionId)
       throws RemoteException, SQLException {
-    try {
       model.buyOut(bidder, auctionId);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return "Failed to process buyout";
-    }
-    return "Buyout successful!";
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException {
+  @Override public synchronized ArrayList<User> getAllUsers() throws RemoteException, SQLException {
     return model.getAllUsers();
   }
 
   @Override
-  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
+  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws RemoteException, SQLException {
     return model.addUser(firstname,lastname,email,password, repeatedPassword, phone, birthday);
   }
 
   @Override
-  public synchronized String login(String email, String password) throws SQLException {
+  public synchronized String login(String email, String password) throws RemoteException, SQLException {
     System.out.println("AuctionServer: " + email + ", " + password);
     return model.login(email,password);
   }
 
-  @Override public synchronized AuctionList getPreviousBids(String bidder) throws SQLException
+  @Override public synchronized AuctionList getPreviousBids(String bidder) throws RemoteException, SQLException
   {
     return model.getPreviousBids(bidder);
   }
 
-  @Override public AuctionList getCreatedAuctions(String seller)
+  @Override public synchronized AuctionList getCreatedAuctions(String seller)
       throws RemoteException, SQLException
   {
     return model.getCreatedAuctions(seller);
@@ -146,7 +140,7 @@ public class AuctionServer
     return model.getUser(email);
   }
 
-  @Override public User getModeratorInfo() throws SQLException
+  @Override public synchronized User getModeratorInfo() throws RemoteException, SQLException
   {
     return model.getModeratorInfo();
   }
@@ -157,31 +151,31 @@ public class AuctionServer
     return model.isModerator(email);
   }
 
-  @Override public User editInformation(String oldEmail, String firstname,
+  @Override public synchronized User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
       LocalDate birthday) throws RemoteException, SQLException
   {
     return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
   }
 
-  @Override public AuctionList getAllAuctions() throws SQLException
+  @Override public synchronized AuctionList getAllAuctions() throws RemoteException, SQLException
   {
     return model.getAllAuctions();
   }
-  @Override public void banParticipant(String moderatorEmail,
+  @Override public synchronized void banParticipant(String moderatorEmail,
       String participantEmail, String reason)
       throws RemoteException, SQLException
   {
     model.banParticipant(moderatorEmail, participantEmail, reason);
   }
 
-  @Override public String extractBanningReason(String email)
+  @Override public synchronized String extractBanningReason(String email)
       throws RemoteException, SQLException
   {
     return model.extractBanningReason(email);
   }
 
-  @Override public void unbanParticipant(String moderatorEmail,
+  @Override public synchronized void unbanParticipant(String moderatorEmail,
       String participantEmail) throws RemoteException, SQLException
   {
     model.unbanParticipant(moderatorEmail, participantEmail);

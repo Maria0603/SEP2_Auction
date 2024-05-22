@@ -56,6 +56,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
   @Override
   public Auction getAuction(int ID) throws SQLException {
     Auction auction= modelManager.getAuction(ID);
+    //if(auction.getStatus().equals("ONGOING"))
+    {
       Timer timer = new Timer(
           timeLeft(Time.valueOf(LocalTime.now()), auction.getEndTime()) - 1,
           ID);
@@ -63,7 +65,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
       timer.addListener("End", this);
       Thread t = new Thread(timer, String.valueOf(ID));
       t.start();
-
+    }
     return auction;
   }
 
@@ -128,13 +130,15 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
   @Override
   public AuctionList getPreviousBids(String bidder)
       throws SQLException {
-    return previousBids;
+    return modelManager.getPreviousBids(bidder);
+    //return previousBids;
   }
 
   @Override
   public AuctionList getCreatedAuctions(String seller)
       throws SQLException {
-    return createdAuctions;
+    return modelManager.getCreatedAuctions(seller);
+    //return createdAuctions;
   }
 
   @Override
@@ -208,7 +212,9 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         ongoingAuctionsCache.addAuction(auction);
         allAuctionsCache.addAuction(auction);
         if (userEmail.equals(auction.getSeller()))
+        {
           createdAuctions.addAuction(auction);
+        }
       }
       case "End" -> {
         ongoingAuctionsCache.removeAuction(
@@ -241,6 +247,18 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
               .setCurrentBidder(bid.getBidder());
           previousBids.getAuctionByID(bid.getAuctionId())
               .setCurrentBid(bid.getBidAmount());
+        }
+        //or if it is the first bid
+        else if(bid.getBidder().equals(userEmail))
+        {
+          try
+          {
+            previousBids.addAuction(modelManager.getAuction(bid.getAuctionId()));
+          }
+          catch(SQLException e)
+          {
+            e.printStackTrace();
+          }
         }
 
         if (createdAuctions.contains(bid.getAuctionId())) {

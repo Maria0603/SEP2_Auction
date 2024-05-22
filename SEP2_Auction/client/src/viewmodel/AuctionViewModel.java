@@ -123,14 +123,14 @@ public class AuctionViewModel implements PropertyChangeListener
     try
     {
 
-      if (currentBidProperty.get() == 0 && !isSold.get())
+      if (!isSold.get())
       {
         model.buyOut(state.getUserEmail(), idProperty.get());
         isSold.set(true);
         //removing listeners
-        model.removeListener("Time", this);
+        //model.removeListener("Time", this);
         //model.removeListener("End", this);
-        //Platform.runLater(() -> errorProperty.set("AUCTION CLOSED"));
+        Platform.runLater(() -> errorProperty.set("AUCTION CLOSED"));
         reset(); //disable
       }
       else
@@ -163,12 +163,12 @@ public class AuctionViewModel implements PropertyChangeListener
 
   public void reset()
   {
-    //errorProperty.set("");
+    errorProperty.set("");
     Auction selectedAuction = state.getSelectedAuction();
     if (selectedAuction != null)
     {
-      if(!state.getSelectedAuction().getStatus().equals("CLOSED"))
-        errorProperty.set("");
+      //if(!state.getSelectedAuction().getStatus().equals("CLOSED"))
+        //errorProperty.set("");
       startAuctionVisibility.set(false);
       disableAsInDisplay.set(true);
       //when we open an auction, we listen to the updating time
@@ -200,8 +200,8 @@ public class AuctionViewModel implements PropertyChangeListener
     //when we leave the auction, or we start another one, we remove ourselves from the list of listeners
     model.removeListener("Time", this);
     model.removeListener("End", this);
-    if(!state.getSelectedAuction().getStatus().equals("CLOSED"))
-      errorProperty.set("");
+    //if(!state.getSelectedAuction().getStatus().equals("CLOSED"))
+    errorProperty.set("");
   }
 
   public void wipe()
@@ -355,7 +355,6 @@ public class AuctionViewModel implements PropertyChangeListener
         }
         break;
       case "Edit":
-        System.out.println("edit received in view model");
         if (currentBidderProperty.get().equals(event.getOldValue()))
         {
           state.getSelectedAuction()

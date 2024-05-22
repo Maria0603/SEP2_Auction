@@ -673,7 +673,7 @@ public class AuctionDatabase implements AuctionPersistence
     Auction auction = getAuctionById(auctionId);
     if (auction != null)
     {
-      if(auction.getCurrentBidder()!=null)
+      if(auction.getCurrentBid()!=0)
         throw new SQLException("No buyout option. This auction has bids.");
       Bid bid=saveBid(bidder, auction.getPriceConstraint().getBuyoutPrice(), auctionId);
       String sql = "UPDATE auction SET status='CLOSED' WHERE ID=?;";
