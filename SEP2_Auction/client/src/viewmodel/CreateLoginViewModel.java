@@ -293,7 +293,7 @@ public class CreateLoginViewModel
   }
 
   public void deleteAccount(){
-    System.out.println("VIEWMODEL: call the database to delete an account and log out this guy...");
+    System.out.println("VIEWMODEL ACC DELETION: call the database to delete an account and log out this guy...");
 
   }
   private void edit()
