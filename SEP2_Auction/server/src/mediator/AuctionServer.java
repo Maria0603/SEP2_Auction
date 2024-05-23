@@ -105,8 +105,8 @@ public class AuctionServer
       model.buyOut(bidder, auctionId);
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException {
-    return model.getAllUsers();
+  @Override public ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException {
+    return model.getAllUsers(moderatorEmail);
   }
 
   @Override
@@ -161,9 +161,9 @@ public class AuctionServer
     return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
   }
 
-  @Override public AuctionList getAllAuctions() throws SQLException
+  @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException
   {
-    return model.getAllAuctions();
+    return model.getAllAuctions(moderatorEmail);
   }
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason)

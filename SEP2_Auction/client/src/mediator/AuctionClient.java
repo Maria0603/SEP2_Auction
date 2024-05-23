@@ -228,11 +228,11 @@ public class AuctionClient
     }
     return null;
   }
-  @Override public AuctionList getAllAuctions() throws SQLException
+  @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException
   {
     try
     {
-      return server.getAllAuctions();
+      return server.getAllAuctions(moderatorEmail);
     }
     catch(RemoteException e)
     {
@@ -251,11 +251,11 @@ public class AuctionClient
 
   }
 
-  @Override public ArrayList<User> getAllUsers()
+  @Override public ArrayList<User> getAllUsers(String moderatorEmail)
       throws SQLException {
     try
     {
-      return server.getAllUsers();
+      return server.getAllUsers(moderatorEmail);
     }
     catch(RemoteException e)
     {

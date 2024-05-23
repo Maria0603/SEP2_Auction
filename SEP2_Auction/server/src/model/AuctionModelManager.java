@@ -4,6 +4,7 @@ package model;
 
 import persistence.AuctionDatabase;
 import persistence.AuctionPersistence;
+import persistence.ProtectionProxy;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,7 +21,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   public AuctionModelManager() throws SQLException, ClassNotFoundException
   {
     property = new PropertyChangeSupport(this);
-    auctionDatabase = new AuctionDatabase();
+    auctionDatabase = new ProtectionProxy();
   }
 
   @Override public synchronized Auction startAuction(String title,
@@ -179,14 +180,14 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return user;
   }
 
-  @Override public synchronized AuctionList getAllAuctions() throws SQLException
+  @Override public synchronized AuctionList getAllAuctions(String moderatorEmail) throws SQLException
   {
-    return auctionDatabase.getAllAuctions();
+    return auctionDatabase.getAllAuctions(moderatorEmail);
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException
+  @Override public ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException
   {
-    return auctionDatabase.getAllUsers();
+    return auctionDatabase.getAllUsers(moderatorEmail);
   }
 
   @Override public void banParticipant(String moderatorEmail,

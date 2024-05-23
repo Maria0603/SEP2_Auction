@@ -22,13 +22,13 @@ public interface AuctionPersistence
   String login(String email, String password) throws SQLException;
   AuctionList getPreviousBids(String bidder) throws SQLException;
   AuctionList getCreatedAuctions(String seller) throws SQLException;
-  ArrayList<User> getAllUsers() throws SQLException;
+  ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException;
   void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
       throws SQLException;
   User getUserInfo(String email) throws SQLException;
   User getModeratorInfo() throws SQLException;
   boolean isModerator(String email) throws SQLException;
-  AuctionList getAllAuctions() throws SQLException;
+  AuctionList getAllAuctions(String moderatorEmail) throws SQLException;
   void setBuyer(int auctionId, String current_bider) throws SQLException;
   void buyOut(String bidder, int auctionId) throws SQLException;
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws SQLException;

@@ -36,13 +36,13 @@ public interface AuctionRemote extends Remote
 
   boolean isModerator(String email) throws RemoteException, SQLException;
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws RemoteException, SQLException;
-  AuctionList getAllAuctions() throws RemoteException, SQLException;
+  AuctionList getAllAuctions(String moderatorEmail) throws RemoteException, SQLException;
   boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   boolean removeListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
-  ArrayList<User> getAllUsers() throws RemoteException, SQLException;
+  ArrayList<User> getAllUsers(String moderatorEmail) throws RemoteException, SQLException;
   void banParticipant(String moderatorEmail, String participantEmail, String reason) throws RemoteException, SQLException;
   String extractBanningReason(String email) throws RemoteException, SQLException;
   void unbanParticipant(String moderatorEmail, String participantEmail) throws RemoteException, SQLException;

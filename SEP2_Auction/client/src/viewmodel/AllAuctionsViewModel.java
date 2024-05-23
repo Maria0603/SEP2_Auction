@@ -65,7 +65,7 @@ public class AllAuctionsViewModel
 
   public AuctionList getAllAuctions() {
     try {
-      return model.getAllAuctions();
+      return model.getAllAuctions(state.getUserEmail());
     } catch (SQLException e) {
       e.printStackTrace();
     }

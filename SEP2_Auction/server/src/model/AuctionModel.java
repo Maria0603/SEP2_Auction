@@ -41,9 +41,9 @@ public interface AuctionModel extends NamedPropertyChangeSubject {
   User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone,
       LocalDate birthday) throws SQLException;
 
-  AuctionList getAllAuctions() throws SQLException;
+  AuctionList getAllAuctions(String moderatorEmail) throws SQLException;
 
-  ArrayList<User> getAllUsers() throws SQLException;
+  ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException;
 
   void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
 

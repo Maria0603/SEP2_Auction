@@ -59,14 +59,17 @@ public class AllAccounts_NotificationsViewModel
   public void reset() {
     errorProperty.set("");
     reasonProperty.set("");
-    loadNotifications();
-    loadAllAccounts();
+    if(viewModelState.getUserEmail()!=null)
+    {
+      loadNotifications();
+      loadAllAccounts();
+    }
   }
 
   private void loadAllAccounts() {
     try {
       allAccounts.clear();
-      ArrayList<User> updatedUserList = model.getAllUsers();
+      ArrayList<User> updatedUserList = model.getAllUsers(viewModelState.getUserEmail());
 
       for (User user : updatedUserList) {
         allAccounts.add(new AccountViewModel(user));

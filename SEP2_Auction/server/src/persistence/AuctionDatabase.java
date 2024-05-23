@@ -49,7 +49,6 @@ public class AuctionDatabase implements AuctionPersistence
   {
     try (Connection connection = getConnection())
     {
-      checkAuctionTime(auctionTime);
       String sql =
           "INSERT INTO auction(title, description, reserve_price, buyout_price, minimum_bid_increment, current_bid, current_bidder, image_data, status, start_time, end_time, creator_email) \n"
               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -57,11 +56,11 @@ public class AuctionDatabase implements AuctionPersistence
       PreparedStatement statement = connection.prepareStatement(sql,
           PreparedStatement.RETURN_GENERATED_KEYS);
 
-      statement.setString(1, checkTitle(title));
-      statement.setString(2, checkDescription(description));
-      statement.setInt(3, checkReservePrice(reservePrice));
-      statement.setInt(4, checkBuyoutPrice(buyoutPrice, reservePrice));
-      statement.setInt(5, checkMinimumIncrement(minimumIncrement));
+      statement.setString(1, title);
+      statement.setString(2, description);
+      statement.setInt(3, reservePrice);
+      statement.setInt(4, buyoutPrice);
+      statement.setInt(5, minimumIncrement);
       statement.setInt(6, 0);
       statement.setString(7, null);
       statement.setString(8, "temp_path");
@@ -168,14 +167,15 @@ public class AuctionDatabase implements AuctionPersistence
     return null;
   }
 
-  @Override public synchronized AuctionList getOngoingAuctions() throws SQLException
+  @Override public synchronized AuctionList getOngoingAuctions()
+      throws SQLException
   {
     String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
     return getAuctions(sql, null);
   }
 
-  @Override public synchronized NotificationList getNotifications(String receiver)
-      throws SQLException
+  @Override public synchronized NotificationList getNotifications(
+      String receiver) throws SQLException
   {
     String sql = "SELECT * FROM notification WHERE receiver=?;";
     ArrayList<Object[]> results = database.query(sql, receiver);
@@ -203,30 +203,10 @@ public class AuctionDatabase implements AuctionPersistence
     return new Notification(date + " " + time, content, receiver);
   }
 
-  @Override public synchronized Bid saveBid(String participantEmail, int bidAmount,
-      int auctionId) throws SQLException
+  @Override public synchronized Bid saveBid(String participantEmail,
+      int bidAmount, int auctionId) throws SQLException
   {
-    String retrieveSql =
-        "SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status, auction.creator_email\n"
-            + "FROM auction\n" + "WHERE auction.ID=?;";
-    ArrayList<Object[]> results = database.query(retrieveSql, auctionId);
-    for (int i = 0; i < results.size(); i++)
-    {
-      Object[] row = results.get(i);
-
-      int currentBid = Integer.parseInt(row[0].toString());
-      String currentBidder = null;
-      if (row[1] != null)
-      {
-        currentBidder = row[1].toString();
-      }
-      int reservePrice = Integer.parseInt(row[2].toString());
-      int increment = Integer.parseInt(row[3].toString());
-      String status = row[4].toString();
-      String seller = row[5].toString();
-      checkBid(bidAmount, participantEmail, currentBid, currentBidder,
-          reservePrice, increment, status, seller);
-    }
+    checkBid(bidAmount, participantEmail, auctionId);
     String sql = "INSERT INTO sprint1database.bid (participant_email, auction_id, bid_amount) VALUES (?, ?, ?)";
     database.update(sql, participantEmail, auctionId, bidAmount);
     Bid bid = new Bid(auctionId, participantEmail, bidAmount);
@@ -265,21 +245,18 @@ public class AuctionDatabase implements AuctionPersistence
         currentBid.getAuctionId());
   }
 
-  @Override public synchronized User createUser(String firstname, String lastname,
-      String email, String password, String repeatedPassword, String phone,
-      LocalDate birthday) throws SQLException
+  @Override public synchronized User createUser(String firstname,
+      String lastname, String email, String password, String repeatedPassword,
+      String phone, LocalDate birthday) throws SQLException
   {
     String sqlUser =
         "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
     String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n";
 
-    checkFirstName(firstname);
-    checkLastName(lastname);
     checkEmail(email);
     checkPassword(password, repeatedPassword);
     checkPhone(phone);
-    ageValidation(birthday);
     database.update(sqlUser, email, password, phone, firstname, lastname);
     Date date = Date.valueOf(birthday);
     database.update(sqlParticipant, email, date);
@@ -314,7 +291,7 @@ public class AuctionDatabase implements AuctionPersistence
     return getAuctions(sql, seller);
   }
 
-  @Override public synchronized AuctionList getAllAuctions() throws SQLException
+  @Override public synchronized AuctionList getAllAuctions(String moderatorEmail) throws SQLException
   {
     String sql = "SELECT ID FROM sprint1database.auction;";
     return getAuctions(sql, null);
@@ -338,7 +315,8 @@ public class AuctionDatabase implements AuctionPersistence
     return auctions;
   }
 
-  @Override public synchronized ArrayList<User> getAllUsers() throws SQLException
+  @Override public synchronized ArrayList<User> getAllUsers(String moderatorEmail)
+      throws SQLException
   {
     String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";
     return getAllUsersQuery(sql);
@@ -365,15 +343,17 @@ public class AuctionDatabase implements AuctionPersistence
     return output;
   }
 
-  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
+  @Override public synchronized void resetPassword(String userEmail,
+      String oldPassword, String newPassword, String repeatPassword)
+      throws SQLException
   {
     validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
     String sql = "UPDATE users SET password=?\n" + "WHERE users.user_email=?;";
     database.update(sql, newPassword, userEmail);
   }
 
-  @Override public synchronized User getUserInfo(String email) throws SQLException
+  @Override public synchronized User getUserInfo(String email)
+      throws SQLException
   {
     User user = getUser(email);
     if (user != null)
@@ -423,23 +403,21 @@ public class AuctionDatabase implements AuctionPersistence
     return null;
   }
 
-  @Override public synchronized boolean isModerator(String email) throws SQLException
+  @Override public synchronized boolean isModerator(String email)
+      throws SQLException
   {
     return isEmailIn(email, "moderator_email", "moderator");
   }
 
-  @Override public synchronized User editInformation(String oldEmail, String firstname,
-      String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
+  @Override public synchronized User editInformation(String oldEmail,
+      String firstname, String lastname, String email, String password,
+      String phone, LocalDate birthday) throws SQLException
   {
     if (validateForLogin(oldEmail, password))
     {
-      checkFirstName(firstname);
-      checkLastName(lastname);
       if (!oldEmail.equals(email))
         checkEmail(email);
       checkPassword(password, password);
-      ageValidation(birthday);
       String isPhoneTaken = isPhoneInTheSystem(phone);
       if (isPhoneTaken != null)
         if (!isPhoneTaken.equals(oldEmail))
@@ -474,40 +452,35 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public synchronized void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
-    if (!moderatorEmail.equals(MODERATOR_EMAIL))
-      throw new SQLException("You cannot ban another participant.");
     if (isBanned(participantEmail))
       throw new SQLException("This participant is already banned.");
-    checkReason(reason);
 
     String sql = "INSERT INTO banned_participant(user_email, reason) VALUES (?, ?);\n";
     database.update(sql, participantEmail, reason);
     deleteAuctionsStartedBy(participantEmail);
     updateCurrentBidAndCurrentBidderAfterBan(participantEmail);
     deleteBids(participantEmail);
-    throw new SQLException(
-        "Account linked to email " + participantEmail + " successfully banned.");
+    throw new SQLException("Account linked to email " + participantEmail
+        + " successfully banned.");
   }
 
-  @Override public synchronized void deleteAuction(String moderatorEmail, int auctionId, String reason) throws SQLException
+  @Override public synchronized void deleteAuction(String moderatorEmail,
+      int auctionId, String reason) throws SQLException
   {
-    if(!moderatorEmail.equals(MODERATOR_EMAIL))
-      throw new SQLException("You cannot delete this item.");
-    checkReason(reason);
-    String sql="DELETE FROM auction WHERE ID=?;";
+    String sql = "DELETE FROM auction WHERE ID=?;";
     database.update(sql, auctionId);
   }
 
-
-
   private void deleteAuctionsStartedBy(String email) throws SQLException
   {
-    String sql="DELETE FROM auction WHERE creator_email=?;";
+    String sql = "DELETE FROM auction WHERE creator_email=?;";
     database.update(sql, email);
   }
-  private void updateCurrentBidAndCurrentBidderAfterBan(String email) throws SQLException
+
+  private void updateCurrentBidAndCurrentBidderAfterBan(String email)
+      throws SQLException
   {
-    String sql1="WITH to_be_updated_auctions AS (\n"
+    String sql1 = "WITH to_be_updated_auctions AS (\n"
         + "    SELECT a.id AS auction_id, MAX(b.bid_amount) AS new_bid_amount, b.participant_email AS new_bidder\n"
         + "    FROM auction a\n"
         + "    LEFT JOIN bid b ON a.id = b.auction_id AND b.participant_email != ?\n"
@@ -527,19 +500,13 @@ public class AuctionDatabase implements AuctionPersistence
         + "AND (ordered_auctions.row = 1 OR ordered_auctions.new_bid_amount IS NULL);";
     database.update(sql1, email, email);
   }
+
   private void deleteBids(String email) throws SQLException
   {
-    String sql2="DELETE FROM bid WHERE participant_email=?;";
+    String sql2 = "DELETE FROM bid WHERE participant_email=?;";
     database.update(sql2, email);
   }
 
-  private void checkReason(String reason) throws SQLException
-  {
-    if(reason==null || reason.length()<3)
-      throw new SQLException("The reason is too short.");
-    if (reason.length() > 600)
-      throw new SQLException("The reason is too long.");
-  }
 
   private boolean isBanned(String email) throws SQLException
   {
@@ -573,14 +540,12 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public void unbanParticipant(String moderatorEmail,
       String participantEmail) throws SQLException
   {
-    if (!moderatorEmail.equals(MODERATOR_EMAIL))
-      throw new SQLException("You cannot ban another participant.");
     if (!isBanned(participantEmail))
       throw new SQLException("This participant is not banned.");
     String sql = "DELETE FROM banned_participant WHERE user_email=?;\n";
     database.update(sql, participantEmail);
-    throw new SQLException(
-        "Account linked to email " + participantEmail + " successfully unbanned.");
+    throw new SQLException("Account linked to email " + participantEmail
+        + " successfully unbanned.");
   }
 
   private User getUser(String email) throws SQLException
@@ -698,101 +663,41 @@ public class AuctionDatabase implements AuctionPersistence
     }
   }
 
-  private void checkBid(int bidAmount, String participantEmail, int currentBid,
-      String currentBidder, int reservePrice, int increment, String status,
-      String seller) throws SQLException
-  {
-    if (!status.equals("ONGOING"))
-      throw new SQLException("The auction is closed.");
-    if (participantEmail.equals(MODERATOR_EMAIL))
-      throw new SQLException("The moderator cannot place bids.");
-    if (participantEmail.equals(currentBidder))
-      throw new SQLException("You are the current bidder.");
-    if (participantEmail.equals(seller))
-      throw new SQLException("You cannot bid for your item");
-    if (currentBid > 0)
-    {
-      if (bidAmount <= currentBid + increment)
-        throw new SQLException("Your bid is not high enough.");
-    }
-    if (bidAmount < reservePrice)
-      throw new SQLException("Your bid must be at least the reserve price.");
-  }
-
-  private String checkTitle(String title) throws SQLException
-  {
-    int maxTitleLength = 80;
-    int minTitleLength = 5;
-    if (title.length() > maxTitleLength)
-      throw new SQLException("The title is too long!");
-    else if (title.length() < minTitleLength)
-      throw new SQLException("The title is too short!");
-    return title;
-  }
-
-  private String checkDescription(String description) throws SQLException
-  {
-    int maxDescriptionLength = 1400, minDescriptionLength = 20;
-    if (description.length() > maxDescriptionLength)
-      throw new SQLException("The description is too long!");
-    else if (description.length() < minDescriptionLength)
-      throw new SQLException("The description is too short!");
-    return description;
-  }
-
-  private int checkReservePrice(int reservePrice) throws SQLException
-  {
-    if (reservePrice <= 0)
-      throw new SQLException("The reserve price must be a positive number!");
-    return reservePrice;
-  }
-
-  private int checkBuyoutPrice(int buyoutPrice, int reservePrice)
+  private void checkBid(int bidAmount, String participantEmail, int auctionId)
       throws SQLException
   {
-    if (buyoutPrice <= reservePrice)
-      throw new SQLException(
-          "The buyout price must be greater than the reserve price!");
-    return buyoutPrice;
-  }
-
-  private int checkMinimumIncrement(int minimumIncrement) throws SQLException
-  {
-    if (minimumIncrement < 1)
-      throw new SQLException("The minimum bid increment must be at least 1!");
-    return minimumIncrement;
-  }
-
-  private void checkAuctionTime(int auctionTime) throws SQLException
-  {
-    // to be updated when the moderator adds the time interval
-    if (auctionTime <= 0 || auctionTime > 24)
-      throw new SQLException("The auction time can be at most 24 hours!");
-  }
-
-  private void checkFirstName(String firstname) throws SQLException
-  {
-    if (firstname.isEmpty())
+    String retrieveSql =
+        "SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status, auction.creator_email\n"
+            + "FROM auction\n" + "WHERE auction.ID=?;";
+    ArrayList<Object[]> results = database.query(retrieveSql, auctionId);
+    for (int i = 0; i < results.size(); i++)
     {
-      throw new SQLException("Empty first name.");
-    }
-    if (firstname.length() < 4)
-    {
-      throw new SQLException(
-          "The first name must be at least 3 characters long.");
-    }
-  }
+      Object[] row = results.get(i);
 
-  private void checkLastName(String lastname) throws SQLException
-  {
-    if (lastname.isEmpty())
-    {
-      throw new SQLException("Empty last name.");
-    }
-    if (lastname.length() < 4)
-    {
-      throw new SQLException(
-          "The last name must be at least 3 characters long.");
+      int currentBid = Integer.parseInt(row[0].toString());
+      String currentBidder = null;
+      if (row[1] != null)
+      {
+        currentBidder = row[1].toString();
+      }
+      int reservePrice = Integer.parseInt(row[2].toString());
+      int increment = Integer.parseInt(row[3].toString());
+      String status = row[4].toString();
+      String seller = row[5].toString();
+
+      if (!status.equals("ONGOING"))
+        throw new SQLException("The auction is closed.");
+      if (participantEmail.equals(currentBidder))
+        throw new SQLException("You are the current bidder.");
+      if (participantEmail.equals(seller))
+        throw new SQLException("You cannot bid for your item");
+      if (currentBid > 0)
+      {
+        if (bidAmount <= currentBid + increment)
+          throw new SQLException("Your bid is not high enough.");
+      }
+      if (bidAmount < reservePrice)
+        throw new SQLException("Your bid must be at least the reserve price.");
     }
   }
 
@@ -830,25 +735,9 @@ public class AuctionDatabase implements AuctionPersistence
 
   private void checkPhone(String phone) throws SQLException
   {
-    if (phone.length() < 4)
-    {
-      throw new SQLException("Invalid phone number.");
-    }
     if (isPhoneInTheSystem(phone) != null)
     {
       throw new SQLException("This phone number is already in the system.");
-    }
-  }
-
-  private void ageValidation(LocalDate birthday) throws SQLException
-  {
-    if (birthday != null)
-    {
-      LocalDate currentDate = LocalDate.now();
-      Period period = Period.between(birthday, currentDate);
-      int age = period.getYears();
-      if (age < 18)
-        throw new SQLException("You must be over 18 years old.");
     }
   }
 

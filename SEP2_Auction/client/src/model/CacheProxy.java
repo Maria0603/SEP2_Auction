@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CacheProxy implements AuctionModel, PropertyChangeListener {
   private AuctionList ongoingAuctionsCache;
-  private AuctionList allAuctionsCache;
+  //private AuctionList allAuctionsCache;
   private NotificationList notifications;
   private AuctionModelManager modelManager;
   private PropertyChangeSupport property;
@@ -36,7 +36,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     modelManager.addListener("Delete", this);
 
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
-    allAuctionsCache = modelManager.getAllAuctions();
+    //allAuctionsCache = modelManager.getAllAuctions("bob@bidhub");
     timers = new ArrayList<>();
 
     notifications = new NotificationList();
@@ -130,9 +130,9 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
   
 
-  @Override public ArrayList<User> getAllUsers()
+  @Override public ArrayList<User> getAllUsers(String moderatorEmail)
       throws SQLException {
-    return modelManager.getAllUsers();
+    return modelManager.getAllUsers(moderatorEmail);
       }
   @Override public void buyOut(String bidder, int auctionId)
       throws SQLException {
@@ -174,8 +174,9 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         password, phone, birthday);
   }
 
-  @Override public AuctionList getAllAuctions() throws SQLException {
-    return allAuctionsCache;
+  @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException {
+    return modelManager.getAllAuctions(moderatorEmail);
+    //return allAuctionsCache;
   }
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
@@ -215,7 +216,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
       case "Auction" -> {
         Auction auction = (Auction) evt.getNewValue();
         ongoingAuctionsCache.addAuction(auction);
-        allAuctionsCache.addAuction(auction);
+        //allAuctionsCache.addAuction(auction);
         if (userEmail.equals(auction.getSeller()))
           createdAuctions.addAuction(auction);
       }
@@ -240,10 +241,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         ongoingAuctionsCache.getAuctionByID(bid.getAuctionId())
             .setCurrentBidder(bid.getBidder());
 
-        allAuctionsCache.getAuctionByID(bid.getAuctionId())
-            .setCurrentBid(bid.getBidAmount());
-        allAuctionsCache.getAuctionByID(bid.getAuctionId())
-            .setCurrentBidder(bid.getBidder());
+        //allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+        //allAuctionsCache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
 
         // if someone else placed a bid for an auction where we previously bid
         // we update the cache
@@ -270,7 +269,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
             createdAuctions = modelManager.getCreatedAuctions(userEmail);
             previousBids = modelManager.getPreviousBids(userEmail);
             ongoingAuctionsCache = modelManager.getOngoingAuctions();
-            allAuctionsCache = modelManager.getAllAuctions();
+            //allAuctionsCache = modelManager.getAllAuctions("bob@bidhub");
           }
           catch (SQLException e) {
             e.printStackTrace();
@@ -282,7 +281,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
           ongoingAuctionsCache = modelManager.getOngoingAuctions();
           previousBids = modelManager.getPreviousBids(userEmail);
           createdAuctions = modelManager.getCreatedAuctions(userEmail);
-          allAuctionsCache = modelManager.getAllAuctions();
+          //allAuctionsCache = modelManager.getAllAuctions("bob@bidhub");
         }
         catch (SQLException e) {
           e.printStackTrace();
@@ -311,7 +310,7 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         previousBids.removeAuction(id);
         createdAuctions.removeAuction(id);
         previouslyOpenedAuctions.removeAuction(id);
-        allAuctionsCache.removeAuction(id);
+        //allAuctionsCache.removeAuction(id);
       }
     }
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
