@@ -216,6 +216,18 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
   }
 
+  @Override
+  public void deleteAccount(String email) throws SQLException {
+    AuctionList list = auctionDatabase.getCreatedAuctions(email);
+    auctionDatabase.deleteAccount(email);
+
+    for (int i = 0; i < list.getSize(); i++) {
+      System.out.println("SERVER: ModelM: Deletion event");
+      property.firePropertyChange("DeleteAccount",null,list.getAuction(i).getID());
+    }
+
+  }
+
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
       String reason) throws SQLException
   {

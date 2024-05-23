@@ -47,6 +47,8 @@ public class AuctionClient
       server.addListener(this, "BuyOut");
       server.addListener(this, "Delete");
 
+      server.addListener(this, "DeleteAccount"); // New
+
     }
     catch (Exception e)
     {
@@ -311,6 +313,15 @@ public class AuctionClient
     }
     catch(RemoteException e)
     {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void deleteAccount(String email) throws SQLException {
+    try {
+      server.deleteAccount(email);
+    } catch (RemoteException e) {
       e.printStackTrace();
     }
   }
