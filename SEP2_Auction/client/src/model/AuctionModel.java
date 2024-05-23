@@ -43,7 +43,7 @@ public interface AuctionModel extends NamedPropertyChangeSubject {
 
   AuctionList getAllAuctions(String moderatorEmail) throws SQLException;
 
-  ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException;
+  ArrayList<User> getAllUsers() throws SQLException;
 
   void buyOut(String bidder, int auctionId) throws SQLException;
 

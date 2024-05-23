@@ -251,11 +251,11 @@ public class AuctionClient
 
   }
 
-  @Override public ArrayList<User> getAllUsers(String moderatorEmail)
+  @Override public ArrayList<User> getAllUsers()
       throws SQLException {
     try
     {
-      return server.getAllUsers(moderatorEmail);
+      return server.getAllUsers();
     }
     catch(RemoteException e)
     {

@@ -122,9 +122,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.buyOut(bidder, auctionId);
   }
 
-  @Override public ArrayList<User> getAllUsers(String moderatorEmail)
+  @Override public ArrayList<User> getAllUsers()
       throws SQLException {
-    return client.getAllUsers(moderatorEmail);
+    return client.getAllUsers();
   }
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException

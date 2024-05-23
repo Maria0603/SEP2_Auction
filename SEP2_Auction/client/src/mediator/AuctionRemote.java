@@ -42,7 +42,7 @@ public interface AuctionRemote extends Remote
   boolean removeListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException;
   void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
-  ArrayList<User> getAllUsers(String moderatorEmail) throws RemoteException, SQLException;
+  ArrayList<User> getAllUsers() throws RemoteException, SQLException;
   void banParticipant(String moderatorEmail, String participantEmail, String reason) throws RemoteException, SQLException;
   String extractBanningReason(String email) throws RemoteException, SQLException;
   void unbanParticipant(String moderatorEmail, String participantEmail) throws RemoteException, SQLException;

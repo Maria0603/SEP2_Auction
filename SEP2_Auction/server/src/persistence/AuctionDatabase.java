@@ -315,7 +315,7 @@ public class AuctionDatabase implements AuctionPersistence
     return auctions;
   }
 
-  @Override public synchronized ArrayList<User> getAllUsers(String moderatorEmail)
+  @Override public synchronized ArrayList<User> getAllUsers()
       throws SQLException
   {
     String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";

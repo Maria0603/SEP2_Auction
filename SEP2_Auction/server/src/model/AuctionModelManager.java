@@ -185,9 +185,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getAllAuctions(moderatorEmail);
   }
 
-  @Override public ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException
+  @Override public ArrayList<User> getAllUsers() throws SQLException
   {
-    return auctionDatabase.getAllUsers(moderatorEmail);
+    return auctionDatabase.getAllUsers();
   }
 
   @Override public void banParticipant(String moderatorEmail,

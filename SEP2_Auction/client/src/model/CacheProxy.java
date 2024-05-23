@@ -130,9 +130,9 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
 
   
 
-  @Override public ArrayList<User> getAllUsers(String moderatorEmail)
+  @Override public ArrayList<User> getAllUsers()
       throws SQLException {
-    return modelManager.getAllUsers(moderatorEmail);
+    return modelManager.getAllUsers();
       }
   @Override public void buyOut(String bidder, int auctionId)
       throws SQLException {

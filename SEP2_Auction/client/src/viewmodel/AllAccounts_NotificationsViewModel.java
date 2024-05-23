@@ -69,7 +69,7 @@ public class AllAccounts_NotificationsViewModel
   private void loadAllAccounts() {
     try {
       allAccounts.clear();
-      ArrayList<User> updatedUserList = model.getAllUsers(viewModelState.getUserEmail());
+      ArrayList<User> updatedUserList = model.getAllUsers();
 
       for (User user : updatedUserList) {
         allAccounts.add(new AccountViewModel(user));

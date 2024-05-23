@@ -105,9 +105,9 @@ public class ProtectionProxy implements AuctionPersistence
     return database.getCreatedAuctions(seller);
   }
 
-  @Override public ArrayList<User> getAllUsers(String moderatorEmail) throws SQLException
+  @Override public ArrayList<User> getAllUsers() throws SQLException
   {
-    return database.getAllUsers(moderatorEmail);
+    return database.getAllUsers();
   }
 
   @Override public void resetPassword(String userEmail, String oldPassword,
