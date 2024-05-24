@@ -654,7 +654,7 @@ public class AuctionDatabase implements AuctionPersistence
     return count > 0;
   }
 
-  @Override public void setBuyer(int auctionId, String current_bider)
+  public void setBuyer(int auctionId, String current_bider)
       throws SQLException
   {
     String sql = "UPDATE auction SET current_bidder = ? WHERE id = ?";

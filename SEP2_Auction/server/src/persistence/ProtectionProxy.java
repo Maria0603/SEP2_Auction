@@ -138,12 +138,6 @@ public class ProtectionProxy implements AuctionPersistence
     return database.getAllAuctions(moderatorEmail);
   }
 
-  @Override public void setBuyer(int auctionId, String current_bider)
-      throws SQLException
-  {
-    database.setBuyer(auctionId, current_bider);
-  }
-
   @Override public void buyOut(String bidder, int auctionId) throws SQLException
   {
     if(!isNotModerator(bidder))
