@@ -112,12 +112,12 @@ public class AuctionViewModel implements PropertyChangeListener {
     }
   }
 
-  public void buyOut() {
+  public void buyout() {
     errorProperty.set("");
     try {
 
       if (currentBidProperty.get() == 0 && !isSold.get()) {
-        model.buyOut(state.getUserEmail(), idProperty.get());
+        model.buyout(state.getUserEmail(), idProperty.get());
         isSold.set(true);
         //removing listeners
         model.removeListener("Time", this);
@@ -134,6 +134,35 @@ public class AuctionViewModel implements PropertyChangeListener {
       errorProperty.set(e.getMessage());
       System.out.println(errorProperty.get());
       e.printStackTrace();
+    }
+
+  }
+
+  public void buyOut()
+  {
+    errorProperty.set("");
+    try
+    {
+      if (!isSold.get())
+      {
+        model.buyout(state.getUserEmail(), idProperty.get());
+        isSold.set(true);
+        //removing listeners
+        //model.removeListener("Time", this);
+        //model.removeListener("End", this);
+        Platform.runLater(() -> errorProperty.set("AUCTION CLOSED"));
+        reset(); //disable
+      }
+      else
+      {
+        //errorProperty.set("Cannot buy now. Bids have already been placed or the item is already sold.");
+      }
+    }
+    catch (SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+      //System.out.println(errorProperty.get());
+      //e.printStackTrace();
     }
 
   }

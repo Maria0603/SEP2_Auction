@@ -136,9 +136,9 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
       throws SQLException {
     return modelManager.getAllUsers();
       }
-  @Override public void buyOut(String bidder, int auctionId)
+  @Override public void buyout(String bidder, int auctionId)
       throws SQLException {
-      modelManager.buyOut(bidder, auctionId);
+      modelManager.buyout(bidder, auctionId);
   }
 
   @Override public AuctionList getPreviousBids(String bidder)

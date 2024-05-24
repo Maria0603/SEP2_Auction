@@ -101,10 +101,10 @@ public class AuctionServer
   }
 
   @Override
-  public synchronized void buyOut(String bidder, int auctionId)
+  public synchronized void buyout(String bidder, int auctionId)
       throws RemoteException, SQLException {
 
-      model.buyOut(bidder, auctionId);
+      model.buyout(bidder, auctionId);
   }
 
   @Override public ArrayList<User> getAllUsers() throws SQLException {

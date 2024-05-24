@@ -78,7 +78,27 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return bid;
   }
 
-  @Override public Bid buyout(String current_bidder, int auctionId)
+  @Override public void buyout(String current_bidder, int auctionId)
+      throws SQLException
+  {
+    Auction auction = auctionDatabase.getAuctionById(auctionId);
+    //property.firePropertyChange("Time", null, auction.getStartTime());
+    Bid bid=auctionDatabase.buyout(current_bidder, auctionId);
+
+    property.firePropertyChange("Time", null, auction.getStartTime());
+    property.firePropertyChange("End", auctionId, auction);
+    property.firePropertyChange("Buyout", null, auction);
+    System.out.println("received buyout");
+
+    // Send notification to the buyer
+    //Notification notification = auctionDatabase.saveNotification(
+    //   "Congratulations! You have successfully bought out the item on id: "
+    //      + auctionId, current_bidder);
+    //property.firePropertyChange("Notification", null, notification);
+    sendContactInformation(auctionId);
+  }
+
+  public Bid buyOut(String current_bidder, int auctionId)
       throws SQLException
   {
     try
@@ -87,7 +107,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       Auction auction = auctionDatabase.getAuctionById(auctionId);
       property.firePropertyChange("Time", null, auction.getStartTime());
       property.firePropertyChange("End", auctionId, auction);
-      property.firePropertyChange("BuyOut", null, auction);
+      property.firePropertyChange("Buyout", null, auction);
       System.out.println("received buyout");
 
       User seller = auctionDatabase.getUserInfo(auction.getSeller());
@@ -281,10 +301,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     int bid = auction.getCurrentBid();
 
     String contentForSeller =
-        "Your Auction(id: " + id + ") has ended, Final bidder: " + bidder + "("
-            + bidder.getPhone() + "), with bid of " + bid + ".";
+        "Your Auction(id: #" + id + ") has ended, Final bidder: " + bidder + "(Phone: "
+            + bidder.getPhone() + "), with bid: " + bid + ".";
     String contentForBidder =
-        "You've won an Auction(id: " + id + "), sold by " + seller + "("
+        "You've won an Auction(id: #" + id + "), sold by " + seller + "(Phone: "
             + seller.getPhone() + "), with bid: " + bid + ".";
 
     Notification notificationOne = auctionDatabase.saveNotification(

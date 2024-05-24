@@ -119,9 +119,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public void buyOut(String bidder, int auctionId)
+  public void buyout(String bidder, int auctionId)
       throws SQLException {
-    client.buyOut(bidder, auctionId);
+    client.buyout(bidder, auctionId);
   }
 
   @Override public ArrayList<User> getAllUsers()

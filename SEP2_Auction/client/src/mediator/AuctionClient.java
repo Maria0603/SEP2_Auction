@@ -243,10 +243,10 @@ public class AuctionClient
     return null;
   }
 
-  @Override public void buyOut(String bidder, int auctionId)
+  @Override public void buyout(String bidder, int auctionId)
       throws SQLException {
     try {
-      server.buyOut(bidder, auctionId);
+      server.buyout(bidder, auctionId);
     } catch (RemoteException e) {
       e.printStackTrace();
     }
