@@ -255,6 +255,10 @@ public class AuctionViewModel implements PropertyChangeListener
     titleProperty.set("");
     imageProperty.set(null);
   }
+  public boolean isModerator()
+  {
+    return state.isModerator();
+  }
 
   public ObjectProperty<Image> getImageProperty()
   {
@@ -372,13 +376,19 @@ public class AuctionViewModel implements PropertyChangeListener
         if (idProperty.get() == Integer.parseInt(
             event.getOldValue().toString()))
         {
-
           Platform.runLater(() ->
           {
-            errorProperty.set("AUCTION CLOSED.");
             leaveAuctionView();
             reset();
           });
+          if(event.getNewValue() instanceof Bid)
+          {
+            Bid buyout=(Bid)event.getNewValue();
+            Platform.runLater(() -> {
+              currentBidProperty.set(buyout.getBidAmount());
+              currentBidderProperty.set(buyout.getBidder());
+            });
+          }
           //model.removeListener("Time", this);
 
           //Auction boughtOutAuction = (Auction) event.getNewValue();

@@ -98,7 +98,10 @@ public class AuctionViewController {
   }
 
   private void setForDisplay() {
-    anchorPane.setPrefHeight(960);
+    if(!auctionViewModel.isModerator())
+      anchorPane.setPrefHeight(680);
+    else
+      anchorPane.setPrefHeight(960);
   }
 
   public void leaveAuctionView() {
@@ -230,13 +233,13 @@ public class AuctionViewController {
     bidLabel.visibleProperty().bind(invertedBinding);
     placeBidButton.visibleProperty().bind(invertedBinding);
     buyNowButton.visibleProperty().bind(invertedBinding);
-    somethingWrongLabel.visibleProperty().bind(invertedBinding);
-    ///////////////////////////////
+    //////////////////////////////////
+    somethingWrongLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
     sellerTextLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
     sellerLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
     deleteButton.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
     reasonTextArea.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
-    //////////////////////////////
+    //////////////////////////////////
     incomingBidTextField.visibleProperty().bind(invertedBinding);
     currentBidTextLabel.visibleProperty().bind(invertedBinding);
     currentBidderTextLabel.visibleProperty().bind(invertedBinding);

@@ -479,6 +479,14 @@ public class AuctionDatabase implements AuctionPersistence
       throw new SQLException("Wrong password");
     }
     System.out.println("valid for login");
+    deleteAuctionsStartedBy(email);
+    System.out.println("auctions started deleted");
+    updateCurrentBidAndCurrentBidderAfterBan(email);
+    System.out.println("auctions bids updated");
+    deleteBids(email);
+    System.out.println("bids deleted");
+
+
 
     String sql1 = "DELETE FROM participant WHERE user_email=?;";
     String sql2 = "DELETE FROM users WHERE user_email=?;";
@@ -486,13 +494,6 @@ public class AuctionDatabase implements AuctionPersistence
     database.update(sql2, email);
     System.out.println("accounts deleted");
 
-    deleteAuctionsStartedBy(email);
-    System.out.println("auctions started deleted");
-    updateCurrentBidAndCurrentBidderAfterBan(email);
-    System.out.println("auctions bids updated");
-
-    deleteBids(email);
-    System.out.println("bids deleted");
   }
 
   private void updateCurrentBidAndCurrentBidderAfterBan(String email)

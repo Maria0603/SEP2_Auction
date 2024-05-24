@@ -291,10 +291,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       {
         updateBidIn(buyout, createdAuctionsCache);
       }
-      if(previousOpenedAuctions.contains(buyout.getAuctionId()))
-      {
-        updateBidIn(buyout, previousOpenedAuctions);
-      }
+
+      updateBidIn(buyout, previousOpenedAuctions);
     }
   }
   private void receivedNotification(PropertyChangeEvent evt)
@@ -314,14 +312,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     updateBidIn(bid, ongoingAuctionsCache);
     updateBidIn(bid, allAuctionsCache);
 
-    // if someone else placed a bid for an auction where we previously bid
-    // we update the cache
-    if (previousBidsCache.contains(bid.getAuctionId()))
-    {
-      updateBidIn(bid, previousBidsCache);
-    }
     //if we placed the bid, we add the auction in cache
-    else if (bid.getBidder().equals(userEmail))
+    if (!previousBidsCache.contains(bid.getAuctionId()) && bid.getBidder().equals(userEmail))
     {
       try
       {
@@ -332,15 +324,13 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
         e.printStackTrace();
       }
     }
-
-    if (createdAuctionsCache.contains(bid.getAuctionId()))
-    {
-      updateBidIn(bid, createdAuctionsCache);
-    }
-    if(previousOpenedAuctions.contains(bid.getAuctionId()))
-    {
+    else
+      // if someone else placed a bid for an auction where we previously bid
+      // we update the cache
       updateBidIn(bid, previousBidsCache);
-    }
+
+    updateBidIn(bid, createdAuctionsCache);
+    updateBidIn(bid, previousOpenedAuctions);
   }
   private void receivedEdit(PropertyChangeEvent evt)
   {

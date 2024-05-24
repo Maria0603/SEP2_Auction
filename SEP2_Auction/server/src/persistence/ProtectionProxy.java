@@ -248,7 +248,7 @@ public class ProtectionProxy implements AuctionPersistence
     {
       throw new SQLException("Empty first name.");
     }
-    if (firstname.length() < 4)
+    if (firstname.length() < 3)
     {
       throw new SQLException(
           "The first name must be at least 3 characters long.");
@@ -261,7 +261,7 @@ public class ProtectionProxy implements AuctionPersistence
     {
       throw new SQLException("Empty last name.");
     }
-    if (lastname.length() < 4)
+    if (lastname.length() < 3)
     {
       throw new SQLException(
           "The last name must be at least 3 characters long.");
