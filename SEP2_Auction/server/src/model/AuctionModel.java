@@ -45,7 +45,7 @@ public interface AuctionModel extends NamedPropertyChangeSubject {
 
   ArrayList<User> getAllUsers() throws SQLException;
 
-  void buyOut(String bidder, int auctionId) throws RemoteException, SQLException;
+  Bid buyout(String bidder, int auctionId) throws RemoteException, SQLException;
 
   void banParticipant(String moderatorEmail, String participantEmail, String reason) throws SQLException;
   String extractBanningReason(String email) throws SQLException;

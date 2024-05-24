@@ -660,8 +660,8 @@ public class AuctionDatabase implements AuctionPersistence
     String sql = "UPDATE auction SET current_bidder = ? WHERE id = ?";
     database.update(sql, current_bider, auctionId);
   }
-
-  @Override public void buyOut(String bidder, int auctionId) throws SQLException
+/*
+  @Override public void buy9ut(String bidder, int auctionId) throws SQLException
   {
     Auction auction = getAuctionById(auctionId);
     if (auction != null)
@@ -672,6 +672,27 @@ public class AuctionDatabase implements AuctionPersistence
       auction.setStatus("CLOSED");
 
       setBuyer(auctionId, bidder);
+    }
+    else
+    {
+      throw new SQLException("Auction does not exist or has already ended.");
+    }
+  }*/
+
+  @Override public Bid buyout(String bidder, int auctionId) throws SQLException
+  {
+    Auction auction = getAuctionById(auctionId);
+    if (auction != null)
+    {
+      if(auction.getCurrentBid()!=0)
+        throw new SQLException("No buyout option. This auction has bids.");
+      Bid bid=saveBid(bidder, auction.getPriceConstraint().getBuyoutPrice(), auctionId);
+      String sql = "UPDATE auction SET status='CLOSED' WHERE ID=?;";
+      database.update(sql, auctionId);
+
+      auction.setStatus("CLOSED");
+      return bid;
+      //setBuyer(auctionId, bidder);
     }
     else
     {

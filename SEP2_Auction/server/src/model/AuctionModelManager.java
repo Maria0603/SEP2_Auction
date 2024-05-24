@@ -78,12 +78,12 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return bid;
   }
 
-  @Override public void buyOut(String current_bider, int auctionId)
+  @Override public Bid buyout(String current_bidder, int auctionId)
       throws SQLException
   {
     try
     {
-      auctionDatabase.buyOut(current_bider, auctionId);
+      auctionDatabase.buyout(current_bidder, auctionId);
       Auction auction = auctionDatabase.getAuctionById(auctionId);
       property.firePropertyChange("Time", null, auction.getStartTime());
       property.firePropertyChange("End", auctionId, auction);
