@@ -147,7 +147,8 @@ public class CreateLoginViewModel
     errorProperty.set("");
     try
     {
-      String user = model.login(emailProperty.get().trim(), passwordProperty.get());
+      String user = model.login(emailProperty.get().trim(),
+          passwordProperty.get());
       //  Giving the viewState all the user info from the model=>takes from servers database
       viewState.setUserEmail(user);
       viewState.setModerator(model.isModerator(user));
@@ -292,11 +293,19 @@ public class CreateLoginViewModel
     disableProperty.set(false);
   }
 
-  public void deleteAccount(){
-    try {
-      model.deleteAccount(viewState.getUserEmail());
-    } catch (SQLException e) {}
+  public void deleteAccount()
+  {
+    errorProperty.set("");
+    try
+    {
+      model.deleteAccount(viewState.getUserEmail(), passwordProperty.get());
+    }
+    catch (SQLException e)
+    {
+      errorProperty.set(e.getMessage());
+    }
   }
+
   private void edit()
   {
     errorProperty.set("");
@@ -407,7 +416,12 @@ public class CreateLoginViewModel
   {
     return emailLabelText;
   }
-  public StringProperty getResetPasswordButtonText(){return resetPasswordButtonText;}
+
+  public StringProperty getResetPasswordButtonText()
+  {
+    return resetPasswordButtonText;
+  }
+
   public BooleanProperty getCancelButtonVisibility()
   {
     return cancelButtonVisibility;

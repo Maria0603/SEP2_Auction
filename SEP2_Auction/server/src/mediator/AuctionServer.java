@@ -193,8 +193,8 @@ public class AuctionServer
   }
 
   @Override
-  public void deleteAccount(String email) throws RemoteException, SQLException {
-    model.deleteAccount(email);
+  public void deleteAccount(String email, String password) throws RemoteException, SQLException {
+    model.deleteAccount(email, password);
   }
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,

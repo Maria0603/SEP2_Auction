@@ -51,5 +51,5 @@ public interface AuctionModel extends NamedPropertyChangeSubject {
   String extractBanningReason(String email) throws SQLException;
   void unbanParticipant(String moderatorEmail, String participantEmail) throws SQLException;
   void deleteAuction(String moderatorEmail, int auctionId, String reason) throws SQLException;
-  void deleteAccount(String email) throws SQLException;
+  void deleteAccount(String email, String password) throws SQLException;
 }

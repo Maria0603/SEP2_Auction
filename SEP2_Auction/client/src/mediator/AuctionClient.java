@@ -318,9 +318,9 @@ public class AuctionClient
   }
 
   @Override
-  public void deleteAccount(String email) throws SQLException {
+  public void deleteAccount(String email, String password) throws SQLException {
     try {
-      server.deleteAccount(email);
+      server.deleteAccount(email, password);
     } catch (RemoteException e) {
       e.printStackTrace();
     }

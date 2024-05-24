@@ -204,8 +204,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
   }
 
   @Override
-  public void deleteAccount(String email) throws SQLException {
-    modelManager.deleteAccount(email);
+  public void deleteAccount(String email, String password) throws SQLException {
+    modelManager.deleteAccount(email, password);
   }
 
   @Override public void addListener(String propertyName,

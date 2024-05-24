@@ -218,9 +218,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   }
 
   @Override
-  public void deleteAccount(String email) throws SQLException {
+  public void deleteAccount(String email, String password) throws SQLException {
     AuctionList list = auctionDatabase.getCreatedAuctions(email);
-    auctionDatabase.deleteAccount(email);
+    auctionDatabase.deleteAccount(email, password);
 
     for (int i = 0; i < list.getSize(); i++) {
       System.out.println("SERVER: ModelM: Deletion event");
