@@ -137,9 +137,12 @@ public class CreateLoginViewController
       Optional<ButtonType> result = alert.showAndWait();
       if (result.isPresent() && result.get() == ButtonType.OK)
       {
-        viewModel.setForLogin();
         viewModel.deleteAccount();
-        viewHandler.openView(WindowType.LOG_IN);
+        if(errorLabel.getText().isEmpty())
+        {
+          viewModel.setForLogin();
+          viewHandler.openView(WindowType.LOG_IN);
+        }
       }
     }
     else

@@ -8,6 +8,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Auction
@@ -44,7 +45,7 @@ public class Auction
     setImageData(imageData);
     setCurrentBid(currentBid);
     setCurrentBidder(currentBidder);
-    this.seller=seller;
+    setSeller(seller);
     this.status = status;
 
   }
@@ -54,6 +55,11 @@ public class Auction
   {
     this(ID, title, null, 0, 0, 0, null, end, currentBid, null, null, imageData,
         null);
+  }
+
+  public boolean isMatchesSearchMask(String searchMask) {
+    return String.valueOf(ID).contains(searchMask) || item.getTitle()
+        .toLowerCase().contains(searchMask);
   }
 
   public Item getItem()
@@ -97,7 +103,6 @@ public class Auction
 
   public void setCurrentBid(int bid)
   {
-    //logic for bid
     this.currentBid = bid;
   }
 
@@ -108,8 +113,12 @@ public class Auction
 
   public void setCurrentBidder(String bidder)
   {
-    //logic for bidder
     this.currentBidder = bidder;
+  }
+
+  public void setSeller(String seller)
+  {
+    this.seller=seller;
   }
 
   public int getID()
@@ -158,6 +167,17 @@ public class Auction
 
   }
 
+  public int getId() {
+    return ID;
+  }
+
+  public String getTitle() {
+    return item.getTitle();
+  }
+
+  public String getDescription() {
+    return item.getDescription();
+  }
 }
 
 

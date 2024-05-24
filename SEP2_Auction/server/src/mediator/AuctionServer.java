@@ -39,9 +39,9 @@ public class AuctionServer
     model.addListener("Ban", this);
     model.addListener("Reset", this);
     model.addListener("BuyOut", this);
-    model.addListener("Delete", this);
+    model.addListener("DeleteAuction", this);
 
-    model.addListener("DeleteAccount", this); // New
+    model.addListener("DeleteAccount", this);
 
     startRegistry();
     startServer();

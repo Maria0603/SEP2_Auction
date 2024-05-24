@@ -45,7 +45,7 @@ public class AuctionClient
       server.addListener(this, "Ban");
       server.addListener(this, "Reset");
       server.addListener(this, "BuyOut");
-      server.addListener(this, "Delete");
+      server.addListener(this, "DeleteAuction");
 
       server.addListener(this, "DeleteAccount"); // New
 

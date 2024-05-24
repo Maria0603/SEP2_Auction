@@ -45,7 +45,7 @@ public class Auction
     setImageData(imageData);
     setCurrentBid(currentBid);
     setCurrentBidder(currentBidder);
-    this.seller=seller;
+    setSeller(seller);
     this.status = status;
 
   }
@@ -103,7 +103,6 @@ public class Auction
 
   public void setCurrentBid(int bid)
   {
-    //logic for bid
     this.currentBid = bid;
   }
 
@@ -114,8 +113,12 @@ public class Auction
 
   public void setCurrentBidder(String bidder)
   {
-    //logic for bidder
     this.currentBidder = bidder;
+  }
+
+  public void setSeller(String seller)
+  {
+    this.seller=seller;
   }
 
   public int getID()

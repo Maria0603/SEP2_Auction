@@ -27,9 +27,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("Ban", this);
     client.addListener("Reset", this);
     client.addListener("BuyOut", this);
-    client.addListener("Delete", this);
+    client.addListener("DeleteAuction", this);
 
-    client.addListener("DeleteAccount", this); // New
+    client.addListener("DeleteAccount", this);
   }
 
   @Override
@@ -172,8 +172,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   public void propertyChange(PropertyChangeEvent evt) {
     // model manager property fires auction events further
     property.firePropertyChange(evt);
-    if(evt.getPropertyName().equals("BuyOut")){
-      System.out.println("received buyout" + " auction client" + evt.getNewValue().toString());
+    if(evt.getPropertyName().equals("End")){
+      System.out.println("received end auction client. Bid: " + evt.getNewValue().toString());
     }
   }
 }

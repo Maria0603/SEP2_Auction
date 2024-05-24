@@ -133,23 +133,20 @@ public class AuctionDatabase implements AuctionPersistence
         String status = row[9].toString();
         Time auctionStart = Time.valueOf(row[10].toString());
         Time auctionEnd = Time.valueOf(row[11].toString());
-        String seller = row[12].toString(); // the correct line
-        // String seller = null;
+        String seller = row[12].toString();
         return new Auction(id, title, description, reservePrice, buyoutPrice,
             minimumIncrement, auctionStart, auctionEnd, currentBid,
             currentBidder, seller, imageData, status);
       }
       catch (Exception e)
       {
-        // maybe throw exception with "No auction with this id", but for testing:
         e.printStackTrace();
       }
     }
-    System.out.println("request for auction by ID in database");
     return null;
   }
 
-  private Auction getCardAuctionById(int id) throws SQLException
+  private synchronized Auction getCardAuctionById(int id) throws SQLException
   {
     String sql = "SELECT title, current_bid, image_data, end_time\n"
         + "FROM sprint1database.auction\n" + "WHERE id=?;";
@@ -170,6 +167,7 @@ public class AuctionDatabase implements AuctionPersistence
   @Override public synchronized AuctionList getOngoingAuctions()
       throws SQLException
   {
+    //TODO: change sprint1database
     String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
     return getAuctions(sql, null);
   }
@@ -291,7 +289,8 @@ public class AuctionDatabase implements AuctionPersistence
     return getAuctions(sql, seller);
   }
 
-  @Override public synchronized AuctionList getAllAuctions(String moderatorEmail) throws SQLException
+  @Override public synchronized AuctionList getAllAuctions(
+      String moderatorEmail) throws SQLException
   {
     String sql = "SELECT ID FROM sprint1database.auction;";
     return getAuctions(sql, null);
@@ -319,11 +318,6 @@ public class AuctionDatabase implements AuctionPersistence
       throws SQLException
   {
     String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";
-    return getAllUsersQuery(sql);
-  }
-
-  private ArrayList<User> getAllUsersQuery(String sql) throws SQLException
-  {
     ArrayList<Object[]> queryResults = database.query(sql, MODERATOR_EMAIL);
 
     ArrayList<User> output = new ArrayList<>();
@@ -476,21 +470,29 @@ public class AuctionDatabase implements AuctionPersistence
     String sql = "DELETE FROM auction WHERE creator_email=?;";
     database.update(sql, email);
   }
-  @Override
-  public void deleteAccount(String email, String password) throws SQLException {
 
+  @Override public void deleteAccount(String email, String password)
+      throws SQLException
+  {
     if (!validateForLogin(email, password))
     {
       throw new SQLException("Wrong password");
     }
+    System.out.println("valid for login");
 
-    deleteAuctionsStartedBy(email);
-    updateCurrentBidAndCurrentBidderAfterBan(email);
-    deleteBids(email);
     String sql1 = "DELETE FROM participant WHERE user_email=?;";
     String sql2 = "DELETE FROM users WHERE user_email=?;";
-    database.update(sql1,email);
-    database.update(sql2,email);
+    database.update(sql1, email);
+    database.update(sql2, email);
+    System.out.println("accounts deleted");
+
+    deleteAuctionsStartedBy(email);
+    System.out.println("auctions started deleted");
+    updateCurrentBidAndCurrentBidderAfterBan(email);
+    System.out.println("auctions bids updated");
+
+    deleteBids(email);
+    System.out.println("bids deleted");
   }
 
   private void updateCurrentBidAndCurrentBidderAfterBan(String email)
@@ -522,7 +524,6 @@ public class AuctionDatabase implements AuctionPersistence
     String sql2 = "DELETE FROM bid WHERE participant_email=?;";
     database.update(sql2, email);
   }
-
 
   private boolean isBanned(String email) throws SQLException
   {
@@ -654,14 +655,13 @@ public class AuctionDatabase implements AuctionPersistence
     return count > 0;
   }
 
-  public void setBuyer(int auctionId, String current_bider)
-      throws SQLException
+  public void setBuyer(int auctionId, String current_bider) throws SQLException
   {
     String sql = "UPDATE auction SET current_bidder = ? WHERE id = ?";
     database.update(sql, current_bider, auctionId);
   }
 /*
-  @Override public void buy9ut(String bidder, int auctionId) throws SQLException
+  @Override public void buyout(String bidder, int auctionId) throws SQLException
   {
     Auction auction = getAuctionById(auctionId);
     if (auction != null)
@@ -684,15 +684,14 @@ public class AuctionDatabase implements AuctionPersistence
     Auction auction = getAuctionById(auctionId);
     if (auction != null)
     {
-      if(auction.getCurrentBid()!=0)
+      if (auction.getCurrentBid() != 0)
         throw new SQLException("No buyout option. This auction has bids.");
-      Bid bid=saveBid(bidder, auction.getPriceConstraint().getBuyoutPrice(), auctionId);
+      Bid bid = saveBid(bidder, auction.getPriceConstraint().getBuyoutPrice(),
+          auctionId);
       String sql = "UPDATE auction SET status='CLOSED' WHERE ID=?;";
       database.update(sql, auctionId);
 
-      auction.setStatus("CLOSED");
       return bid;
-      //setBuyer(auctionId, bidder);
     }
     else
     {

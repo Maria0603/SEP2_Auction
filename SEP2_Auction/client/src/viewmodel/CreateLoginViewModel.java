@@ -275,7 +275,9 @@ public class CreateLoginViewModel
     viewState.setEdit();
 
     resetPasswordButtonText.set("Delete Account");
-    resetPasswordButtonVisibility.set(true);
+
+    resetPasswordButtonVisibility.set(!viewState.isModerator());
+
     login_createButtonVisibility.set(false);
     //login_createButtonText.set("Edit");
     informationVisibility.set(true);

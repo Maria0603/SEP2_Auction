@@ -70,7 +70,6 @@ public class User implements Serializable {
         return phone;
     }
     @Override public String toString(){
-        String s = firstname + " " + lastname + ": " + email + ", " + password;
-        return s;
+        return firstname + " " + lastname + ": Email: " + email + "; Phone: " +phone;
     }
 }

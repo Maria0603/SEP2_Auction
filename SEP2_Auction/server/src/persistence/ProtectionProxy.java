@@ -134,14 +134,14 @@ public class ProtectionProxy implements AuctionPersistence
   @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException
   {
     if(isNotModerator(moderatorEmail))
-      throw new SQLException("You cannot access all auctions");
+      throw new SQLException("You cannot access all auctions.");
     return database.getAllAuctions(moderatorEmail);
   }
 
   @Override public Bid buyout(String bidder, int auctionId) throws SQLException
   {
     if(!isNotModerator(bidder))
-      throw new SQLException("You cannot participate in auctions");
+      throw new SQLException("You cannot participate in auctions.");
     return database.buyout(bidder, auctionId);
   }
 

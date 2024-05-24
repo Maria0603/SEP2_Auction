@@ -40,12 +40,11 @@ public class AuctionViewController {
   @FXML private Button importButton;
   @FXML private TextField incrementTextField;
   @FXML private Button placeBidButton;
-  @FXML private Label ratingLabel;
-  @FXML private Label ratingTextLabel;
+  @FXML private Label sellerLabel;
+  @FXML private Label sellerTextLabel;
   @FXML private TextArea reasonTextArea;
   @FXML private Button deleteButton;
   @FXML private TextField reservePriceTextField;
-  @FXML private Label sellerRateLabel;
   @FXML private Label somethingWrongLabel;
   @FXML private Button startAuctionButton;
   @FXML private Label timeLabel;
@@ -111,7 +110,7 @@ public class AuctionViewController {
   }
 
   @FXML void buyNowButtonPressed(ActionEvent event) {
-    auctionViewModel.buyOut();
+    auctionViewModel.buyout();
   }
 
   @FXML void startAuctionButtonPressed(ActionEvent event) {
@@ -202,6 +201,8 @@ public class AuctionViewController {
     Bindings.bindBidirectional(incomingBidTextField.textProperty(),
         this.auctionViewModel.getIncomingBidProperty(),
         new IntStringConverter());
+
+    sellerLabel.textProperty().bindBidirectional(auctionViewModel.getSellerProperty());
   }
 
   private void bindVisibleProperty() {
@@ -230,10 +231,12 @@ public class AuctionViewController {
     placeBidButton.visibleProperty().bind(invertedBinding);
     buyNowButton.visibleProperty().bind(invertedBinding);
     somethingWrongLabel.visibleProperty().bind(invertedBinding);
-    sellerRateLabel.visibleProperty().bind(invertedBinding);
-    ratingLabel.visibleProperty().bind(invertedBinding);
-    deleteButton.visibleProperty().bind(invertedBinding);
-    reasonTextArea.visibleProperty().bind(invertedBinding);
+    ///////////////////////////////
+    sellerTextLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    sellerLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    deleteButton.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    reasonTextArea.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    //////////////////////////////
     incomingBidTextField.visibleProperty().bind(invertedBinding);
     currentBidTextLabel.visibleProperty().bind(invertedBinding);
     currentBidderTextLabel.visibleProperty().bind(invertedBinding);
