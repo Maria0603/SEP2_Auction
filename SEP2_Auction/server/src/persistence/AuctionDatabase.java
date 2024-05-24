@@ -476,6 +476,29 @@ public class AuctionDatabase implements AuctionPersistence
     String sql = "DELETE FROM auction WHERE creator_email=?;";
     database.update(sql, email);
   }
+  @Override
+  public void deleteAccount(String email) throws SQLException {
+    if(email.isEmpty())
+      throw new SQLException("No mail specified");
+
+
+    String sql = "SELECT id FROM auction WHERE creator_email=?;";
+    ArrayList<Object[]> results = database.query(sql, email);
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      int id = Integer.parseInt(row[0].toString());
+
+      deleteBids(getAuctionById(id).getCurrentBidder());
+      deleteAuctionsStartedBy(email);
+    }
+
+
+    String sql1 = "DELETE FROM participant WHERE user_email=?;";
+    String sql2 = "DELETE FROM users WHERE user_email=?;";
+    database.update(sql1,email);
+    database.update(sql2,email);
+  }
 
   private void updateCurrentBidAndCurrentBidderAfterBan(String email)
       throws SQLException

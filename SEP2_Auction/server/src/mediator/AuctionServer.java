@@ -41,6 +41,8 @@ public class AuctionServer
     model.addListener("BuyOut", this);
     model.addListener("Delete", this);
 
+    model.addListener("DeleteAccount", this); // New
+
     startRegistry();
     startServer();
   }
@@ -188,6 +190,11 @@ public class AuctionServer
       String reason) throws RemoteException, SQLException
   {
     model.deleteAuction(moderatorEmail, auctionId, reason);
+  }
+
+  @Override
+  public void deleteAccount(String email) throws RemoteException, SQLException {
+    model.deleteAccount(email);
   }
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,

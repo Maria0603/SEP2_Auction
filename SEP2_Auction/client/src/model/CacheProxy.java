@@ -35,6 +35,8 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     modelManager.addListener("BuyOut", this);
     modelManager.addListener("Delete", this);
 
+    modelManager.addListener("DeleteAccount", this); // New
+
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
     //allAuctionsCache = modelManager.getAllAuctions("bob@bidhub");
     timers = new ArrayList<>();
@@ -201,6 +203,11 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
     modelManager.deleteAuction(moderatorEmail, auctionId, reason);
   }
 
+  @Override
+  public void deleteAccount(String email) throws SQLException {
+    modelManager.deleteAccount(email);
+  }
+
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener) {
     property.addPropertyChangeListener(propertyName, listener);
@@ -312,6 +319,15 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener {
         previouslyOpenedAuctions.removeAuction(id);
         //allAuctionsCache.removeAuction(id);
       }
+      /*case "DeleteAccount"->{
+        int id=Integer.parseInt(evt.getNewValue().toString());
+        ongoingAuctionsCache.removeAuction(id);
+        previousBids.removeAuction(id);
+        createdAuctions.removeAuction(id);
+        previouslyOpenedAuctions.removeAuction(id);
+        //allAuctionsCache.removeAuction(id);
+      }*/
+
     }
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
         evt.getNewValue());

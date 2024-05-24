@@ -293,8 +293,9 @@ public class CreateLoginViewModel
   }
 
   public void deleteAccount(){
-    System.out.println("VIEWMODEL ACC DELETION: call the database to delete an account and log out this guy...");
-
+    try {
+      model.deleteAccount(viewState.getUserEmail());
+    } catch (SQLException e) {}
   }
   private void edit()
   {

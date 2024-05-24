@@ -28,6 +28,8 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("Reset", this);
     client.addListener("BuyOut", this);
     client.addListener("Delete", this);
+
+    client.addListener("DeleteAccount", this); // New
   }
 
   @Override
@@ -147,6 +149,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
       String reason) throws SQLException
   {
     client.deleteAuction(moderatorEmail, auctionId, reason);
+  }
+
+  @Override
+  public void deleteAccount(String email) throws SQLException {
+    client.deleteAccount(email);
   }
 
   @Override

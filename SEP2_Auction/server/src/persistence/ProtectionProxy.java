@@ -191,6 +191,12 @@ public class ProtectionProxy implements AuctionPersistence
     checkReason(reason);
     database.deleteAuction(moderatorEmail, auctionId, reason);
   }
+
+  @Override public void deleteAccount(String email) throws SQLException
+  {
+    database.deleteAccount(email);
+  }
+
   private boolean isNotModerator(String email)
   {
     return !email.equals(MODERATOR_EMAIL);
