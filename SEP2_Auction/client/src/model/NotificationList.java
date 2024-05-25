@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -7,7 +8,7 @@ public class NotificationList implements Serializable
 {
   ///////////////////////////////////////////////////////////////////
   //do not change this number
-  private static final long serialVersionUID = 6529685098267757690L;
+  @Serial private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
   private final ArrayList<Notification> notifications;
   public NotificationList()

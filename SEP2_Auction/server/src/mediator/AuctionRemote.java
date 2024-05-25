@@ -1,15 +1,13 @@
 package mediator;
 
 import model.*;
-import utility.observer.javaobserver.NamedPropertyChangeSubject;
 import utility.observer.listener.GeneralListener;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 public interface AuctionRemote extends Remote
 {

@@ -14,10 +14,7 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
   private long timerSeconds;
   private int id;
   private PropertyChangeSupport property;
-  ///////////////////////////////////////////////////////////////////
-  //do not change this number
-  //private static final long serialVersionUID = 6529685098267757690L;
-  //////////////////////////////////////////////////////////////////
+
 
   public Timer(long timerSeconds, int id)
   {

@@ -53,7 +53,7 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     this.allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
-    loadAuctions();
+    //loadAuctions();
     // other bindings to be inserted
 
   }

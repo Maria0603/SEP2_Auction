@@ -1,12 +1,13 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Notification implements Serializable
 {
   ///////////////////////////////////////////////////////////////////
   //do not change this number
-  private static final long serialVersionUID = 6529685098267757690L;
+  @Serial private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
   private final String dateTime, content, receiver;
 

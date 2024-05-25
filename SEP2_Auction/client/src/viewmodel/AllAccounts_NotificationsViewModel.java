@@ -15,7 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AllAccounts_NotificationsViewModel
-    implements PropertyChangeListener {
+    implements PropertyChangeListener
+{
   private ObservableList<NotificationViewModel> notifications;
   private ObservableList<AccountViewModel> allAccounts;
   private ObjectProperty<NotificationViewModel> selectedRowNotificationProperty;
@@ -28,7 +29,8 @@ public class AllAccounts_NotificationsViewModel
   private StringProperty searchFieldProperty, reasonProperty;
 
   public AllAccounts_NotificationsViewModel(AuctionModel model,
-      ViewModelState viewModelState) {
+      ViewModelState viewModelState)
+  {
     this.model = model;
     this.model.addListener("Notification", this);
     this.model.addListener("Ban", this);
@@ -36,10 +38,10 @@ public class AllAccounts_NotificationsViewModel
     notifications = FXCollections.observableArrayList();
     allAccounts = FXCollections.observableArrayList();
     selectedRowNotificationProperty = new SimpleObjectProperty<>();
-    selectedRowAccountProperty=new SimpleObjectProperty<>();
+    selectedRowAccountProperty = new SimpleObjectProperty<>();
     errorProperty = new SimpleStringProperty();
     searchFieldProperty = new SimpleStringProperty();
-    reasonProperty=new SimpleStringProperty();
+    reasonProperty = new SimpleStringProperty();
 
     //to control the visibility from the view model
     allFieldsVisibility = new SimpleBooleanProperty();
@@ -48,44 +50,54 @@ public class AllAccounts_NotificationsViewModel
     reset();
   }
 
-  public ObservableList<NotificationViewModel> getNotifications() {
+  public ObservableList<NotificationViewModel> getNotifications()
+  {
     return notifications;
   }
 
-  public ObservableList<AccountViewModel> getAllAccounts() {
+  public ObservableList<AccountViewModel> getAllAccounts()
+  {
     return allAccounts;
   }
 
-  public void reset() {
+  public void reset()
+  {
     errorProperty.set("");
     reasonProperty.set("");
-    if(viewModelState.getUserEmail()!=null)
+    if (viewModelState.getUserEmail() != null)
     {
       loadNotifications();
       loadAllAccounts();
     }
   }
 
-  private void loadAllAccounts() {
-    try {
+  private void loadAllAccounts()
+  {
+    try
+    {
       allAccounts.clear();
       ArrayList<User> updatedUserList = model.getAllUsers();
 
-      for (User user : updatedUserList) {
+      for (User user : updatedUserList)
+      {
         allAccounts.add(new AccountViewModel(user));
       }
     }
-    catch (SQLException e) {
+    catch (SQLException e)
+    {
       errorProperty.set(e.getMessage());
     }
   }
 
-  public void setSelectedNotification(NotificationViewModel notification) {
+  public void setSelectedNotification(NotificationViewModel notification)
+  {
     selectedRowNotificationProperty.set(notification);
   }
-  public void setSelectedAccount(AccountViewModel account) {
+
+  public void setSelectedAccount(AccountViewModel account)
+  {
     selectedRowAccountProperty.set(account);
-    if(selectedRowAccountProperty.getValue()==null)
+    if (selectedRowAccountProperty.getValue() == null)
       errorProperty.set("Select an account.");
     else
     {
@@ -103,61 +115,83 @@ public class AllAccounts_NotificationsViewModel
 
   }
 
-  public void setForNotifications() {
+  public void setForNotifications()
+  {
     allFieldsVisibility.set(false);
     firstColumnNameProperty.set("Date and time");
     secondColumnNameProperty.set("Content");
   }
 
-  public void setForAccounts() {
+  public void setForAccounts()
+  {
+
     allFieldsVisibility.set(true);
+    firstColumnNameProperty.set("First name");
+    secondColumnNameProperty.set("Last name");
   }
 
-  private void loadNotifications() {
-    if (viewModelState.getUserEmail() != null) {
+  private void loadNotifications()
+  {
+    if (viewModelState.getUserEmail() != null)
+    {
       notifications.clear();
       NotificationList list;
-      try {
+      try
+      {
         list = model.getNotifications(viewModelState.getUserEmail());
-        if (list != null) {
-          for (int i = 0; i < list.getSize(); i++) {
+        if (list != null)
+        {
+          for (int i = list.getSize() - 1; i >= 0; i--)
+          {
             notifications.add(
                 new NotificationViewModel(list.getNotification(i)));
           }
         }
       }
-      catch (SQLException e) {
+      catch (SQLException e)
+      {
         errorProperty.set(e.getMessage());
       }
     }
   }
 
-  public void search() {
-    ObservableList<AccountViewModel> searchedAccounts = searchAccounts(searchFieldProperty.get());
+  public void search()
+  {
+    ObservableList<AccountViewModel> searchedAccounts = searchAccounts(
+        searchFieldProperty.get());
     allAccounts.clear();
     allAccounts.addAll(searchedAccounts);
   }
 
-  private ObservableList<AccountViewModel> searchAccounts(String query) {
+  private ObservableList<AccountViewModel> searchAccounts(String query)
+  {
     ObservableList<AccountViewModel> results = FXCollections.observableArrayList();
     String lowerCaseQuery = query.toLowerCase();
 
-    for (AccountViewModel account : allAccounts) {
-      if (account.getEmailProperty().get().toLowerCase()
-          .contains(lowerCaseQuery) || account.getFirstNameProperty().get()
-          .toLowerCase().contains(lowerCaseQuery)
-          || account.getLastNameProperty().get().toLowerCase()
-          .contains(lowerCaseQuery)) {
-        results.add(account);
-        System.out.println(account);
+    try
+    {
+      for (User account : model.getAllUsers())
+      {
+        if (account.getEmail().toLowerCase().contains(lowerCaseQuery)
+            || account.getFirstname().toLowerCase().contains(lowerCaseQuery)
+            || account.getLastname().toLowerCase().contains(lowerCaseQuery))
+        {
+          results.add(new AccountViewModel(account));
+          System.out.println(account);
+        }
       }
+    }
+    catch (SQLException e)
+    {
+      errorProperty.set(e.getMessage());
     }
 
     return results;
   }
+
   public void ban()
   {
-    if(selectedRowAccountProperty.getValue()==null)
+    if (selectedRowAccountProperty.getValue() == null)
       errorProperty.set("Select an account.");
     else
     {
@@ -175,9 +209,10 @@ public class AllAccounts_NotificationsViewModel
       }
     }
   }
+
   public void unban()
   {
-    if(selectedRowAccountProperty.getValue()==null)
+    if (selectedRowAccountProperty.getValue() == null)
       errorProperty.set("Select an account.");
     else
     {
@@ -195,43 +230,53 @@ public class AllAccounts_NotificationsViewModel
     }
   }
 
-  public StringProperty getErrorProperty() {
+  public StringProperty getErrorProperty()
+  {
     return errorProperty;
   }
 
-  public BooleanProperty getAllFieldsVisibility() {
+  public BooleanProperty getAllFieldsVisibility()
+  {
     return allFieldsVisibility;
   }
 
-  public StringProperty getFirstColumnNameProperty() {
+  public StringProperty getFirstColumnNameProperty()
+  {
     return firstColumnNameProperty;
   }
 
-  public StringProperty getSecondColumnNameProperty() {
+  public StringProperty getSecondColumnNameProperty()
+  {
     return secondColumnNameProperty;
   }
 
-  public StringProperty getSearchFieldProperty() {
+  public StringProperty getSearchFieldProperty()
+  {
     return searchFieldProperty;
   }
+
   public StringProperty getReasonProperty()
   {
     return reasonProperty;
   }
 
-  public void setAllAccounts(ObservableList<AccountViewModel> newData) {
+  public void setAllAccounts(ObservableList<AccountViewModel> newData)
+  {
     allAccounts = newData;
   }
 
-
-  public void addNotification(NotificationViewModel notification) {
+  public void addNotification(NotificationViewModel notification)
+  {
     notifications.add(notification);
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt) {
-    switch (evt.getPropertyName()) {
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
+    switch (evt.getPropertyName())
+    {
       case "Notification":
-        if (evt.getNewValue() != null) {
+        if (evt.getNewValue() != null)
+        {
           Notification notification = (Notification) evt.getNewValue();
           if (notification.getReceiver().equals(viewModelState.getUserEmail()))
             Platform.runLater(

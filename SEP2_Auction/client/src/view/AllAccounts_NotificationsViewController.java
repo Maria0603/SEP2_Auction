@@ -24,11 +24,12 @@ public class AllAccounts_NotificationsViewController
   @FXML private TableColumn<AccountViewModel, String> emailColumn;
   @FXML private TableColumn<AccountViewModel, String> firstNameColumn;
   @FXML private TableColumn<AccountViewModel, String> lastNameColumn;
+  @FXML private TableColumn<AccountViewModel, String> phoneColumn;
 
   @FXML private TableView<NotificationViewModel> notificationsTableView;
   @FXML private TableColumn<NotificationViewModel, String> dateTimeColumn;
   @FXML private TableColumn<NotificationViewModel, String> contentColumn;
-  @FXML private TableColumn<NotificationViewModel, String> ratingColumn;
+
 
   @FXML private Button ban_openNotificationButton;
   @FXML private Pane ban_unban_notificationsPane;
@@ -77,6 +78,12 @@ public class AllAccounts_NotificationsViewController
         .addListener(
             (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedNotification(
                 newVal));
+    contentColumn.setPrefWidth(930);
+    dateTimeColumn.setPrefWidth(120);
+    tableViewVBox.setLayoutX(15);
+    //notificationsTableView.setLayoutX(15);
+    tableViewVBox.setPrefWidth(1050);
+    notificationsTableView.setPrefWidth(1050);
   }
 
   private void setDataForNotificationTable()
@@ -85,13 +92,9 @@ public class AllAccounts_NotificationsViewController
         allAccountsNotificationsViewModel.getNotifications());
     dateTimeColumn.setCellValueFactory(
         cellData -> cellData.getValue().getDateTimeProperty());
-    contentColumn.setPrefWidth(865);
     contentColumn.setCellValueFactory(
         cellData -> cellData.getValue().getContentProperty());
     allAccountsNotificationsViewModel.setForNotifications();
-
-    notificationsTableView.setLayoutX(15);
-    notificationsTableView.setPrefWidth(1050);
   }
 
   private void setForAccounts()
@@ -106,19 +109,25 @@ public class AllAccounts_NotificationsViewController
         .addListener(
             (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedAccount(
                 newVal));
+    emailColumn.setPrefWidth(330);
+    firstNameColumn.setPrefWidth(210);
+    phoneColumn.setPrefWidth(100);
+    tableViewVBox.setLayoutX(285);
+    tableViewVBox.setPrefWidth(800);
+    accountTableView.setPrefWidth(800);
   }
 
   private void initAccountTableView()
   {
     this.accountTableView = new TableView<>();
 
+    accountTableView.setPrefHeight(640);
     this.emailColumn = new TableColumn<>("Email");
-    emailColumn.setPrefWidth(390);
-    this.firstNameColumn = new TableColumn<>("First Name");
-    firstNameColumn.setPrefWidth(231);
+    this.firstNameColumn = new TableColumn<>("First name");
     this.lastNameColumn = new TableColumn<>("Last Name");
+    this.phoneColumn=new TableColumn<>("Phone");
     accountTableView.getColumns()
-        .addAll(emailColumn, firstNameColumn, lastNameColumn);
+        .addAll(emailColumn, firstNameColumn, lastNameColumn, phoneColumn);
 
   }
 
@@ -132,6 +141,7 @@ public class AllAccounts_NotificationsViewController
         cellData -> cellData.getValue().getFirstNameProperty());
     lastNameColumn.setCellValueFactory(
         cellData -> cellData.getValue().getLastNameProperty());
+    phoneColumn.setCellValueFactory(cellData -> cellData.getValue().getPhoneProperty());
   }
 
   public Region getRoot()
@@ -143,7 +153,6 @@ public class AllAccounts_NotificationsViewController
   {
     allAccountsNotificationsViewModel.search();
     setAccountTableViewData();
-
   }
 
   public void ban_openNotificationButtonPressed()
@@ -180,7 +189,7 @@ public class AllAccounts_NotificationsViewController
         allAccountsNotificationsViewModel.getAllFieldsVisibility());
     emailColumn.visibleProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    ratingColumn.visibleProperty().bindBidirectional(
+    phoneColumn.visibleProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getAllFieldsVisibility());
     reason_contentLabel.visibleProperty().bindBidirectional(
         allAccountsNotificationsViewModel.getAllFieldsVisibility());

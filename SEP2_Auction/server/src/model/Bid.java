@@ -1,11 +1,16 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Bid implements Serializable {
     private int auctionId;
     private String bidder;
     private int bidAmount;
+    ///////////////////////////////////////////////////////////////////
+    //do not change this number
+    @Serial private static final long serialVersionUID = 6529685098267757690L;
+    //////////////////////////////////////////////////////////////////
 
     public Bid(int auctionId, String bidder, int bidAmount) {
         this.auctionId = auctionId;

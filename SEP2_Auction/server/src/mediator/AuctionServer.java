@@ -38,9 +38,7 @@ public class AuctionServer
     model.addListener("Edit", this);
     model.addListener("Ban", this);
     model.addListener("Reset", this);
-    model.addListener("BuyOut", this);
     model.addListener("DeleteAuction", this);
-
     model.addListener("DeleteAccount", this);
 
     startRegistry();
@@ -212,6 +210,8 @@ public class AuctionServer
 
   @Override public synchronized void propertyChange(PropertyChangeEvent evt)
   {
+    if(evt.getPropertyName().equals("Bid"))
+      System.out.println("Bid received in server");
     property.firePropertyChange(evt.getPropertyName(),
         String.valueOf(evt.getOldValue()), evt.getNewValue());
   }

@@ -5,33 +5,32 @@ import utility.observer.javaobserver.NamedPropertyChangeSubject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Time;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Auction
     implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
 {
-  private int ID;
-  private Item item;
-  private PriceConstraint priceConstraint;
+  private final int ID;
+  private final Item item;
+  private final PriceConstraint priceConstraint;
   private String currentBidder, seller, status;
-  private int auctionEndTime, currentBid;
+  private int currentBid;
   Time start, end;
   private byte[] imageData;
 
   ///////////////////////////////////////////////////////////////////
   //do not change this number
-  private static final long serialVersionUID = 6529685098267757690L;
+  @Serial private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
-  private PropertyChangeSupport property;
+  private final PropertyChangeSupport property;
 
   public Auction(int ID, String title, String description, int reservePrice,
       int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
-      int currentBid, String currentBidder, String seller, byte[] imageData, String status)
+      int currentBid, String currentBidder, String seller, byte[] imageData,
+      String status)
   {
     property = new PropertyChangeSupport(this);
     this.ID = ID;
@@ -57,7 +56,8 @@ public class Auction
         null);
   }
 
-  public boolean isMatchesSearchMask(String searchMask) {
+  public boolean isMatchesSearchMask(String searchMask)
+  {
     return String.valueOf(ID).contains(searchMask) || item.getTitle()
         .toLowerCase().contains(searchMask);
   }
@@ -71,6 +71,7 @@ public class Auction
   {
     return priceConstraint;
   }
+
   public String getSeller()
   {
     return seller;
@@ -118,7 +119,7 @@ public class Auction
 
   public void setSeller(String seller)
   {
-    this.seller=seller;
+    this.seller = seller;
   }
 
   public int getID()
@@ -142,8 +143,7 @@ public class Auction
         + item.getDescription() + '\'' + ", reservePrice="
         + priceConstraint.getReservePrice() + ", buyoutPrice="
         + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
-        + priceConstraint.getMinimumIncrement() + ", auctionTime="
-        + auctionEndTime + '\'';
+        + priceConstraint.getMinimumIncrement() + '\'';
   }
 
   @Override synchronized public void addListener(String propertyName,
@@ -167,15 +167,18 @@ public class Auction
 
   }
 
-  public int getId() {
+  public int getId()
+  {
     return ID;
   }
 
-  public String getTitle() {
+  public String getTitle()
+  {
     return item.getTitle();
   }
 
-  public String getDescription() {
+  public String getDescription()
+  {
     return item.getDescription();
   }
 }

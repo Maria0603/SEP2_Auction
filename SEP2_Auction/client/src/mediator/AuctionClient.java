@@ -11,7 +11,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import utility.observer.event.ObserverEvent;
 import utility.observer.listener.RemoteListener;
@@ -39,15 +38,13 @@ public class AuctionClient
       server.addListener(this, "Auction");
       server.addListener(this, "Time");
       server.addListener(this, "End");
-      server.addListener(this,"Bid");
+      server.addListener(this, "Bid");
       server.addListener(this, "Notification");
       server.addListener(this, "Edit");
       server.addListener(this, "Ban");
       server.addListener(this, "Reset");
-      server.addListener(this, "BuyOut");
       server.addListener(this, "DeleteAuction");
-
-      server.addListener(this, "DeleteAccount"); // New
+      server.addListener(this, "DeleteAccount");
 
     }
     catch (Exception e)
@@ -58,7 +55,8 @@ public class AuctionClient
 
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData, String seller) throws SQLException, ClassNotFoundException
+      byte[] imageData, String seller)
+      throws SQLException, ClassNotFoundException
   {
     try
     {
@@ -98,42 +96,63 @@ public class AuctionClient
     return null;
   }
 
-  @Override
-  public NotificationList getNotifications(String receiver) throws SQLException {
-    try {
+  @Override public NotificationList getNotifications(String receiver)
+      throws SQLException
+  {
+    try
+    {
       return server.getNotifications(receiver);
-    } catch (RemoteException e) {
-      return null;
     }
-  }
-
-  @Override
-  public Bid placeBid(String bidder, int bidValue, int auctionId) throws SQLException {
-    try {
-      return server.placeBid(bidder, bidValue, auctionId);
-    } catch (RemoteException e) {
-      return null;
-    }
-  }
-
-
-  @Override
-  public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
-    try {
-      return server.addUser(firstname,lastname,email,password,repeatedPassword, phone, birthday);
-    } catch (RemoteException e) {
+    catch (RemoteException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  @Override
-  public String login(String email, String password) throws SQLException {
-    try {
-      return server.login(email,password);
-    } catch (RemoteException e) {
-      return null;
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws SQLException
+  {
+    try
+    {
+      return server.placeBid(bidder, bidValue, auctionId);
     }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public String addUser(String firstname, String lastname,
+      String email, String password, String repeatedPassword, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    try
+    {
+      return server.addUser(firstname, lastname, email, password,
+          repeatedPassword, phone, birthday);
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @Override public String login(String email, String password)
+      throws SQLException
+  {
+    try
+    {
+      return server.login(email, password);
+    }
+    catch (RemoteException e)
+    {
+    e.printStackTrace();
+    }
+      return null;
+
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
@@ -143,7 +162,7 @@ public class AuctionClient
     {
       return server.getPreviousBids(bidder);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -171,7 +190,7 @@ public class AuctionClient
     {
       server.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -183,19 +202,20 @@ public class AuctionClient
     {
       return server.getUser(email);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
     return null;
   }
+
   @Override public User getModeratorInfo() throws SQLException
   {
     try
     {
       return server.getModeratorInfo();
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -208,7 +228,7 @@ public class AuctionClient
     {
       return server.isModerator(email);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -224,47 +244,53 @@ public class AuctionClient
       return server.editInformation(oldEmail, firstname, lastname, email,
           password, phone, birthday);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
     return null;
   }
-  @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException
+
+  @Override public AuctionList getAllAuctions(String moderatorEmail)
+      throws SQLException
   {
     try
     {
       return server.getAllAuctions(moderatorEmail);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
     return null;
   }
 
-  @Override public void buyout(String bidder, int auctionId)
-      throws SQLException {
-    try {
+  @Override public void buyout(String bidder, int auctionId) throws SQLException
+  {
+    try
+    {
       server.buyout(bidder, auctionId);
-    } catch (RemoteException e) {
+    }
+    catch (RemoteException e)
+    {
       e.printStackTrace();
     }
 
   }
 
-  @Override public ArrayList<User> getAllUsers()
-      throws SQLException {
+  @Override public ArrayList<User> getAllUsers() throws SQLException
+  {
     try
     {
       return server.getAllUsers();
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
     return null;
   }
+
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
@@ -272,7 +298,7 @@ public class AuctionClient
     {
       server.banParticipant(moderatorEmail, participantEmail, reason);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -284,7 +310,7 @@ public class AuctionClient
     {
       return server.extractBanningReason(email);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -298,7 +324,7 @@ public class AuctionClient
     {
       server.unbanParticipant(moderatorEmail, participantEmail);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -311,17 +337,21 @@ public class AuctionClient
     {
       server.deleteAuction(moderatorEmail, auctionId, reason);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
   }
 
-  @Override
-  public void deleteAccount(String email, String password) throws SQLException {
-    try {
+  @Override public void deleteAccount(String email, String password)
+      throws SQLException
+  {
+    try
+    {
       server.deleteAccount(email, password);
-    } catch (RemoteException e) {
+    }
+    catch (RemoteException e)
+    {
       e.printStackTrace();
     }
   }
@@ -343,11 +373,6 @@ public class AuctionClient
   {
     property.firePropertyChange(event.getPropertyName(), event.getValue1(),
         event.getValue2());
-    if(event.getPropertyName().equals("BuyOut")){
-      System.out.println("received buyout" + " auction client" + event.getValue2().toString());
-      if(event.getPropertyName().equals("Delete"))
-        System.out.println("delete received in the client");
-    }
   }
 
 }

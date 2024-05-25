@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
@@ -7,7 +8,7 @@ import java.util.Date;
 public class User implements Serializable {
     ///////////////////////////////////////////////////////////////////
     //do not change this number
-    private static final long serialVersionUID = 6529685098267757690L;
+    @Serial private static final long serialVersionUID = 6529685098267757690L;
     //////////////////////////////////////////////////////////////////
     private String firstname, lastname, email, password, phone;
     private LocalDate birthday;

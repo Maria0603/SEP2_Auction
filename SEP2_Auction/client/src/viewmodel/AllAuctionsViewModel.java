@@ -41,17 +41,7 @@ public class AllAuctionsViewModel
 
     auctionCards = FXCollections.observableArrayList();
     searchInputField = new SimpleStringProperty();
-    // fillAuctionCardsWithCache();
     fillAuctionCards();
-  }
-
-  private void fillAuctionCardsWithCache()
-  {
-    AuctionList list = this.getOngoingAuctions();
-    for (int i = 0; i < list.getSize(); i++)
-    {
-      auctionCards.add(list.getAuction(i));
-    }
   }
 
   public AuctionList getOngoingAuctions()
@@ -84,7 +74,6 @@ public class AllAuctionsViewModel
   {
     try
     {
-      System.out.println("created auctions from" + state.getUserEmail());
       return model.getCreatedAuctions(state.getUserEmail());
     }
     catch (SQLException e)

@@ -32,7 +32,6 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     modelManager.addListener("Edit", this);
     modelManager.addListener("Ban", this);
     modelManager.addListener("Reset", this);
-    modelManager.addListener("BuyOut", this);
     modelManager.addListener("DeleteAuction", this);
 
     modelManager.addListener("DeleteAccount", this);
@@ -189,7 +188,6 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   @Override public AuctionList getAllAuctions(String moderatorEmail)
       throws SQLException
   {
-    //return modelManager.getAllAuctions(moderatorEmail);
     return allAuctionsCache;
   }
 
@@ -364,13 +362,11 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
   }
   private void receivedDeleteAuction(PropertyChangeEvent evt)
   {
-    System.out.println("delete received in cache");
     int id = Integer.parseInt(evt.getNewValue().toString());
     ongoingAuctionsCache.removeAuction(id);
     previousBidsCache.removeAuction(id);
     createdAuctionsCache.removeAuction(id);
     allAuctionsCache.removeAuction(id);
-
     previousOpenedAuctions.removeAuction(id);
   }
 
@@ -386,24 +382,6 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
       case "Bid" -> receivedBid(evt);
       case "Edit" -> receivedEdit(evt);
       case "Ban", "DeleteAccount" -> receivedBanOrDeleteAccount(evt);
-      case "BuyOut" ->
-      {
-        Auction boughtOutAuction = (Auction) evt.getNewValue();
-        boughtOutAuction.setStatus("CLOSED");
-
-        //previouslyOpenedAuctions.closeAuction(boughtOutAuction.getID());
-
-        if (boughtOutAuction.getCurrentBidder().equals(userEmail))
-        {
-          previousBidsCache.addAuction(boughtOutAuction);
-          System.out.println("received buyout");
-          System.out.println(previousBidsCache.toString());
-        }
-        if (boughtOutAuction.getSeller().equals(userEmail))
-        {
-          createdAuctionsCache.closeAuction(boughtOutAuction.getID());
-        }
-      }
       case "DeleteAuction" -> receivedDeleteAuction(evt);
 
     }

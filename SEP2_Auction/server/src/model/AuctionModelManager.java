@@ -71,8 +71,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
           "Your bid has been beaten for auction ID: #" + auctionId + ".",
           existingBid.getBidder());
       property.firePropertyChange("Notification", null, notification);
+      System.out.println("Notification fired");
     }
     property.firePropertyChange("Bid", null, bid);
+    System.out.println("Bid fired");
     return bid;
   }
 
@@ -87,49 +89,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     //property.firePropertyChange("Buyout", null, bid);
     System.out.println("received buyout");
 
-    // Send notification to the buyer
-    //Notification notification = auctionDatabase.saveNotification(
-    //   "Congratulations! You have successfully bought out the item on id: "
-    //      + auctionId, current_bidder);
-    //property.firePropertyChange("Notification", null, notification);
     sendContactInformation(auctionId);
-  }
-
-  public void buyOut(String current_bidder, int auctionId) throws SQLException
-  {
-    try
-    {
-      auctionDatabase.buyout(current_bidder, auctionId);
-      Auction auction = auctionDatabase.getAuctionById(auctionId);
-      property.firePropertyChange("Time", null, auction.getStartTime());
-      property.firePropertyChange("End", auctionId, auction);
-      property.firePropertyChange("Buyout", null, auction);
-      System.out.println("received buyout");
-
-      User seller = auctionDatabase.getUserInfo(auction.getSeller());
-      User buyer = auctionDatabase.getUserInfo(auction.getCurrentBidder());
-
-      String buyerNotification =
-          "Congratulations! You've bought out item: " + auction.getItem()
-              .getTitle() + "(" + auctionId + ") from " + seller.getEmail()
-              + "(" + seller.getPhone() + ")";
-      String sellerNotification =
-          "Item: " + auction.getItem().getTitle() + "(" + auctionId
-              + ") has been bought out by: " + buyer.getEmail() + "("
-              + buyer.getPhone() + ")";
-
-      Notification notificationOne = auctionDatabase.saveNotification(
-          buyerNotification, buyer.getEmail());
-      Notification notificationTwo = auctionDatabase.saveNotification(
-          sellerNotification, seller.getEmail());
-
-      property.firePropertyChange("Notification", null, notificationOne);
-      property.firePropertyChange("Notification", null, notificationTwo);
-    }
-    catch (SQLException e)
-    {
-      e.printStackTrace();
-    }
   }
 
   @Override public synchronized String addUser(String firstname,

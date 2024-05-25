@@ -21,7 +21,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <TextArea fx:id="reason_contentTextArea" layoutX="14.0" layoutY="133.0" prefHeight="511.0" prefWidth="252.0" text="List of accounts Table (First name col, Last name col, Email col, Rating col) - Ban Button - Reason sent/to send for banning TextArea;&#10;&#10;List of notifications Table (Date and time col,  Content col) - Open notification Button - No TextArea;&#10;&#10;Content examples:&#10;For bidders:&#10;&#10;Your bid has been beaten for this item: -item id-! Hurry up and place another bid.  (click Open -&gt; AuctionView for item)&#10;&#10;Your bid won for item: -item id-! Get in touch with the seller. (click Open -&gt; dialog window with -seller email-,  -seller phone number-, Label with &quot;Deal closed? Rate the seller! And a field for rating)&#10;&#10;For sellers:&#10;&#10;Your auction for item: -item id- is over. Get in touch with the buyer. (click Open -&gt; dialog window with -buyer email-, -buyer phone number-, Label with &quot;Deal closed? Rate the buyer! And a field for rating)&#10;&#10;&#10;" wrapText="true" />
+      <TextArea fx:id="reason_contentTextArea" layoutX="14.0" layoutY="133.0" prefHeight="511.0" prefWidth="252.0" wrapText="true" />
       <Label fx:id="reason_contentLabel" layoutX="14.0" layoutY="103.0" prefHeight="17.0" prefWidth="111.0" text="Reason:">
          <font>
             <Font size="18.0" />
@@ -33,8 +33,8 @@
               <columns>
                 <TableColumn fx:id="dateTimeColumn" prefWidth="181.60003662109375" text="First name" />
                   <TableColumn fx:id="contentColumn" prefWidth="153.5999755859375" text="Last name" />
-                  <TableColumn fx:id="emailColumn" prefWidth="390.4000244140625" text="Email" />
-                  <TableColumn fx:id="ratingColumn" prefWidth="77.60003662109375" text="Rating" />
+                  <TableColumn fx:id="emailColumn" prefWidth="350.4000244140625" text="Email" />
+                  <TableColumn fx:id="phoneColumn" prefWidth="120.0" text="Phone" />
               </columns>
             </TableView>
          </children>

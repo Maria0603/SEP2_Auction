@@ -1,4 +1,3 @@
-
 package model;
 
 import mediator.AuctionClient;
@@ -7,16 +6,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class AuctionModelManager implements AuctionModel, PropertyChangeListener {
+public class AuctionModelManager implements AuctionModel, PropertyChangeListener
+{
   private PropertyChangeSupport property;
   private AuctionClient client;
 
-  public AuctionModelManager() throws IOException, SQLException {
+  public AuctionModelManager() throws IOException, SQLException
+  {
     property = new PropertyChangeSupport(this);
     client = new AuctionClient();
     client.addListener("Auction", this);
@@ -26,108 +26,112 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("Edit", this);
     client.addListener("Ban", this);
     client.addListener("Reset", this);
-    client.addListener("BuyOut", this);
     client.addListener("DeleteAuction", this);
-
     client.addListener("DeleteAccount", this);
   }
 
-  @Override
-  public Auction startAuction(String title, String description,
+  @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData, String seller) throws SQLException, ClassNotFoundException {
+      byte[] imageData, String seller)
+      throws SQLException, ClassNotFoundException
+  {
     return client.startAuction(title, description, reservePrice, buyoutPrice,
         minimumIncrement, auctionTime, imageData, seller);
   }
 
-  @Override
-  public Auction getAuction(int ID) throws SQLException {
+  @Override public Auction getAuction(int ID) throws SQLException
+  {
     return client.getAuction(ID);
   }
 
-  @Override
-  public AuctionList getOngoingAuctions() throws SQLException {
+  @Override public AuctionList getOngoingAuctions() throws SQLException
+  {
     return client.getOngoingAuctions();
   }
 
-  @Override
-  public NotificationList getNotifications(String receiver)
-      throws SQLException {
+  @Override public NotificationList getNotifications(String receiver)
+      throws SQLException
+  {
     return client.getNotifications(receiver);
   }
 
-  @Override
-  public String addUser(String firstname, String lastname, String email, String password, String repeatedPassword,
-      String phone, LocalDate birthday) throws SQLException {
-    return client.addUser(firstname, lastname, email, password, repeatedPassword, phone, birthday);
+  @Override public String addUser(String firstname, String lastname,
+      String email, String password, String repeatedPassword, String phone,
+      LocalDate birthday) throws SQLException
+  {
+    return client.addUser(firstname, lastname, email, password,
+        repeatedPassword, phone, birthday);
   }
 
-  @Override
-  public String login(String email, String password) throws SQLException {
+  @Override public String login(String email, String password)
+      throws SQLException
+  {
     return client.login(email, password);
   }
 
-  @Override
-  public AuctionList getPreviousBids(String bidder)
-      throws SQLException {
+  @Override public AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
     return client.getPreviousBids(bidder);
   }
 
-  @Override
-  public AuctionList getCreatedAuctions(String seller)
-      throws SQLException {
+  @Override public AuctionList getCreatedAuctions(String seller)
+      throws SQLException
+  {
     return client.getCreatedAuctions(seller);
   }
 
-  @Override
-  public void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException {
+  @Override public void resetPassword(String userEmail, String oldPassword,
+      String newPassword, String repeatPassword) throws SQLException
+  {
     client.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
-  @Override
-  public User getUser(String email) throws SQLException {
+  @Override public User getUser(String email) throws SQLException
+  {
     return client.getUser(email);
   }
 
-  @Override
-  public User getModeratorInfo() throws SQLException {
+  @Override public User getModeratorInfo() throws SQLException
+  {
     return client.getModeratorInfo();
   }
 
-  @Override
-  public boolean isModerator(String email) throws SQLException {
+  @Override public boolean isModerator(String email) throws SQLException
+  {
     return client.isModerator(email);
   }
 
-  @Override
-  public User editInformation(String oldEmail, String firstname,
+  @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException {
-    return client.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
+      LocalDate birthday) throws SQLException
+  {
+    return client.editInformation(oldEmail, firstname, lastname, email,
+        password, phone, birthday);
   }
 
-  @Override
-  public AuctionList getAllAuctions(String moderatorEmail) throws SQLException {
+  @Override public AuctionList getAllAuctions(String moderatorEmail)
+      throws SQLException
+  {
     return client.getAllAuctions(moderatorEmail);
   }
 
-  @Override
-  public Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws SQLException {
+  @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
+      throws SQLException
+  {
     return client.placeBid(bidder, bidValue, auctionId);
   }
 
-  @Override
-  public void buyout(String bidder, int auctionId)
-      throws SQLException {
+  @Override public void buyout(String bidder, int auctionId) throws SQLException
+  {
     client.buyout(bidder, auctionId);
   }
 
-  @Override public ArrayList<User> getAllUsers()
-      throws SQLException {
+  @Override public ArrayList<User> getAllUsers() throws SQLException
+  {
     return client.getAllUsers();
   }
+
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
@@ -151,29 +155,27 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.deleteAuction(moderatorEmail, auctionId, reason);
   }
 
-  @Override
-  public void deleteAccount(String email, String password) throws SQLException {
+  @Override public void deleteAccount(String email, String password)
+      throws SQLException
+  {
     client.deleteAccount(email, password);
   }
 
-  @Override
-  public void addListener(String propertyName,
-      PropertyChangeListener listener) {
+  @Override public void addListener(String propertyName,
+      PropertyChangeListener listener)
+  {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void removeListener(String propertyName,
-      PropertyChangeListener listener) {
+  @Override public void removeListener(String propertyName,
+      PropertyChangeListener listener)
+  {
     property.removePropertyChangeListener(propertyName, listener);
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
     // model manager property fires auction events further
     property.firePropertyChange(evt);
-    if(evt.getPropertyName().equals("End")){
-      System.out.println("received end auction client. Bid: " + evt.getNewValue().toString());
-    }
   }
 }
