@@ -1,14 +1,14 @@
 package model;
 
 import mediator.AuctionClient;
+import model.domain.Auction;
+import model.domain.Bid;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
@@ -19,15 +19,9 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     property = new PropertyChangeSupport(this);
     client = new AuctionClient();
-    client.addListener("Auction", this);
     client.addListener("End", this);
     client.addListener("Bid", this);
-    client.addListener("Notification", this);
     client.addListener("Edit", this);
-    client.addListener("Ban", this);
-    client.addListener("Reset", this);
-    client.addListener("DeleteAuction", this);
-    client.addListener("DeleteAccount", this);
   }
 
   @Override public Auction startAuction(String title, String description,
@@ -44,78 +38,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return client.getAuction(ID);
   }
 
-  @Override public AuctionList getOngoingAuctions() throws SQLException
-  {
-    return client.getOngoingAuctions();
-  }
-
-  @Override public NotificationList getNotifications(String receiver)
-      throws SQLException
-  {
-    return client.getNotifications(receiver);
-  }
-
-  @Override public String addUser(String firstname, String lastname,
-      String email, String password, String repeatedPassword, String phone,
-      LocalDate birthday) throws SQLException
-  {
-    return client.addUser(firstname, lastname, email, password,
-        repeatedPassword, phone, birthday);
-  }
-
-  @Override public String login(String email, String password)
-      throws SQLException
-  {
-    return client.login(email, password);
-  }
-
-  @Override public AuctionList getPreviousBids(String bidder)
-      throws SQLException
-  {
-    return client.getPreviousBids(bidder);
-  }
-
-  @Override public AuctionList getCreatedAuctions(String seller)
-      throws SQLException
-  {
-    return client.getCreatedAuctions(seller);
-  }
-
-  @Override public void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
-  {
-    client.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
-  }
-
-  @Override public User getUser(String email) throws SQLException
-  {
-    return client.getUser(email);
-  }
-
-  @Override public User getModeratorInfo() throws SQLException
-  {
-    return client.getModeratorInfo();
-  }
-
-  @Override public boolean isModerator(String email) throws SQLException
-  {
-    return client.isModerator(email);
-  }
-
-  @Override public User editInformation(String oldEmail, String firstname,
-      String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
-  {
-    return client.editInformation(oldEmail, firstname, lastname, email,
-        password, phone, birthday);
-  }
-
-  @Override public AuctionList getAllAuctions(String moderatorEmail)
-      throws SQLException
-  {
-    return client.getAllAuctions(moderatorEmail);
-  }
-
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException
   {
@@ -127,38 +49,11 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.buyout(bidder, auctionId);
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException
-  {
-    return client.getAllUsers();
-  }
-
-  @Override public void banParticipant(String moderatorEmail,
-      String participantEmail, String reason) throws SQLException
-  {
-    client.banParticipant(moderatorEmail, participantEmail, reason);
-  }
-
-  @Override public String extractBanningReason(String email) throws SQLException
-  {
-    return client.extractBanningReason(email);
-  }
-
-  @Override public void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws SQLException
-  {
-    client.unbanParticipant(moderatorEmail, participantEmail);
-  }
 
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
       String reason) throws SQLException
   {
     client.deleteAuction(moderatorEmail, auctionId, reason);
-  }
-
-  @Override public void deleteAccount(String email, String password)
-      throws SQLException
-  {
-    client.deleteAccount(email, password);
   }
 
   @Override public void addListener(String propertyName,

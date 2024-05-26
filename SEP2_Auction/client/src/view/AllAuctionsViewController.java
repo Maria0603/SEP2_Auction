@@ -10,7 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
-import model.Auction;
+import model.domain.Auction;
 import viewmodel.AllAuctionsViewModel;
 import viewmodel.ViewModelFactory;
 import javafx.geometry.Insets;

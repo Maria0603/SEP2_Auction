@@ -1,21 +1,21 @@
 package persistence;
 
-import model.*;
+import model.domain.*;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 
-public class ProtectionProxy implements AuctionPersistence
-{
-  private AuctionDatabase database;
+public class ProtectionProxy //implements AuctionPersistence
+{/*
+  private ToBeSplit database;
   private static final String MODERATOR_EMAIL = "bob@bidhub";
   private static final String MODERATOR_TEMPORARY_PASSWORD = "1234";
 
   public ProtectionProxy() throws SQLException, ClassNotFoundException
   {
-    this.database = new AuctionDatabase();
+    this.database = new ToBeSplit();
   }
 
   @Override public Auction saveAuction(String title, String description,
@@ -294,5 +294,5 @@ public class ProtectionProxy implements AuctionPersistence
       throw new SQLException("The reason is too short.");
     if (reason.length() > 600)
       throw new SQLException("The reason is too long.");
-  }
+  }*/
 }

@@ -1,6 +1,7 @@
 package mediator;
 
 import model.*;
+import model.domain.*;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
@@ -41,27 +42,13 @@ public class AuctionServer
     model.addListener("DeleteAuction", this);
     model.addListener("DeleteAccount", this);
 
-    startRegistry();
     startServer();
-  }
-
-  private void startRegistry()
-  {
-    try
-    {
-      Registry reg = LocateRegistry.createRegistry(1099);
-      System.out.println("Registry started...");
-    }
-    catch (RemoteException e)
-    {
-      e.printStackTrace();
-    }
   }
 
   private void startServer() throws RemoteException, MalformedURLException
   {
     UnicastRemoteObject.exportObject(this, 0);
-    Naming.rebind("Connect", this);
+    Naming.rebind("AuctionRemote", this);
   }
 
   @Override public synchronized Auction startAuction(String title, String description,
@@ -79,18 +66,6 @@ public class AuctionServer
     return model.getAuction(id);
   }
 
-  @Override public synchronized AuctionList getOngoingAuctions()
-      throws RemoteException, SQLException
-  {
-    return model.getOngoingAuctions();
-  }
-
-
-  @Override public synchronized NotificationList getNotifications(String receiver)
-      throws RemoteException, SQLException
-  {
-    return model.getNotifications(receiver);
-  }
 
   @Override public synchronized Bid placeBid(String bidder, int bidValue, int auctionId)
       throws RemoteException, SQLException
@@ -105,95 +80,12 @@ public class AuctionServer
       model.buyout(bidder, auctionId);
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException {
-    return model.getAllUsers();
-  }
-
-  @Override
-  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
-    return model.addUser(firstname,lastname,email,password, repeatedPassword, phone, birthday);
-  }
-
-  @Override
-  public synchronized String login(String email, String password) throws SQLException {
-    System.out.println("AuctionServer: " + email + ", " + password);
-    return model.login(email,password);
-  }
-
-  @Override public synchronized AuctionList getPreviousBids(String bidder) throws SQLException
-  {
-    return model.getPreviousBids(bidder);
-  }
-
-  @Override public AuctionList getCreatedAuctions(String seller)
-      throws RemoteException, SQLException
-  {
-    return model.getCreatedAuctions(seller);
-  }
-
-  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword)
-      throws RemoteException, SQLException
-  {
-    model.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
-  }
-
-  @Override public synchronized User getUser(String email) throws RemoteException, SQLException
-  {
-    return model.getUser(email);
-  }
-
-  @Override public User getModeratorInfo() throws SQLException
-  {
-    return model.getModeratorInfo();
-  }
-
-  @Override public synchronized boolean isModerator(String email)
-      throws RemoteException, SQLException
-  {
-    return model.isModerator(email);
-  }
-
-  @Override public User editInformation(String oldEmail, String firstname,
-      String lastname, String email, String password, String phone,
-      LocalDate birthday) throws RemoteException, SQLException
-  {
-    return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
-  }
-
-  @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException
-  {
-    return model.getAllAuctions(moderatorEmail);
-  }
-  @Override public void banParticipant(String moderatorEmail,
-      String participantEmail, String reason)
-      throws RemoteException, SQLException
-  {
-    model.banParticipant(moderatorEmail, participantEmail, reason);
-  }
-
-  @Override public String extractBanningReason(String email)
-      throws RemoteException, SQLException
-  {
-    return model.extractBanningReason(email);
-  }
-
-  @Override public void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws RemoteException, SQLException
-  {
-    model.unbanParticipant(moderatorEmail, participantEmail);
-  }
-
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
       String reason) throws RemoteException, SQLException
   {
     model.deleteAuction(moderatorEmail, auctionId, reason);
   }
 
-  @Override
-  public void deleteAccount(String email, String password) throws RemoteException, SQLException {
-    model.deleteAccount(email, password);
-  }
 
   @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
       String... propertyNames) throws RemoteException

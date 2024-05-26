@@ -2,8 +2,9 @@
 
 package model;
 
-import persistence.AuctionDatabase;
+import model.domain.*;
 import persistence.AuctionPersistence;
+import persistence.AuctionProtectionProxy;
 import persistence.ProtectionProxy;
 
 import java.beans.PropertyChangeEvent;
@@ -21,7 +22,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   public AuctionModelManager() throws SQLException, ClassNotFoundException
   {
     property = new PropertyChangeSupport(this);
-    auctionDatabase = new ProtectionProxy();
+    auctionDatabase = new AuctionProtectionProxy();
   }
 
   @Override public synchronized Auction startAuction(String title,
@@ -46,17 +47,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getAuctionById(ID);
   }
 
-  @Override public synchronized AuctionList getOngoingAuctions()
-      throws SQLException
-  {
-    return auctionDatabase.getOngoingAuctions();
-  }
-
-  @Override public synchronized NotificationList getNotifications(
-      String receiver) throws SQLException
-  {
-    return auctionDatabase.getNotifications(receiver);
-  }
 
   @Override public synchronized Bid placeBid(String bidder, int bidValue,
       int auctionId) throws SQLException
@@ -90,121 +80,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     System.out.println("received buyout");
 
     sendContactInformation(auctionId);
-  }
-
-  @Override public synchronized String addUser(String firstname,
-      String lastname, String email, String password, String repeatedPassword,
-      String phone, LocalDate birthday) throws SQLException
-  {
-    return auctionDatabase.createUser(firstname, lastname, email, password,
-        repeatedPassword, phone, birthday).getEmail();
-  }
-
-  @Override public synchronized String login(String email, String password)
-      throws SQLException
-  {
-    return auctionDatabase.login(email, password);
-  }
-
-  @Override public synchronized AuctionList getPreviousBids(String bidder)
-      throws SQLException
-  {
-    return auctionDatabase.getPreviousBids(bidder);
-  }
-
-  @Override public synchronized AuctionList getCreatedAuctions(String seller)
-      throws SQLException
-  {
-    return auctionDatabase.getCreatedAuctions(seller);
-  }
-
-  @Override public synchronized void resetPassword(String userEmail,
-      String oldPassword, String newPassword, String repeatPassword)
-      throws SQLException
-  {
-    auctionDatabase.resetPassword(userEmail, oldPassword, newPassword,
-        repeatPassword);
-    property.firePropertyChange("Reset", null, userEmail);
-  }
-
-  @Override public synchronized User getUser(String email) throws SQLException
-  {
-    return auctionDatabase.getUserInfo(email);
-  }
-
-  @Override public synchronized User getModeratorInfo() throws SQLException
-  {
-    return auctionDatabase.getModeratorInfo();
-  }
-
-  @Override public synchronized boolean isModerator(String email)
-      throws SQLException
-  {
-    return auctionDatabase.isModerator(email);
-  }
-
-  @Override public synchronized User editInformation(String oldEmail,
-      String firstname, String lastname, String email, String password,
-      String phone, LocalDate birthday) throws SQLException
-  {
-    User user = auctionDatabase.editInformation(oldEmail, firstname, lastname,
-        email, password, phone, birthday);
-    if (!oldEmail.equals(email))
-    {
-      property.firePropertyChange("Edit", oldEmail, email);
-    }
-    return user;
-  }
-
-  @Override public synchronized AuctionList getAllAuctions(
-      String moderatorEmail) throws SQLException
-  {
-    return auctionDatabase.getAllAuctions(moderatorEmail);
-  }
-
-  @Override public ArrayList<User> getAllUsers() throws SQLException
-  {
-    return auctionDatabase.getAllUsers();
-  }
-
-  @Override public void banParticipant(String moderatorEmail,
-      String participantEmail, String reason) throws SQLException
-  {
-    try
-    {
-      auctionDatabase.banParticipant(moderatorEmail, participantEmail, reason);
-    }
-    catch (SQLException e)
-    {
-      if (e.getMessage().contains("successfully"))
-        property.firePropertyChange("Ban", null, participantEmail);
-      throw new SQLException(e.getMessage());
-    }
-
-  }
-
-  @Override public String extractBanningReason(String email) throws SQLException
-  {
-    return auctionDatabase.extractBanningReason(email);
-  }
-
-  @Override public void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws SQLException
-  {
-    auctionDatabase.unbanParticipant(moderatorEmail, participantEmail);
-  }
-
-  @Override public void deleteAccount(String email, String password)
-      throws SQLException
-  {
-    auctionDatabase.deleteAccount(email, password);
-    property.firePropertyChange("DeleteAccount", null, null);
-    /*for (int i = 0; i < list.getSize(); i++)
-    {
-      System.out.println("SERVER: ModelM: account deletion event");
-      property.firePropertyChange("DeleteAccount", null,
-          list.getAuction(i).getID());
-    }*/
   }
 
   @Override public void deleteAuction(String moderatorEmail, int auctionId,

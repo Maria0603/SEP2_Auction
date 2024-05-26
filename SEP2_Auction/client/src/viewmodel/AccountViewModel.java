@@ -2,7 +2,7 @@ package viewmodel;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import model.User;
+import model.domain.User;
 
 public class AccountViewModel{
   private final StringProperty emailProperty, firstNameProperty, lastNameProperty, phoneProperty;

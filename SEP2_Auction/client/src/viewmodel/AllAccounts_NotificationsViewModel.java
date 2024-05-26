@@ -4,10 +4,10 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.AuctionModel;
-import model.Notification;
-import model.NotificationList;
-import model.User;
+import model.*;
+import model.domain.Notification;
+import model.domain.NotificationList;
+import model.domain.User;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,14 +21,14 @@ public class AllAccounts_NotificationsViewModel
   private ObservableList<AccountViewModel> allAccounts;
   private ObjectProperty<NotificationViewModel> selectedRowNotificationProperty;
   private ObjectProperty<AccountViewModel> selectedRowAccountProperty;
-  private final AuctionModel model;
+  private final UserListModel model;
   private ViewModelState viewModelState;
   private StringProperty errorProperty;
   private BooleanProperty allFieldsVisibility;
   private StringProperty firstColumnNameProperty, secondColumnNameProperty;
   private StringProperty searchFieldProperty, reasonProperty;
 
-  public AllAccounts_NotificationsViewModel(AuctionModel model,
+  public AllAccounts_NotificationsViewModel(UserListModel model,
       ViewModelState viewModelState)
   {
     this.model = model;

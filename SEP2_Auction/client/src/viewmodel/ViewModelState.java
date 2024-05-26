@@ -1,11 +1,6 @@
 package viewmodel;
 
-import javafx.beans.InvalidationListener;
-import model.Auction;
-import model.User;
-import view.WindowType;
-
-import java.util.Observable;
+import model.domain.Auction;
 
 public class ViewModelState
 {

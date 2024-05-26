@@ -1,5 +1,7 @@
 package model;
 
+import model.domain.*;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -10,8 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class CacheProxy implements AuctionModel, PropertyChangeListener
-{
+public class CacheProxy// implements AuctionModel, PropertyChangeListener
+{/*
   private AuctionList ongoingAuctionsCache;
   private AuctionList allAuctionsCache;
   private NotificationList notificationsCache;
@@ -387,5 +389,5 @@ public class CacheProxy implements AuctionModel, PropertyChangeListener
     }
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
         evt.getNewValue());
-  }
+  }*/
 }

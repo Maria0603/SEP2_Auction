@@ -3,9 +3,9 @@ package viewmodel;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
-import model.Auction;
+import model.domain.Auction;
 import model.AuctionModel;
-import model.Bid;
+import model.domain.Bid;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

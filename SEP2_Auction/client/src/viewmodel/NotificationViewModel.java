@@ -2,7 +2,7 @@ package viewmodel;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import model.Notification;
+import model.domain.Notification;
 
 public class NotificationViewModel {
   private final StringProperty contentProperty;

@@ -4,9 +4,9 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import model.Auction;
+import model.domain.Auction;
 import model.AuctionModel;
-import model.Bid;
+import model.domain.Bid;
 
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -14,7 +14,6 @@ import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -64,7 +63,6 @@ public class AuctionViewModel implements PropertyChangeListener
     isSold = new SimpleBooleanProperty();
     model.addListener("Bid", this);
     model.addListener("Edit", this);
-    model.addListener("BuyOut", this);
 
     reset();
   }

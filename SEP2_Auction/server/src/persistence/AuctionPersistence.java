@@ -1,6 +1,6 @@
 package persistence;
 
-import model.*;
+import model.domain.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -13,27 +13,10 @@ public interface AuctionPersistence
       throws SQLException;
   Auction getAuctionById(int id) throws SQLException;
   void markAsClosed(int id) throws SQLException;
-  AuctionList getOngoingAuctions() throws SQLException;
-  NotificationList getNotifications(String receiver) throws SQLException;
   Notification saveNotification(String content, String receiver) throws SQLException;
   Bid saveBid(String participantEmail, int bidAmount, int auctionId) throws SQLException;
   Bid getCurrentBidForAuction(int auctionId) throws SQLException;
-  User createUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException;
-  String login(String email, String password) throws SQLException;
-  AuctionList getPreviousBids(String bidder) throws SQLException;
-  AuctionList getCreatedAuctions(String seller) throws SQLException;
-  ArrayList<User> getAllUsers() throws SQLException;
-  void resetPassword(String userEmail, String oldPassword, String newPassword, String repeatPassword)
-      throws SQLException;
   User getUserInfo(String email) throws SQLException;
-  User getModeratorInfo() throws SQLException;
-  boolean isModerator(String email) throws SQLException;
-  AuctionList getAllAuctions(String moderatorEmail) throws SQLException;
   Bid buyout(String bidder, int auctionId) throws SQLException;
-  User editInformation(String oldEmail, String firstname, String lastname, String email, String password, String phone, LocalDate birthday) throws SQLException;
-  void banParticipant(String moderatorEmail, String participantEmail, String reason) throws SQLException;
-  String extractBanningReason(String email) throws SQLException;
-  void unbanParticipant(String moderatorEmail, String participantEmail) throws SQLException;
   void deleteAuction(String moderatorEmail, int auctionId, String reason) throws SQLException;
-  void deleteAccount(String email, String password) throws SQLException;
 }

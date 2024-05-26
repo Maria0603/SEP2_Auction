@@ -7,9 +7,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
-import model.Auction;
-import model.AuctionList;
-import model.AuctionModel;
+import model.domain.Auction;
+import model.domain.AuctionList;
+import model.AuctionListModel;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.beans.PropertyChangeEvent;
@@ -20,7 +20,7 @@ import java.sql.SQLException;
 public class AllAuctionsViewModel
     implements PropertyChangeListener, NamedPropertyChangeSubject
 {
-  private AuctionModel model;
+  private AuctionListModel model;
   private ViewModelState state;
   private PropertyChangeSupport property;
   @FXML private ScrollPane allAuctionsScrollPane;
@@ -29,7 +29,7 @@ public class AllAuctionsViewModel
   @FXML private StringProperty searchInputField;
   @FXML private ObservableList<Auction> auctionCards;
 
-  public AllAuctionsViewModel(AuctionModel model, ViewModelState state)
+  public AllAuctionsViewModel(AuctionListModel model, ViewModelState state)
   {
     this.model = model;
     this.state = state;

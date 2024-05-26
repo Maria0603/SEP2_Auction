@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import model.AuctionModel;
-import model.Notification;
+import model.domain.Notification;
+import model.UserModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 public class FixedPaneViewModel implements PropertyChangeListener {
   private StringProperty emailProperty, myProfile_settingsProperty, titleOf_myAuctions_allAuctionsButton, myBids_bannedUsers, notificationsButtonBackgroundProperty;
-  private AuctionModel model;
+  private UserModel model;
   private ViewModelState state;
 
   //all button in the fixed pane
@@ -22,7 +22,7 @@ public class FixedPaneViewModel implements PropertyChangeListener {
   private BooleanProperty myBidsButtonVisibility, sellItemButtonVisibility, notificationsButtonVisibility;
   private BooleanProperty bannedProperty;
 
-  public FixedPaneViewModel(AuctionModel model, ViewModelState state) {
+  public FixedPaneViewModel(UserModel model, ViewModelState state) {
     this.state = state;
     this.model = model;
     model.addListener("Notification", this);

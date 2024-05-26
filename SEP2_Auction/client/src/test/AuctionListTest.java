@@ -2,8 +2,8 @@
 
 package test;
 
-import model.Auction;
-import model.AuctionList;
+import model.domain.Auction;
+import model.domain.AuctionList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

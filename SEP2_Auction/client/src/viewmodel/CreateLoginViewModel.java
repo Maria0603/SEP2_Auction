@@ -1,8 +1,8 @@
 package viewmodel;
 
 import javafx.beans.property.*;
-import model.AuctionModel;
-import model.User;
+import model.domain.User;
+import model.UserModel;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class CreateLoginViewModel
 {
   private StringProperty headerProperty, firstNameProperty, lastNameProperty, emailProperty, passwordProperty, repasswordProperty, phoneProperty, errorProperty;
-  private AuctionModel model;
+  private UserModel model;
   private ViewModelState viewState;
   private ObjectProperty<LocalDate> birthDate;
 
@@ -30,7 +30,7 @@ public class CreateLoginViewModel
 
   private BooleanProperty disableProperty;
 
-  public CreateLoginViewModel(AuctionModel model, ViewModelState viewState)
+  public CreateLoginViewModel(UserModel model, ViewModelState viewState)
   {
     this.viewState = viewState;
     this.model = model;
