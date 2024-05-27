@@ -1,6 +1,5 @@
 package model;
 
-import mediator.AuctionClient;
 import mediator.UserListClient;
 import model.domain.NotificationList;
 import model.domain.User;
@@ -12,10 +11,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class UserListModelManager implements UserListModel, PropertyChangeListener
+public class UserListModelManager
+    implements UserListModel, PropertyChangeListener
 {
-  private PropertyChangeSupport property;
-  private UserListClient client;
+  private final PropertyChangeSupport property;
+  private final UserListClient client;
 
   public UserListModelManager() throws IOException, SQLException
   {
@@ -35,7 +35,6 @@ public class UserListModelManager implements UserListModel, PropertyChangeListen
   {
     return client.getNotifications(receiver);
   }
-
 
   @Override public ArrayList<User> getAllUsers() throws SQLException
   {

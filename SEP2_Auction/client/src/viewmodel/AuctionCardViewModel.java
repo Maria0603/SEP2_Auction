@@ -14,11 +14,13 @@ import java.sql.SQLException;
 
 public class AuctionCardViewModel implements PropertyChangeListener
 {
-  private IntegerProperty currentBidProperty, idProperty;
-  private StringProperty endTimeProperty, titleProperty;
-  private ObjectProperty<Image> imageProperty;
-  private AuctionModel model;
-  private ViewModelState state;
+  private final IntegerProperty currentBidProperty;
+  private final IntegerProperty idProperty;
+  private final StringProperty endTimeProperty;
+  private final StringProperty titleProperty;
+  private final ObjectProperty<Image> imageProperty;
+  private final AuctionModel model;
+  private final ViewModelState state;
 
   public AuctionCardViewModel(AuctionModel model, ViewModelState state)
   {
@@ -31,9 +33,6 @@ public class AuctionCardViewModel implements PropertyChangeListener
     imageProperty = new SimpleObjectProperty<>();
     model.addListener("Bid", this);
   }
-
-
-
 
   public void setData(Auction auction)
   {

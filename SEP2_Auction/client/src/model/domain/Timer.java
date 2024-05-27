@@ -12,9 +12,8 @@ import java.time.format.DateTimeFormatter;
 public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
 {
   private long timerSeconds;
-  private int id;
-  private PropertyChangeSupport property;
-
+  private final int id;
+  private final PropertyChangeSupport property;
 
   public Timer(long timerSeconds, int id)
   {
@@ -35,7 +34,6 @@ public class Timer implements Runnable, NamedPropertyChangeSubject, Serializable
 
   @Override public void run()
   {
-    //timerSeconds=timerSeconds/3600;
     while (timerSeconds >= 0)
     {
       property.firePropertyChange("Time", id, timerSeconds);

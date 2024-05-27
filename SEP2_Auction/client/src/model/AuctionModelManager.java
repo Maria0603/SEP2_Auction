@@ -12,8 +12,8 @@ import java.sql.SQLException;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
-  private PropertyChangeSupport property;
-  private AuctionClient client;
+  private final PropertyChangeSupport property;
+  private final AuctionClient client;
 
   public AuctionModelManager() throws IOException, SQLException
   {
@@ -52,7 +52,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   {
     client.buyout(bidder, auctionId);
   }
-
 
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
       String reason) throws SQLException

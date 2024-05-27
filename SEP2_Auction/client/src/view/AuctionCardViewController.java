@@ -12,12 +12,10 @@ import viewmodel.AuctionCardViewModel;
 
 public class AuctionCardViewController
 {
-  @FXML private Pane auctionCardPane;
   @FXML private Label currentBidLabel;
   @FXML private Label idLabel;
   @FXML private ImageView imageImageView;
   @FXML private Label endTimeLabel;
-  @FXML private Label idTextLabel;
   @FXML private Label titleLabel;
 
   private Region root;

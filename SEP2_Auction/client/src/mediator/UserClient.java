@@ -21,10 +21,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class UserClient  implements RemoteListener<String, Object>, UserModel
+public class UserClient implements RemoteListener<String, Object>, UserModel
 {
   private UserRemote server;
-  private PropertyChangeSupport property;
+  private final PropertyChangeSupport property;
 
   public UserClient() throws IOException
   {
@@ -43,7 +43,6 @@ public class UserClient  implements RemoteListener<String, Object>, UserModel
       server.addListener(this, "Ban");
       server.addListener(this, "Reset");
       server.addListener(this, "Edit");
-
     }
     catch (Exception e)
     {
@@ -81,7 +80,6 @@ public class UserClient  implements RemoteListener<String, Object>, UserModel
     return null;
 
   }
-
 
   @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException

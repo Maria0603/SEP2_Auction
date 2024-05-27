@@ -17,23 +17,24 @@ import java.util.ArrayList;
 public class AllAccounts_NotificationsViewModel
     implements PropertyChangeListener
 {
-  private ObservableList<NotificationViewModel> notifications;
+  private final ObservableList<NotificationViewModel> notifications;
   private ObservableList<AccountViewModel> allAccounts;
-  private ObjectProperty<NotificationViewModel> selectedRowNotificationProperty;
-  private ObjectProperty<AccountViewModel> selectedRowAccountProperty;
+  private final ObjectProperty<NotificationViewModel> selectedRowNotificationProperty;
+  private final ObjectProperty<AccountViewModel> selectedRowAccountProperty;
   private final UserListModel model;
-  private ViewModelState viewModelState;
-  private StringProperty errorProperty;
-  private BooleanProperty allFieldsVisibility;
-  private StringProperty firstColumnNameProperty, secondColumnNameProperty;
-  private StringProperty searchFieldProperty, reasonProperty;
+  private final ViewModelState viewModelState;
+  private final StringProperty errorProperty;
+  private final BooleanProperty allFieldsVisibility;
+  private final StringProperty firstColumnNameProperty;
+  private final StringProperty secondColumnNameProperty;
+  private final StringProperty searchFieldProperty;
+  private final StringProperty reasonProperty;
 
   public AllAccounts_NotificationsViewModel(UserListModel model,
       ViewModelState viewModelState)
   {
     this.model = model;
     this.model.addListener("Notification", this);
-    //this.model.addListener("Ban", this);
     this.viewModelState = viewModelState;
     notifications = FXCollections.observableArrayList();
     allAccounts = FXCollections.observableArrayList();
@@ -260,11 +261,6 @@ public class AllAccounts_NotificationsViewModel
     return reasonProperty;
   }
 
-  public void setAllAccounts(ObservableList<AccountViewModel> newData)
-  {
-    allAccounts = newData;
-  }
-
   public void addNotification(NotificationViewModel notification)
   {
     notifications.add(notification);
@@ -272,17 +268,15 @@ public class AllAccounts_NotificationsViewModel
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    switch (evt.getPropertyName())
+    if (evt.getPropertyName().equals("Notification"))
     {
-      case "Notification":
-        if (evt.getNewValue() != null)
-        {
-          Notification notification = (Notification) evt.getNewValue();
-          if (notification.getReceiver().equals(viewModelState.getUserEmail()))
-            Platform.runLater(
-                () -> addNotification(new NotificationViewModel(notification)));
-        }
-        break;
+      if (evt.getNewValue() != null)
+      {
+        Notification notification = (Notification) evt.getNewValue();
+        if (notification.getReceiver().equals(viewModelState.getUserEmail()))
+          Platform.runLater(
+              () -> addNotification(new NotificationViewModel(notification)));
+      }
     }
   }
 }

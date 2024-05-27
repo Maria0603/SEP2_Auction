@@ -12,14 +12,14 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class UserListClient implements RemoteListener<String, Object>, UserListModel
+public class UserListClient
+    implements RemoteListener<String, Object>, UserListModel
 {
 
   private UserListRemote server;
-  private PropertyChangeSupport property;
+  private final PropertyChangeSupport property;
 
   public UserListClient() throws IOException
   {
@@ -33,7 +33,8 @@ public class UserListClient implements RemoteListener<String, Object>, UserListM
     try
     {
       UnicastRemoteObject.exportObject(this, 0);
-      server = (UserListRemote) Naming.lookup("rmi://localhost:1099/UserListRemote");
+      server = (UserListRemote) Naming.lookup(
+          "rmi://localhost:1099/UserListRemote");
 
       server.addListener(this, "Notification");
       server.addListener(this, "Ban");
@@ -114,7 +115,6 @@ public class UserListClient implements RemoteListener<String, Object>, UserListM
     }
   }
 
-
   @Override public void addListener(String s,
       PropertyChangeListener propertyChangeListener)
   {
@@ -133,20 +133,5 @@ public class UserListClient implements RemoteListener<String, Object>, UserListM
     property.firePropertyChange(event.getPropertyName(), event.getValue1(),
         event.getValue2());
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

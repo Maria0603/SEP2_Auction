@@ -17,12 +17,10 @@ import viewmodel.AuctionViewModel;
 import java.io.File;
 import java.util.Optional;
 
-public class AuctionViewController {
+public class AuctionViewController
+{
   @FXML public TextField incomingBidTextField;
   @FXML private Label currentBidLabel;
-
-  @FXML private ScrollPane auctionScrollPane;
-  @FXML private Button backButton;
   @FXML private Label bidLabel;
   @FXML private Button buyNowButton;
   @FXML private TextField buyoutPriceTextField;
@@ -31,8 +29,6 @@ public class AuctionViewController {
   @FXML private Label currentBidderLabel;
   @FXML private Label currentBidderTextLabel;
   @FXML private TextArea descriptionTextArea;
-  @FXML private Label emailLabel;
-  @FXML private Label emailTextLabel;
   @FXML private Label errorLabel;
   @FXML private Label headerLabel;
   @FXML private Label hoursLabel;
@@ -61,7 +57,8 @@ public class AuctionViewController {
 
   // initializations and bindings
   public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel,
-      Region root, WindowType windowType) {
+      Region root, WindowType windowType)
+  {
     this.root = root;
     this.viewHandler = viewHandler;
     this.auctionViewModel = auctionViewModel;
@@ -74,19 +71,18 @@ public class AuctionViewController {
     reset(windowType);
   }
 
-  public void reset(WindowType type) {
+  public void reset(WindowType type)
+  {
     auctionViewModel.reset();
-    switch (type) {
-      case DISPLAY_AUCTION:
-        setForDisplay();
-        break;
-      case START_AUCTION:
-        setForStart();
-        break;
+    switch (type)
+    {
+      case DISPLAY_AUCTION -> setForDisplay();
+      case START_AUCTION -> setForStart();
     }
   }
 
-  private void setForStart() {
+  private void setForStart()
+  {
     auctionViewModel.setForStart();
     auctionViewModel.wipe();
 
@@ -97,76 +93,84 @@ public class AuctionViewController {
     titleTextArea.requestFocus();
   }
 
-  private void setForDisplay() {
-    if(!auctionViewModel.isModerator())
+  private void setForDisplay()
+  {
+    if (!auctionViewModel.isModerator())
       anchorPane.setPrefHeight(680);
     else
       anchorPane.setPrefHeight(960);
   }
 
-  public void leaveAuctionView() {
+  public void leaveAuctionView()
+  {
     auctionViewModel.leaveAuctionView();
   }
 
-  public Region getRoot() {
+  public Region getRoot()
+  {
     return root;
   }
 
-  @FXML void buyNowButtonPressed(ActionEvent event) {
+  @FXML void buyNowButtonPressed(ActionEvent event)
+  {
     auctionViewModel.buyout();
   }
 
-  @FXML void startAuctionButtonPressed(ActionEvent event) {
+  @FXML void startAuctionButtonPressed(ActionEvent event)
+  {
     auctionViewModel.startAuction();
-    if (errorLabel.getText().isEmpty()) {
+    if (errorLabel.getText().isEmpty())
       viewHandler.openView(WindowType.DISPLAY_AUCTION);
-    }
   }
 
-  @FXML void backButtonPressed(ActionEvent event) {
-    cancelButtonPressed(event);
+  @FXML void backButtonPressed()
+  {
+    cancelButtonPressed();
   }
 
-  @FXML void cancelButtonPressed(ActionEvent event) {
+  @FXML void cancelButtonPressed()
+  {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Confirmation");
     alert.setHeaderText("Are you sure you want to leave?");
     Optional<ButtonType> result = alert.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK) {
+    if (result.isPresent() && result.get() == ButtonType.OK)
+    {
       leaveAuctionView();
       viewHandler.openView(WindowType.ALL_AUCTIONS);
     }
   }
 
-  @FXML void importButtonPressed(ActionEvent event) {
+  @FXML void importButtonPressed()
+  {
     imageImageView.setImage(null);
     fileChooser.getExtensionFilters().add(
         new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
 
     File file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 
-    if (file != null) {
+    if (file != null)
+    {
       Image image = new Image(file.toURI().toString(), -1, -1, true, true);
       imageImageView.setImage(image);
     }
   }
 
-  @FXML void onEnter(ActionEvent event) {
-
-  }
-
-  @FXML void placeBidButtonPressed(ActionEvent event) {
+  @FXML void placeBidButtonPressed(ActionEvent event)
+  {
     auctionViewModel.placeBid();
   }
 
   public void deleteButtonPressed()
   {
     auctionViewModel.deleteAuction();
-    if(errorLabel.getText().isEmpty() || errorLabel.getText().contains("closed"))
+    if (errorLabel.getText().isEmpty() || errorLabel.getText()
+        .contains("closed"))
       viewHandler.openView(WindowType.ALL_AUCTIONS);
   }
 
-  private void bindValues() {
+  private void bindValues()
+  {
     Bindings.bindBidirectional(idLabel.textProperty(),
         this.auctionViewModel.getIdProperty(), new IntStringConverter());
     headerLabel.textProperty()
@@ -205,10 +209,12 @@ public class AuctionViewController {
         this.auctionViewModel.getIncomingBidProperty(),
         new IntStringConverter());
 
-    sellerLabel.textProperty().bindBidirectional(auctionViewModel.getSellerProperty());
+    sellerLabel.textProperty()
+        .bindBidirectional(auctionViewModel.getSellerProperty());
   }
 
-  private void bindVisibleProperty() {
+  private void bindVisibleProperty()
+  {
     importButton.visibleProperty()
         .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
     timeLabel.visibleProperty()
@@ -234,18 +240,24 @@ public class AuctionViewController {
     placeBidButton.visibleProperty().bind(invertedBinding);
     buyNowButton.visibleProperty().bind(invertedBinding);
     //////////////////////////////////
-    somethingWrongLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
-    sellerTextLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
-    sellerLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
-    deleteButton.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
-    reasonTextArea.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    somethingWrongLabel.visibleProperty()
+        .bind(this.auctionViewModel.getModeratorVisibility());
+    sellerTextLabel.visibleProperty()
+        .bind(this.auctionViewModel.getModeratorVisibility());
+    sellerLabel.visibleProperty()
+        .bind(this.auctionViewModel.getModeratorVisibility());
+    deleteButton.visibleProperty()
+        .bind(this.auctionViewModel.getModeratorVisibility());
+    reasonTextArea.visibleProperty()
+        .bind(this.auctionViewModel.getModeratorVisibility());
     //////////////////////////////////
     incomingBidTextField.visibleProperty().bind(invertedBinding);
     currentBidTextLabel.visibleProperty().bind(invertedBinding);
     currentBidderTextLabel.visibleProperty().bind(invertedBinding);
   }
 
-  private void bindDisableProperty() {
+  private void bindDisableProperty()
+  {
     titleTextArea.disableProperty()
         .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
     descriptionTextArea.disableProperty()

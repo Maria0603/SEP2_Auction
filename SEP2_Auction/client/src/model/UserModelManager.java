@@ -11,11 +11,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-
 public class UserModelManager implements UserModel, PropertyChangeListener
 {
-  private PropertyChangeSupport property;
-  private UserClient client;
+  private final PropertyChangeSupport property;
+  private final UserClient client;
 
   public UserModelManager() throws IOException, SQLException
   {
@@ -27,7 +26,6 @@ public class UserModelManager implements UserModel, PropertyChangeListener
     client.addListener("Reset", this);
     client.addListener("Edit", this);
   }
-
 
   @Override public String addUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
@@ -42,7 +40,6 @@ public class UserModelManager implements UserModel, PropertyChangeListener
   {
     return client.login(email, password);
   }
-
 
   @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
@@ -72,7 +69,6 @@ public class UserModelManager implements UserModel, PropertyChangeListener
     return client.editInformation(oldEmail, firstname, lastname, email,
         password, phone, birthday);
   }
-
 
   @Override public void deleteAccount(String email, String password)
       throws SQLException

@@ -8,7 +8,7 @@ public class AuctionList implements Serializable
 {
   private final ArrayList<Auction> auctions;
   ///////////////////////////////////////////////////////////////////
-  // do not change this number
+  //do not change this number
   @Serial private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
@@ -26,9 +26,8 @@ public class AuctionList implements Serializable
   public void removeAuction(int ID)
   {
     for (int i = 0; i < auctions.size(); i++)
-      if(auctions.get(i).getID()==ID)
+      if (auctions.get(i).getID() == ID)
       {
-        System.out.println("delete: " + i);
         auctions.remove(i);
         i--;
       }

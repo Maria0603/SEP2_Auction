@@ -9,26 +9,31 @@ import java.time.LocalDate;
 
 public class CreateLoginViewModel
 {
-  private StringProperty headerProperty, firstNameProperty, lastNameProperty, emailProperty, passwordProperty, repasswordProperty, phoneProperty, errorProperty;
-  private UserModel model;
-  private ViewModelState viewState;
-  private ObjectProperty<LocalDate> birthDate;
+  private final StringProperty headerProperty;
+  private final StringProperty firstNameProperty;
+  private final StringProperty lastNameProperty;
+  private final StringProperty emailProperty;
+  private final StringProperty passwordProperty;
+  private final StringProperty repasswordProperty, phoneProperty, errorProperty;
+  private final UserModel model;
+  private final ViewModelState viewState;
+  private final ObjectProperty<LocalDate> birthDate;
 
-  private BooleanProperty informationVisibility; //first name, last name, phone, birthday
-  private BooleanProperty emailVisibility; //email
-  private BooleanProperty passwordVisibility; //password
-  private BooleanProperty resetPasswordVisibility; //repeat password - special case
-  private BooleanProperty birthdayVisibility; //special case for moderator
+  private final BooleanProperty informationVisibility; //first name, last name, phone, birthday
+  private final BooleanProperty emailVisibility; //email
+  private final BooleanProperty passwordVisibility; //password
+  private final BooleanProperty resetPasswordVisibility; //repeat password - special case
+  private final BooleanProperty birthdayVisibility; //special case for moderator
 
-  private StringProperty emailLabelText;
-  private StringProperty login_createButtonText;
-  private BooleanProperty login_createButtonVisibility;
-  private StringProperty resetPasswordButtonText;
-  private BooleanProperty resetPasswordButtonVisibility;
-  private BooleanProperty cancelButtonVisibility;
-  private BooleanProperty confirmButtonVisibility;
+  private final StringProperty emailLabelText;
+  private final StringProperty login_createButtonText;
+  private final BooleanProperty login_createButtonVisibility;
+  private final StringProperty resetPasswordButtonText;
+  private final BooleanProperty resetPasswordButtonVisibility;
+  private final BooleanProperty cancelButtonVisibility;
+  private final BooleanProperty confirmButtonVisibility;
 
-  private BooleanProperty disableProperty;
+  private final BooleanProperty disableProperty;
 
   public CreateLoginViewModel(UserModel model, ViewModelState viewState)
   {
@@ -112,7 +117,6 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
     }
     if (errorProperty.get().isEmpty())
     {
@@ -149,44 +153,40 @@ public class CreateLoginViewModel
     {
       String user = model.login(emailProperty.get().trim(),
           passwordProperty.get());
-      //  Giving the viewState all the user info from the model=>takes from servers database
       viewState.setUserEmail(user);
       viewState.setModerator(model.isModerator(user));
     }
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
     }
     if (errorProperty.get().isEmpty())
     {
       reset();
     }
-
-    //  ViewState
   }
 
   public void setForResetPassword()
   {
-    errorProperty.set("");
-    viewState.setResetPassword();
-
     reset();
+    errorProperty.set("");
     headerProperty.set("Reset password");
     resetPasswordButtonText.set("Reset Password");
+    emailLabelText.set("Old password");
+
+    viewState.setResetPassword();
+
     resetPasswordVisibility.set(true);
     emailVisibility.set(true);
     passwordVisibility.set(true);
+    cancelButtonVisibility.set(true);
+    confirmButtonVisibility.set(true);
+
     informationVisibility.set(false);
     birthdayVisibility.set(false);
     resetPasswordButtonVisibility.set(false);
     login_createButtonVisibility.set(false);
-    cancelButtonVisibility.set(true);
-    confirmButtonVisibility.set(true);
-
-    emailLabelText.set("Old password");
     disableProperty.set(false);
-
   }
 
   private void resetPassword()
@@ -200,7 +200,6 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
     }
     if (errorProperty.get().isEmpty())
     {
@@ -212,22 +211,25 @@ public class CreateLoginViewModel
   {
     viewState.setDisplay();
 
-    resetPasswordButtonVisibility.set(true);
     resetPasswordButtonText.set("Reset Password");
-    login_createButtonVisibility.set(true);
     login_createButtonText.set("Edit");
-    informationVisibility.set(true);
-    emailVisibility.set(true);
-    resetPasswordVisibility.set(false);
-    birthdayVisibility.set(!viewState.isModerator());
     errorProperty.set("");
     headerProperty.set("Your profile");
     emailLabelText.set("Email");
+
+    login_createButtonVisibility.set(true);
+    resetPasswordButtonVisibility.set(true);
+    informationVisibility.set(true);
+    emailVisibility.set(true);
+    resetPasswordVisibility.set(false);
+    disableProperty.set(true);
+
+    birthdayVisibility.set(!viewState.isModerator());
+
     cancelButtonVisibility.set(false);
     passwordVisibility.set(false);
     confirmButtonVisibility.set(false);
 
-    disableProperty.set(true);
     displayProfile();
   }
 
@@ -258,7 +260,6 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
     }
   }
 
@@ -274,25 +275,24 @@ public class CreateLoginViewModel
   {
     viewState.setEdit();
 
-    resetPasswordButtonText.set("Delete Account");
-
-    resetPasswordButtonVisibility.set(!viewState.isModerator());
-
-    login_createButtonVisibility.set(false);
-    //login_createButtonText.set("Edit");
-    informationVisibility.set(true);
-    emailVisibility.set(true);
-    resetPasswordVisibility.set(false);
-    birthdayVisibility.set(!viewState.isModerator());
     errorProperty.set("");
     headerProperty.set("Edit profile");
     emailLabelText.set("Email");
-    cancelButtonVisibility.set(true);
+    resetPasswordButtonText.set("Delete Account");
     passwordProperty.set("");
+
+    resetPasswordButtonVisibility.set(!viewState.isModerator());
+    birthdayVisibility.set(!viewState.isModerator());
+
+    login_createButtonVisibility.set(false);
+    resetPasswordVisibility.set(false);
+    disableProperty.set(false);
+
+    informationVisibility.set(true);
+    emailVisibility.set(true);
+    cancelButtonVisibility.set(true);
     passwordVisibility.set(true);
     confirmButtonVisibility.set(true);
-
-    disableProperty.set(false);
   }
 
   public void deleteAccount()
@@ -323,7 +323,6 @@ public class CreateLoginViewModel
     catch (SQLException e)
     {
       errorProperty.set(e.getMessage());
-      //e.printStackTrace();
     }
   }
 

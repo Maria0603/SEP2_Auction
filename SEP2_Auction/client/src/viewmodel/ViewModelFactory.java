@@ -4,34 +4,31 @@ import model.*;
 
 public class ViewModelFactory
 {
-  private AuctionViewModel auctionViewModel;
-  private FixedPaneViewModel fixedPaneViewModel;
-  private AllAuctionsViewModel allAuctionsViewModel;
+  private final AuctionViewModel auctionViewModel;
+  private final FixedPaneViewModel fixedPaneViewModel;
+  private final AllAuctionsViewModel allAuctionsViewModel;
 
-  private AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel;
+  private final AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel;
 
-  private CreateLoginViewModel createLoginViewModel;
+  private final CreateLoginViewModel createLoginViewModel;
 
-  private ViewModelState viewModelState;
-  private AuctionModel auctionModel;
-  private AuctionListModel auctionListModel;
-  private UserModel userModel;
-  private UserListModel userListModel;
+  private final ViewModelState viewModelState;
+  private final AuctionModel auctionModel;
 
-  public ViewModelFactory(AuctionModel auctionModel, AuctionListModel auctionListModel, UserModel userModel, UserListModel userListModel)
+  public ViewModelFactory(AuctionModel auctionModel,
+      AuctionListModel auctionListModel, UserModel userModel,
+      UserListModel userListModel)
   {
-    this.auctionModel=auctionModel;
-    this.auctionListModel=auctionListModel;
-    this.userModel=userModel;
-    this.userListModel=userListModel;
+    this.auctionModel = auctionModel;
     viewModelState = new ViewModelState();
     auctionViewModel = new AuctionViewModel(this.auctionModel, viewModelState);
-    fixedPaneViewModel = new FixedPaneViewModel(this.userModel, viewModelState);
-    allAuctionsViewModel = new AllAuctionsViewModel(this.auctionListModel, viewModelState);
+    fixedPaneViewModel = new FixedPaneViewModel(userModel, viewModelState);
+    allAuctionsViewModel = new AllAuctionsViewModel(auctionListModel,
+        viewModelState);
     allAccountsNotificationsViewModel = new AllAccounts_NotificationsViewModel(
-        this.userListModel, viewModelState);
+        userListModel, viewModelState);
 
-    createLoginViewModel = new CreateLoginViewModel(this.userModel, viewModelState);
+    createLoginViewModel = new CreateLoginViewModel(userModel, viewModelState);
 
   }
 

@@ -5,26 +5,18 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.GridPane;
 import model.domain.Auction;
 import model.domain.AuctionList;
 import model.AuctionListModel;
-import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
-public class AllAuctionsViewModel
-    implements PropertyChangeListener
+public class AllAuctionsViewModel implements PropertyChangeListener
 {
-  private AuctionListModel model;
-  private ViewModelState state;
-  private PropertyChangeSupport property;
-  @FXML private ScrollPane allAuctionsScrollPane;
-  @FXML private GridPane auctionsGrid;
+  private final AuctionListModel model;
+  private final ViewModelState state;
 
   @FXML private StringProperty searchInputField;
   @FXML private ObservableList<Auction> auctionCards;
@@ -33,8 +25,6 @@ public class AllAuctionsViewModel
   {
     this.model = model;
     this.state = state;
-
-    property = new PropertyChangeSupport(this);
 
     model.addListener("Auction", this);
 
@@ -119,8 +109,8 @@ public class AllAuctionsViewModel
   public void fillAuctionCards()
   {
     auctionCards.clear();
-    AuctionList list=getAuctionListByState();
-    if(list!=null)
+    AuctionList list = getAuctionListByState();
+    if (list != null)
     {
       for (int i = 0; i < list.getSize(); i++)
       {
@@ -151,17 +141,6 @@ public class AllAuctionsViewModel
     return list;
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt)
-  {
-    switch (evt.getPropertyName())
-    {
-      case "Auction":
-        if (state.getAllAuctions())
-          auctionCards.add((Auction) evt.getNewValue());
-        break;
-    }
-  }
-
   public ObservableList<Auction> getAuctionCards()
   {
     return auctionCards;
@@ -170,6 +149,15 @@ public class AllAuctionsViewModel
   public StringProperty getSearchInputField()
   {
     return searchInputField;
+  }
+
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
+    if (evt.getPropertyName().equals("Auction"))
+    {
+      if (state.getAllAuctions())
+        auctionCards.add((Auction) evt.getNewValue());
+    }
   }
 
 }

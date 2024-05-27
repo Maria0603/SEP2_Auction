@@ -9,8 +9,6 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 import model.domain.*;
 import utility.observer.event.ObserverEvent;
@@ -20,7 +18,7 @@ public class AuctionClient
     implements RemoteListener<String, Object>, AuctionModel
 {
   private AuctionRemote server;
-  private PropertyChangeSupport property;
+  private final PropertyChangeSupport property;
 
   public AuctionClient() throws IOException
   {
@@ -34,7 +32,8 @@ public class AuctionClient
     try
     {
       UnicastRemoteObject.exportObject(this, 0);
-      server = (AuctionRemote) Naming.lookup("rmi://localhost:1099/AuctionRemote");
+      server = (AuctionRemote) Naming.lookup(
+          "rmi://localhost:1099/AuctionRemote");
 
       server.addListener(this, "End");
       server.addListener(this, "Bid");
@@ -79,7 +78,6 @@ public class AuctionClient
     }
     return null;
   }
-
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
       throws SQLException

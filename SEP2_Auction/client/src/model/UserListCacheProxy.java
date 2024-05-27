@@ -1,5 +1,6 @@
 package model;
 
+import javafx.application.Platform;
 import model.domain.*;
 
 import java.beans.PropertyChangeEvent;
@@ -7,16 +8,14 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class UserListCacheProxy extends Cache implements UserListModel, PropertyChangeListener
+public class UserListCacheProxy extends CacheProxy
+    implements UserListModel, PropertyChangeListener
 {
   private NotificationList notificationsCache;
-  private UserListModelManager modelManager;
-  private PropertyChangeSupport property;
+  private final UserListModelManager modelManager;
+  private final PropertyChangeSupport property;
 
   public UserListCacheProxy() throws SQLException, IOException
   {
@@ -30,13 +29,26 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
     modelManager.addListener("DeleteAccount", this);
 
     notificationsCache = new NotificationList();
+    super.getUserEmail().addListener((observable, oldValue, newValue) -> {
+      {
+        try
+        {
+          updateCache(userEmail.get());
+        }
+        catch (SQLException e)
+        {
+          e.printStackTrace();
+        }
+      }
+    });
+
   }
 
   @Override public NotificationList getNotifications(String receiver)
       throws SQLException
   {
-    if(notificationsCache.getSize()==0)
-      notificationsCache=modelManager.getNotifications(receiver);
+    if (notificationsCache.getSize() == 0)
+      notificationsCache = modelManager.getNotifications(receiver);
     return notificationsCache;
   }
 
@@ -44,7 +56,6 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
   {
     return modelManager.getAllUsers();
   }
-
 
   @Override public void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
@@ -63,7 +74,6 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
     modelManager.unbanParticipant(moderatorEmail, participantEmail);
   }
 
-
   @Override public void addListener(String propertyName,
       PropertyChangeListener listener)
   {
@@ -75,6 +85,7 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
   {
     property.removePropertyChangeListener(propertyName, listener);
   }
+
   private void updateCache(String userEmail) throws SQLException
   {
     notificationsCache = modelManager.getNotifications(userEmail);
@@ -91,7 +102,7 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
   {
     try
     {
-      updateCache(super.getUserEmail());
+      updateCache(super.getUserEmail().get());
 
     }
     catch (SQLException e)
@@ -99,11 +110,12 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
       e.printStackTrace();
     }
   }
+
   private void receivedBanOrDeleteAccount(PropertyChangeEvent evt)
   {
     try
     {
-      updateCache(super.getUserEmail());
+      updateCache(super.getUserEmail().get());
     }
     catch (SQLException e)
     {
@@ -111,10 +123,8 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
     }
   }
 
-
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in user list cache");
     switch (evt.getPropertyName())
     {
       case "Notification" -> receivedNotification(evt);

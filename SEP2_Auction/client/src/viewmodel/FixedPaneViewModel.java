@@ -12,17 +12,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
-public class FixedPaneViewModel implements PropertyChangeListener {
-  private StringProperty emailProperty, myProfile_settingsProperty, titleOf_myAuctions_allAuctionsButton, myBids_bannedUsers, notificationsButtonBackgroundProperty;
-  private UserModel model;
-  private ViewModelState state;
+public class FixedPaneViewModel implements PropertyChangeListener
+{
+  private final StringProperty emailProperty;
+  private final StringProperty titleOf_myAuctions_allAuctionsButton;
+  private final StringProperty notificationsButtonBackgroundProperty;
+  private final UserModel model;
+  private final ViewModelState state;
 
-  //all button in the fixed pane
-  private BooleanProperty buttonsDisabled;
-  private BooleanProperty myBidsButtonVisibility, sellItemButtonVisibility, notificationsButtonVisibility;
-  private BooleanProperty bannedProperty;
+  //all buttons in the fixed pane
+  private final BooleanProperty buttonsDisabled;
+  private final BooleanProperty myBidsButtonVisibility;
+  private final BooleanProperty sellItemButtonVisibility;
+  private final BooleanProperty notificationsButtonVisibility;
+  private final BooleanProperty bannedProperty;
 
-  public FixedPaneViewModel(UserModel model, ViewModelState state) {
+  public FixedPaneViewModel(UserModel model, ViewModelState state)
+  {
     this.state = state;
     this.model = model;
     model.addListener("Notification", this);
@@ -38,135 +44,158 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     sellItemButtonVisibility = new SimpleBooleanProperty();
     notificationsButtonVisibility = new SimpleBooleanProperty();
     myBidsButtonVisibility = new SimpleBooleanProperty();
-    bannedProperty=new SimpleBooleanProperty(false);
+    bannedProperty = new SimpleBooleanProperty(false);
   }
 
-
-  public void reset() {
+  public void reset()
+  {
     emailProperty.set(state.getUserEmail());
     bannedProperty.set(false);
-    if(state.isModerator()){
+    if (state.isModerator())
       setAppearanceForModerator();
-    }
-    else {
+    else
       setAppearanceForUser();
-    }
   }
 
-  private void setAppearanceForModerator(){
+  private void setAppearanceForModerator()
+  {
     titleOf_myAuctions_allAuctionsButton.set("All Accounts");
     myBidsButtonVisibility.set(false);
     sellItemButtonVisibility.set(false);
     notificationsButtonVisibility.set(false);
   }
 
-  private void setAppearanceForUser(){
+  private void setAppearanceForUser()
+  {
     titleOf_myAuctions_allAuctionsButton.set("My auctions");
     myBidsButtonVisibility.set(true);
     sellItemButtonVisibility.set(true);
     notificationsButtonVisibility.set(true);
   }
 
-  public void sellItem() {
+  public void sellItem()
+  {
     buttonsDisabled.set(true);
   }
 
-  public void setForDisplayProfile() {
+  public void setForDisplayProfile()
+  {
     buttonsDisabled.set(false);
     state.setDisplay();
   }
 
-  public void setForResetPassword() {
+  public void setForResetPassword()
+  {
     buttonsDisabled.set(true);
     state.setResetPassword();
   }
 
-  //TODO: refactor
-  public void leaveAuctionView() {
+  public void leaveAuctionView()
+  {
     buttonsDisabled.set(false);
   }
 
-  public void allAuctions() {
+  public void allAuctions()
+  {
     state.setAllAuctions();
-    try {
-      if (model.isModerator(state.getUserEmail())) {
+    try
+    {
+      if (model.isModerator(state.getUserEmail()))
+      {
         state.setModerator(true);
       }
     }
-    catch (SQLException e) {
+    catch (SQLException e)
+    {
       e.printStackTrace();
     }
   }
 
-  public void myBids() {
+  public void myBids()
+  {
     state.setBids();
   }
 
-  public void myCreatedAuctions() {
+  public void myCreatedAuctions()
+  {
     state.setCreatedAuctions();
   }
 
-  public StringProperty getEmailProperty() {
+  public StringProperty getEmailProperty()
+  {
     return emailProperty;
   }
 
-  public StringProperty getNotificationsButtonBackgroundProperty() {
+  public StringProperty getNotificationsButtonBackgroundProperty()
+  {
     return notificationsButtonBackgroundProperty;
   }
 
-  public StringProperty getTitleOf_myAuctions_allAuctionsButton(){
+  public StringProperty getTitleOf_myAuctions_allAuctionsButton()
+  {
     return titleOf_myAuctions_allAuctionsButton;
   }
 
-  public BooleanProperty getButtonsDisabled() {
+  public BooleanProperty getButtonsDisabled()
+  {
     return buttonsDisabled;
   }
 
-  public BooleanProperty getMyBidsButtonVisibility(){
+  public BooleanProperty getMyBidsButtonVisibility()
+  {
     return myBidsButtonVisibility;
   }
 
-
-  public BooleanProperty getSellItemButtonVisibility() {
+  public BooleanProperty getSellItemButtonVisibility()
+  {
     return sellItemButtonVisibility;
   }
 
-  public BooleanProperty getNotificationsButtonVisibility() {
+  public BooleanProperty getNotificationsButtonVisibility()
+  {
     return notificationsButtonVisibility;
   }
 
-  public boolean isModerator(){
+  public boolean isModerator()
+  {
     return state.isModerator();
   }
 
-  public void setForEditProfile() {
+  public void setForEditProfile()
+  {
     buttonsDisabled.set(true);
     state.setEdit();
   }
+
   public BooleanProperty getBannedProperty()
   {
     return bannedProperty;
   }
 
-  public void setModeratorInfo() {
+  public void setModeratorInfo()
+  {
     state.setLookingAtModerator(true);
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt) {
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
 
     switch (evt.getPropertyName())
     {
-      case "Notification":
-        if (emailProperty.get().equals(((Notification) evt.getNewValue()).getReceiver()))
+      case "Notification" ->
+      {
+        if (emailProperty.get()
+            .equals(((Notification) evt.getNewValue()).getReceiver()))
         {
           notificationsButtonBackgroundProperty.set(
               "-fx-background-color: #ff0000; ");
         }
-        break;
-      case "Ban", "Reset":
-        if(emailProperty.get().equals(evt.getNewValue()))
+      }
+      case "Ban", "Reset" ->
+      {
+        if (emailProperty.get().equals(evt.getNewValue()))
           bannedProperty.set(true);
-        break;
+      }
     }
   }
 }

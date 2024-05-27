@@ -67,13 +67,10 @@ public class CreateLoginViewController
     errorLabel.setText("");
     switch (type)
     {
-      case SIGN_UP:
-        viewModel.setForCreate();
-        break;
-      case LOG_IN:
-        viewModel.setForLogin();
-        break;
-      case RESET_PASSWORD:
+      case SIGN_UP -> viewModel.setForCreate();
+      case LOG_IN -> viewModel.setForLogin();
+      case RESET_PASSWORD ->
+      {
         viewModel.setForResetPassword();
         login_createAccountButton.setLayoutX(920);
         headerLabel.setLayoutX(400);
@@ -82,10 +79,10 @@ public class CreateLoginViewController
         resetPasswordButton.setLayoutX(440);
         errorLabel.setLayoutY(510);
         errorLabel.setLayoutX(55);
-        break;
-      case DISPLAY_PROFILE:
+      }
+      case DISPLAY_PROFILE ->
+      {
         viewModel.setForDisplayProfile();
-
         login_createAccountButton.setLayoutX(920);
         headerLabel.setLayoutX(400);
         resetPasswordButton.setLayoutY(580);
@@ -95,18 +92,9 @@ public class CreateLoginViewController
         errorLabel.setLayoutY(510);
         errorLabel.setLayoutX(55);
         confirmButton.setLayoutY(580);
-        break;
-
-      case EDIT_PROFILE:
-        viewModel.setForEditProfile();
-
-        break;
+      }
+      case EDIT_PROFILE -> viewModel.setForEditProfile();
     }
-  }
-
-  @FXML public void onEnter(ActionEvent actionEvent)
-  {
-    //confirm();
   }
 
   @FXML public void confirmButtonPressed()
@@ -130,7 +118,8 @@ public class CreateLoginViewController
 
   @FXML public void resetPasswordButtonPressed()
   {
-    if(headerLabel.getText().equals("Edit profile")){
+    if (headerLabel.getText().equals("Edit profile"))
+    {
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
       alert.setTitle("Confirmation");
       alert.setHeaderText("Do you really want to delete your account?");
@@ -138,7 +127,7 @@ public class CreateLoginViewController
       if (result.isPresent() && result.get() == ButtonType.OK)
       {
         viewModel.deleteAccount();
-        if(errorLabel.getText().isEmpty())
+        if (errorLabel.getText().isEmpty())
         {
           viewModel.setForLogin();
           viewHandler.openView(WindowType.LOG_IN);
@@ -224,8 +213,8 @@ public class CreateLoginViewController
     //special components
     resetPasswordButton.visibleProperty()
         .bindBidirectional(viewModel.getResetPasswordButtonVisibility());
-    resetPasswordButton.textProperty().
-            bindBidirectional(viewModel.getResetPasswordButtonText());
+    resetPasswordButton.textProperty()
+        .bindBidirectional(viewModel.getResetPasswordButtonText());
     login_createAccountButton.textProperty()
         .bindBidirectional(viewModel.getLogin_createButtonText());
     login_createAccountButton.visibleProperty()

@@ -17,7 +17,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAuctionsViewController">
    <center>
-      <ScrollPane fx:id="allAuctionsScrollPane" prefHeight="740.0" prefWidth="1102.0">
+      <ScrollPane prefHeight="740.0" prefWidth="1102.0">
          <content>
             <GridPane fx:id="auctionsGrid" gridLinesVisible="true" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1086.0" vgap="5.0">
               <columnConstraints>
@@ -55,7 +55,7 @@
                                <Font size="11.0" />
                            </font>
                        </TextField>
-                       <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchPressed" prefHeight="26.0" prefWidth="154.0" styleClass="button2" stylesheets="@../css/styling.css" text="Search" textAlignment="JUSTIFY">
+                       <Button mnemonicParsing="false" onAction="#searchPressed" prefHeight="26.0" prefWidth="154.0" styleClass="button2" stylesheets="@../css/styling.css" text="Search" textAlignment="JUSTIFY">
                            <graphic>
                                <ImageView fitHeight="19.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                    <image>

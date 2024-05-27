@@ -7,20 +7,14 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 
-public class AuctionListCacheProxy extends Cache
+public class AuctionListCacheProxy extends CacheProxy
     implements AuctionListModel, PropertyChangeListener
 {
-  private AuctionList ongoingAuctionsCache;
-  private AuctionList allAuctionsCache;
-  private AuctionListModelManager modelManager;
-  private PropertyChangeSupport property;
-
+  private AuctionList ongoingAuctionsCache, allAuctionsCache;
   private AuctionList previousBidsCache, createdAuctionsCache;
+  private final AuctionListModelManager modelManager;
+  private final PropertyChangeSupport property;
 
   public AuctionListCacheProxy() throws SQLException, IOException
   {
@@ -39,46 +33,49 @@ public class AuctionListCacheProxy extends Cache
     allAuctionsCache = new AuctionList();
     previousBidsCache = new AuctionList();
     createdAuctionsCache = new AuctionList();
-  }
 
+    super.getUserEmail().addListener((observable, oldValue, newValue) -> {
+      {
+        try
+        {
+          updateCache(userEmail.get());
+        }
+        catch (SQLException e)
+        {
+          e.printStackTrace();
+        }
+      }
+    });
+  }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
-    if(ongoingAuctionsCache.getSize()==0)
-    {
-      ongoingAuctionsCache=modelManager.getOngoingAuctions();
-    }
+    if (ongoingAuctionsCache.getSize() == 0)
+      ongoingAuctionsCache = modelManager.getOngoingAuctions();
     return ongoingAuctionsCache;
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
-    if(previousBidsCache.getSize()==0)
-    {
-      previousBidsCache=modelManager.getPreviousBids(bidder);
-    }
+    if (previousBidsCache.getSize() == 0)
+      previousBidsCache = modelManager.getPreviousBids(bidder);
     return previousBidsCache;
   }
 
   @Override public AuctionList getCreatedAuctions(String seller)
       throws SQLException
   {
-    if(createdAuctionsCache.getSize()==0)
-    {
-      createdAuctionsCache=modelManager.getCreatedAuctions(seller);
-    }
+    if (createdAuctionsCache.getSize() == 0)
+      createdAuctionsCache = modelManager.getCreatedAuctions(seller);
     return createdAuctionsCache;
   }
-
 
   @Override public AuctionList getAllAuctions(String moderatorEmail)
       throws SQLException
   {
-    if(allAuctionsCache.getSize()==0)
-    {
-      allAuctionsCache=modelManager.getAllAuctions(moderatorEmail);
-    }
+    if (allAuctionsCache.getSize() == 0)
+      allAuctionsCache = modelManager.getAllAuctions(moderatorEmail);
     return allAuctionsCache;
   }
 
@@ -103,22 +100,27 @@ public class AuctionListCacheProxy extends Cache
   {
     property.removePropertyChangeListener(propertyName, listener);
   }
+
   private void updateCache(String userEmail) throws SQLException
   {
     createdAuctionsCache = modelManager.getCreatedAuctions(userEmail);
     previousBidsCache = modelManager.getPreviousBids(userEmail);
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
-    if(isModerator(userEmail))
-      allAuctionsCache=modelManager.getAllAuctions(userEmail);
+    if (isModerator(userEmail))
+      allAuctionsCache = modelManager.getAllAuctions(userEmail);
   }
+
   private void updateBidIn(Bid bid, AuctionList cache)
   {
-    if(cache.contains(bid.getAuctionId()))
+    if (cache.contains(bid.getAuctionId()))
     {
-      cache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
-      cache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
+      cache.getAuctionByID(bid.getAuctionId())
+          .setCurrentBidder(bid.getBidder());
+      cache.getAuctionByID(bid.getAuctionId())
+          .setCurrentBid(bid.getBidAmount());
     }
   }
+
   private void receivedAuction(PropertyChangeEvent evt)
   {
     Auction auction = (Auction) evt.getNewValue();
@@ -128,12 +130,10 @@ public class AuctionListCacheProxy extends Cache
     if (super.getUserEmail().equals(auction.getSeller()))
       createdAuctionsCache.addAuction(auction);
   }
+
   private void receivedEnd(PropertyChangeEvent evt)
   {
-    System.out.println(
-        evt.getPropertyName() + "     " + evt.getOldValue() + "    "
-            + evt.getNewValue());
-    int auctionId=Integer.parseInt(evt.getOldValue().toString());
+    int auctionId = Integer.parseInt(evt.getOldValue().toString());
     ongoingAuctionsCache.removeAuction(auctionId);
 
     if (evt.getNewValue() instanceof Bid)
@@ -149,17 +149,12 @@ public class AuctionListCacheProxy extends Cache
         e.printStackTrace();
       }
       if (buyout.getBidder().equals(super.getUserEmail()))
-      {
         if (auction != null)
           previousBidsCache.addAuction(auction);
-      }
       updateBidIn(buyout, allAuctionsCache);
 
       if (auction != null && auction.getSeller().equals(super.getUserEmail()))
-      {
         updateBidIn(buyout, createdAuctionsCache);
-      }
-
     }
   }
 
@@ -167,15 +162,14 @@ public class AuctionListCacheProxy extends Cache
   {
     // we receive a bid
     Bid bid = (Bid) evt.getNewValue();
-    System.out.println("received bid in cache; " + bid.getAuctionId() + " "
-        + bid.getBidder() + "   " + bid.getBidAmount());
 
     // obviously, for an ongoing auction, so we update the cache
     updateBidIn(bid, ongoingAuctionsCache);
     updateBidIn(bid, allAuctionsCache);
 
     //if we placed the bid, we add the auction in cache
-    if (!previousBidsCache.contains(bid.getAuctionId()) && bid.getBidder().equals(super.getUserEmail()))
+    if (!previousBidsCache.contains(bid.getAuctionId()) && bid.getBidder()
+        .equals(super.getUserEmail()))
     {
       try
       {
@@ -193,32 +187,33 @@ public class AuctionListCacheProxy extends Cache
 
     updateBidIn(bid, createdAuctionsCache);
   }
+
   private void receivedEdit(PropertyChangeEvent evt)
   {
     if (super.getUserEmail().equals(evt.getOldValue().toString()))
-    {
       super.setUserEmail(evt.getNewValue().toString());
-    }
     try
     {
-      updateCache(super.getUserEmail());
+      updateCache(super.getUserEmail().get());
     }
     catch (SQLException e)
     {
       e.printStackTrace();
     }
   }
+
   private void receivedBanOrDeleteAccount(PropertyChangeEvent evt)
   {
     try
     {
-      updateCache(super.getUserEmail());
+      updateCache(super.getUserEmail().get());
     }
     catch (SQLException e)
     {
       e.printStackTrace();
     }
   }
+
   private void receivedDeleteAuction(PropertyChangeEvent evt)
   {
     int id = Integer.parseInt(evt.getNewValue().toString());
@@ -230,7 +225,8 @@ public class AuctionListCacheProxy extends Cache
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in auction list cache");
+    System.out.println(
+        "received " + evt.getPropertyName() + " in auction list cache");
     switch (evt.getPropertyName())
     {
       case "Auction" -> receivedAuction(evt);

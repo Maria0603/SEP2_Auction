@@ -4,7 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import model.domain.Notification;
 
-public class NotificationViewModel {
+public class NotificationViewModel
+{
   private final StringProperty contentProperty;
   private final StringProperty dateTimeProperty;
 

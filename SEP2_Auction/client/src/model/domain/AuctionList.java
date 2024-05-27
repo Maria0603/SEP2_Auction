@@ -26,9 +26,8 @@ public class AuctionList implements Serializable
   public void removeAuction(int ID)
   {
     for (int i = 0; i < auctions.size(); i++)
-      if(auctions.get(i).getID()==ID)
+      if (auctions.get(i).getID() == ID)
       {
-        System.out.println("delete: " + i);
         auctions.remove(i);
         i--;
       }

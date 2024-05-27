@@ -9,8 +9,6 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 import model.domain.*;
 import utility.observer.event.ObserverEvent;
@@ -20,7 +18,7 @@ public class AuctionListClient
     implements RemoteListener<String, Object>, AuctionListModel
 {
   private AuctionListRemote server;
-  private PropertyChangeSupport property;
+  private final PropertyChangeSupport property;
 
   public AuctionListClient() throws IOException
   {
@@ -33,7 +31,8 @@ public class AuctionListClient
     try
     {
       UnicastRemoteObject.exportObject(this, 0);
-      server = (AuctionListRemote) Naming.lookup("rmi://localhost:1099/AuctionListRemote");
+      server = (AuctionListRemote) Naming.lookup(
+          "rmi://localhost:1099/AuctionListRemote");
 
       server.addListener(this, "Auction");
       server.addListener(this, "End");
@@ -63,7 +62,6 @@ public class AuctionListClient
     return null;
   }
 
-
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
@@ -92,7 +90,6 @@ public class AuctionListClient
     return null;
   }
 
-
   @Override public AuctionList getAllAuctions(String moderatorEmail)
       throws SQLException
   {
@@ -113,7 +110,7 @@ public class AuctionListClient
     {
       return server.getAuction(ID);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -126,7 +123,7 @@ public class AuctionListClient
     {
       return server.isModerator(email);
     }
-    catch(RemoteException e)
+    catch (RemoteException e)
     {
       e.printStackTrace();
     }
@@ -148,8 +145,6 @@ public class AuctionListClient
   @Override public void propertyChange(ObserverEvent<String, Object> event)
       throws RemoteException
   {
-    System.out.println("received "+event.getPropertyName() + " in auction list client");
-
     property.firePropertyChange(event.getPropertyName(), event.getValue1(),
         event.getValue2());
   }

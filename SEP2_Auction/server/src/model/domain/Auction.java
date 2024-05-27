@@ -137,15 +137,6 @@ public class Auction
     this.status = status;
   }
 
-  @Override public String toString()
-  {
-    return "ID=" + ID + ", title='" + item.getTitle() + '\'' + ", description='"
-        + item.getDescription() + '\'' + ", reservePrice="
-        + priceConstraint.getReservePrice() + ", buyoutPrice="
-        + priceConstraint.getBuyoutPrice() + ", minimumIncrement="
-        + priceConstraint.getMinimumIncrement() + '\'';
-  }
-
   @Override synchronized public void addListener(String propertyName,
       PropertyChangeListener listener)
   {
@@ -161,10 +152,8 @@ public class Auction
 
   @Override public synchronized void propertyChange(PropertyChangeEvent evt)
   {
-    //auction property fires timer events further
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
         evt.getNewValue());
-
   }
 
   public int getId()

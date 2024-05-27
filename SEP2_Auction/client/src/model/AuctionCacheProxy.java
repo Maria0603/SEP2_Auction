@@ -8,15 +8,13 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
-public class AuctionCacheProxy extends Cache
+public class AuctionCacheProxy extends CacheProxy
     implements AuctionModel, PropertyChangeListener
 {
-  private AuctionModelManager modelManager;
-  private PropertyChangeSupport property;
+  private final AuctionModelManager modelManager;
+  private final PropertyChangeSupport property;
 
   private AuctionList previousOpenedAuctions;
 
@@ -33,6 +31,7 @@ public class AuctionCacheProxy extends Cache
     modelManager.addListener("DeleteAccount", this);
 
     previousOpenedAuctions = new AuctionList();
+    super.getUserEmail().addListener((observable, oldValue, newValue) -> updateCache());
   }
 
   @Override public Auction startAuction(String title, String description,
@@ -47,9 +46,7 @@ public class AuctionCacheProxy extends Cache
   @Override public Auction getAuction(int ID) throws SQLException
   {
     if (previousOpenedAuctions.contains(ID))
-    {
       return previousOpenedAuctions.getAuctionByID(ID);
-    }
     Auction auction = modelManager.getAuction(ID);
     startTimer(auction);
     previousOpenedAuctions.addAuction(auction);
@@ -121,9 +118,6 @@ public class AuctionCacheProxy extends Cache
 
   private void receivedEnd(PropertyChangeEvent evt)
   {
-    System.out.println(
-        evt.getPropertyName() + "     " + evt.getOldValue() + "    "
-            + evt.getNewValue());
     int auctionId = Integer.parseInt(evt.getOldValue().toString());
     if (previousOpenedAuctions.contains(auctionId))
       previousOpenedAuctions.getAuctionByID(auctionId).setStatus("CLOSED");
@@ -138,10 +132,6 @@ public class AuctionCacheProxy extends Cache
   private void receivedBid(PropertyChangeEvent evt)
   {
     Bid bid = (Bid) evt.getNewValue();
-    System.out.println(
-        "received bid in cache; " + bid.getAuctionId() + " " + bid.getBidder()
-            + "   " + bid.getBidAmount());
-
     updateBidIn(bid, previousOpenedAuctions);
   }
 
@@ -168,7 +158,6 @@ public class AuctionCacheProxy extends Cache
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received " + evt.getPropertyName() + " in auction cache");
     switch (evt.getPropertyName())
     {
       case "End" -> receivedEnd(evt);

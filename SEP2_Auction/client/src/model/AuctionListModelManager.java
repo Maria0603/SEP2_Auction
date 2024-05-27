@@ -1,6 +1,5 @@
 package model;
 
-import mediator.AuctionClient;
 import mediator.AuctionListClient;
 import model.domain.Auction;
 import model.domain.AuctionList;
@@ -11,10 +10,11 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class AuctionListModelManager implements AuctionListModel, PropertyChangeListener
+public class AuctionListModelManager
+    implements AuctionListModel, PropertyChangeListener
 {
-  private PropertyChangeSupport property;
-  private AuctionListClient client;
+  private final PropertyChangeSupport property;
+  private final AuctionListClient client;
 
   public AuctionListModelManager() throws IOException, SQLException
   {
@@ -46,7 +46,6 @@ public class AuctionListModelManager implements AuctionListModel, PropertyChange
     return client.getCreatedAuctions(seller);
   }
 
-
   @Override public AuctionList getAllAuctions(String moderatorEmail)
       throws SQLException
   {
@@ -65,8 +64,6 @@ public class AuctionListModelManager implements AuctionListModel, PropertyChange
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in auction list model manager client side");
-
     property.firePropertyChange(evt);
   }
 
@@ -79,7 +76,6 @@ public class AuctionListModelManager implements AuctionListModel, PropertyChange
   @Override public void removeListener(String propertyName,
       PropertyChangeListener listener)
   {
-
     property.removePropertyChangeListener(listener);
   }
 }

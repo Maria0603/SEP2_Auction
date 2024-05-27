@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="ban_unban_notificationsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="678.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAccounts_NotificationsViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="678.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAccounts_NotificationsViewController">
    <children>
-      <Button fx:id="ban_openNotificationButton" layoutX="14.0" layoutY="3.0" mnemonicParsing="false" onAction="#ban_openNotificationButtonPressed" prefHeight="50.0" prefWidth="111.0" text="Ban">
+      <Button fx:id="banButton" layoutX="14.0" layoutY="3.0" mnemonicParsing="false" onAction="#banButtonPressed" prefHeight="50.0" prefWidth="111.0" text="Ban">
          <font>
             <Font size="18.0" />
          </font>
@@ -21,8 +21,8 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <TextArea fx:id="reason_contentTextArea" layoutX="14.0" layoutY="133.0" prefHeight="511.0" prefWidth="252.0" wrapText="true" />
-      <Label fx:id="reason_contentLabel" layoutX="14.0" layoutY="103.0" prefHeight="17.0" prefWidth="111.0" text="Reason:">
+      <TextArea fx:id="reasonTextArea" layoutX="14.0" layoutY="133.0" prefHeight="511.0" prefWidth="252.0" wrapText="true" />
+      <Label fx:id="reasonLabel" layoutX="14.0" layoutY="103.0" prefHeight="17.0" prefWidth="111.0" text="Reason:">
          <font>
             <Font size="18.0" />
          </font>

@@ -11,7 +11,7 @@
 
 <BorderPane fx:id="borderPane" prefHeight="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FixedPaneViewHandler">
    <center>
-      <Pane fx:id="changePane" prefHeight="740.0" prefWidth="1102.0" />
+      <Pane prefHeight="740.0" prefWidth="1102.0" />
    </center>
    <top>
       <Pane prefHeight="55.0" prefWidth="1328.0" BorderPane.alignment="CENTER">
@@ -23,7 +23,7 @@
             </Label>
             <ImageView fitHeight="34.0" fitWidth="32.0" layoutX="24.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/user%20(1).png" />
+                  <Image url="@../icons/user (1).png" />
                </image>
             </ImageView>
             <Button id="resetPassword_loginButton" fx:id="logOutButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1199.0" layoutY="12.0" mnemonicParsing="false" onAction="#logOutButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Log out" textAlignment="CENTER">
@@ -64,7 +64,7 @@
    <left>
       <Pane prefHeight="780.0" prefWidth="226.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="resetPassword_loginButton" fx:id="myProfile_settingsButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#myProfile_settingsButtonPressed" prefHeight="50.0" prefWidth="224.0" styleClass="button2" stylesheets="@../css/styling.css" text="My profile" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="myProfileButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#myProfile_settingsButtonPressed" prefHeight="50.0" prefWidth="224.0" styleClass="button2" stylesheets="@../css/styling.css" text="My profile" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

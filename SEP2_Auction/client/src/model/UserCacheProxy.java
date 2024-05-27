@@ -7,16 +7,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 
-public class UserCacheProxy extends Cache implements UserModel,
-    PropertyChangeListener
+public class UserCacheProxy extends CacheProxy
+    implements UserModel, PropertyChangeListener
 {
-  private UserModelManager modelManager;
-  private PropertyChangeSupport property;
+  private final UserModelManager modelManager;
+  private final PropertyChangeSupport property;
 
   public UserCacheProxy() throws SQLException, IOException
   {
@@ -31,18 +28,16 @@ public class UserCacheProxy extends Cache implements UserModel,
 
   }
 
-
   @Override public String addUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
       LocalDate birthday) throws SQLException
   {
-    String userEmail = modelManager.addUser(firstname, lastname, email, password,
-        repeatedPassword, phone, birthday);
+    String userEmail = modelManager.addUser(firstname, lastname, email,
+        password, repeatedPassword, phone, birthday);
 
     super.setUserEmail(userEmail);
     return userEmail;
   }
-
 
   @Override public String login(String email, String password)
       throws SQLException
@@ -51,7 +46,6 @@ public class UserCacheProxy extends Cache implements UserModel,
     super.setUserEmail(userEmail);
     return userEmail;
   }
-
 
   @Override public void resetPassword(String userEmail, String oldPassword,
       String newPassword, String repeatPassword) throws SQLException
@@ -83,7 +77,6 @@ public class UserCacheProxy extends Cache implements UserModel,
         password, phone, birthday);
   }
 
-
   @Override public void deleteAccount(String email, String password)
       throws SQLException
   {
@@ -110,10 +103,8 @@ public class UserCacheProxy extends Cache implements UserModel,
     }
   }
 
-
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in user cache");
     switch (evt.getPropertyName())
     {
       case "Edit" -> receivedEdit(evt);

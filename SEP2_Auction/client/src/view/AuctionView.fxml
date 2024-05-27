@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="auctionScrollPane" hbarPolicy="NEVER" prefHeight="730.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
+<ScrollPane hbarPolicy="NEVER" prefHeight="730.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
    <content>
       <AnchorPane fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="1086.0">
          <children>
@@ -73,7 +73,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
+                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -98,7 +98,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
+                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -126,7 +126,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="&gt; 0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" prefHeight="26.0" prefWidth="200.0" promptText="&gt; 0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -154,7 +154,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="timeTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="1 - 24">
+                        <TextField id="email_oldPasswordTextField" fx:id="timeTextField" prefHeight="26.0" prefWidth="200.0" promptText="1 - 24">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -297,7 +297,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="backButton" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#backButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Back" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#backButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Back" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
