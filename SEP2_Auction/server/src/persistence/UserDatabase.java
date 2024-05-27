@@ -350,6 +350,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     {
       throw new SQLException("Email must be in 'name@domain' format.");
     }
+    if(email.length()>200)
+      throw new SQLException("The email is too long.");
     if (isEmailIn(email, "user_email", "\"user\""))
     {
       throw new SQLException("Email is already in the system.");
@@ -368,6 +370,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       throw new SQLException(
           "The password must be at least 3 characters long.");
     }
+    if(password.length()>225)
+      throw new SQLException("The password is too long.");
     if (!password.equals(repeatedPassword))
       throw new SQLException("The passwords don't match.");
   }
@@ -378,6 +382,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     {
       throw new SQLException("This phone number is already in the system.");
     }
+    if(phone.length()>20)
+      throw new SQLException("Invalid phone number");
   }
 
   private void deleteAuctionsStartedBy(String email) throws SQLException

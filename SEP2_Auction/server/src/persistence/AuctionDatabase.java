@@ -16,12 +16,14 @@ import java.util.ArrayList;
 public class AuctionDatabase extends DatabasePersistence
     implements AuctionPersistence
 {
+  private static final String database = "database_sep2_2";
+
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
-    String sqlCreateSchema="CREATE SCHEMA IF NOT EXISTS database_sep2;";
+    String sqlCreateSchema = "CREATE SCHEMA IF NOT EXISTS " + database + ";";
     super.getDatabase().update(sqlCreateSchema);
-    String sqlCreateDomain1="CREATE DOMAIN email VARCHAR(200);";
-    String sqlCreateDomain2="CREATE DOMAIN first_last_name VARCHAR(100);";
+    String sqlCreateDomain1 = "CREATE DOMAIN email VARCHAR(200);";
+    String sqlCreateDomain2 = "CREATE DOMAIN first_last_name VARCHAR(100);";
     super.getDatabase().update(sqlCreateDomain1);
     super.getDatabase().update(sqlCreateDomain2);
     createTables();
@@ -93,8 +95,7 @@ public class AuctionDatabase extends DatabasePersistence
   @Override public synchronized Auction getAuctionById(int id)
       throws SQLException
   {
-    String sql =
-        "SELECT *\n" + "FROM auction\n" + "WHERE id=?;";
+    String sql = "SELECT *\n" + "FROM auction\n" + "WHERE id=?;";
     ArrayList<Object[]> results = super.getDatabase().query(sql, id);
     for (int i = 0; i < results.size(); i++)
     {
@@ -365,7 +366,7 @@ public class AuctionDatabase extends DatabasePersistence
 
   private void createTables() throws SQLException
   {
-    String sqlTableUser="CREATE TABLE IF NOT EXISTS \"user\"\n" + "(\n"
+    String sqlTableUser = "CREATE TABLE IF NOT EXISTS \"user\"\n" + "(\n"
         + "    user_email   email PRIMARY KEY,\n"
         + "    password     VARCHAR(255) NOT NULL,\n"
         + "    phone_number VARCHAR(20),\n"
@@ -373,14 +374,15 @@ public class AuctionDatabase extends DatabasePersistence
         + "    last_name    first_last_name\n" + ");";
     super.getDatabase().update(sqlTableUser);
 
-    String sqlTableParticipant="CREATE TABLE IF NOT EXISTS participant\n" + "(\n"
-        + "    user_email email PRIMARY KEY,\n"
-        + "    birth_date DATE NOT NULL,\n"
-        + "    FOREIGN KEY (user_email) references \"user\" (user_email) ON UPDATE CASCADE ON DELETE CASCADE\n"
-        + ");";
+    String sqlTableParticipant =
+        "CREATE TABLE IF NOT EXISTS participant\n" + "(\n"
+            + "    user_email email PRIMARY KEY,\n"
+            + "    birth_date DATE NOT NULL,\n"
+            + "    FOREIGN KEY (user_email) references \"user\" (user_email) ON UPDATE CASCADE ON DELETE CASCADE\n"
+            + ");";
     super.getDatabase().update(sqlTableParticipant);
 
-    String sqlTableAuction="CREATE TABLE IF NOT EXISTS auction\n" + "(\n"
+    String sqlTableAuction = "CREATE TABLE IF NOT EXISTS auction\n" + "(\n"
         + "    ID                    SERIAL PRIMARY KEY,\n"
         + "    title                 VARCHAR(80) CHECK (length(title) > 5)              NOT NULL,\n"
         + "    description           VARCHAR(1400) CHECK (length(description) > 20)     NOT NULL,\n"
@@ -399,7 +401,7 @@ public class AuctionDatabase extends DatabasePersistence
         + ");";
     super.getDatabase().update(sqlTableAuction);
 
-    String sqlTableBid="CREATE TABLE IF NOT EXISTS bid\n" + "(\n"
+    String sqlTableBid = "CREATE TABLE IF NOT EXISTS bid\n" + "(\n"
         + "    bid_id            SERIAL PRIMARY KEY,\n"
         + "    participant_email email                          NOT NULL,\n"
         + "    auction_id        INTEGER                        NOT NULL,\n"
@@ -409,35 +411,41 @@ public class AuctionDatabase extends DatabasePersistence
         + ");";
     super.getDatabase().update(sqlTableBid);
 
-    String sqlTableNotification="CREATE TABLE IF NOT EXISTS notification\n" + "(\n"
-        + "    notification_id SERIAL PRIMARY KEY,\n"
-        + "    receiver        email,\n"
-        + "    content         VARCHAR(1000),\n" + "    date            DATE,\n"
-        + "    time            TIME,\n"
-        + "    FOREIGN KEY (receiver) REFERENCES participant (user_email) ON UPDATE CASCADE ON DELETE CASCADE\n"
-        + ");";
+    String sqlTableNotification =
+        "CREATE TABLE IF NOT EXISTS notification\n" + "(\n"
+            + "    notification_id SERIAL PRIMARY KEY,\n"
+            + "    receiver        email,\n"
+            + "    content         VARCHAR(1000),\n"
+            + "    date            DATE,\n" + "    time            TIME,\n"
+            + "    FOREIGN KEY (receiver) REFERENCES participant (user_email) ON UPDATE CASCADE ON DELETE CASCADE\n"
+            + ");";
     super.getDatabase().update(sqlTableNotification);
 
-    String sqlTableBannedParticipant="CREATE TABLE IF NOT EXISTS banned_participant\n" + "(\n"
-        + "    user_email email,\n" + "    reason     VARCHAR(600),\n"
-        + "    FOREIGN KEY (user_email) references participant (user_email) ON UPDATE CASCADE ON DELETE CASCADE\n"
-        + ");";
+    String sqlTableBannedParticipant =
+        "CREATE TABLE IF NOT EXISTS banned_participant\n" + "(\n"
+            + "    user_email email,\n" + "    reason     VARCHAR(600),\n"
+            + "    FOREIGN KEY (user_email) references participant (user_email) ON UPDATE CASCADE ON DELETE CASCADE\n"
+            + ");";
     super.getDatabase().update(sqlTableBannedParticipant);
 
-    String sqlTableModerator="\n" + "CREATE TABLE IF NOT EXISTS moderator\n" + "(\n"
-        + "    moderator_email email PRIMARY KEY,\n"
-        + "    personal_email  email,\n"
-        + "    FOREIGN KEY (moderator_email) REFERENCES \"user\" (user_email)\n"
-        + ");";
+    String sqlTableModerator =
+        "\n" + "CREATE TABLE IF NOT EXISTS moderator\n" + "(\n"
+            + "    moderator_email email PRIMARY KEY,\n"
+            + "    personal_email  email,\n"
+            + "    FOREIGN KEY (moderator_email) REFERENCES \"user\" (user_email)\n"
+            + ");";
     super.getDatabase().update(sqlTableModerator);
   }
+
   private void insertModerator() throws SQLException
   {
-    String sqlInsertUser="INSERT INTO \"user\"(user_email, password, phone_number, first_name, last_name)\n"
-        + "VALUES ('bob@bidhub', '1234', null, null, null);\n";
+    String sqlInsertUser =
+        "INSERT INTO \"user\"(user_email, password, phone_number, first_name, last_name)\n"
+            + "VALUES ('bob@bidhub', '1234', null, null, null);\n";
     super.getDatabase().update(sqlInsertUser);
-    String sqlInsertModerator="INSERT INTO moderator (moderator_email, personal_email)\n"
-        + "VALUES ('bob@bidhub', null);";
+    String sqlInsertModerator =
+        "INSERT INTO moderator (moderator_email, personal_email)\n"
+            + "VALUES ('bob@bidhub', null);";
     super.getDatabase().update(sqlInsertModerator);
   }
 
