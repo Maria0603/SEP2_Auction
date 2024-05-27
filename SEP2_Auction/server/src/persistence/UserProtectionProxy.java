@@ -142,6 +142,11 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
       {
         throw new SQLException("Invalid phone number.");
       }
+      for(int i=0; i<phone.length(); i++)
+      {
+        if(!Character.isDigit(phone.charAt(i)))
+          throw new SQLException("Invalid phone number.");
+      }
     }
 
     private void ageValidation(LocalDate birthday) throws SQLException
