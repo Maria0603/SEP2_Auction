@@ -1,19 +1,18 @@
 package mediator;
 
-import model.domain.*;
+import model.domain.Auction;
+import model.domain.Bid;
 import utility.observer.listener.GeneralListener;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-
 
 public interface AuctionRemote extends Remote
 {
   Auction startAuction(String title, String description, int reservePrice,
-                       int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData, String seller)
-          throws RemoteException, SQLException, ClassNotFoundException;
+      int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData, String seller)
+      throws RemoteException, SQLException, ClassNotFoundException;
   Auction getAuction(int ID) throws RemoteException, SQLException;
   Bid placeBid(String bidder, int bidValue, int auctionId) throws RemoteException, SQLException;
   void buyout(String bidder, int auctionId) throws RemoteException, SQLException;

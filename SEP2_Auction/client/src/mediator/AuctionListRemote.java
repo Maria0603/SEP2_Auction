@@ -1,13 +1,12 @@
 package mediator;
 
-import model.domain.*;
+import model.domain.Auction;
+import model.domain.AuctionList;
 import utility.observer.listener.GeneralListener;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public interface AuctionListRemote extends Remote
 {

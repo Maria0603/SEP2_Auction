@@ -1,12 +1,12 @@
 package mediator;
 
-import model.domain.*;
+import model.domain.NotificationList;
+import model.domain.User;
 import utility.observer.listener.GeneralListener;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface UserListRemote extends Remote
