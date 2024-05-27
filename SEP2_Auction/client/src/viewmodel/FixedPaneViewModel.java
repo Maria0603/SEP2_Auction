@@ -38,14 +38,13 @@ public class FixedPaneViewModel implements PropertyChangeListener {
     sellItemButtonVisibility = new SimpleBooleanProperty();
     notificationsButtonVisibility = new SimpleBooleanProperty();
     myBidsButtonVisibility = new SimpleBooleanProperty();
-    bannedProperty=new SimpleBooleanProperty();
-    bannedProperty.set(false);
+    bannedProperty=new SimpleBooleanProperty(false);
   }
 
 
   public void reset() {
     emailProperty.set(state.getUserEmail());
-
+    bannedProperty.set(false);
     if(state.isModerator()){
       setAppearanceForModerator();
     }
