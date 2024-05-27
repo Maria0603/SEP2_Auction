@@ -26,8 +26,6 @@ public class AuctionListServer implements AuctionListRemote, RemoteSubject<Strin
     private AuctionListModel model;
     private ListenerSubjectInterface listenerSubject;
     private PropertyChangeHandler<String, Object> property;
-    private List<GeneralListener<String, Object>> listeners = new ArrayList<>();
-
 
     public AuctionListServer(AuctionListModel model, ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
