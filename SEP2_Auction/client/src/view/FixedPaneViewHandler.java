@@ -47,10 +47,11 @@ public class FixedPaneViewHandler {
 
     emailLabel.textProperty()
         .bindBidirectional(fixedPaneViewModel.getEmailProperty());
+
     fixedPaneViewModel.getBannedProperty().addListener(new ChangeListener<Boolean>() {
       @Override
       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        if (newValue) {
+        if (!oldValue && newValue) {
           Platform.runLater(() -> logOutButtonPressed());
         }
       }
