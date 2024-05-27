@@ -1,6 +1,8 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import mediator.AuctionClient;
+import mediator.UserClient;
+import mediator.UserListClient;
 import model.*;
 import view.ViewHandler;
 import viewmodel.ViewModelFactory;
@@ -20,7 +22,10 @@ public class MyApplication extends Application
       UserListModel userListModel=new UserListCacheProxy();
       ViewModelFactory viewModelFactory = new ViewModelFactory(auctionModel, auctionListModel, userModel, userListModel);
       ViewHandler view = new ViewHandler(viewModelFactory);
-      //AuctionClient client = new AuctionClient();
+      new AuctionClient();
+      new AuctionClient();
+      new UserClient();
+      new UserListClient();
       view.start(primaryStage);
     }
     catch (IOException | SQLException e)
