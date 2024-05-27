@@ -27,6 +27,8 @@ public class UserCacheProxy extends Cache implements UserModel,
     modelManager.addListener("Edit", this);
     modelManager.addListener("Reset", this);
     modelManager.addListener("Ban", this);
+    modelManager.addListener("Notification", this);
+
   }
 
 

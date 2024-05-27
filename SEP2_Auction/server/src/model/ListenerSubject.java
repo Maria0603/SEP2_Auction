@@ -30,12 +30,12 @@ public class ListenerSubject implements NamedPropertyChangeSubject,
     auctionModel.addListener("Notification", this);
     auctionModel.addListener("Bid", this);
     auctionModel.addListener("DeleteAuction", this);
-    userModel.addListener("Ban", this);
+    userListModel.addListener("Ban", this);
 
-    userListModel.addListener("Reset", this);
+    userModel.addListener("Reset", this);
 
-    userListModel.addListener("Edit", this);
-    userListModel.addListener("DeleteAccount", this);
+    userModel.addListener("Edit", this);
+    userModel.addListener("DeleteAccount", this);
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt)

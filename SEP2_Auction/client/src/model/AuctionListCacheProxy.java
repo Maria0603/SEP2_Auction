@@ -77,7 +77,7 @@ public class AuctionListCacheProxy extends Cache
   {
     if(allAuctionsCache.getSize()==0)
     {
-      allAuctionsCache=modelManager.getCreatedAuctions(moderatorEmail);
+      allAuctionsCache=modelManager.getAllAuctions(moderatorEmail);
     }
     return allAuctionsCache;
   }
