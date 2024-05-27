@@ -1,7 +1,6 @@
 package persistence;
 
 import model.domain.*;
-import utility.persistence.MyDatabase;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,7 +10,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class AuctionListDatabase extends DatabasePersistence implements AuctionListPersistence
+public class AuctionListDatabase extends DatabasePersistence
+    implements AuctionListPersistence
 {
 
   public AuctionListDatabase() throws SQLException, ClassNotFoundException
@@ -108,7 +108,8 @@ public class AuctionListDatabase extends DatabasePersistence implements AuctionL
     return getAuctions(sql, null);
   }
 
-  private AuctionList getAuctions(String sql, String user) throws SQLException
+  private synchronized AuctionList getAuctions(String sql, String user)
+      throws SQLException
   {
     ArrayList<Object[]> results;
     if (user == null)
@@ -122,10 +123,8 @@ public class AuctionListDatabase extends DatabasePersistence implements AuctionL
       int id = Integer.parseInt(row[0].toString());
       auctions.addAuction(getCardAuctionById(id));
     }
-    System.out.println("request for auctions in database");
     return auctions;
   }
-
 
   @Override public synchronized boolean isModerator(String email)
       throws SQLException
@@ -133,9 +132,8 @@ public class AuctionListDatabase extends DatabasePersistence implements AuctionL
     return isEmailIn(email, "moderator_email", "moderator");
   }
 
-
-  private boolean isEmailIn(String email, String field, String table)
-      throws SQLException
+  private synchronized boolean isEmailIn(String email, String field,
+      String table) throws SQLException
   {
     int count = 0;
     String sql = "SELECT count(*) FROM " + table + " WHERE " + field + " =?";

@@ -3,13 +3,9 @@ package persistence;
 import model.domain.*;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-
 public class AuctionListProtectionProxy extends DatabasePersistence implements AuctionListPersistence
 {
-  private AuctionListDatabase database;
+  private final AuctionListDatabase database;
 
   public AuctionListProtectionProxy() throws SQLException, ClassNotFoundException
   {

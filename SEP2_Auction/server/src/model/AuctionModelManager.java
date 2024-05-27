@@ -5,19 +5,16 @@ package model;
 import model.domain.*;
 import persistence.AuctionPersistence;
 import persistence.AuctionProtectionProxy;
-import persistence.ProtectionProxy;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class AuctionModelManager implements AuctionModel, PropertyChangeListener
 {
-  private PropertyChangeSupport property;
-  private AuctionPersistence auctionDatabase;
+  private final PropertyChangeSupport property;
+  private final AuctionPersistence auctionDatabase;
 
   public AuctionModelManager() throws SQLException, ClassNotFoundException
   {
@@ -47,7 +44,6 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     return auctionDatabase.getAuctionById(ID);
   }
 
-
   @Override public synchronized Bid placeBid(String bidder, int bidValue,
       int auctionId) throws SQLException
   {
@@ -61,24 +57,16 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
           "Your bid has been beaten for auction ID: #" + auctionId + ".",
           existingBid.getBidder());
       property.firePropertyChange("Notification", null, notification);
-      System.out.println("Notification fired");
     }
     property.firePropertyChange("Bid", null, bid);
-    System.out.println("Bid fired");
     return bid;
   }
 
   @Override public void buyout(String current_bidder, int auctionId)
       throws SQLException
   {
-    Auction auction = auctionDatabase.getAuctionById(auctionId);
     Bid bid = auctionDatabase.buyout(current_bidder, auctionId);
-
-    //property.firePropertyChange("Time", null, auction.getStartTime());
     property.firePropertyChange("End", auctionId, bid);
-    //property.firePropertyChange("Buyout", null, bid);
-    System.out.println("received buyout");
-
     sendContactInformation(auctionId);
   }
 
@@ -93,7 +81,32 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
             + reason, seller);
     property.firePropertyChange("Notification", null, notification);
     property.firePropertyChange("DeleteAuction", null, auctionId);
-    System.out.println("delete auction fired");
+  }
+
+  private void sendContactInformation(int id) throws SQLException
+  {
+    Auction auction = auctionDatabase.getAuctionById(id);
+    if (auction.getCurrentBid() != 0)
+    {
+      User seller = auctionDatabase.getUserInfo(auction.getSeller());
+      User bidder = auctionDatabase.getUserInfo(auction.getCurrentBidder());
+      int bid = auction.getCurrentBid();
+
+      String contentForSeller =
+          "Your Auction(ID: #" + id + ") has ended, Final bidder: " + bidder
+              + ", with bid: " + bid + ".";
+      String contentForBidder =
+          "You've won an Auction(ID: #" + id + "), sold by: " + seller
+              + ", with bid: " + bid + ".";
+
+      Notification notificationOne = auctionDatabase.saveNotification(
+          contentForSeller, seller.getEmail());
+      Notification notificationTwo = auctionDatabase.saveNotification(
+          contentForBidder, bidder.getEmail());
+
+      property.firePropertyChange("Notification", null, notificationOne);
+      property.firePropertyChange("Notification", null, notificationTwo);
+    }
   }
 
   @Override public synchronized void addListener(String propertyName,
@@ -126,27 +139,4 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     property.firePropertyChange(evt);
   }
 
-  private void sendContactInformation(int id) throws SQLException
-  {
-    Auction auction = auctionDatabase.getAuctionById(id);
-    if(auction.getCurrentBid()!=0)
-    {
-      User seller = auctionDatabase.getUserInfo(auction.getSeller());
-      User bidder = auctionDatabase.getUserInfo(auction.getCurrentBidder());
-      int bid = auction.getCurrentBid();
-
-      String contentForSeller =
-          "Your Auction(ID: #" + id + ") has ended, Final bidder: " + bidder + ", with bid: " + bid + ".";
-      String contentForBidder =
-          "You've won an Auction(ID: #" + id + "), sold by: " + seller + ", with bid: " + bid + ".";
-
-      Notification notificationOne = auctionDatabase.saveNotification(
-          contentForSeller, seller.getEmail());
-      Notification notificationTwo = auctionDatabase.saveNotification(
-          contentForBidder, bidder.getEmail());
-
-      property.firePropertyChange("Notification", null, notificationOne);
-      property.firePropertyChange("Notification", null, notificationTwo);
-    }
-  }
 }

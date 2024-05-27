@@ -1,6 +1,5 @@
 package persistence;
 
-import model.AuctionModel;
 import model.domain.*;
 
 import javax.imageio.ImageIO;
@@ -14,9 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class AuctionDatabase extends DatabasePersistence implements AuctionPersistence
+public class AuctionDatabase extends DatabasePersistence
+    implements AuctionPersistence
 {
-
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
   }
@@ -49,7 +48,6 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
       Time start = Time.valueOf(now);
       statement.setTime(10, start);
       Time end = Time.valueOf(now.plusHours(auctionTime));
-      // Time end = Time.valueOf(now.plusSeconds(auctionTime));
 
       statement.setTime(11, end);
       statement.setString(12, seller);
@@ -125,8 +123,6 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     return null;
   }
 
-
-
   @Override public synchronized Notification saveNotification(String content,
       String receiver) throws SQLException
   {
@@ -193,6 +189,7 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     }
     return null;
   }
+
   @Override public synchronized void deleteAuction(String moderatorEmail,
       int auctionId, String reason) throws SQLException
   {
@@ -200,7 +197,8 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     super.getDatabase().update(sql, auctionId);
   }
 
-  @Override public Bid buyout(String bidder, int auctionId) throws SQLException
+  @Override public synchronized Bid buyout(String bidder, int auctionId)
+      throws SQLException
   {
     Auction auction = getAuctionById(auctionId);
     if (auction != null)
@@ -220,14 +218,15 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     }
   }
 
-  private void updateCurrentBid(Bid currentBid) throws SQLException
+  private synchronized void updateCurrentBid(Bid currentBid) throws SQLException
   {
     String sql = "UPDATE auction SET current_bid=?, current_bidder=? WHERE auction.ID=?;";
-    super.getDatabase().update(sql, currentBid.getBidAmount(), currentBid.getBidder(),
-        currentBid.getAuctionId());
+    super.getDatabase()
+        .update(sql, currentBid.getBidAmount(), currentBid.getBidder(),
+            currentBid.getAuctionId());
   }
 
-  private Date getParticipantInfo(String email) throws SQLException
+  private synchronized Date getParticipantInfo(String email) throws SQLException
   {
     String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
     ArrayList<Object[]> results = super.getDatabase().query(sql, email);
@@ -239,10 +238,11 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     return null;
   }
 
-  private String getModeratorSpecificInfo() throws SQLException
+  private synchronized String getModeratorSpecificInfo() throws SQLException
   {
     String sql = "SELECT personal_email FROM moderator WHERE moderator_email=?;\n";
-    ArrayList<Object[]> results = super.getDatabase().query(sql, super.getModeratorEmail());
+    ArrayList<Object[]> results = super.getDatabase()
+        .query(sql, super.getModeratorEmail());
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
@@ -252,7 +252,7 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     return null;
   }
 
-  private User getUser(String email) throws SQLException
+  private synchronized User getUser(String email) throws SQLException
   {
     String sql = "SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
     ArrayList<Object[]> results = super.getDatabase().query(sql, email);
@@ -279,13 +279,14 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
     return null;
   }
 
-  private void checkBid(int bidAmount, String participantEmail, int auctionId)
-      throws SQLException
+  private synchronized void checkBid(int bidAmount, String participantEmail,
+      int auctionId) throws SQLException
   {
     String retrieveSql =
         "SELECT auction.current_bid, auction.current_bidder, auction.reserve_price, auction.minimum_bid_increment, auction.status, auction.creator_email\n"
             + "FROM auction\n" + "WHERE auction.ID=?;";
-    ArrayList<Object[]> results = super.getDatabase().query(retrieveSql, auctionId);
+    ArrayList<Object[]> results = super.getDatabase()
+        .query(retrieveSql, auctionId);
     for (int i = 0; i < results.size(); i++)
     {
       Object[] row = results.get(i);
@@ -316,7 +317,6 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
         throw new SQLException("Your bid must be at least the reserve price.");
     }
   }
-
 
   private byte[] downloadImageFromRepository(String imagePath)
   {

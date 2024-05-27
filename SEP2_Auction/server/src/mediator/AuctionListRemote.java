@@ -11,9 +11,12 @@ import java.sql.SQLException;
 public interface AuctionListRemote extends Remote
 {
   AuctionList getOngoingAuctions() throws RemoteException, SQLException;
-  AuctionList getPreviousBids(String bidder) throws RemoteException, SQLException;
-  AuctionList getCreatedAuctions(String seller) throws RemoteException, SQLException;
-  AuctionList getAllAuctions(String moderatorEmail) throws RemoteException, SQLException;
+  AuctionList getPreviousBids(String bidder)
+      throws RemoteException, SQLException;
+  AuctionList getCreatedAuctions(String seller)
+      throws RemoteException, SQLException;
+  AuctionList getAllAuctions(String moderatorEmail)
+      throws RemoteException, SQLException;
   Auction getAuction(int ID) throws RemoteException, SQLException;
   boolean isModerator(String email) throws RemoteException, SQLException;
 

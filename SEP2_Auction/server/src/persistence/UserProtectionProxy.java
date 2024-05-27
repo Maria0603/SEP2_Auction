@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class UserProtectionProxy extends DatabasePersistence implements UserPersistence
 {
-  private UserDatabase database;
+  private final UserDatabase database;
     public UserProtectionProxy() throws SQLException, ClassNotFoundException
     {
       this.database = new UserDatabase();

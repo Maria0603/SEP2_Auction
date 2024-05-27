@@ -3,14 +3,11 @@ package model;
 import model.domain.*;
 import persistence.AuctionListPersistence;
 import persistence.AuctionListProtectionProxy;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
 public class AuctionListModelManager implements AuctionListModel
 {
-  private AuctionListPersistence auctionListDatabase;
+  private final AuctionListPersistence auctionListDatabase;
 
   public AuctionListModelManager() throws SQLException, ClassNotFoundException
   {

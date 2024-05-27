@@ -225,8 +225,6 @@ public class AuctionListCacheProxy extends CacheProxy
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println(
-        "received " + evt.getPropertyName() + " in auction list cache");
     switch (evt.getPropertyName())
     {
       case "Auction" -> receivedAuction(evt);

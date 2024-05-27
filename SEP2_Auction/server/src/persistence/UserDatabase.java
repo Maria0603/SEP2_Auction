@@ -2,15 +2,8 @@ package persistence;
 
 import model.domain.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class UserDatabase extends DatabasePersistence implements UserPersistence
@@ -32,7 +25,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     checkEmail(email);
     checkPassword(password, repeatedPassword);
     checkPhone(phone);
-    super.getDatabase().update(sqlUser, email, password, phone, firstname, lastname);
+    super.getDatabase()
+        .update(sqlUser, email, password, phone, firstname, lastname);
     Date date = Date.valueOf(birthday);
     super.getDatabase().update(sqlParticipant, email, date);
     return new User(firstname, lastname, email, password, phone, birthday);
@@ -50,7 +44,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
           "Account closed. Reason: " + extractBanningReason(email));
     return email;
   }
-
 
   @Override public synchronized void resetPassword(String userEmail,
       String oldPassword, String newPassword, String repeatPassword)
@@ -86,37 +79,32 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   {
     return getUserInfo(super.getModeratorEmail());
   }
+
   @Override public synchronized boolean isModerator(String email)
       throws SQLException
   {
     return isEmailIn(email, "moderator_email", "moderator");
   }
 
-  @Override public void deleteAccount(String email, String password)
-      throws SQLException
+  @Override public synchronized void deleteAccount(String email,
+      String password) throws SQLException
   {
     if (!validateForLogin(email, password))
     {
       throw new SQLException("Wrong password");
     }
-    System.out.println("valid for login");
     deleteAuctionsStartedBy(email);
-    System.out.println("auctions started deleted");
     updateCurrentBidAndCurrentBidderAfterBan(email);
-    System.out.println("auctions bids updated");
     deleteBids(email);
-    System.out.println("bids deleted");
-
-
 
     String sql1 = "DELETE FROM participant WHERE user_email=?;";
     String sql2 = "DELETE FROM users WHERE user_email=?;";
     super.getDatabase().update(sql1, email);
     super.getDatabase().update(sql2, email);
-    System.out.println("accounts deleted");
-
   }
-  @Override public String extractBanningReason(String email) throws SQLException
+
+  @Override public synchronized String extractBanningReason(String email)
+      throws SQLException
   {
     if (isBanned(email))
     {
@@ -132,7 +120,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     return null;
   }
 
-  @Override public void unbanParticipant(String moderatorEmail,
+  @Override public synchronized void unbanParticipant(String moderatorEmail,
       String participantEmail) throws SQLException
   {
     if (!isBanned(participantEmail))
@@ -163,8 +151,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
 
       if (oldEmail.equals(super.getModeratorEmail()))
       {
-        super.getDatabase().update(sqlUser, oldEmail, phone, firstname, lastname,
-            oldEmail);
+        super.getDatabase()
+            .update(sqlUser, oldEmail, phone, firstname, lastname, oldEmail);
 
         sqlParticipantOrModerator = "UPDATE moderator SET personal_email=?\n"
             + "WHERE moderator_email=?;";
@@ -172,7 +160,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       }
       else
       {
-        super.getDatabase().update(sqlUser, email, phone, firstname, lastname, oldEmail);
+        super.getDatabase()
+            .update(sqlUser, email, phone, firstname, lastname, oldEmail);
         sqlParticipantOrModerator =
             "UPDATE participant SET birth_date=?\n" + "WHERE user_email=?;";
         Date date = Date.valueOf(birthday);
@@ -181,162 +170,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       return new User(firstname, lastname, email, password, phone, birthday);
     }
     throw new SQLException("Wrong password");
-  }
-
-  private Date getParticipantInfo(String email) throws SQLException
-  {
-    String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
-    ArrayList<Object[]> results = super.getDatabase().query(sql, email);
-    for (int i = 0; i < results.size(); i++)
-    {
-      Object[] row = results.get(i);
-      return Date.valueOf(row[0].toString());
-    }
-    return null;
-  }
-
-  private String getModeratorSpecificInfo() throws SQLException
-  {
-    String sql = "SELECT personal_email FROM moderator WHERE moderator_email=?;\n";
-    ArrayList<Object[]> results = super.getDatabase().query(sql, super.getModeratorEmail());
-    for (int i = 0; i < results.size(); i++)
-    {
-      Object[] row = results.get(i);
-      if (row[0] != null)
-        return row[0].toString();
-    }
-    return null;
-  }
-
-  private User getUser(String email) throws SQLException
-  {
-    String sql = "SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
-    ArrayList<Object[]> results = super.getDatabase().query(sql, email);
-    for (int i = 0; i < results.size(); i++)
-    {
-      Object[] row = results.get(i);
-      String phone = null;
-      if (row[0] != null)
-      {
-        phone = row[0].toString();
-      }
-      String firstName = null;
-      if (row[1] != null)
-      {
-        firstName = row[1].toString();
-      }
-      String lastName = null;
-      if (row[2] != null)
-      {
-        lastName = row[2].toString();
-      }
-      return new User(firstName, lastName, email, null, phone, null);
-    }
-    return null;
-  }
-
-  private void validateNewPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
-  {
-    checkPassword(newPassword, repeatPassword);
-    String sql = "SELECT users.password FROM users\n" + "WHERE user_email=?;";
-    ArrayList<Object[]> result = super.getDatabase().query(sql, userEmail);
-    for (int i = 0; i < result.size(); i++)
-    {
-      Object[] row = result.get(i);
-      String retrievedOldPassword = row[0].toString();
-      if (!retrievedOldPassword.equals(oldPassword))
-        throw new SQLException("The old password is incorrect.");
-      if (oldPassword.equals(newPassword))
-        throw new SQLException(
-            "The new password and the old one are the same.");
-    }
-  }
-
-  private boolean isEmailIn(String email, String field, String table)
-      throws SQLException
-  {
-    int count = 0;
-    String sql = "SELECT count(*) FROM " + table + " WHERE " + field + " =?";
-    ArrayList<Object[]> result = super.getDatabase().query(sql, email);
-    for (int i = 0; i < result.size(); i++)
-    {
-      Object[] row = result.get(i);
-      count = Integer.parseInt(row[0].toString());
-    }
-    return count > 0;
-  }
-
-  private String isPhoneInTheSystem(String phone) throws SQLException
-  {
-    int count = 0;
-    String sql =
-        "SELECT user_email, count(*) FROM users\n" + "WHERE phone_number=?\n"
-            + "GROUP BY user_email;";
-    ArrayList<Object[]> result = super.getDatabase().query(sql, phone);
-    for (int i = 0; i < result.size(); i++)
-    {
-      Object[] row = result.get(i);
-      count = Integer.parseInt(row[1].toString());
-      if (count > 0)
-        return row[0].toString();
-    }
-    return null;
-  }
-
-  private boolean validateForLogin(String email, String password)
-      throws SQLException
-  {
-    int count = 0;
-    String sql = "SELECT count(*) FROM users WHERE user_email=? AND password=?;";
-    ArrayList<Object[]> result = super.getDatabase().query(sql, email, password);
-    for (int i = 0; i < result.size(); i++)
-    {
-      Object[] row = result.get(i);
-      count = Integer.parseInt(row[0].toString());
-    }
-    return count > 0;
-  }
-
-
-  private void checkEmail(String email) throws SQLException
-  {
-    if (email.isEmpty())
-    {
-      throw new SQLException("Empty email.");
-    }
-    if (!email.contains("@"))
-    {
-      throw new SQLException("Email must be in 'name@domain' format.");
-    }
-    if (isEmailIn(email, "user_email", "users"))
-    {
-      throw new SQLException("Email is already in the system.");
-    }
-  }
-
-  private void checkPassword(String password, String repeatedPassword)
-      throws SQLException
-  {
-    if (password.isEmpty())
-    {
-      throw new SQLException("Empty password.");
-    }
-    if (password.length() < 4)
-    {
-      throw new SQLException(
-          "The password must be at least 3 characters long.");
-    }
-    if (!password.equals(repeatedPassword))
-      throw new SQLException("The passwords don't match.");
-  }
-
-  private void checkPhone(String phone) throws SQLException
-  {
-    if (isPhoneInTheSystem(phone) != null)
-    {
-      throw new SQLException("This phone number is already in the system.");
-    }
   }
 
   @Override public synchronized NotificationList getNotifications(
@@ -353,7 +186,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       notifications.addNotification(
           new Notification(dateTime, content, receiver));
     }
-    System.out.println("request for notifications in database");
     return notifications;
   }
 
@@ -361,7 +193,8 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       throws SQLException
   {
     String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";
-    ArrayList<Object[]> queryResults = super.getDatabase().query(sql, super.getModeratorEmail());
+    ArrayList<Object[]> queryResults = super.getDatabase()
+        .query(sql, super.getModeratorEmail());
 
     ArrayList<User> output = new ArrayList<>();
     String phone, firstName, lastName, email;
@@ -376,7 +209,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
 
       output.add(new User(firstName, lastName, email, null, phone, null));
     }
-    System.out.println("request for all users in database");
     return output;
   }
 
@@ -395,12 +227,164 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
         + " successfully banned.");
   }
 
+  private synchronized Date getParticipantInfo(String email) throws SQLException
+  {
+    String sql = "SELECT participant.birth_date FROM participant WHERE user_email=?;\n";
+    ArrayList<Object[]> results = super.getDatabase().query(sql, email);
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      return Date.valueOf(row[0].toString());
+    }
+    return null;
+  }
+
+  private synchronized String getModeratorSpecificInfo() throws SQLException
+  {
+    String sql = "SELECT personal_email FROM moderator WHERE moderator_email=?;\n";
+    ArrayList<Object[]> results = super.getDatabase()
+        .query(sql, super.getModeratorEmail());
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      if (row[0] != null)
+        return row[0].toString();
+    }
+    return null;
+  }
+
+  private synchronized User getUser(String email) throws SQLException
+  {
+    String sql = "SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
+    ArrayList<Object[]> results = super.getDatabase().query(sql, email);
+    for (int i = 0; i < results.size(); i++)
+    {
+      Object[] row = results.get(i);
+      String phone = null;
+      if (row[0] != null)
+        phone = row[0].toString();
+      String firstName = null;
+      if (row[1] != null)
+        firstName = row[1].toString();
+      String lastName = null;
+      if (row[2] != null)
+        lastName = row[2].toString();
+      return new User(firstName, lastName, email, null, phone, null);
+    }
+    return null;
+  }
+
+  private synchronized void validateNewPassword(String userEmail,
+      String oldPassword, String newPassword, String repeatPassword)
+      throws SQLException
+  {
+    checkPassword(newPassword, repeatPassword);
+    String sql = "SELECT users.password FROM users\n" + "WHERE user_email=?;";
+    ArrayList<Object[]> result = super.getDatabase().query(sql, userEmail);
+    for (int i = 0; i < result.size(); i++)
+    {
+      Object[] row = result.get(i);
+      String retrievedOldPassword = row[0].toString();
+      if (!retrievedOldPassword.equals(oldPassword))
+        throw new SQLException("The old password is incorrect.");
+      if (oldPassword.equals(newPassword))
+        throw new SQLException(
+            "The new password and the old one are the same.");
+    }
+  }
+
+  private synchronized boolean isEmailIn(String email, String field,
+      String table) throws SQLException
+  {
+    int count = 0;
+    String sql = "SELECT count(*) FROM " + table + " WHERE " + field + " =?";
+    ArrayList<Object[]> result = super.getDatabase().query(sql, email);
+    for (int i = 0; i < result.size(); i++)
+    {
+      Object[] row = result.get(i);
+      count = Integer.parseInt(row[0].toString());
+    }
+    return count > 0;
+  }
+
+  private synchronized String isPhoneInTheSystem(String phone)
+      throws SQLException
+  {
+    int count = 0;
+    String sql =
+        "SELECT user_email, count(*) FROM users\n" + "WHERE phone_number=?\n"
+            + "GROUP BY user_email;";
+    ArrayList<Object[]> result = super.getDatabase().query(sql, phone);
+    for (int i = 0; i < result.size(); i++)
+    {
+      Object[] row = result.get(i);
+      count = Integer.parseInt(row[1].toString());
+      if (count > 0)
+        return row[0].toString();
+    }
+    return null;
+  }
+
+  private synchronized boolean validateForLogin(String email, String password)
+      throws SQLException
+  {
+    int count = 0;
+    String sql = "SELECT count(*) FROM users WHERE user_email=? AND password=?;";
+    ArrayList<Object[]> result = super.getDatabase()
+        .query(sql, email, password);
+    for (int i = 0; i < result.size(); i++)
+    {
+      Object[] row = result.get(i);
+      count = Integer.parseInt(row[0].toString());
+    }
+    return count > 0;
+  }
+
+  private synchronized void checkEmail(String email) throws SQLException
+  {
+    if (email.isEmpty())
+    {
+      throw new SQLException("Empty email.");
+    }
+    if (!email.contains("@"))
+    {
+      throw new SQLException("Email must be in 'name@domain' format.");
+    }
+    if (isEmailIn(email, "user_email", "users"))
+    {
+      throw new SQLException("Email is already in the system.");
+    }
+  }
+
+  private synchronized void checkPassword(String password,
+      String repeatedPassword) throws SQLException
+  {
+    if (password.isEmpty())
+    {
+      throw new SQLException("Empty password.");
+    }
+    if (password.length() < 4)
+    {
+      throw new SQLException(
+          "The password must be at least 3 characters long.");
+    }
+    if (!password.equals(repeatedPassword))
+      throw new SQLException("The passwords don't match.");
+  }
+
+  private synchronized void checkPhone(String phone) throws SQLException
+  {
+    if (isPhoneInTheSystem(phone) != null)
+    {
+      throw new SQLException("This phone number is already in the system.");
+    }
+  }
+
   private void deleteAuctionsStartedBy(String email) throws SQLException
   {
     String sql = "DELETE FROM auction WHERE creator_email=?;";
     super.getDatabase().update(sql, email);
   }
-
 
   private void updateCurrentBidAndCurrentBidderAfterBan(String email)
       throws SQLException
@@ -444,6 +428,5 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     }
     return count > 0;
   }
-
 
 }

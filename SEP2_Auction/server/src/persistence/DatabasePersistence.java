@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public abstract class DatabasePersistence
 {
-  private MyDatabase database=new MyDatabase(DRIVER, URL, USER, PASSWORD);
+  private MyDatabase database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
   // link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
   private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
@@ -23,17 +23,19 @@ public abstract class DatabasePersistence
 
   public DatabasePersistence() throws SQLException, ClassNotFoundException
   {
-      Class.forName(DRIVER);
+    Class.forName(DRIVER);
   }
 
   public Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(URL, USER, PASSWORD);
   }
+
   public MyDatabase getDatabase()
   {
     return database;
   }
+
   public String getModeratorEmail()
   {
     return MODERATOR_EMAIL;

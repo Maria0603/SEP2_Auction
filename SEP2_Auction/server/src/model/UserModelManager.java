@@ -1,7 +1,6 @@
 package model;
 
 import model.domain.*;
-import persistence.ProtectionProxy;
 import persistence.UserPersistence;
 import persistence.UserProtectionProxy;
 
@@ -12,8 +11,8 @@ import java.time.LocalDate;
 
 public class UserModelManager implements UserModel
 {
-  private PropertyChangeSupport property;
-  private UserPersistence userDatabase;
+  private final PropertyChangeSupport property;
+  private final UserPersistence userDatabase;
 
   public UserModelManager() throws SQLException, ClassNotFoundException
   {
@@ -68,9 +67,7 @@ public class UserModelManager implements UserModel
     User user = userDatabase.editInformation(oldEmail, firstname, lastname,
         email, password, phone, birthday);
     if (!oldEmail.equals(email))
-    {
       property.firePropertyChange("Edit", oldEmail, email);
-    }
     return user;
   }
 

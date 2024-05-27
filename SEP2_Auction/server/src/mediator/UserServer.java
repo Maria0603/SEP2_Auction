@@ -1,8 +1,6 @@
 package mediator;
 
-import model.AuctionModel;
 import model.ListenerSubjectInterface;
-import model.UserListModel;
 import model.UserModel;
 import model.domain.*;
 import utility.observer.listener.GeneralListener;
@@ -14,31 +12,26 @@ import java.beans.PropertyChangeListener;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class UserServer implements UserRemote, RemoteSubject<String, Object>,
     PropertyChangeListener
   {
-    private UserModel model;
-    private ListenerSubjectInterface listenerSubject;
-    private PropertyChangeHandler<String, Object> property;
+    private final UserModel model;
+    private final PropertyChangeHandler<String, Object> property;
 
   public UserServer(UserModel model, ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
     {
       this.model = model;
-      this.listenerSubject=listenerSubject;
       property = new PropertyChangeHandler<>(this, true);
 
-      this.listenerSubject.addListener("Ban", this);
-      this.listenerSubject.addListener("Notification", this);
-      this.listenerSubject.addListener("Edit", this);
-      this.listenerSubject.addListener("Reset", this);
+      listenerSubject.addListener("Ban", this);
+      listenerSubject.addListener("Notification", this);
+      listenerSubject.addListener("Edit", this);
+      listenerSubject.addListener("Reset", this);
 
       startServer();
     }
@@ -91,7 +84,6 @@ public class UserServer implements UserRemote, RemoteSubject<String, Object>,
       return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
     }
 
-
     @Override
     public synchronized void deleteAccount(String email, String password) throws RemoteException, SQLException {
     model.deleteAccount(email, password);
@@ -113,8 +105,6 @@ public class UserServer implements UserRemote, RemoteSubject<String, Object>,
 
     @Override public synchronized void propertyChange(PropertyChangeEvent evt)
     {
-      if(evt.getPropertyName().equals("Bid"))
-        System.out.println("Bid received in server");
       property.firePropertyChange(evt.getPropertyName(),
           String.valueOf(evt.getOldValue()), evt.getNewValue());
     }

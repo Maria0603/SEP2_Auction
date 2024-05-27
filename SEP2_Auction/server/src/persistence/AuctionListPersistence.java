@@ -3,8 +3,6 @@ package persistence;
 import model.domain.*;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public interface AuctionListPersistence
 {

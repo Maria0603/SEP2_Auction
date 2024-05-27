@@ -2,7 +2,6 @@ package model;
 
 import model.domain.Auction;
 import model.domain.AuctionList;
-import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
 import java.sql.SQLException;
 

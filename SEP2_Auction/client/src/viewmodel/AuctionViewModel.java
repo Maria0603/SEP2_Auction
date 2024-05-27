@@ -205,7 +205,6 @@ public class AuctionViewModel implements PropertyChangeListener
         model.addListener("Time", this);
         model.addListener("End", this);
       }
-      System.out.println(isSold.get());
       startAuctionVisibility.set(false);
       disableAsInDisplay.set(true);
 

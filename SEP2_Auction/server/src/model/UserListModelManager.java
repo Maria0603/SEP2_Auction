@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class UserListModelManager implements UserListModel
 {
-  private PropertyChangeSupport property;
-  private UserPersistence userDatabase;
+  private final PropertyChangeSupport property;
+  private final UserPersistence userDatabase;
 
   public UserListModelManager() throws SQLException, ClassNotFoundException
   {
@@ -44,7 +44,6 @@ public class UserListModelManager implements UserListModel
         property.firePropertyChange("Ban", null, participantEmail);
       throw new SQLException(e.getMessage());
     }
-
   }
 
   @Override public String extractBanningReason(String email) throws SQLException
@@ -57,7 +56,6 @@ public class UserListModelManager implements UserListModel
   {
     userDatabase.unbanParticipant(moderatorEmail, participantEmail);
   }
-
 
   @Override public synchronized void addListener(String propertyName,
       PropertyChangeListener listener)

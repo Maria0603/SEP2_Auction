@@ -3,18 +3,16 @@ package persistence;
 import model.domain.*;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
 
-public class AuctionProtectionProxy extends DatabasePersistence implements AuctionPersistence
+public class AuctionProtectionProxy extends DatabasePersistence
+    implements AuctionPersistence
 {
 
-  private AuctionDatabase database;
+  private final AuctionDatabase database;
 
   public AuctionProtectionProxy() throws SQLException, ClassNotFoundException
   {
-    database=new AuctionDatabase();
+    database = new AuctionDatabase();
   }
 
   @Override public Auction saveAuction(String title, String description,
@@ -70,7 +68,7 @@ public class AuctionProtectionProxy extends DatabasePersistence implements Aucti
 
   @Override public Bid buyout(String bidder, int auctionId) throws SQLException
   {
-    if(!isNotModerator(bidder))
+    if (!isNotModerator(bidder))
       throw new SQLException("You cannot participate in auctions.");
     return database.buyout(bidder, auctionId);
   }

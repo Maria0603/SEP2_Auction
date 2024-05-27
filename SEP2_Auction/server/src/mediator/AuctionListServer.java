@@ -3,7 +3,6 @@ package mediator;
 import model.*;
 import model.domain.*;
 import utility.observer.listener.GeneralListener;
-import utility.observer.listener.RemoteListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
 
@@ -12,105 +11,95 @@ import java.beans.PropertyChangeListener;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-public class AuctionListServer implements AuctionListRemote, RemoteSubject<String, Object>,
+public class AuctionListServer
+    implements AuctionListRemote, RemoteSubject<String, Object>,
     PropertyChangeListener
-  {
-    private AuctionListModel model;
-    private ListenerSubjectInterface listenerSubject;
-    private PropertyChangeHandler<String, Object> property;
+{
+  private final AuctionListModel model;
+  private final PropertyChangeHandler<String, Object> property;
 
-    public AuctionListServer(AuctionListModel model, ListenerSubjectInterface listenerSubject)
+  public AuctionListServer(AuctionListModel model,
+      ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
-    {
-      this.model = model;
-      this.listenerSubject=listenerSubject;
+  {
+    this.model = model;
 
-      property = new PropertyChangeHandler<>(this, true);
+    property = new PropertyChangeHandler<>(this, true);
 
-      this.listenerSubject.addListener("Auction", this);
-      this.listenerSubject.addListener("End", this);
-      this.listenerSubject.addListener("Bid", this);
-      this.listenerSubject.addListener("DeleteAuction", this);
-      this.listenerSubject.addListener("Ban", this);
-      this.listenerSubject.addListener("Edit", this);
-      this.listenerSubject.addListener("DeleteAccount", this);
+    listenerSubject.addListener("Auction", this);
+    listenerSubject.addListener("End", this);
+    listenerSubject.addListener("Bid", this);
+    listenerSubject.addListener("DeleteAuction", this);
+    listenerSubject.addListener("Ban", this);
+    listenerSubject.addListener("Edit", this);
+    listenerSubject.addListener("DeleteAccount", this);
 
-      startServer();
-    }
+    startServer();
+  }
 
+  private synchronized void startServer()
+      throws RemoteException, MalformedURLException
+  {
+    UnicastRemoteObject.exportObject(this, 0);
+    Naming.rebind("AuctionListRemote", this);
+  }
 
-    private synchronized void startServer() throws RemoteException, MalformedURLException
-    {
-      UnicastRemoteObject.exportObject(this, 0);
-      Naming.rebind("AuctionListRemote", this);
-    }
-
-
-    @Override public synchronized Auction getAuction(int id)
+  @Override public synchronized Auction getAuction(int id)
       throws RemoteException, SQLException
-    {
-      return model.getAuction(id);
-    }
+  {
+    return model.getAuction(id);
+  }
 
-    @Override public synchronized AuctionList getOngoingAuctions()
+  @Override public synchronized AuctionList getOngoingAuctions()
       throws RemoteException, SQLException
-    {
-      return model.getOngoingAuctions();
-    }
+  {
+    return model.getOngoingAuctions();
+  }
 
+  @Override public synchronized AuctionList getPreviousBids(String bidder)
+      throws SQLException
+  {
+    return model.getPreviousBids(bidder);
+  }
 
-    @Override public synchronized AuctionList getPreviousBids(String bidder) throws SQLException
-    {
-      return model.getPreviousBids(bidder);
-    }
-
-    @Override public synchronized AuctionList getCreatedAuctions(String seller)
+  @Override public synchronized AuctionList getCreatedAuctions(String seller)
       throws RemoteException, SQLException
-    {
-      return model.getCreatedAuctions(seller);
-    }
+  {
+    return model.getCreatedAuctions(seller);
+  }
 
-    @Override public synchronized boolean isModerator(String email)
+  @Override public synchronized boolean isModerator(String email)
       throws RemoteException, SQLException
-    {
-      return model.isModerator(email);
-    }
+  {
+    return model.isModerator(email);
+  }
 
+  @Override public synchronized AuctionList getAllAuctions(
+      String moderatorEmail) throws SQLException
+  {
+    return model.getAllAuctions(moderatorEmail);
+  }
 
-    @Override public synchronized AuctionList getAllAuctions(String moderatorEmail) throws SQLException
-    {
-      return model.getAllAuctions(moderatorEmail);
-    }
-
-
-    @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
-      String... propertyNames) throws RemoteException
-    {
-      return property.addListener(listener, propertyNames);
-    }
-
-    @Override public synchronized boolean removeListener(
+  @Override public synchronized boolean addListener(
       GeneralListener<String, Object> listener, String... propertyNames)
       throws RemoteException
-    {
-      return property.removeListener(listener, propertyNames);
-    }
-
-    @Override public synchronized void propertyChange(PropertyChangeEvent evt)
-    {
-      if(evt.getPropertyName().equals("Bid"))
-        System.out.println("Bid received in server");
-      System.out.println("received "+evt.getPropertyName() + " in auction list server");
-
-      property.firePropertyChange(evt.getPropertyName(),
-          String.valueOf(evt.getOldValue()), evt.getNewValue());
-    }
+  {
+    return property.addListener(listener, propertyNames);
   }
+
+  @Override public synchronized boolean removeListener(
+      GeneralListener<String, Object> listener, String... propertyNames)
+      throws RemoteException
+  {
+    return property.removeListener(listener, propertyNames);
+  }
+
+  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
+  {
+    property.firePropertyChange(evt.getPropertyName(),
+        String.valueOf(evt.getOldValue()), evt.getNewValue());
+  }
+}

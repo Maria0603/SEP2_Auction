@@ -6,23 +6,28 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class ListenerSubject implements NamedPropertyChangeSubject,
-    PropertyChangeListener, ListenerSubjectInterface
+public class ListenerSubject
+    implements NamedPropertyChangeSubject, PropertyChangeListener,
+    ListenerSubjectInterface
 {
-  private AuctionModel auctionModel;
-  private AuctionListModel auctionListModel;
-  private UserModel userModel;
-  private UserListModel userListModel;
-  private PropertyChangeSupport property;
-  public ListenerSubject(AuctionModel auctionModel, AuctionListModel auctionListModel, UserModel userModel, UserListModel userListModel)
+  private final AuctionModel auctionModel;
+  private final AuctionListModel auctionListModel;
+  private final UserModel userModel;
+  private final UserListModel userListModel;
+  private final PropertyChangeSupport property;
+
+  public ListenerSubject(AuctionModel auctionModel,
+      AuctionListModel auctionListModel, UserModel userModel,
+      UserListModel userListModel)
   {
-    this.auctionModel=auctionModel;
-    this.auctionListModel=auctionListModel;
-    this.userModel=userModel;
-    this.userListModel=userListModel;
-    property=new PropertyChangeSupport(this);
+    this.auctionModel = auctionModel;
+    this.auctionListModel = auctionListModel;
+    this.userModel = userModel;
+    this.userListModel = userListModel;
+    property = new PropertyChangeSupport(this);
     addAsListener();
   }
+
   private void addAsListener()
   {
     auctionModel.addListener("Auction", this);
@@ -30,17 +35,16 @@ public class ListenerSubject implements NamedPropertyChangeSubject,
     auctionModel.addListener("Notification", this);
     auctionModel.addListener("Bid", this);
     auctionModel.addListener("DeleteAuction", this);
+
     userListModel.addListener("Ban", this);
 
     userModel.addListener("Reset", this);
-
     userModel.addListener("Edit", this);
     userModel.addListener("DeleteAccount", this);
   }
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("fired " + evt.getPropertyName() + " in listenerSubject");
     property.firePropertyChange(evt);
   }
 
