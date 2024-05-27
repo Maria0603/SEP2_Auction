@@ -18,7 +18,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       String phone, LocalDate birthday) throws SQLException
   {
     String sqlUser =
-        "INSERT INTO sprint1database.users(user_email, password, phone_number, first_name, last_name)  \n"
+        "INSERT INTO \"user\"(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
     String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n";
 
@@ -50,7 +50,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       throws SQLException
   {
     validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
-    String sql = "UPDATE users SET password=?\n" + "WHERE users.user_email=?;";
+    String sql = "UPDATE \"user\" SET password=?\n" + "WHERE user_email=?;";
     super.getDatabase().update(sql, newPassword, userEmail);
   }
 
@@ -98,7 +98,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     deleteBids(email);
 
     String sql1 = "DELETE FROM participant WHERE user_email=?;";
-    String sql2 = "DELETE FROM users WHERE user_email=?;";
+    String sql2 = "DELETE FROM \"user\" WHERE user_email=?;";
     super.getDatabase().update(sql1, email);
     super.getDatabase().update(sql2, email);
   }
@@ -145,7 +145,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
         if (!isPhoneTaken.equals(oldEmail))
           throw new SQLException("This phone number is taken.");
       String sqlUser =
-          "UPDATE users SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
+          "UPDATE \"user\" SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
               + "WHERE user_email=?;";
       String sqlParticipantOrModerator;
 
@@ -192,7 +192,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   @Override public synchronized ArrayList<User> getAllUsers()
       throws SQLException
   {
-    String sql = "SELECT user_email, phone_number, first_name, last_name FROM users WHERE user_email!=?;\n";
+    String sql = "SELECT user_email, phone_number, first_name, last_name FROM \"user\" WHERE user_email!=?;\n";
     ArrayList<Object[]> queryResults = super.getDatabase()
         .query(sql, super.getModeratorEmail());
 
@@ -255,7 +255,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
 
   private synchronized User getUser(String email) throws SQLException
   {
-    String sql = "SELECT phone_number, first_name, last_name FROM users WHERE user_email=?;\n";
+    String sql = "SELECT phone_number, first_name, last_name FROM \"user\" WHERE user_email=?;\n";
     ArrayList<Object[]> results = super.getDatabase().query(sql, email);
     for (int i = 0; i < results.size(); i++)
     {
@@ -279,7 +279,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       throws SQLException
   {
     checkPassword(newPassword, repeatPassword);
-    String sql = "SELECT users.password FROM users\n" + "WHERE user_email=?;";
+    String sql = "SELECT password FROM \"user\"\n" + "WHERE user_email=?;";
     ArrayList<Object[]> result = super.getDatabase().query(sql, userEmail);
     for (int i = 0; i < result.size(); i++)
     {
@@ -312,7 +312,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   {
     int count = 0;
     String sql =
-        "SELECT user_email, count(*) FROM users\n" + "WHERE phone_number=?\n"
+        "SELECT user_email, count(*) FROM \"user\"\n" + "WHERE phone_number=?\n"
             + "GROUP BY user_email;";
     ArrayList<Object[]> result = super.getDatabase().query(sql, phone);
     for (int i = 0; i < result.size(); i++)
@@ -329,7 +329,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       throws SQLException
   {
     int count = 0;
-    String sql = "SELECT count(*) FROM users WHERE user_email=? AND password=?;";
+    String sql = "SELECT count(*) FROM \"user\" WHERE user_email=? AND password=?;";
     ArrayList<Object[]> result = super.getDatabase()
         .query(sql, email, password);
     for (int i = 0; i < result.size(); i++)
@@ -350,7 +350,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     {
       throw new SQLException("Email must be in 'name@domain' format.");
     }
-    if (isEmailIn(email, "user_email", "users"))
+    if (isEmailIn(email, "user_email", "\"user\""))
     {
       throw new SQLException("Email is already in the system.");
     }

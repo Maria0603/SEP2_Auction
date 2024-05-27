@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.sql.Time;
 
 public class Auction
-    implements NamedPropertyChangeSubject, PropertyChangeListener, Serializable
+    implements Serializable
 {
   private final int ID;
   private final Item item;
@@ -25,14 +25,11 @@ public class Auction
   @Serial private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
-  private final PropertyChangeSupport property;
-
   public Auction(int ID, String title, String description, int reservePrice,
       int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
       int currentBid, String currentBidder, String seller, byte[] imageData,
       String status)
   {
-    property = new PropertyChangeSupport(this);
     this.ID = ID;
     this.item = new Item(title, description);
     this.priceConstraint = new PriceConstraint(reservePrice, buyoutPrice,
@@ -137,24 +134,6 @@ public class Auction
     this.status = status;
   }
 
-  @Override synchronized public void addListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.addPropertyChangeListener(propertyName, listener);
-  }
-
-  @Override public synchronized void removeListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-
-    property.removePropertyChangeListener(propertyName, listener);
-  }
-
-  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
-  {
-    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
-        evt.getNewValue());
-  }
 
   public int getId()
   {

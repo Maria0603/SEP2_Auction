@@ -31,12 +31,16 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
         reservePrice, buyoutPrice, minimumIncrement, auctionTime, imageData,
         seller);
     property.firePropertyChange("Auction", null, auction);
+    startTimer(auction);
+    return auction;
+  }
+
+  private void startTimer(Auction auction)
+  {
     ServerTimer timer = new ServerTimer(auction.getStartTime(),
         auction.getEndTime(), auction.getID());
     timer.addListener("End", this);
     new Thread(timer).start();
-
-    return auction;
   }
 
   @Override public synchronized Auction getAuction(int ID) throws SQLException

@@ -11,7 +11,7 @@ public abstract class DatabasePersistence
   private MyDatabase database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
   // link the database; to be changed as the database is expanding
   private static final String DRIVER = "org.postgresql.Driver";
-  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sprint1database";
+  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=database_sep_group7";
   private static final String USER = "postgres";
 
   // so the moderator just logs in, and then they can change their password

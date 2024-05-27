@@ -23,7 +23,7 @@ public class AuctionListDatabase extends DatabasePersistence
       throws SQLException
   {
     String sql =
-        "SELECT *\n" + "FROM sprint1database.auction\n" + "WHERE id=?;";
+        "SELECT *\n" + "FROM auction\n" + "WHERE id=?;";
     ArrayList<Object[]> results = super.getDatabase().query(sql, id);
     for (int i = 0; i < results.size(); i++)
     {
@@ -63,7 +63,7 @@ public class AuctionListDatabase extends DatabasePersistence
   private synchronized Auction getCardAuctionById(int id) throws SQLException
   {
     String sql = "SELECT title, current_bid, image_data, end_time\n"
-        + "FROM sprint1database.auction\n" + "WHERE id=?;";
+        + "FROM auction\n" + "WHERE id=?;";
     ArrayList<Object[]> results = super.getDatabase().query(sql, id);
     for (int i = 0; i < results.size(); i++)
     {
@@ -81,8 +81,7 @@ public class AuctionListDatabase extends DatabasePersistence
   @Override public synchronized AuctionList getOngoingAuctions()
       throws SQLException
   {
-    //TODO: change sprint1database
-    String sql = "SELECT ID FROM sprint1database.auction WHERE status='ONGOING';";
+    String sql = "SELECT ID FROM auction WHERE status='ONGOING';";
     return getAuctions(sql, null);
   }
 
@@ -104,7 +103,7 @@ public class AuctionListDatabase extends DatabasePersistence
   @Override public synchronized AuctionList getAllAuctions(
       String moderatorEmail) throws SQLException
   {
-    String sql = "SELECT ID FROM sprint1database.auction;";
+    String sql = "SELECT ID FROM auction;";
     return getAuctions(sql, null);
   }
 

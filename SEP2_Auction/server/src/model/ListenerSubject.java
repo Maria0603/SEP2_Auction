@@ -21,7 +21,7 @@ public class ListenerSubject
       UserListModel userListModel)
   {
     this.auctionModel = auctionModel;
-    this.auctionListModel = auctionListModel;
+    this.auctionListModel= auctionListModel;
     this.userModel = userModel;
     this.userListModel = userListModel;
     property = new PropertyChangeSupport(this);
