@@ -27,7 +27,6 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
     modelManager.addListener("Notification", this);
     modelManager.addListener("Edit", this);
     modelManager.addListener("Ban", this);
-    modelManager.addListener("Reset", this);
     modelManager.addListener("DeleteAccount", this);
 
     notificationsCache = new NotificationList();
@@ -77,14 +76,6 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
   {
     notificationsCache = modelManager.getNotifications(userEmail);
   }
-  private void updateBidIn(Bid bid, AuctionList cache)
-  {
-    if(cache.contains(bid.getAuctionId()))
-    {
-      cache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
-      cache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
-    }
-  }
 
   private void receivedNotification(PropertyChangeEvent evt)
   {
@@ -92,15 +83,7 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
     if (notification.getReceiver().equals(super.getUserEmail()))
       notificationsCache.addNotification(notification);
   }
-  private void receivedBid(PropertyChangeEvent evt)
-  {
-    // we receive a bid
-    Bid bid = (Bid) evt.getNewValue();
-    System.out.println("received bid in cache; " + bid.getAuctionId() + " "
-        + bid.getBidder() + "   " + bid.getBidAmount());
 
-
-  }
   private void receivedEdit(PropertyChangeEvent evt)
   {
     try
@@ -128,11 +111,10 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in cache");
+    System.out.println("received "+evt.getPropertyName() + " in user list cache");
     switch (evt.getPropertyName())
     {
       case "Notification" -> receivedNotification(evt);
-      case "Bid" -> receivedBid(evt);
       case "Edit" -> receivedEdit(evt);
       case "Ban", "DeleteAccount" -> receivedBanOrDeleteAccount(evt);
     }

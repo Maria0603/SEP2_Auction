@@ -10,12 +10,10 @@ import java.sql.SQLException;
 
 public class AuctionListModelManager implements AuctionListModel
 {
-  private PropertyChangeSupport property;
   private AuctionListPersistence auctionListDatabase;
 
   public AuctionListModelManager() throws SQLException, ClassNotFoundException
   {
-    property = new PropertyChangeSupport(this);
     auctionListDatabase = new AuctionListProtectionProxy();
   }
 
@@ -54,19 +52,6 @@ public class AuctionListModelManager implements AuctionListModel
       String moderatorEmail) throws SQLException
   {
     return auctionListDatabase.getAllAuctions(moderatorEmail);
-  }
-
-
-  @Override public synchronized void addListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.addPropertyChangeListener(propertyName, listener);
-  }
-
-  @Override public synchronized void removeListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.removePropertyChangeListener(propertyName, listener);
   }
 
 }

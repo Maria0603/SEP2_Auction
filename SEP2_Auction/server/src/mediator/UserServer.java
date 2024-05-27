@@ -1,6 +1,8 @@
 package mediator;
 
 import model.AuctionModel;
+import model.ListenerSubjectInterface;
+import model.UserListModel;
 import model.UserModel;
 import model.domain.*;
 import utility.observer.listener.GeneralListener;
@@ -23,29 +25,25 @@ public class UserServer implements UserRemote, RemoteSubject<String, Object>,
     PropertyChangeListener
   {
     private UserModel model;
+    private ListenerSubjectInterface listenerSubject;
     private PropertyChangeHandler<String, Object> property;
 
-  public UserServer(UserModel model)
+  public UserServer(UserModel model, ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
     {
       this.model = model;
+      this.listenerSubject=listenerSubject;
       property = new PropertyChangeHandler<>(this, true);
 
-      model.addListener("Auction", this);
-      model.addListener("Time", this);
-      model.addListener("End", this);
-      model.addListener("Bid", this);
-      model.addListener("Notification", this);
-      model.addListener("Edit", this);
-      model.addListener("Ban", this);
-      model.addListener("Reset", this);
-      model.addListener("DeleteAuction", this);
-      model.addListener("DeleteAccount", this);
+      this.listenerSubject.addListener("Ban", this);
+      this.listenerSubject.addListener("Notification", this);
+      this.listenerSubject.addListener("Edit", this);
+      this.listenerSubject.addListener("Reset", this);
 
       startServer();
     }
 
-    private void startServer() throws RemoteException, MalformedURLException
+    private synchronized void startServer() throws RemoteException, MalformedURLException
     {
       UnicastRemoteObject.exportObject(this, 0);
       Naming.rebind("UserRemote", this);
@@ -86,7 +84,7 @@ public class UserServer implements UserRemote, RemoteSubject<String, Object>,
       return model.isModerator(email);
     }
 
-    @Override public User editInformation(String oldEmail, String firstname,
+    @Override public synchronized User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
       LocalDate birthday) throws RemoteException, SQLException
     {
@@ -95,7 +93,7 @@ public class UserServer implements UserRemote, RemoteSubject<String, Object>,
 
 
     @Override
-    public void deleteAccount(String email, String password) throws RemoteException, SQLException {
+    public synchronized void deleteAccount(String email, String password) throws RemoteException, SQLException {
     model.deleteAccount(email, password);
   }
 

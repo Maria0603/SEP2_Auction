@@ -37,6 +37,10 @@ public class UserListClient implements RemoteListener<String, Object>, UserListM
 
       server.addListener(this, "Notification");
       server.addListener(this, "Ban");
+      server.addListener(this, "Bid");
+      server.addListener(this, "Edit");
+      server.addListener(this, "DeleteAccount");
+
     }
     catch (Exception e)
     {

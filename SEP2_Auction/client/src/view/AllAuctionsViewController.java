@@ -19,7 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-public class AllAuctionsViewController implements PropertyChangeListener {
+public class AllAuctionsViewController {
   @FXML
   private ScrollPane allAuctionsScrollPane;
   @FXML
@@ -49,8 +49,6 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     searchInputField.textProperty()
         .bindBidirectional(this.allAuctionsViewModel.getSearchInputField());
 
-    this.allAuctionsViewModel.addListener("Auction", this);
-    this.allAuctionsViewModel.addListener("End", this);
 
     reset(windowType);
     //loadAuctions();
@@ -132,17 +130,6 @@ public class AllAuctionsViewController implements PropertyChangeListener {
     return (totalElements + NUMBER_OF_COLUMNS - 1) / NUMBER_OF_COLUMNS;
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-    switch (evt.getPropertyName()) {
-      case "Auction" -> {
-        /// here we can trigger grid to add new card to the tail
-      }
-      case "End" ->
-        {
-        }
-    }
-  }
 
   @FXML
   public void searchPressed(ActionEvent actionEvent) throws IOException {

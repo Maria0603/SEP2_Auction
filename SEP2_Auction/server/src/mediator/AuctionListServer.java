@@ -1,9 +1,9 @@
 package mediator;
 
-import model.AuctionListModel;
-import model.AuctionModel;
+import model.*;
 import model.domain.*;
 import utility.observer.listener.GeneralListener;
+import utility.observer.listener.RemoteListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
 
@@ -18,35 +18,38 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AuctionListServer implements AuctionListRemote, RemoteSubject<String, Object>,
     PropertyChangeListener
   {
     private AuctionListModel model;
+    private ListenerSubjectInterface listenerSubject;
     private PropertyChangeHandler<String, Object> property;
+    private List<GeneralListener<String, Object>> listeners = new ArrayList<>();
 
-  public AuctionListServer(AuctionListModel model)
+
+    public AuctionListServer(AuctionListModel model, ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
     {
       this.model = model;
+      this.listenerSubject=listenerSubject;
+
       property = new PropertyChangeHandler<>(this, true);
 
-      model.addListener("Auction", this);
-      model.addListener("Time", this);
-      model.addListener("End", this);
-      model.addListener("Bid", this);
-      model.addListener("Notification", this);
-      model.addListener("Edit", this);
-      model.addListener("Ban", this);
-      model.addListener("Reset", this);
-      model.addListener("DeleteAuction", this);
-      model.addListener("DeleteAccount", this);
+      this.listenerSubject.addListener("Auction", this);
+      this.listenerSubject.addListener("End", this);
+      this.listenerSubject.addListener("Bid", this);
+      this.listenerSubject.addListener("DeleteAuction", this);
+      this.listenerSubject.addListener("Ban", this);
+      this.listenerSubject.addListener("Edit", this);
+      this.listenerSubject.addListener("DeleteAccount", this);
 
       startServer();
     }
 
 
-    private void startServer() throws RemoteException, MalformedURLException
+    private synchronized void startServer() throws RemoteException, MalformedURLException
     {
       UnicastRemoteObject.exportObject(this, 0);
       Naming.rebind("AuctionListRemote", this);
@@ -71,7 +74,7 @@ public class AuctionListServer implements AuctionListRemote, RemoteSubject<Strin
       return model.getPreviousBids(bidder);
     }
 
-    @Override public AuctionList getCreatedAuctions(String seller)
+    @Override public synchronized AuctionList getCreatedAuctions(String seller)
       throws RemoteException, SQLException
     {
       return model.getCreatedAuctions(seller);
@@ -84,7 +87,7 @@ public class AuctionListServer implements AuctionListRemote, RemoteSubject<Strin
     }
 
 
-    @Override public AuctionList getAllAuctions(String moderatorEmail) throws SQLException
+    @Override public synchronized AuctionList getAllAuctions(String moderatorEmail) throws SQLException
     {
       return model.getAllAuctions(moderatorEmail);
     }
@@ -107,6 +110,8 @@ public class AuctionListServer implements AuctionListRemote, RemoteSubject<Strin
     {
       if(evt.getPropertyName().equals("Bid"))
         System.out.println("Bid received in server");
+      System.out.println("received "+evt.getPropertyName() + " in auction list server");
+
       property.firePropertyChange(evt.getPropertyName(),
           String.valueOf(evt.getOldValue()), evt.getNewValue());
     }

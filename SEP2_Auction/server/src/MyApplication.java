@@ -26,10 +26,11 @@ public class MyApplication extends Application
       UserListModel userListModel=new UserListModelManager();
       startRegistry();
       //server = new AuctionServer(model);
-      new AuctionServer(auctionModel);
-      new AuctionListServer(auctionListModel);
-      new UserServer(userModel);
-      new UserListServer(userListModel);
+      ListenerSubjectInterface listenerSubject=new ListenerSubject(auctionModel, auctionListModel, userModel, userListModel);
+      new AuctionServer(auctionModel, listenerSubject);
+      new AuctionListServer(auctionListModel, listenerSubject);
+      new UserServer(userModel, listenerSubject);
+      new UserListServer(userListModel, listenerSubject);
     }
     catch (MalformedURLException | RemoteException | ClassNotFoundException |
            SQLException e)
@@ -43,6 +44,10 @@ public class MyApplication extends Application
     try
     {
       Registry reg = LocateRegistry.createRegistry(1099);
+      Registry regi = LocateRegistry.getRegistry("localhost", 1099);
+      String[] boundNames = regi.list();
+      for (String name : boundNames)
+        System.out.println("Bound name: " + name);
       System.out.println("Registry started...");
     }
     catch (RemoteException e)

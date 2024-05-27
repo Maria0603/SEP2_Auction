@@ -26,6 +26,7 @@ public class UserCacheProxy extends Cache implements UserModel,
 
     modelManager.addListener("Edit", this);
     modelManager.addListener("Reset", this);
+    modelManager.addListener("Ban", this);
   }
 
 
@@ -99,17 +100,6 @@ public class UserCacheProxy extends Cache implements UserModel,
     property.removePropertyChangeListener(propertyName, listener);
   }
 
-  private void updateBidIn(Bid bid, AuctionList cache)
-  {
-    if(cache.contains(bid.getAuctionId()))
-    {
-      cache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
-      cache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
-    }
-  }
-
-
-
   private void receivedEdit(PropertyChangeEvent evt)
   {
     if (super.getUserEmail().equals(evt.getOldValue().toString()))
@@ -121,12 +111,10 @@ public class UserCacheProxy extends Cache implements UserModel,
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in cache");
+    System.out.println("received "+evt.getPropertyName() + " in user cache");
     switch (evt.getPropertyName())
     {
-
       case "Edit" -> receivedEdit(evt);
-
     }
     property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
         evt.getNewValue());

@@ -37,6 +37,12 @@ public class AuctionListClient
 
       server.addListener(this, "Auction");
       server.addListener(this, "End");
+      server.addListener(this, "Bid");
+      server.addListener(this, "Edit");
+      server.addListener(this, "Ban");
+      server.addListener(this, "DeleteAuction");
+      server.addListener(this, "DeleteAccount");
+
     }
     catch (Exception e)
     {
@@ -142,6 +148,8 @@ public class AuctionListClient
   @Override public void propertyChange(ObserverEvent<String, Object> event)
       throws RemoteException
   {
+    System.out.println("received "+event.getPropertyName() + " in auction list client");
+
     property.firePropertyChange(event.getPropertyName(), event.getValue1(),
         event.getValue2());
   }

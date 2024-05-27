@@ -33,7 +33,7 @@ public class AllAccounts_NotificationsViewModel
   {
     this.model = model;
     this.model.addListener("Notification", this);
-    this.model.addListener("Ban", this);
+    //this.model.addListener("Ban", this);
     this.viewModelState = viewModelState;
     notifications = FXCollections.observableArrayList();
     allAccounts = FXCollections.observableArrayList();

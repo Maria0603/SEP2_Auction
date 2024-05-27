@@ -1,7 +1,9 @@
 package mediator;
 
 import model.AuctionModel;
+import model.ListenerSubjectInterface;
 import model.UserListModel;
+import model.UserModel;
 import model.domain.*;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
@@ -23,30 +25,26 @@ public class UserListServer implements UserListRemote, RemoteSubject<String, Obj
     PropertyChangeListener
   {
     private UserListModel model;
+    private ListenerSubjectInterface listenerSubject;
     private PropertyChangeHandler<String, Object> property;
 
-  public UserListServer(UserListModel model)
+  public UserListServer(UserListModel model, ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
     {
       this.model = model;
+      this.listenerSubject=listenerSubject;
       property = new PropertyChangeHandler<>(this, true);
-
-      model.addListener("Auction", this);
-      model.addListener("Time", this);
-      model.addListener("End", this);
-      model.addListener("Bid", this);
-      model.addListener("Notification", this);
-      model.addListener("Edit", this);
-      model.addListener("Ban", this);
-      model.addListener("Reset", this);
-      model.addListener("DeleteAuction", this);
-      model.addListener("DeleteAccount", this);
+      this.listenerSubject.addListener("Edit", this);
+      this.listenerSubject.addListener("DeleteAccount", this);
+      this.listenerSubject.addListener("Bid", this);
+      this.listenerSubject.addListener("Notification", this);
+      this.listenerSubject.addListener("Ban", this);
 
       startServer();
     }
 
 
-    private void startServer() throws RemoteException, MalformedURLException
+    private synchronized void startServer() throws RemoteException, MalformedURLException
     {
       UnicastRemoteObject.exportObject(this, 0);
       Naming.rebind("UserListRemote", this);
@@ -59,25 +57,25 @@ public class UserListServer implements UserListRemote, RemoteSubject<String, Obj
     }
 
 
-    @Override public ArrayList<User> getAllUsers() throws SQLException {
+    @Override public synchronized ArrayList<User> getAllUsers() throws SQLException {
     return model.getAllUsers();
   }
 
 
-    @Override public void banParticipant(String moderatorEmail,
+    @Override public synchronized void banParticipant(String moderatorEmail,
       String participantEmail, String reason)
       throws RemoteException, SQLException
     {
       model.banParticipant(moderatorEmail, participantEmail, reason);
     }
 
-    @Override public String extractBanningReason(String email)
+    @Override public synchronized String extractBanningReason(String email)
       throws RemoteException, SQLException
     {
       return model.extractBanningReason(email);
     }
 
-    @Override public void unbanParticipant(String moderatorEmail,
+    @Override public synchronized void unbanParticipant(String moderatorEmail,
       String participantEmail) throws RemoteException, SQLException
     {
       model.unbanParticipant(moderatorEmail, participantEmail);

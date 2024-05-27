@@ -18,7 +18,7 @@ import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
 public class AllAuctionsViewModel
-    implements PropertyChangeListener, NamedPropertyChangeSubject
+    implements PropertyChangeListener
 {
   private AuctionListModel model;
   private ViewModelState state;
@@ -37,7 +37,6 @@ public class AllAuctionsViewModel
     property = new PropertyChangeSupport(this);
 
     model.addListener("Auction", this);
-    model.addListener("End", this);
 
     auctionCards = FXCollections.observableArrayList();
     searchInputField = new SimpleStringProperty();
@@ -159,10 +158,7 @@ public class AllAuctionsViewModel
       case "Auction":
         if (state.getAllAuctions())
           auctionCards.add((Auction) evt.getNewValue());
-        property.firePropertyChange(evt);
         break;
-      case "End":
-        property.firePropertyChange(evt);
     }
   }
 
@@ -176,15 +172,4 @@ public class AllAuctionsViewModel
     return searchInputField;
   }
 
-  @Override synchronized public void addListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.addPropertyChangeListener(propertyName, listener);
-  }
-
-  @Override public synchronized void removeListener(String propertyName,
-      PropertyChangeListener listener)
-  {
-    property.removePropertyChangeListener(propertyName, listener);
-  }
 }

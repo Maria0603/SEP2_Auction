@@ -22,6 +22,11 @@ public class AuctionListModelManager implements AuctionListModel, PropertyChange
     client = new AuctionListClient();
     client.addListener("Auction", this);
     client.addListener("End", this);
+    client.addListener("Bid", this);
+    client.addListener("Edit", this);
+    client.addListener("Ban", this);
+    client.addListener("DeleteAuction", this);
+    client.addListener("DeleteAccount", this);
   }
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
@@ -60,6 +65,8 @@ public class AuctionListModelManager implements AuctionListModel, PropertyChange
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
+    System.out.println("received "+evt.getPropertyName() + " in auction list model manager client side");
+
     property.firePropertyChange(evt);
   }
 
@@ -72,6 +79,7 @@ public class AuctionListModelManager implements AuctionListModel, PropertyChange
   @Override public void removeListener(String propertyName,
       PropertyChangeListener listener)
   {
+
     property.removePropertyChangeListener(listener);
   }
 }

@@ -23,29 +23,27 @@ public class AuctionServer
     PropertyChangeListener
 {
   private AuctionModel model;
+  private ListenerSubjectInterface listenerSubject;
   private PropertyChangeHandler<String, Object> property;
 
-  public AuctionServer(AuctionModel model)
+  public AuctionServer(AuctionModel model, ListenerSubjectInterface listenerSubject)
       throws MalformedURLException, RemoteException
   {
     this.model = model;
+    this.listenerSubject=listenerSubject;
     property = new PropertyChangeHandler<>(this, true);
 
-    model.addListener("Auction", this);
-    model.addListener("Time", this);
-    model.addListener("End", this);
-    model.addListener("Bid", this);
-    model.addListener("Notification", this);
-    model.addListener("Edit", this);
-    model.addListener("Ban", this);
-    model.addListener("Reset", this);
-    model.addListener("DeleteAuction", this);
-    model.addListener("DeleteAccount", this);
+    this.listenerSubject.addListener("End", this);
+    this.listenerSubject.addListener("Bid", this);
+    this.listenerSubject.addListener("DeleteAuction", this);
+    this.listenerSubject.addListener("Ban", this);
+    this.listenerSubject.addListener("Edit", this);
+    this.listenerSubject.addListener("DeleteAccount", this);
 
     startServer();
   }
 
-  private void startServer() throws RemoteException, MalformedURLException
+  private synchronized void startServer() throws RemoteException, MalformedURLException
   {
     UnicastRemoteObject.exportObject(this, 0);
     Naming.rebind("AuctionRemote", this);
@@ -80,7 +78,7 @@ public class AuctionServer
       model.buyout(bidder, auctionId);
   }
 
-  @Override public void deleteAuction(String moderatorEmail, int auctionId,
+  @Override public synchronized void deleteAuction(String moderatorEmail, int auctionId,
       String reason) throws RemoteException, SQLException
   {
     model.deleteAuction(moderatorEmail, auctionId, reason);

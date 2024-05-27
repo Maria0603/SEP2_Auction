@@ -436,15 +436,7 @@ public class AuctionViewModel implements PropertyChangeListener
           Platform.runLater(()->sellerProperty.set(event.getNewValue().toString()));
         }
       }
-      case "BuyOut" ->
-      {
-        Auction boughtOutAuction = (Auction) event.getNewValue();
-        boughtOutAuction.setStatus("CLOSED");
-        isSold.set(true);
-        leaveAuctionView();
-        state.setAuction(boughtOutAuction);
-        reset();
-      }
+
     }
   }
 

@@ -42,6 +42,8 @@ public class UserClient  implements RemoteListener<String, Object>, UserModel
       server.addListener(this, "Notification");
       server.addListener(this, "Ban");
       server.addListener(this, "Reset");
+      server.addListener(this, "Edit");
+
     }
     catch (Exception e)
     {

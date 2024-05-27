@@ -24,7 +24,9 @@ public class UserListModelManager implements UserListModel, PropertyChangeListen
 
     client.addListener("Notification", this);
     client.addListener("Ban", this);
-    client.addListener("Reset", this);
+    client.addListener("Bid", this);
+    client.addListener("Edit", this);
+    client.addListener("DeleteAccount", this);
 
   }
 

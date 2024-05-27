@@ -22,6 +22,10 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
     client.addListener("End", this);
     client.addListener("Bid", this);
     client.addListener("Edit", this);
+    client.addListener("Ban", this);
+    client.addListener("DeleteAuction", this);
+    client.addListener("DeleteAccount", this);
+
   }
 
   @Override public Auction startAuction(String title, String description,

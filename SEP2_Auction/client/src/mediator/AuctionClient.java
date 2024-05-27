@@ -36,14 +36,10 @@ public class AuctionClient
       UnicastRemoteObject.exportObject(this, 0);
       server = (AuctionRemote) Naming.lookup("rmi://localhost:1099/AuctionRemote");
 
-      server.addListener(this, "Auction");
-      server.addListener(this, "Time");
       server.addListener(this, "End");
       server.addListener(this, "Bid");
-      server.addListener(this, "Notification");
       server.addListener(this, "Edit");
       server.addListener(this, "Ban");
-      server.addListener(this, "Reset");
       server.addListener(this, "DeleteAuction");
       server.addListener(this, "DeleteAccount");
 

@@ -25,6 +25,7 @@ public class UserModelManager implements UserModel, PropertyChangeListener
     client.addListener("Notification", this);
     client.addListener("Ban", this);
     client.addListener("Reset", this);
+    client.addListener("Edit", this);
   }
 
 

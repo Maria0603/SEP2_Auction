@@ -32,14 +32,11 @@ public class AuctionListCacheProxy extends Cache
     modelManager.addListener("Bid", this);
     modelManager.addListener("Edit", this);
     modelManager.addListener("Ban", this);
-    modelManager.addListener("Reset", this);
     modelManager.addListener("DeleteAuction", this);
-
     modelManager.addListener("DeleteAccount", this);
 
     ongoingAuctionsCache = new AuctionList();
     allAuctionsCache = new AuctionList();
-
     previousBidsCache = new AuctionList();
     createdAuctionsCache = new AuctionList();
   }
@@ -71,7 +68,7 @@ public class AuctionListCacheProxy extends Cache
 
   @Override public Auction getAuction(int ID) throws SQLException
   {
-    return null;
+    return modelManager.getAuction(ID);
   }
 
   @Override public boolean isModerator(String email) throws SQLException
@@ -129,7 +126,7 @@ public class AuctionListCacheProxy extends Cache
       Auction auction = null;
       try
       {
-        auction = modelManager.getAuction(buyout.getAuctionId());
+        auction = getAuction(buyout.getAuctionId());
       }
       catch (SQLException e)
       {
@@ -217,12 +214,11 @@ public class AuctionListCacheProxy extends Cache
 
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
-    System.out.println("received "+evt.getPropertyName() + " in cache");
+    System.out.println("received "+evt.getPropertyName() + " in auction list cache");
     switch (evt.getPropertyName())
     {
       case "Auction" -> receivedAuction(evt);
       case "End" -> receivedEnd(evt);
-
       case "Bid" -> receivedBid(evt);
       case "Edit" -> receivedEdit(evt);
       case "Ban", "DeleteAccount" -> receivedBanOrDeleteAccount(evt);
