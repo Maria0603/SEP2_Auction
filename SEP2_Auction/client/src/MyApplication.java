@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import mediator.AuctionClient;
+import mediator.AuctionListClient;
 import mediator.UserClient;
 import mediator.UserListClient;
 import model.*;
@@ -23,7 +24,7 @@ public class MyApplication extends Application
       ViewModelFactory viewModelFactory = new ViewModelFactory(auctionModel, auctionListModel, userModel, userListModel);
       ViewHandler view = new ViewHandler(viewModelFactory);
       new AuctionClient();
-      new AuctionClient();
+      new AuctionListClient();
       new UserClient();
       new UserListClient();
       view.start(primaryStage);

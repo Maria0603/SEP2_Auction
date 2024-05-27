@@ -33,7 +33,10 @@ public class UserListCacheProxy extends Cache implements UserListModel, Property
   }
 
   @Override public NotificationList getNotifications(String receiver)
+      throws SQLException
   {
+    if(notificationsCache.getSize()==0)
+      notificationsCache=modelManager.getNotifications(receiver);
     return notificationsCache;
   }
 

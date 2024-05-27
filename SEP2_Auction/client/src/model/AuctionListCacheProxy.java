@@ -44,18 +44,30 @@ public class AuctionListCacheProxy extends Cache
 
   @Override public AuctionList getOngoingAuctions() throws SQLException
   {
+    if(ongoingAuctionsCache.getSize()==0)
+    {
+      ongoingAuctionsCache=modelManager.getOngoingAuctions();
+    }
     return ongoingAuctionsCache;
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
       throws SQLException
   {
+    if(previousBidsCache.getSize()==0)
+    {
+      previousBidsCache=modelManager.getPreviousBids(bidder);
+    }
     return previousBidsCache;
   }
 
   @Override public AuctionList getCreatedAuctions(String seller)
       throws SQLException
   {
+    if(createdAuctionsCache.getSize()==0)
+    {
+      createdAuctionsCache=modelManager.getCreatedAuctions(seller);
+    }
     return createdAuctionsCache;
   }
 
@@ -63,6 +75,10 @@ public class AuctionListCacheProxy extends Cache
   @Override public AuctionList getAllAuctions(String moderatorEmail)
       throws SQLException
   {
+    if(allAuctionsCache.getSize()==0)
+    {
+      allAuctionsCache=modelManager.getCreatedAuctions(moderatorEmail);
+    }
     return allAuctionsCache;
   }
 
