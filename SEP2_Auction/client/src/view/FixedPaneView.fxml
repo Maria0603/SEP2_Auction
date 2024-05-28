@@ -106,11 +106,6 @@
                   </Button>
                </children>
             </VBox>
-            <ImageView fitHeight="70.0" fitWidth="151.0" layoutX="38.0" layoutY="598.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../icons/logo.png" />
-               </image>
-            </ImageView>
          </children>
       </Pane>
    </left>

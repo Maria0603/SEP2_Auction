@@ -188,7 +188,7 @@ public class FixedPaneViewModel implements PropertyChangeListener
             .equals(((Notification) evt.getNewValue()).getReceiver()))
         {
           notificationsButtonBackgroundProperty.set(
-              "-fx-background-color: #ff0000; ");
+              "-fx-background-color: #EEEEEE; ");
         }
       }
       case "Ban", "Reset" ->
