@@ -52,6 +52,7 @@ public class AuctionProtectionProxy extends DatabasePersistence
   {
     if (!isNotModerator(participantEmail))
       throw new SQLException("The moderator cannot place bids.");
+    database.checkBid(bidAmount, participantEmail, auctionId);
     return database.saveBid(participantEmail, bidAmount, auctionId);
   }
 
@@ -70,6 +71,7 @@ public class AuctionProtectionProxy extends DatabasePersistence
   {
     if (!isNotModerator(bidder))
       throw new SQLException("You cannot participate in auctions.");
+    database.checkBid(database.getAuctionById(auctionId).getPriceConstraint().getBuyoutPrice(), bidder, auctionId);
     return database.buyout(bidder, auctionId);
   }
 

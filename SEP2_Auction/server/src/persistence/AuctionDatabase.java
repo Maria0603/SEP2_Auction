@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class AuctionDatabase extends DatabasePersistence
     implements AuctionPersistence
 {
-  private static final String database = "database_sep2_2";
+  private static final String database = "database_sep2_7";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {
@@ -146,7 +146,6 @@ public class AuctionDatabase extends DatabasePersistence
   @Override public synchronized Bid saveBid(String participantEmail,
       int bidAmount, int auctionId) throws SQLException
   {
-    checkBid(bidAmount, participantEmail, auctionId);
     String sql = "INSERT INTO bid (participant_email, auction_id, bid_amount) VALUES (?, ?, ?)";
     super.getDatabase().update(sql, participantEmail, auctionId, bidAmount);
     Bid bid = new Bid(auctionId, participantEmail, bidAmount);
@@ -288,7 +287,7 @@ public class AuctionDatabase extends DatabasePersistence
     return null;
   }
 
-  private synchronized void checkBid(int bidAmount, String participantEmail,
+  public synchronized void checkBid(int bidAmount, String participantEmail,
       int auctionId) throws SQLException
   {
     String retrieveSql =

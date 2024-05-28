@@ -48,7 +48,7 @@
       <HBox prefHeight="50.0" prefWidth="1102.0" BorderPane.alignment="CENTER">
        <AnchorPane layoutY="6.0" prefHeight="49.0" prefWidth="1102.0">
            <children>
-               <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="1099.0" spacing="10.0">
+               <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="1102.0" spacing="10.0" style="-fx-background-color: #63c5ff;">
                    <children>
                        <TextField fx:id="searchInputField" prefHeight="26.0" prefWidth="344.0">
                            <font>

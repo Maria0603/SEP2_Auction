@@ -15,7 +15,7 @@ public class UserCacheProxy extends CacheProxy
   private final UserModelManager modelManager;
   private final PropertyChangeSupport property;
 
-  public UserCacheProxy() throws SQLException, IOException
+  public UserCacheProxy() throws IllegalArgumentException, IOException
   {
     super();
     property = new PropertyChangeSupport(this);
@@ -30,7 +30,7 @@ public class UserCacheProxy extends CacheProxy
 
   @Override public String addUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
-      LocalDate birthday) throws SQLException
+      LocalDate birthday) throws IllegalArgumentException
   {
     String userEmail = modelManager.addUser(firstname, lastname, email,
         password, repeatedPassword, phone, birthday);
@@ -40,7 +40,7 @@ public class UserCacheProxy extends CacheProxy
   }
 
   @Override public String login(String email, String password)
-      throws SQLException
+      throws IllegalArgumentException
   {
     String userEmail = modelManager.login(email, password);
     super.setUserEmail(userEmail);
@@ -48,37 +48,37 @@ public class UserCacheProxy extends CacheProxy
   }
 
   @Override public void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
+      String newPassword, String repeatPassword) throws IllegalArgumentException
   {
     modelManager.resetPassword(userEmail, oldPassword, newPassword,
         repeatPassword);
   }
 
-  @Override public User getUser(String email) throws SQLException
+  @Override public User getUser(String email) throws IllegalArgumentException
   {
     return modelManager.getUser(email);
   }
 
-  @Override public User getModeratorInfo() throws SQLException
+  @Override public User getModeratorInfo() throws IllegalArgumentException
   {
     return modelManager.getModeratorInfo();
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public boolean isModerator(String email) throws IllegalArgumentException
   {
     return modelManager.isModerator(email);
   }
 
   @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
+      LocalDate birthday) throws IllegalArgumentException
   {
     return modelManager.editInformation(oldEmail, firstname, lastname, email,
         password, phone, birthday);
   }
 
   @Override public void deleteAccount(String email, String password)
-      throws SQLException
+      throws IllegalArgumentException
   {
     modelManager.deleteAccount(email, password);
   }

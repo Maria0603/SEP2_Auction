@@ -17,7 +17,7 @@ public class UserListCacheProxy extends CacheProxy
   private final UserListModelManager modelManager;
   private final PropertyChangeSupport property;
 
-  public UserListCacheProxy() throws SQLException, IOException
+  public UserListCacheProxy() throws IllegalArgumentException, IOException
   {
     super();
     property = new PropertyChangeSupport(this);
@@ -45,31 +45,31 @@ public class UserListCacheProxy extends CacheProxy
   }
 
   @Override public NotificationList getNotifications(String receiver)
-      throws SQLException
+      throws IllegalArgumentException
   {
     if (notificationsCache.getSize() == 0)
       notificationsCache = modelManager.getNotifications(receiver);
     return notificationsCache;
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException
+  @Override public ArrayList<User> getAllUsers() throws IllegalArgumentException
   {
     return modelManager.getAllUsers();
   }
 
   @Override public void banParticipant(String moderatorEmail,
-      String participantEmail, String reason) throws SQLException
+      String participantEmail, String reason) throws IllegalArgumentException
   {
     modelManager.banParticipant(moderatorEmail, participantEmail, reason);
   }
 
-  @Override public String extractBanningReason(String email) throws SQLException
+  @Override public String extractBanningReason(String email) throws IllegalArgumentException
   {
     return modelManager.extractBanningReason(email);
   }
 
   @Override public void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws SQLException
+      String participantEmail) throws IllegalArgumentException
   {
     modelManager.unbanParticipant(moderatorEmail, participantEmail);
   }

@@ -2,13 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#cardSelected" prefHeight="492.0" prefWidth="266.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: cyan;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionCardViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#cardSelected" prefHeight="492.0" prefWidth="266.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #63c5ff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionCardViewController">
    <children>
       <Label fx:id="titleLabel" alignment="TOP_LEFT" layoutX="15.0" layoutY="376.0" prefHeight="108.0" prefWidth="242.0" text="Title with max 80 characters, meaning this many and not more than that........." wrapText="true">
          <font>
@@ -36,6 +37,9 @@
                <viewport>
                   <Rectangle2D />
                </viewport>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </ImageView>
          </children>
          <opaqueInsets>
@@ -51,6 +55,12 @@
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Label>
    </children>
+   <cursor>
+      <Cursor fx:constant="HAND" />
+   </cursor>
 </Pane>

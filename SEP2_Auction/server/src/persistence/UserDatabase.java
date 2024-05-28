@@ -365,12 +365,12 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     {
       throw new SQLException("Empty password.");
     }
-    if (password.length() < 4)
+    if (password.length() < 8)
     {
       throw new SQLException(
           "The password must be at least 3 characters long.");
     }
-    if(password.length()>225)
+    if(password.length()>255)
       throw new SQLException("The password is too long.");
     if (!password.equals(repeatedPassword))
       throw new SQLException("The passwords don't match.");
@@ -382,8 +382,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     {
       throw new SQLException("This phone number is already in the system.");
     }
-    if(phone.length()>20)
-      throw new SQLException("Invalid phone number");
   }
 
   private void deleteAuctionsStartedBy(String email) throws SQLException

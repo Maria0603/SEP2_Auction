@@ -50,7 +50,7 @@ public class AuctionCardViewModel implements PropertyChangeListener
       state.setAuction(model.getAuction(idProperty.get()));
 
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       e.printStackTrace();
     }

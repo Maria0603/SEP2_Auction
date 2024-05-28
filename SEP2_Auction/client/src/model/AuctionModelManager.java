@@ -15,7 +15,7 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   private final PropertyChangeSupport property;
   private final AuctionClient client;
 
-  public AuctionModelManager() throws IOException, SQLException
+  public AuctionModelManager() throws IOException, IllegalArgumentException
   {
     property = new PropertyChangeSupport(this);
     client = new AuctionClient();
@@ -31,30 +31,30 @@ public class AuctionModelManager implements AuctionModel, PropertyChangeListener
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       byte[] imageData, String seller)
-      throws SQLException, ClassNotFoundException
+      throws IllegalArgumentException, ClassNotFoundException
   {
     return client.startAuction(title, description, reservePrice, buyoutPrice,
         minimumIncrement, auctionTime, imageData, seller);
   }
 
-  @Override public Auction getAuction(int ID) throws SQLException
+  @Override public Auction getAuction(int ID) throws IllegalArgumentException
   {
     return client.getAuction(ID);
   }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return client.placeBid(bidder, bidValue, auctionId);
   }
 
-  @Override public void buyout(String bidder, int auctionId) throws SQLException
+  @Override public void buyout(String bidder, int auctionId) throws IllegalArgumentException
   {
     client.buyout(bidder, auctionId);
   }
 
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
-      String reason) throws SQLException
+      String reason) throws IllegalArgumentException
   {
     client.deleteAuction(moderatorEmail, auctionId, reason);
   }

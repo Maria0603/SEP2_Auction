@@ -39,7 +39,7 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     {
       return model.getOngoingAuctions();
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       e.printStackTrace();
     }
@@ -52,7 +52,7 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     {
       return model.getAllAuctions(state.getUserEmail());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       e.printStackTrace();
     }
@@ -65,7 +65,7 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     {
       return model.getCreatedAuctions(state.getUserEmail());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       e.printStackTrace();
     }
@@ -99,7 +99,7 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     {
       return model.getPreviousBids(state.getUserEmail());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       e.printStackTrace();
     }

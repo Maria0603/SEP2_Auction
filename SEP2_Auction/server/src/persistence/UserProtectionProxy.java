@@ -142,7 +142,7 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
 
     private void checkPhone(String phone) throws SQLException
     {
-      if (phone.length() < 4)
+      if (phone.length() < 6)
       {
         throw new SQLException("Invalid phone number.");
       }

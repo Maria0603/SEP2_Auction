@@ -17,7 +17,7 @@ public class UserListModelManager
   private final PropertyChangeSupport property;
   private final UserListClient client;
 
-  public UserListModelManager() throws IOException, SQLException
+  public UserListModelManager() throws IOException, IllegalArgumentException
   {
     property = new PropertyChangeSupport(this);
     client = new UserListClient();
@@ -31,29 +31,29 @@ public class UserListModelManager
   }
 
   @Override public NotificationList getNotifications(String receiver)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return client.getNotifications(receiver);
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException
+  @Override public ArrayList<User> getAllUsers() throws IllegalArgumentException
   {
     return client.getAllUsers();
   }
 
   @Override public void banParticipant(String moderatorEmail,
-      String participantEmail, String reason) throws SQLException
+      String participantEmail, String reason) throws IllegalArgumentException
   {
     client.banParticipant(moderatorEmail, participantEmail, reason);
   }
 
-  @Override public String extractBanningReason(String email) throws SQLException
+  @Override public String extractBanningReason(String email) throws IllegalArgumentException
   {
     return client.extractBanningReason(email);
   }
 
   @Override public void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws SQLException
+      String participantEmail) throws IllegalArgumentException
   {
     client.unbanParticipant(moderatorEmail, participantEmail);
   }

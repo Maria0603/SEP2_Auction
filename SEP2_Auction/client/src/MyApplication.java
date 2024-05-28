@@ -29,7 +29,7 @@ public class MyApplication extends Application
       new UserListClient();
       view.start(primaryStage);
     }
-    catch (IOException | SQLException e)
+    catch (IOException | IllegalArgumentException e)
     {
       e.printStackTrace();
     }

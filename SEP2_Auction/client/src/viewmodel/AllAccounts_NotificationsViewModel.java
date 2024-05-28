@@ -84,7 +84,7 @@ public class AllAccounts_NotificationsViewModel
         allAccounts.add(new AccountViewModel(user));
       }
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -108,7 +108,7 @@ public class AllAccounts_NotificationsViewModel
             selectedRowAccountProperty.getValue().getEmailProperty().get()));
         errorProperty.set("");
       }
-      catch (SQLException e)
+      catch (IllegalArgumentException e)
       {
         errorProperty.set(e.getMessage());
       }
@@ -149,7 +149,7 @@ public class AllAccounts_NotificationsViewModel
           }
         }
       }
-      catch (SQLException e)
+      catch (IllegalArgumentException e)
       {
         errorProperty.set(e.getMessage());
       }
@@ -182,7 +182,7 @@ public class AllAccounts_NotificationsViewModel
         }
       }
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -204,7 +204,7 @@ public class AllAccounts_NotificationsViewModel
             reasonProperty.get());
         reasonProperty.set("");
       }
-      catch (SQLException e)
+      catch (IllegalArgumentException e)
       {
         errorProperty.set(e.getMessage());
       }
@@ -224,7 +224,7 @@ public class AllAccounts_NotificationsViewModel
             selectedRowAccountProperty.getValue().getEmailProperty().get());
         reasonProperty.set("");
       }
-      catch (SQLException e)
+      catch (IllegalArgumentException e)
       {
         errorProperty.set(e.getMessage());
       }

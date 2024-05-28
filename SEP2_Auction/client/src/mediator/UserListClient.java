@@ -50,7 +50,7 @@ public class UserListClient
   }
 
   @Override public NotificationList getNotifications(String receiver)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -60,10 +60,14 @@ public class UserListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public ArrayList<User> getAllUsers() throws SQLException
+  @Override public ArrayList<User> getAllUsers() throws IllegalArgumentException
   {
     try
     {
@@ -73,11 +77,15 @@ public class UserListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public void banParticipant(String moderatorEmail,
-      String participantEmail, String reason) throws SQLException
+      String participantEmail, String reason) throws IllegalArgumentException
   {
     try
     {
@@ -87,9 +95,13 @@ public class UserListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
   }
 
-  @Override public String extractBanningReason(String email) throws SQLException
+  @Override public String extractBanningReason(String email) throws IllegalArgumentException
   {
     try
     {
@@ -99,11 +111,15 @@ public class UserListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws SQLException
+      String participantEmail) throws IllegalArgumentException
   {
     try
     {
@@ -112,6 +128,10 @@ public class UserListClient
     catch (RemoteException e)
     {
       e.printStackTrace();
+    }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
     }
   }
 

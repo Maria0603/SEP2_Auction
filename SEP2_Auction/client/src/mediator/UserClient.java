@@ -52,7 +52,7 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
 
   @Override public String addUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
-      LocalDate birthday) throws SQLException
+      LocalDate birthday) throws IllegalArgumentException
   {
     try
     {
@@ -63,11 +63,15 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public String login(String email, String password)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -77,12 +81,16 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
 
   }
 
   @Override public void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
+      String newPassword, String repeatPassword) throws IllegalArgumentException
   {
     try
     {
@@ -92,9 +100,13 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
   }
 
-  @Override public User getUser(String email) throws SQLException
+  @Override public User getUser(String email) throws IllegalArgumentException
   {
     try
     {
@@ -104,10 +116,14 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public User getModeratorInfo() throws SQLException
+  @Override public User getModeratorInfo() throws IllegalArgumentException
   {
     try
     {
@@ -117,10 +133,14 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public boolean isModerator(String email) throws IllegalArgumentException
   {
     try
     {
@@ -130,12 +150,16 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return false;
   }
 
   @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
+      LocalDate birthday) throws IllegalArgumentException
   {
     try
     {
@@ -146,11 +170,15 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public void deleteAccount(String email, String password)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -159,6 +187,10 @@ public class UserClient implements RemoteListener<String, Object>, UserModel
     catch (RemoteException e)
     {
       e.printStackTrace();
+    }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
     }
   }
 

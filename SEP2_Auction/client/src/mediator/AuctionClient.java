@@ -52,7 +52,7 @@ public class AuctionClient
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       byte[] imageData, String seller)
-      throws SQLException, ClassNotFoundException
+      throws IllegalArgumentException, ClassNotFoundException
   {
     try
     {
@@ -63,10 +63,14 @@ public class AuctionClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public Auction getAuction(int ID) throws SQLException
+  @Override public Auction getAuction(int ID) throws IllegalArgumentException
   {
     try
     {
@@ -76,11 +80,15 @@ public class AuctionClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -90,10 +98,14 @@ public class AuctionClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public void buyout(String bidder, int auctionId) throws SQLException
+  @Override public void buyout(String bidder, int auctionId) throws IllegalArgumentException
   {
     try
     {
@@ -103,11 +115,15 @@ public class AuctionClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
 
   }
 
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
-      String reason) throws SQLException
+      String reason) throws IllegalArgumentException
   {
     try
     {
@@ -116,6 +132,10 @@ public class AuctionClient
     catch (RemoteException e)
     {
       e.printStackTrace();
+    }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
     }
   }
 

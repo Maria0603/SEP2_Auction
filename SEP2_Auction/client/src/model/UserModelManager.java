@@ -16,7 +16,7 @@ public class UserModelManager implements UserModel, PropertyChangeListener
   private final PropertyChangeSupport property;
   private final UserClient client;
 
-  public UserModelManager() throws IOException, SQLException
+  public UserModelManager() throws IOException, IllegalArgumentException
   {
     property = new PropertyChangeSupport(this);
     client = new UserClient();
@@ -29,49 +29,49 @@ public class UserModelManager implements UserModel, PropertyChangeListener
 
   @Override public String addUser(String firstname, String lastname,
       String email, String password, String repeatedPassword, String phone,
-      LocalDate birthday) throws SQLException
+      LocalDate birthday) throws IllegalArgumentException
   {
     return client.addUser(firstname, lastname, email, password,
         repeatedPassword, phone, birthday);
   }
 
   @Override public String login(String email, String password)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return client.login(email, password);
   }
 
   @Override public void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword) throws SQLException
+      String newPassword, String repeatPassword) throws IllegalArgumentException
   {
     client.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
   }
 
-  @Override public User getUser(String email) throws SQLException
+  @Override public User getUser(String email) throws IllegalArgumentException
   {
     return client.getUser(email);
   }
 
-  @Override public User getModeratorInfo() throws SQLException
+  @Override public User getModeratorInfo() throws IllegalArgumentException
   {
     return client.getModeratorInfo();
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public boolean isModerator(String email) throws IllegalArgumentException
   {
     return client.isModerator(email);
   }
 
   @Override public User editInformation(String oldEmail, String firstname,
       String lastname, String email, String password, String phone,
-      LocalDate birthday) throws SQLException
+      LocalDate birthday) throws IllegalArgumentException
   {
     return client.editInformation(oldEmail, firstname, lastname, email,
         password, phone, birthday);
   }
 
   @Override public void deleteAccount(String email, String password)
-      throws SQLException
+      throws IllegalArgumentException
   {
     client.deleteAccount(email, password);
   }

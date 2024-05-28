@@ -16,7 +16,7 @@ public class AuctionListModelManager
   private final PropertyChangeSupport property;
   private final AuctionListClient client;
 
-  public AuctionListModelManager() throws IOException, SQLException
+  public AuctionListModelManager() throws IOException, IllegalArgumentException
   {
     property = new PropertyChangeSupport(this);
     client = new AuctionListClient();
@@ -29,35 +29,35 @@ public class AuctionListModelManager
     client.addListener("DeleteAccount", this);
   }
 
-  @Override public AuctionList getOngoingAuctions() throws SQLException
+  @Override public AuctionList getOngoingAuctions() throws IllegalArgumentException
   {
     return client.getOngoingAuctions();
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return client.getPreviousBids(bidder);
   }
 
   @Override public AuctionList getCreatedAuctions(String seller)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return client.getCreatedAuctions(seller);
   }
 
   @Override public AuctionList getAllAuctions(String moderatorEmail)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return client.getAllAuctions(moderatorEmail);
   }
 
-  @Override public Auction getAuction(int ID) throws SQLException
+  @Override public Auction getAuction(int ID) throws IllegalArgumentException
   {
     return client.getAuction(ID);
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public boolean isModerator(String email) throws IllegalArgumentException
   {
     return client.isModerator(email);
   }

@@ -114,7 +114,7 @@ public class CreateLoginViewModel
       viewState.setUserEmail(email);
       viewState.setModerator(model.isModerator(email));
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -156,7 +156,7 @@ public class CreateLoginViewModel
       viewState.setUserEmail(user);
       viewState.setModerator(model.isModerator(user));
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -197,7 +197,7 @@ public class CreateLoginViewModel
       model.resetPassword(viewState.getUserEmail(), emailProperty.get(),
           passwordProperty.get(), repasswordProperty.get());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -257,7 +257,7 @@ public class CreateLoginViewModel
         birthDate.set(userToBeDisplayed.getBirthday());
       }
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -302,7 +302,7 @@ public class CreateLoginViewModel
     {
       model.deleteAccount(viewState.getUserEmail(), passwordProperty.get());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -320,7 +320,7 @@ public class CreateLoginViewModel
       if (!viewState.isModerator())
         viewState.setUserEmail(emailProperty.get());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }

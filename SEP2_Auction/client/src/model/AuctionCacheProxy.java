@@ -18,7 +18,7 @@ public class AuctionCacheProxy extends CacheProxy
 
   private AuctionList previousOpenedAuctions;
 
-  public AuctionCacheProxy() throws SQLException, IOException
+  public AuctionCacheProxy() throws IllegalArgumentException, IOException
   {
     super();
     property = new PropertyChangeSupport(this);
@@ -37,13 +37,13 @@ public class AuctionCacheProxy extends CacheProxy
   @Override public Auction startAuction(String title, String description,
       int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
       byte[] imageData, String seller)
-      throws SQLException, ClassNotFoundException
+      throws IllegalArgumentException, ClassNotFoundException
   {
     return modelManager.startAuction(title, description, reservePrice,
         buyoutPrice, minimumIncrement, auctionTime, imageData, seller);
   }
 
-  @Override public Auction getAuction(int ID) throws SQLException
+  @Override public Auction getAuction(int ID) throws IllegalArgumentException
   {
     if (previousOpenedAuctions.contains(ID))
       return previousOpenedAuctions.getAuctionByID(ID);
@@ -67,12 +67,12 @@ public class AuctionCacheProxy extends CacheProxy
   }
 
   @Override public Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws SQLException
+      throws IllegalArgumentException
   {
     return modelManager.placeBid(bidder, bidValue, auctionId);
   }
 
-  @Override public void buyout(String bidder, int auctionId) throws SQLException
+  @Override public void buyout(String bidder, int auctionId) throws IllegalArgumentException
   {
     modelManager.buyout(bidder, auctionId);
   }
@@ -88,7 +88,7 @@ public class AuctionCacheProxy extends CacheProxy
   }
 
   @Override public void deleteAuction(String moderatorEmail, int auctionId,
-      String reason) throws SQLException
+      String reason) throws IllegalArgumentException
   {
     modelManager.deleteAuction(moderatorEmail, auctionId, reason);
   }

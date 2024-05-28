@@ -4,14 +4,13 @@ import model.domain.Auction;
 import model.domain.AuctionList;
 import utility.observer.javaobserver.NamedPropertyChangeSubject;
 
-import java.sql.SQLException;
 
 public interface AuctionListModel extends NamedPropertyChangeSubject
 {
-  AuctionList getOngoingAuctions() throws SQLException;
-  AuctionList getPreviousBids(String bidder) throws SQLException;
-  AuctionList getCreatedAuctions(String seller) throws SQLException;
-  AuctionList getAllAuctions(String moderatorEmail) throws SQLException;
-  Auction getAuction(int ID) throws SQLException;
-  boolean isModerator(String email) throws SQLException;
+  AuctionList getOngoingAuctions() throws IllegalArgumentException;
+  AuctionList getPreviousBids(String bidder) throws IllegalArgumentException;
+  AuctionList getCreatedAuctions(String seller) throws IllegalArgumentException;
+  AuctionList getAllAuctions(String moderatorEmail) throws IllegalArgumentException;
+  Auction getAuction(int ID) throws IllegalArgumentException;
+  boolean isModerator(String email) throws IllegalArgumentException;
 }

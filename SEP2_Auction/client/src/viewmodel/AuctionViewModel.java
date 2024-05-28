@@ -105,7 +105,7 @@ public class AuctionViewModel implements PropertyChangeListener
               timeProperty.get(), imageToByteArray(imageProperty.get()),
               state.getUserEmail()).getID()));
     }
-    catch (IllegalArgumentException | SQLException | ClassNotFoundException |
+    catch (IllegalArgumentException | ClassNotFoundException |
            IOException e)
     {
       errorProperty.set(e.getMessage());
@@ -123,7 +123,7 @@ public class AuctionViewModel implements PropertyChangeListener
       bid = model.placeBid(state.getUserEmail(), incomingBidProperty.get(),
           idProperty.get());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
       incomingBidProperty.set(0);
@@ -144,7 +144,7 @@ public class AuctionViewModel implements PropertyChangeListener
     {
       model.buyout(state.getUserEmail(), idProperty.get());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -160,7 +160,7 @@ public class AuctionViewModel implements PropertyChangeListener
       model.deleteAuction(state.getUserEmail(), idProperty.get(),
           reasonProperty.get().trim());
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       errorProperty.set(e.getMessage());
     }
@@ -397,7 +397,7 @@ public class AuctionViewModel implements PropertyChangeListener
           {
             state.setAuction(model.getAuction(bid.getAuctionId()));
           }
-          catch (SQLException e)
+          catch (IllegalArgumentException e)
           {
             Platform.runLater(()->errorProperty.set(e.getMessage()));
           }

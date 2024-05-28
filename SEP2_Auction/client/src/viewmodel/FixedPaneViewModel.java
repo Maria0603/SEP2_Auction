@@ -105,7 +105,7 @@ public class FixedPaneViewModel implements PropertyChangeListener
         state.setModerator(true);
       }
     }
-    catch (SQLException e)
+    catch (IllegalArgumentException e)
     {
       e.printStackTrace();
     }

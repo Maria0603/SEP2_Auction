@@ -49,7 +49,7 @@ public class AuctionListClient
     }
   }
 
-  @Override public AuctionList getOngoingAuctions() throws SQLException
+  @Override public AuctionList getOngoingAuctions() throws IllegalArgumentException
   {
     try
     {
@@ -59,11 +59,15 @@ public class AuctionListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -73,11 +77,15 @@ public class AuctionListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public AuctionList getCreatedAuctions(String seller)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -87,11 +95,15 @@ public class AuctionListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
   @Override public AuctionList getAllAuctions(String moderatorEmail)
-      throws SQLException
+      throws IllegalArgumentException
   {
     try
     {
@@ -101,10 +113,14 @@ public class AuctionListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public Auction getAuction(int ID) throws SQLException
+  @Override public Auction getAuction(int ID) throws IllegalArgumentException
   {
     try
     {
@@ -114,10 +130,14 @@ public class AuctionListClient
     {
       e.printStackTrace();
     }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
+    }
     return null;
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public boolean isModerator(String email) throws IllegalArgumentException
   {
     try
     {
@@ -126,6 +146,10 @@ public class AuctionListClient
     catch (RemoteException e)
     {
       e.printStackTrace();
+    }
+    catch(SQLException e)
+    {
+      throw new IllegalArgumentException(e.getMessage());
     }
     return false;
   }

@@ -16,7 +16,7 @@ public class AuctionListCacheProxy extends CacheProxy
   private final AuctionListModelManager modelManager;
   private final PropertyChangeSupport property;
 
-  public AuctionListCacheProxy() throws SQLException, IOException
+  public AuctionListCacheProxy() throws IllegalArgumentException, IOException
   {
     super();
     property = new PropertyChangeSupport(this);
@@ -48,7 +48,7 @@ public class AuctionListCacheProxy extends CacheProxy
     });
   }
 
-  @Override public AuctionList getOngoingAuctions() throws SQLException
+  @Override public AuctionList getOngoingAuctions() throws IllegalArgumentException
   {
     if (ongoingAuctionsCache.getSize() == 0)
       ongoingAuctionsCache = modelManager.getOngoingAuctions();
@@ -56,7 +56,7 @@ public class AuctionListCacheProxy extends CacheProxy
   }
 
   @Override public AuctionList getPreviousBids(String bidder)
-      throws SQLException
+      throws IllegalArgumentException
   {
     if (previousBidsCache.getSize() == 0)
       previousBidsCache = modelManager.getPreviousBids(bidder);
@@ -64,7 +64,7 @@ public class AuctionListCacheProxy extends CacheProxy
   }
 
   @Override public AuctionList getCreatedAuctions(String seller)
-      throws SQLException
+      throws IllegalArgumentException
   {
     if (createdAuctionsCache.getSize() == 0)
       createdAuctionsCache = modelManager.getCreatedAuctions(seller);
@@ -72,19 +72,19 @@ public class AuctionListCacheProxy extends CacheProxy
   }
 
   @Override public AuctionList getAllAuctions(String moderatorEmail)
-      throws SQLException
+      throws IllegalArgumentException
   {
     if (allAuctionsCache.getSize() == 0)
       allAuctionsCache = modelManager.getAllAuctions(moderatorEmail);
     return allAuctionsCache;
   }
 
-  @Override public Auction getAuction(int ID) throws SQLException
+  @Override public Auction getAuction(int ID) throws IllegalArgumentException
   {
     return modelManager.getAuction(ID);
   }
 
-  @Override public boolean isModerator(String email) throws SQLException
+  @Override public boolean isModerator(String email) throws IllegalArgumentException
   {
     return modelManager.isModerator(email);
   }
@@ -144,7 +144,7 @@ public class AuctionListCacheProxy extends CacheProxy
       {
         auction = getAuction(buyout.getAuctionId());
       }
-      catch (SQLException e)
+      catch (IllegalArgumentException e)
       {
         e.printStackTrace();
       }
@@ -175,7 +175,7 @@ public class AuctionListCacheProxy extends CacheProxy
       {
         previousBidsCache.addAuction(getAuction(bid.getAuctionId()));
       }
-      catch (SQLException e)
+      catch (IllegalArgumentException e)
       {
         e.printStackTrace();
       }
