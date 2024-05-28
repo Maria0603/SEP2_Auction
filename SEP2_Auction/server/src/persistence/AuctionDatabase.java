@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class AuctionDatabase extends DatabasePersistence
     implements AuctionPersistence
 {
-  private static final String database = "database_sep2_7";
+  private static final String database = "database_sep2group7";
 
   public AuctionDatabase() throws SQLException, ClassNotFoundException
   {

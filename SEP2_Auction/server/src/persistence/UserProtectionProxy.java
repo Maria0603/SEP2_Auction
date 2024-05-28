@@ -2,6 +2,7 @@ package persistence;
 
 import model.domain.*;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -30,6 +31,9 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
       checkLastName(lastname);
       checkPhone(phone);
       ageValidation(birthday);
+      database.checkEmail(email);
+      database.checkPassword(password, repeatedPassword);
+      database.checkPhone(phone);
       return database.createUser(firstname, lastname, email, password,
           repeatedPassword, phone, birthday);
     }
@@ -37,6 +41,13 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
     @Override public String login(String email, String password)
         throws SQLException
     {
+      if (!database.validateForLogin(email, password))
+      {
+        throw new SQLException("Credentials do not match");
+      }
+      if (database.isBanned(email))
+        throw new SQLException(
+            "Account closed. Reason: " + extractBanningReason(email));
       return database.login(email, password);
     }
 
@@ -48,6 +59,7 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
     @Override public void resetPassword(String userEmail, String oldPassword,
         String newPassword, String repeatPassword) throws SQLException
     {
+      database.validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
       database.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
     }
 
@@ -73,7 +85,19 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
       checkFirstName(firstname);
       checkLastName(lastname);
       ageValidation(birthday);
-      return database.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
+
+      if (database.validateForLogin(oldEmail, password))
+      {
+        if (!oldEmail.equals(email))
+          database.checkEmail(email);
+        database.checkPassword(password, password);
+        String isPhoneTaken = database.isPhoneInTheSystem(phone);
+        if (isPhoneTaken != null)
+          if (!isPhoneTaken.equals(oldEmail))
+            throw new SQLException("This phone number is taken.");
+        return database.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
+      }
+      throw new SQLException("Wrong password");
     }
 
     @Override public void banParticipant(String moderatorEmail,
@@ -81,18 +105,24 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
     {
       if (isNotModerator(moderatorEmail))
         throw new SQLException("You cannot ban another participant.");
+      if (database.isBanned(participantEmail))
+        throw new SQLException("This participant is already banned.");
       checkReason(reason);
       database.banParticipant(moderatorEmail, participantEmail, reason);
     }
 
     @Override public String extractBanningReason(String email) throws SQLException
     {
-      return database.extractBanningReason(email);
+      if (database.isBanned(email))
+        return database.extractBanningReason(email);
+      return null;
     }
 
     @Override public void unbanParticipant(String moderatorEmail,
         String participantEmail) throws SQLException
     {
+      if (!database.isBanned(participantEmail))
+        throw new SQLException("This participant is not banned.");
       if (isNotModerator(moderatorEmail))
         throw new SQLException("You cannot unban another participant.");
       database.unbanParticipant(moderatorEmail, participantEmail);
@@ -100,6 +130,10 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
 
     @Override public void deleteAccount(String email, String password) throws SQLException
     {
+      if (!database.validateForLogin(email, password))
+      {
+        throw new SQLException("Wrong password");
+      }
       database.deleteAccount(email, password);
     }
 

@@ -21,10 +21,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
         "INSERT INTO \"user\"(user_email, password, phone_number, first_name, last_name)  \n"
             + "VALUES(?,?,?,?,?);";
     String sqlParticipant = "INSERT INTO participant(user_email, birth_date) VALUES (?, ?);\n";
-
-    checkEmail(email);
-    checkPassword(password, repeatedPassword);
-    checkPhone(phone);
     super.getDatabase()
         .update(sqlUser, email, password, phone, firstname, lastname);
     Date date = Date.valueOf(birthday);
@@ -35,13 +31,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   @Override public synchronized String login(String email, String password)
       throws SQLException
   {
-    if (!validateForLogin(email, password))
-    {
-      throw new SQLException("Credentials do not match");
-    }
-    if (isBanned(email))
-      throw new SQLException(
-          "Account closed. Reason: " + extractBanningReason(email));
     return email;
   }
 
@@ -49,7 +38,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       String oldPassword, String newPassword, String repeatPassword)
       throws SQLException
   {
-    validateNewPassword(userEmail, oldPassword, newPassword, repeatPassword);
     String sql = "UPDATE \"user\" SET password=?\n" + "WHERE user_email=?;";
     super.getDatabase().update(sql, newPassword, userEmail);
   }
@@ -89,10 +77,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   @Override public synchronized void deleteAccount(String email,
       String password) throws SQLException
   {
-    if (!validateForLogin(email, password))
-    {
-      throw new SQLException("Wrong password");
-    }
     deleteAuctionsStartedBy(email);
     updateCurrentBidAndCurrentBidderAfterBan(email);
     deleteBids(email);
@@ -106,16 +90,13 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   @Override public synchronized String extractBanningReason(String email)
       throws SQLException
   {
-    if (isBanned(email))
+    String sql = "SELECT reason FROM banned_participant WHERE user_email=?;\n";
+    ArrayList<Object[]> results = super.getDatabase().query(sql, email);
+    for (int i = 0; i < results.size(); i++)
     {
-      String sql = "SELECT reason FROM banned_participant WHERE user_email=?;\n";
-      ArrayList<Object[]> results = super.getDatabase().query(sql, email);
-      for (int i = 0; i < results.size(); i++)
-      {
-        Object[] row = results.get(i);
-        if (row[0] != null)
-          return row[0].toString();
-      }
+      Object[] row = results.get(i);
+      if (row[0] != null)
+        return row[0].toString();
     }
     return null;
   }
@@ -123,8 +104,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   @Override public synchronized void unbanParticipant(String moderatorEmail,
       String participantEmail) throws SQLException
   {
-    if (!isBanned(participantEmail))
-      throw new SQLException("This participant is not banned.");
     String sql = "DELETE FROM banned_participant WHERE user_email=?;\n";
     super.getDatabase().update(sql, participantEmail);
     throw new SQLException("Account linked to email " + participantEmail
@@ -135,15 +114,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       String firstname, String lastname, String email, String password,
       String phone, LocalDate birthday) throws SQLException
   {
-    if (validateForLogin(oldEmail, password))
-    {
-      if (!oldEmail.equals(email))
-        checkEmail(email);
-      checkPassword(password, password);
-      String isPhoneTaken = isPhoneInTheSystem(phone);
-      if (isPhoneTaken != null)
-        if (!isPhoneTaken.equals(oldEmail))
-          throw new SQLException("This phone number is taken.");
       String sqlUser =
           "UPDATE \"user\" SET user_email=?, phone_number=?, first_name=?, last_name=?\n"
               + "WHERE user_email=?;";
@@ -168,8 +138,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
         super.getDatabase().update(sqlParticipantOrModerator, date, email);
       }
       return new User(firstname, lastname, email, password, phone, birthday);
-    }
-    throw new SQLException("Wrong password");
   }
 
   @Override public synchronized NotificationList getNotifications(
@@ -215,9 +183,6 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
   @Override public synchronized void banParticipant(String moderatorEmail,
       String participantEmail, String reason) throws SQLException
   {
-    if (isBanned(participantEmail))
-      throw new SQLException("This participant is already banned.");
-
     String sql = "INSERT INTO banned_participant(user_email, reason) VALUES (?, ?);\n";
     super.getDatabase().update(sql, participantEmail, reason);
     deleteAuctionsStartedBy(participantEmail);
@@ -274,7 +239,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     return null;
   }
 
-  private synchronized void validateNewPassword(String userEmail,
+  public synchronized void validateNewPassword(String userEmail,
       String oldPassword, String newPassword, String repeatPassword)
       throws SQLException
   {
@@ -307,7 +272,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     return count > 0;
   }
 
-  private synchronized String isPhoneInTheSystem(String phone)
+  public synchronized String isPhoneInTheSystem(String phone)
       throws SQLException
   {
     int count = 0;
@@ -325,7 +290,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     return null;
   }
 
-  private synchronized boolean validateForLogin(String email, String password)
+  public synchronized boolean validateForLogin(String email, String password)
       throws SQLException
   {
     int count = 0;
@@ -340,7 +305,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     return count > 0;
   }
 
-  private synchronized void checkEmail(String email) throws SQLException
+  public synchronized void checkEmail(String email) throws SQLException
   {
     if (email.isEmpty())
     {
@@ -350,7 +315,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     {
       throw new SQLException("Email must be in 'name@domain' format.");
     }
-    if(email.length()>200)
+    if (email.length() > 200)
       throw new SQLException("The email is too long.");
     if (isEmailIn(email, "user_email", "\"user\""))
     {
@@ -358,7 +323,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     }
   }
 
-  private synchronized void checkPassword(String password,
+  public synchronized void checkPassword(String password,
       String repeatedPassword) throws SQLException
   {
     if (password.isEmpty())
@@ -370,13 +335,13 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
       throw new SQLException(
           "The password must be at least 3 characters long.");
     }
-    if(password.length()>255)
+    if (password.length() > 255)
       throw new SQLException("The password is too long.");
     if (!password.equals(repeatedPassword))
       throw new SQLException("The passwords don't match.");
   }
 
-  private synchronized void checkPhone(String phone) throws SQLException
+  public synchronized void checkPhone(String phone) throws SQLException
   {
     if (isPhoneInTheSystem(phone) != null)
     {
@@ -420,7 +385,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     super.getDatabase().update(sql2, email);
   }
 
-  private boolean isBanned(String email) throws SQLException
+  public boolean isBanned(String email) throws SQLException
   {
     String sql = "SELECT COUNT(*) FROM banned_participant WHERE user_email=?;\n";
     int count = 0;
