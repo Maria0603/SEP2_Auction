@@ -1,7 +1,21 @@
 
 .button {
-  -fx-background-color: #4A76E8;
+  -fx-background-color: #EEEEEE;
   -fx-background-radius: 0em;
+}
+
+
+.button2 {
+  -fx-background-color: #DF7729;
+  -fx-background-radius: 0.0em;
+  -fx-fill-color: #ffffff;
+  -fx-font-weight: bold;
+}
+
+.button3 {
+  -fx-background-color: #DC5F00;
+  -fx-background-radius: 0.0em;
+  -fx-fill-color: #ffffff;
 }
 
 .button:hover {
@@ -20,11 +34,6 @@ button:focused {
   -fx-border-width: 0px 0px 0px 3px;
 }
 
-.button2 {
-  -fx-background-color: #D9D9D9;
-  -fx-background-radius: 0.2em;
-  -fx-fill-color: #ffffff;
-}
 
 .button2:hover {
   -fx-background-color: #7D9CEE;
