@@ -9,23 +9,36 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
+<!--
+FXML Layout for Fixed Pane View.
+
+Controller: view.FixedPaneViewHandler
+
+This layout defines a user interface for a fixed pane with a top bar containing user actions,
+a left sidebar with navigation buttons, and a central pane for displaying content.
+-->
 <BorderPane fx:id="borderPane" prefHeight="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FixedPaneViewHandler">
    <center>
+      <!-- Center pane for displaying dynamic content -->
       <Pane prefHeight="740.0" prefWidth="1102.0" />
    </center>
    <top>
+      <!-- Top pane with user information and action buttons -->
       <Pane prefHeight="55.0" prefWidth="1328.0" style="-fx-background-color: #63c5ff;" BorderPane.alignment="CENTER">
          <children>
+            <!-- User Email Label -->
             <Label fx:id="emailLabel" layoutX="69.0" layoutY="12.0" prefHeight="31.0" prefWidth="713.0" text="Email">
                <font>
                   <Font name="System Bold" size="21.0" />
                </font>
             </Label>
+            <!-- User Icon -->
             <ImageView fitHeight="34.0" fitWidth="32.0" layoutX="24.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../icons/user (1).png" />
                </image>
             </ImageView>
+            <!-- Log Out Button -->
             <Button id="resetPassword_loginButton" fx:id="logOutButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1199.0" layoutY="12.0" mnemonicParsing="false" onAction="#logOutButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Log out" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
@@ -34,6 +47,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <!-- Notifications Button -->
             <Button id="resetPassword_loginButton" fx:id="notificationsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="809.0" layoutY="12.0" mnemonicParsing="false" onAction="#notificationsButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Notifications" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
@@ -42,6 +56,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <!-- Sell Item Button -->
             <Button id="resetPassword_loginButton" fx:id="sellItemButton" alignment="CENTER" contentDisplay="CENTER" layoutX="941.0" layoutY="13.0" mnemonicParsing="false" onAction="#sellItemButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Sell item" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
@@ -50,6 +65,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <!-- Moderator Info Button -->
             <Button id="resetPassword_loginButton" fx:id="moderatorInfoButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1072.0" layoutY="13.0" mnemonicParsing="false" onAction="#moderatorInfoButtonPressed" prefHeight="30.0" prefWidth="115.0" styleClass="button2" stylesheets="@../css/styling.css" text="Moderator info" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
@@ -62,8 +78,10 @@
       </Pane>
    </top>
    <left>
+      <!-- Left pane with navigation buttons -->
       <Pane prefHeight="780.0" prefWidth="226.0" style="-fx-background-color: #63c5ff;" BorderPane.alignment="CENTER">
          <children>
+            <!-- My Profile Button -->
             <Button id="resetPassword_loginButton" fx:id="myProfileButton" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" mnemonicParsing="false" onAction="#myProfile_settingsButtonPressed" prefHeight="50.0" prefWidth="230.0" styleClass="button2" stylesheets="@../css/styling.css" text="My profile" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
@@ -72,6 +90,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <!-- All Auctions Button -->
             <Button id="resetPassword_loginButton" fx:id="allAuctionsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="50.0" mnemonicParsing="false" onAction="#allAuctionsButtonPressed" prefHeight="50.0" prefWidth="230.0" styleClass="button2" stylesheets="@../css/styling.css" text="All auctions" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
@@ -80,6 +99,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <!-- My Auctions Button -->
             <Button id="resetPassword_loginButton" fx:id="myAuctions_allAccountsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="100.0" mnemonicParsing="false" onAction="#myAuctions_allAccountsButtonPressed" prefHeight="50.0" prefWidth="230.0" styleClass="button2" stylesheets="@../css/styling.css" text="My auctions" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
@@ -88,6 +108,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <!-- My Bids Button -->
             <Button id="resetPassword_loginButton" fx:id="myBidsButton" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="150.0" mnemonicParsing="false" onAction="#myBidsButtonPressed" prefHeight="50.0" prefWidth="230.0" styleClass="button2" stylesheets="@../css/styling.css" text="My bids" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />

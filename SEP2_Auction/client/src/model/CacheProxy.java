@@ -3,22 +3,36 @@ package model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public abstract class CacheProxy
-{
+/**
+ * The CacheProxy class serves as an abstract base class for caching proxies,
+ * providing common functionality for managing user email information.
+ */
+public abstract class CacheProxy {
+
   protected static StringProperty userEmail = new SimpleStringProperty();
 
-  public CacheProxy()
-  {
-
+  /**
+   * Constructs a new CacheProxy object.
+   */
+  public CacheProxy() {
+    // No specific initialization required
   }
 
-  public void setUserEmail(String userEmail)
-  {
+  /**
+   * Sets the user email.
+   *
+   * @param userEmail the user email to set.
+   */
+  public void setUserEmail(String userEmail) {
     CacheProxy.userEmail.set(userEmail);
   }
 
-  public StringProperty getUserEmail()
-  {
+  /**
+   * Gets the user email property.
+   *
+   * @return the user email property.
+   */
+  public StringProperty getUserEmail() {
     return userEmail;
   }
 }

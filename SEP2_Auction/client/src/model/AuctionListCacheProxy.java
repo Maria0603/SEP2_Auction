@@ -8,16 +8,27 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class AuctionListCacheProxy extends CacheProxy
-    implements AuctionListModel, PropertyChangeListener
-{
-  private AuctionList ongoingAuctionsCache, allAuctionsCache;
-  private AuctionList previousBidsCache, createdAuctionsCache;
+/**
+ * The AuctionListCacheProxy class acts as a proxy for the AuctionListModel and implements caching
+ * for auction-related data. It listens to changes from the AuctionListModelManager and updates
+ * the cache accordingly.
+ */
+public class AuctionListCacheProxy extends CacheProxy implements AuctionListModel, PropertyChangeListener {
+
+  private AuctionList ongoingAuctionsCache;
+  private AuctionList allAuctionsCache;
+  private AuctionList previousBidsCache;
+  private AuctionList createdAuctionsCache;
   private final AuctionListModelManager modelManager;
   private final PropertyChangeSupport property;
 
-  public AuctionListCacheProxy() throws IllegalArgumentException, IOException
-  {
+  /**
+   * Constructs a new AuctionListCacheProxy object and initializes the cache and listeners.
+   *
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   * @throws IOException if an I/O error occurs.
+   */
+  public AuctionListCacheProxy() throws IllegalArgumentException, IOException {
     super();
     property = new PropertyChangeSupport(this);
     this.modelManager = new AuctionListModelManager();
@@ -35,74 +46,122 @@ public class AuctionListCacheProxy extends CacheProxy
     createdAuctionsCache = new AuctionList();
 
     super.getUserEmail().addListener((observable, oldValue, newValue) -> {
-      {
-        try
-        {
-          updateCache(userEmail.get());
-        }
-        catch (SQLException e)
-        {
-          e.printStackTrace();
-        }
+      try {
+        updateCache(userEmail.get());
+      } catch (SQLException e) {
+        e.printStackTrace();
       }
     });
   }
 
-  @Override public AuctionList getOngoingAuctions() throws IllegalArgumentException
-  {
+  /**
+   * Retrieves the list of ongoing auctions.
+   *
+   * @return the list of ongoing auctions.
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   */
+  @Override
+  public AuctionList getOngoingAuctions() throws IllegalArgumentException {
     if (ongoingAuctionsCache.getSize() == 0)
       ongoingAuctionsCache = modelManager.getOngoingAuctions();
     return ongoingAuctionsCache;
   }
 
-  @Override public AuctionList getPreviousBids(String bidder)
-      throws IllegalArgumentException
-  {
+  /**
+   * Retrieves the list of previous bids by a bidder.
+   *
+   * @param bidder the name of the bidder.
+   * @return the list of previous bids.
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   */
+  @Override
+  public AuctionList getPreviousBids(String bidder) throws IllegalArgumentException {
     if (previousBidsCache.getSize() == 0)
       previousBidsCache = modelManager.getPreviousBids(bidder);
     return previousBidsCache;
   }
 
-  @Override public AuctionList getCreatedAuctions(String seller)
-      throws IllegalArgumentException
-  {
+  /**
+   * Retrieves the list of auctions created by a seller.
+   *
+   * @param seller the name of the seller.
+   * @return the list of created auctions.
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   */
+  @Override
+  public AuctionList getCreatedAuctions(String seller) throws IllegalArgumentException {
     if (createdAuctionsCache.getSize() == 0)
       createdAuctionsCache = modelManager.getCreatedAuctions(seller);
     return createdAuctionsCache;
   }
 
-  @Override public AuctionList getAllAuctions(String moderatorEmail)
-      throws IllegalArgumentException
-  {
+  /**
+   * Retrieves the list of all auctions for a moderator.
+   *
+   * @param moderatorEmail the email of the moderator.
+   * @return the list of all auctions.
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   */
+  @Override
+  public AuctionList getAllAuctions(String moderatorEmail) throws IllegalArgumentException {
     if (allAuctionsCache.getSize() == 0)
       allAuctionsCache = modelManager.getAllAuctions(moderatorEmail);
     return allAuctionsCache;
   }
 
-  @Override public Auction getAuction(int ID) throws IllegalArgumentException
-  {
+  /**
+   * Retrieves an auction by its ID.
+   *
+   * @param ID the ID of the auction.
+   * @return the Auction with the specified ID.
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   */
+  @Override
+  public Auction getAuction(int ID) throws IllegalArgumentException {
     return modelManager.getAuction(ID);
   }
 
-  @Override public boolean isModerator(String email) throws IllegalArgumentException
-  {
+  /**
+   * Checks if a user is a moderator.
+   *
+   * @param email the email of the user.
+   * @return true if the user is a moderator, false otherwise.
+   * @throws IllegalArgumentException if an illegal argument is provided.
+   */
+  @Override
+  public boolean isModerator(String email) throws IllegalArgumentException {
     return modelManager.isModerator(email);
   }
 
-  @Override public void addListener(String propertyName,
-      PropertyChangeListener listener)
-  {
+  /**
+   * Adds a listener for property change events.
+   *
+   * @param propertyName the name of the property to listen for.
+   * @param listener the listener to add.
+   */
+  @Override
+  public void addListener(String propertyName, PropertyChangeListener listener) {
     property.addPropertyChangeListener(propertyName, listener);
   }
 
-  @Override public void removeListener(String propertyName,
-      PropertyChangeListener listener)
-  {
+  /**
+   * Removes a listener for property change events.
+   *
+   * @param propertyName the name of the property to stop listening for.
+   * @param listener the listener to remove.
+   */
+  @Override
+  public void removeListener(String propertyName, PropertyChangeListener listener) {
     property.removePropertyChangeListener(propertyName, listener);
   }
 
-  private void updateCache(String userEmail) throws SQLException
-  {
+  /**
+   * Updates the cache by fetching data from the model manager.
+   *
+   * @param userEmail the email of the user.
+   * @throws SQLException if a database access error occurs.
+   */
+  private void updateCache(String userEmail) throws SQLException {
     createdAuctionsCache = modelManager.getCreatedAuctions(userEmail);
     previousBidsCache = modelManager.getPreviousBids(userEmail);
     ongoingAuctionsCache = modelManager.getOngoingAuctions();
@@ -110,19 +169,25 @@ public class AuctionListCacheProxy extends CacheProxy
       allAuctionsCache = modelManager.getAllAuctions(userEmail);
   }
 
-  private void updateBidIn(Bid bid, AuctionList cache)
-  {
-    if (cache.contains(bid.getAuctionId()))
-    {
-      cache.getAuctionByID(bid.getAuctionId())
-          .setCurrentBidder(bid.getBidder());
-      cache.getAuctionByID(bid.getAuctionId())
-          .setCurrentBid(bid.getBidAmount());
+  /**
+   * Updates the bid information in the cache.
+   *
+   * @param bid the bid to update.
+   * @param cache the cache to update.
+   */
+  private void updateBidIn(Bid bid, AuctionList cache) {
+    if (cache.contains(bid.getAuctionId())) {
+      cache.getAuctionByID(bid.getAuctionId()).setCurrentBidder(bid.getBidder());
+      cache.getAuctionByID(bid.getAuctionId()).setCurrentBid(bid.getBidAmount());
     }
   }
 
-  private void receivedAuction(PropertyChangeEvent evt)
-  {
+  /**
+   * Handles the "Auction" event and updates the cache accordingly.
+   *
+   * @param evt the property change event.
+   */
+  private void receivedAuction(PropertyChangeEvent evt) {
     Auction auction = (Auction) evt.getNewValue();
     ongoingAuctionsCache.addAuction(auction);
     allAuctionsCache.addAuction(auction);
@@ -131,21 +196,21 @@ public class AuctionListCacheProxy extends CacheProxy
       createdAuctionsCache.addAuction(auction);
   }
 
-  private void receivedEnd(PropertyChangeEvent evt)
-  {
+  /**
+   * Handles the "End" event and updates the cache accordingly.
+   *
+   * @param evt the property change event.
+   */
+  private void receivedEnd(PropertyChangeEvent evt) {
     int auctionId = Integer.parseInt(evt.getOldValue().toString());
     ongoingAuctionsCache.removeAuction(auctionId);
 
-    if (evt.getNewValue() instanceof Bid)
-    {
+    if (evt.getNewValue() instanceof Bid) {
       Bid buyout = (Bid) evt.getNewValue();
       Auction auction = null;
-      try
-      {
+      try {
         auction = getAuction(buyout.getAuctionId());
-      }
-      catch (IllegalArgumentException e)
-      {
+      } catch (IllegalArgumentException e) {
         e.printStackTrace();
       }
       if (buyout.getBidder().equals(super.getUserEmail()))
@@ -158,8 +223,12 @@ public class AuctionListCacheProxy extends CacheProxy
     }
   }
 
-  private void receivedBid(PropertyChangeEvent evt)
-  {
+  /**
+   * Handles the "Bid" event and updates the cache accordingly.
+   *
+   * @param evt the property change event.
+   */
+  private void receivedBid(PropertyChangeEvent evt) {
     // we receive a bid
     Bid bid = (Bid) evt.getNewValue();
 
@@ -167,55 +236,56 @@ public class AuctionListCacheProxy extends CacheProxy
     updateBidIn(bid, ongoingAuctionsCache);
     updateBidIn(bid, allAuctionsCache);
 
-    //if we placed the bid, we add the auction in cache
-    if (!previousBidsCache.contains(bid.getAuctionId()) && bid.getBidder()
-        .equals(super.getUserEmail()))
-    {
-      try
-      {
+    // if we placed the bid, we add the auction in cache
+    if (!previousBidsCache.contains(bid.getAuctionId()) && bid.getBidder().equals(super.getUserEmail())) {
+      try {
         previousBidsCache.addAuction(getAuction(bid.getAuctionId()));
-      }
-      catch (IllegalArgumentException e)
-      {
+      } catch (IllegalArgumentException e) {
         e.printStackTrace();
       }
-    }
-    else
+    } else {
       // if someone else placed a bid for an auction where we previously bid
       // we update the cache
       updateBidIn(bid, previousBidsCache);
+    }
 
     updateBidIn(bid, createdAuctionsCache);
   }
 
-  private void receivedEdit(PropertyChangeEvent evt)
-  {
+  /**
+   * Handles the "Edit" event and updates the cache accordingly.
+   *
+   * @param evt the property change event.
+   */
+  private void receivedEdit(PropertyChangeEvent evt) {
     if (super.getUserEmail().equals(evt.getOldValue().toString()))
       super.setUserEmail(evt.getNewValue().toString());
-    try
-    {
+    try {
       updateCache(super.getUserEmail().get());
-    }
-    catch (SQLException e)
-    {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
   }
 
-  private void receivedBanOrDeleteAccount(PropertyChangeEvent evt)
-  {
-    try
-    {
+  /**
+   * Handles the "Ban" or "DeleteAccount" event and updates the cache accordingly.
+   *
+   * @param evt the property change event.
+   */
+  private void receivedBanOrDeleteAccount(PropertyChangeEvent evt) {
+    try {
       updateCache(super.getUserEmail().get());
-    }
-    catch (SQLException e)
-    {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
   }
 
-  private void receivedDeleteAuction(PropertyChangeEvent evt)
-  {
+  /**
+   * Handles the "DeleteAuction" event and updates the cache accordingly.
+   *
+   * @param evt the property change event.
+   */
+  private void receivedDeleteAuction(PropertyChangeEvent evt) {
     int id = Integer.parseInt(evt.getNewValue().toString());
     ongoingAuctionsCache.removeAuction(id);
     previousBidsCache.removeAuction(id);
@@ -223,19 +293,21 @@ public class AuctionListCacheProxy extends CacheProxy
     allAuctionsCache.removeAuction(id);
   }
 
-  @Override public void propertyChange(PropertyChangeEvent evt)
-  {
-    switch (evt.getPropertyName())
-    {
+  /**
+   * Handles property change events and fires them to registered listeners.
+   *
+   * @param evt the property change event containing the property change information.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    switch (evt.getPropertyName()) {
       case "Auction" -> receivedAuction(evt);
       case "End" -> receivedEnd(evt);
       case "Bid" -> receivedBid(evt);
       case "Edit" -> receivedEdit(evt);
       case "Ban", "DeleteAccount" -> receivedBanOrDeleteAccount(evt);
       case "DeleteAuction" -> receivedDeleteAuction(evt);
-
     }
-    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(),
-        evt.getNewValue());
+    property.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
   }
 }

@@ -42,9 +42,17 @@ public class CreateLoginViewController
   private CreateLoginViewModel viewModel;
   private ViewHandler viewHandler;
 
+  /**
+   * Initializes the controller with the specified parameters.
+   *
+   * @param viewHandler the handler for managing views
+   * @param createLoginViewModel the view model for managing data
+   * @param root the root region of the view
+   * @param windowType the type of window to display
+   */
   public void init(ViewHandler viewHandler,
-      CreateLoginViewModel createLoginViewModel, Region root,
-      WindowType windowType)
+                   CreateLoginViewModel createLoginViewModel, Region root,
+                   WindowType windowType)
   {
     this.root = root;
     this.viewHandler = viewHandler;
@@ -57,11 +65,21 @@ public class CreateLoginViewController
     reset(windowType);
   }
 
+  /**
+   * Gets the root region of the view.
+   *
+   * @return the root region
+   */
   public Region getRoot()
   {
     return root;
   }
 
+  /**
+   * Resets the view based on the specified window type.
+   *
+   * @param type the type of window to reset to
+   */
   public void reset(WindowType type)
   {
     errorLabel.setText("");
@@ -97,6 +115,9 @@ public class CreateLoginViewController
     }
   }
 
+  /**
+   * Handles the action when the confirm button is pressed.
+   */
   @FXML public void confirmButtonPressed()
   {
     viewModel.confirm();
@@ -104,6 +125,9 @@ public class CreateLoginViewController
       viewHandler.openView(WindowType.ALL_AUCTIONS);
   }
 
+  /**
+   * Handles the action when the cancel button is pressed.
+   */
   @FXML public void cancelButtonPressed()
   {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -116,6 +140,9 @@ public class CreateLoginViewController
     }
   }
 
+  /**
+   * Handles the action when the reset password button is pressed.
+   */
   @FXML public void resetPasswordButtonPressed()
   {
     if (headerLabel.getText().equals("Edit profile"))
@@ -138,6 +165,9 @@ public class CreateLoginViewController
       reset(WindowType.RESET_PASSWORD);
   }
 
+  /**
+   * Handles the action when the login/create account button is pressed.
+   */
   @FXML public void loginButtonPressed()
   {
     if (headerLabel.getText().equals("Create account"))
@@ -148,101 +178,110 @@ public class CreateLoginViewController
       reset(WindowType.EDIT_PROFILE);
   }
 
+  /**
+   * Binds the disable property of fields to the view model.
+   */
   private void bindDisableProperty()
   {
     firstNameField.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
     lastNameField.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
     emailField.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
     passwordField.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
     repeatPasswordField.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
     phoneField.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
     datePicker.disableProperty()
-        .bindBidirectional(viewModel.getDisableProperty());
+            .bindBidirectional(viewModel.getDisableProperty());
 
     datePicker.getEditor().setDisable(true);
   }
 
+  /**
+   * Binds the visible property of fields to the view model.
+   */
   private void bindVisibleProperty()
   {
     //to control the visibility from the view model
     //login components
     emailField.visibleProperty()
-        .bindBidirectional(viewModel.getEmailVisibility());
+            .bindBidirectional(viewModel.getEmailVisibility());
     emailLabel.visibleProperty()
-        .bindBidirectional(viewModel.getEmailVisibility());
+            .bindBidirectional(viewModel.getEmailVisibility());
 
     passwordField.visibleProperty()
-        .bindBidirectional(viewModel.getPasswordVisibility());
+            .bindBidirectional(viewModel.getPasswordVisibility());
     passwordLabel.visibleProperty()
-        .bindBidirectional(viewModel.getPasswordVisibility());
+            .bindBidirectional(viewModel.getPasswordVisibility());
 
     //information components
     firstNameField.visibleProperty()
-        .bindBidirectional(viewModel.getInformationVisibility());
+            .bindBidirectional(viewModel.getInformationVisibility());
     firstNameLabel.visibleProperty()
-        .bindBidirectional(viewModel.getInformationVisibility());
+            .bindBidirectional(viewModel.getInformationVisibility());
 
     lastNameField.visibleProperty()
-        .bindBidirectional(viewModel.getInformationVisibility());
+            .bindBidirectional(viewModel.getInformationVisibility());
     lastNameLabel.visibleProperty()
-        .bindBidirectional(viewModel.getInformationVisibility());
+            .bindBidirectional(viewModel.getInformationVisibility());
 
     phoneField.visibleProperty()
-        .bindBidirectional(viewModel.getInformationVisibility());
+            .bindBidirectional(viewModel.getInformationVisibility());
     phoneLabel.visibleProperty()
-        .bindBidirectional(viewModel.getInformationVisibility());
+            .bindBidirectional(viewModel.getInformationVisibility());
 
     //birthday components - different visibility for moderator
     datePicker.visibleProperty()
-        .bindBidirectional(viewModel.getBirthdayVisibility());
+            .bindBidirectional(viewModel.getBirthdayVisibility());
     dateLabel.visibleProperty()
-        .bindBidirectional(viewModel.getBirthdayVisibility());
+            .bindBidirectional(viewModel.getBirthdayVisibility());
 
     //reset password components
     repeatPasswordField.visibleProperty()
-        .bindBidirectional(viewModel.getResetPasswordVisibility());
+            .bindBidirectional(viewModel.getResetPasswordVisibility());
     repeatPasswordLabel.visibleProperty()
-        .bindBidirectional(viewModel.getResetPasswordVisibility());
+            .bindBidirectional(viewModel.getResetPasswordVisibility());
 
     //special components
     resetPasswordButton.visibleProperty()
-        .bindBidirectional(viewModel.getResetPasswordButtonVisibility());
+            .bindBidirectional(viewModel.getResetPasswordButtonVisibility());
     resetPasswordButton.textProperty()
-        .bindBidirectional(viewModel.getResetPasswordButtonText());
+            .bindBidirectional(viewModel.getResetPasswordButtonText());
     login_createAccountButton.textProperty()
-        .bindBidirectional(viewModel.getLogin_createButtonText());
+            .bindBidirectional(viewModel.getLogin_createButtonText());
     login_createAccountButton.visibleProperty()
-        .bindBidirectional(viewModel.getLogin_createButtonVisibility());
+            .bindBidirectional(viewModel.getLogin_createButtonVisibility());
     emailLabel.textProperty().bindBidirectional(viewModel.getEmailLabelText());
     cancelButton.visibleProperty()
-        .bindBidirectional(viewModel.getCancelButtonVisibility());
+            .bindBidirectional(viewModel.getCancelButtonVisibility());
     confirmButton.visibleProperty()
-        .bindBidirectional(viewModel.getConfirmButtonVisibility());
+            .bindBidirectional(viewModel.getConfirmButtonVisibility());
   }
 
+  /**
+   * Binds the values of fields to the view model.
+   */
   private void bindValues()
   {
     //  Bind to viewModel
     firstNameField.textProperty()
-        .bindBidirectional(viewModel.getFirstNameProperty());
+            .bindBidirectional(viewModel.getFirstNameProperty());
     lastNameField.textProperty()
-        .bindBidirectional(viewModel.getLastNameProperty());
+            .bindBidirectional(viewModel.getLastNameProperty());
     emailField.textProperty().bindBidirectional(viewModel.getEmailProperty());
     passwordField.textProperty()
-        .bindBidirectional(viewModel.getPasswordProperty());
+            .bindBidirectional(viewModel.getPasswordProperty());
     repeatPasswordField.textProperty()
-        .bindBidirectional(viewModel.getRepasswordProperty());
+            .bindBidirectional(viewModel.getRepasswordProperty());
     phoneField.textProperty().bindBidirectional(viewModel.getPhoneProperty());
     errorLabel.textProperty().bindBidirectional(viewModel.getErrorProperty());
     headerLabel.textProperty().bindBidirectional(viewModel.getHeaderProperty());
 
     Bindings.bindBidirectional(datePicker.valueProperty(),
-        viewModel.getBirthDate());
+            viewModel.getBirthDate());
   }
 }

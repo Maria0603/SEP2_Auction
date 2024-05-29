@@ -13,6 +13,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 
+/**
+ * The AllAuctionsViewModel class is responsible for managing the data and actions
+ * related to displaying all auctions in the view.
+ */
 public class AllAuctionsViewModel implements PropertyChangeListener
 {
   private final AuctionListModel model;
@@ -21,6 +25,12 @@ public class AllAuctionsViewModel implements PropertyChangeListener
   @FXML private StringProperty searchInputField;
   @FXML private ObservableList<Auction> auctionCards;
 
+  /**
+   * Constructs an AllAuctionsViewModel with the specified model and view model state.
+   *
+   * @param model the auction list model
+   * @param state the view model state
+   */
   public AllAuctionsViewModel(AuctionListModel model, ViewModelState state)
   {
     this.model = model;
@@ -33,6 +43,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     fillAuctionCards();
   }
 
+  /**
+   * Gets the list of ongoing auctions.
+   *
+   * @return the list of ongoing auctions
+   */
   public AuctionList getOngoingAuctions()
   {
     try
@@ -46,6 +61,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     return null;
   }
 
+  /**
+   * Gets the list of all auctions.
+   *
+   * @return the list of all auctions
+   */
   public AuctionList getAllAuctions()
   {
     try
@@ -59,6 +79,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     return null;
   }
 
+  /**
+   * Gets the list of auctions created by the user.
+   *
+   * @return the list of created auctions
+   */
   public AuctionList getCreatedAuctions()
   {
     try
@@ -72,6 +97,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     return null;
   }
 
+  /**
+   * Searches for auctions that match the search input field.
+   *
+   * @return the list of matching auctions
+   */
   public ObservableList<Auction> searchAuctions()
   {
     AuctionList upToDateCards = getAuctionListByState();
@@ -93,6 +123,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     return result;
   }
 
+  /**
+   * Gets the list of previous bids made by the user.
+   *
+   * @return the list of previous bids
+   */
   public AuctionList getPreviousBids()
   {
     try
@@ -106,6 +141,9 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     return null;
   }
 
+  /**
+   * Fills the auction cards list based on the current state.
+   */
   public void fillAuctionCards()
   {
     auctionCards.clear();
@@ -119,6 +157,11 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     }
   }
 
+  /**
+   * Gets the auction list based on the current state.
+   *
+   * @return the auction list
+   */
   private AuctionList getAuctionListByState()
   {
     AuctionList list = new AuctionList();
@@ -132,7 +175,6 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     else if (state.getBids())
     {
       list = getPreviousBids();
-
     }
     else if (state.getCreatedAuctions())
     {
@@ -141,16 +183,31 @@ public class AllAuctionsViewModel implements PropertyChangeListener
     return list;
   }
 
+  /**
+   * Gets the list of auction cards.
+   *
+   * @return the list of auction cards
+   */
   public ObservableList<Auction> getAuctionCards()
   {
     return auctionCards;
   }
 
+  /**
+   * Gets the search input field property.
+   *
+   * @return the search input field property
+   */
   public StringProperty getSearchInputField()
   {
     return searchInputField;
   }
 
+  /**
+   * Handles property change events for auctions.
+   *
+   * @param evt the property change event
+   */
   @Override public void propertyChange(PropertyChangeEvent evt)
   {
     if (evt.getPropertyName().equals("Auction"))
@@ -159,5 +216,4 @@ public class AllAuctionsViewModel implements PropertyChangeListener
         auctionCards.add((Auction) evt.getNewValue());
     }
   }
-
 }

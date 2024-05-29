@@ -9,9 +9,12 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Time;
 
-public class Auction
-    implements Serializable
-{
+/**
+ * The Auction class represents an auction and its related information such as item, price constraints,
+ * current bid, seller, and status. It implements Serializable for object serialization.
+ */
+public class Auction implements Serializable {
+
   private final int ID;
   private final Item item;
   private final PriceConstraint priceConstraint;
@@ -21,134 +24,226 @@ public class Auction
   private byte[] imageData;
 
   ///////////////////////////////////////////////////////////////////
-  //do not change this number
-  @Serial private static final long serialVersionUID = 6529685098267757690L;
+  // Do not change this number
+  @Serial
+  private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
 
+  /**
+   * Constructs a new Auction object with the specified parameters.
+   *
+   * @param ID the ID of the auction.
+   * @param title the title of the auction.
+   * @param description the description of the auction.
+   * @param reservePrice the reserve price of the auction.
+   * @param buyoutPrice the buyout price of the auction.
+   * @param minimumIncrement the minimum increment for bids.
+   * @param auctionStart the start time of the auction.
+   * @param auctionEnd the end time of the auction.
+   * @param currentBid the current bid of the auction.
+   * @param currentBidder the current bidder of the auction.
+   * @param seller the seller of the auction.
+   * @param imageData the image data of the auction item.
+   * @param status the status of the auction.
+   */
   public Auction(int ID, String title, String description, int reservePrice,
-      int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
-      int currentBid, String currentBidder, String seller, byte[] imageData,
-      String status)
-  {
+                 int buyoutPrice, int minimumIncrement, Time auctionStart, Time auctionEnd,
+                 int currentBid, String currentBidder, String seller, byte[] imageData,
+                 String status) {
     this.ID = ID;
     this.item = new Item(title, description);
-    this.priceConstraint = new PriceConstraint(reservePrice, buyoutPrice,
-        minimumIncrement);
-
-    start = auctionStart;
-    end = auctionEnd;
-
+    this.priceConstraint = new PriceConstraint(reservePrice, buyoutPrice, minimumIncrement);
+    this.start = auctionStart;
+    this.end = auctionEnd;
     setImageData(imageData);
     setCurrentBid(currentBid);
     setCurrentBidder(currentBidder);
     setSeller(seller);
     this.status = status;
-
   }
 
-  public Auction(int ID, String title, int currentBid, Time end,
-      byte[] imageData)
-  {
-    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, null, imageData,
-        null);
+  /**
+   * Constructs a new Auction object with the specified parameters.
+   *
+   * @param ID the ID of the auction.
+   * @param title the title of the auction.
+   * @param currentBid the current bid of the auction.
+   * @param end the end time of the auction.
+   * @param imageData the image data of the auction item.
+   */
+  public Auction(int ID, String title, int currentBid, Time end, byte[] imageData) {
+    this(ID, title, null, 0, 0, 0, null, end, currentBid, null, null, imageData, null);
   }
 
-  public boolean isMatchesSearchMask(String searchMask)
-  {
-    return String.valueOf(ID).contains(searchMask) || item.getTitle()
-        .toLowerCase().contains(searchMask);
+  /**
+   * Checks if the auction matches the given search mask.
+   *
+   * @param searchMask the search mask to check.
+   * @return true if the auction matches the search mask, false otherwise.
+   */
+  public boolean isMatchesSearchMask(String searchMask) {
+    return String.valueOf(ID).contains(searchMask) || item.getTitle().toLowerCase().contains(searchMask);
   }
 
-  public Item getItem()
-  {
+  /**
+   * Gets the item associated with the auction.
+   *
+   * @return the item of the auction.
+   */
+  public Item getItem() {
     return item;
   }
 
-  public PriceConstraint getPriceConstraint()
-  {
+  /**
+   * Gets the price constraints of the auction.
+   *
+   * @return the price constraints of the auction.
+   */
+  public PriceConstraint getPriceConstraint() {
     return priceConstraint;
   }
 
-  public String getSeller()
-  {
+  /**
+   * Gets the seller of the auction.
+   *
+   * @return the seller of the auction.
+   */
+  public String getSeller() {
     return seller;
   }
 
-  public Time getEndTime()
-  {
+  /**
+   * Gets the end time of the auction.
+   *
+   * @return the end time of the auction.
+   */
+  public Time getEndTime() {
     return end;
   }
 
-  public Time getStartTime()
-  {
+  /**
+   * Gets the start time of the auction.
+   *
+   * @return the start time of the auction.
+   */
+  public Time getStartTime() {
     return start;
   }
 
-  public byte[] getImageData()
-  {
+  /**
+   * Gets the image data of the auction item.
+   *
+   * @return the image data of the auction item.
+   */
+  public byte[] getImageData() {
     return imageData;
   }
 
-  public void setImageData(byte[] imageData)
-  {
+  /**
+   * Sets the image data of the auction item.
+   *
+   * @param imageData the image data to set.
+   */
+  public void setImageData(byte[] imageData) {
     this.imageData = imageData;
   }
 
-  public int getCurrentBid()
-  {
+  /**
+   * Gets the current bid of the auction.
+   *
+   * @return the current bid of the auction.
+   */
+  public int getCurrentBid() {
     return currentBid;
   }
 
-  public void setCurrentBid(int bid)
-  {
+  /**
+   * Sets the current bid of the auction.
+   *
+   * @param bid the current bid to set.
+   */
+  public void setCurrentBid(int bid) {
     this.currentBid = bid;
   }
 
-  public String getCurrentBidder()
-  {
+  /**
+   * Gets the current bidder of the auction.
+   *
+   * @return the current bidder of the auction.
+   */
+  public String getCurrentBidder() {
     return currentBidder;
   }
 
-  public void setCurrentBidder(String bidder)
-  {
+  /**
+   * Sets the current bidder of the auction.
+   *
+   * @param bidder the current bidder to set.
+   */
+  public void setCurrentBidder(String bidder) {
     this.currentBidder = bidder;
   }
 
-  public void setSeller(String seller)
-  {
+  /**
+   * Sets the seller of the auction.
+   *
+   * @param seller the seller to set.
+   */
+  public void setSeller(String seller) {
     this.seller = seller;
   }
 
-  public int getID()
-  {
+  /**
+   * Gets the ID of the auction.
+   *
+   * @return the ID of the auction.
+   */
+  public int getID() {
     return ID;
   }
 
-  public String getStatus()
-  {
+  /**
+   * Gets the status of the auction.
+   *
+   * @return the status of the auction.
+   */
+  public String getStatus() {
     return status;
   }
 
-  public void setStatus(String status)
-  {
+  /**
+   * Sets the status of the auction.
+   *
+   * @param status the status to set.
+   */
+  public void setStatus(String status) {
     this.status = status;
   }
 
-
-  public int getId()
-  {
+  /**
+   * Gets the ID of the auction.
+   *
+   * @return the ID of the auction.
+   */
+  public int getId() {
     return ID;
   }
 
-  public String getTitle()
-  {
+  /**
+   * Gets the title of the auction item.
+   *
+   * @return the title of the auction item.
+   */
+  public String getTitle() {
     return item.getTitle();
   }
 
-  public String getDescription()
-  {
+  /**
+   * Gets the description of the auction item.
+   *
+   * @return the description of the auction item.
+   */
+  public String getDescription() {
     return item.getDescription();
   }
 }
-
-

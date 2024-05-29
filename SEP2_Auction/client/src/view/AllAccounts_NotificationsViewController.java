@@ -1,5 +1,3 @@
-
-
 package view;
 
 import javafx.event.ActionEvent;
@@ -14,10 +12,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import viewmodel.*;
 
-public class AllAccounts_NotificationsViewController
-{
-  @FXML private Label errorLabel;
+/**
+ * The AllAccounts_NotificationsViewController class is responsible for controlling
+ * the view for displaying and managing user accounts and notifications.
+ * It handles user interactions and updates the view based on data from the view model.
+ */
+public class AllAccounts_NotificationsViewController {
 
+  @FXML private Label errorLabel;
   @FXML public VBox tableViewVBox;
   @FXML private TableView<AccountViewModel> accountTableView;
   @FXML private TableColumn<AccountViewModel, String> emailColumn;
@@ -35,13 +37,18 @@ public class AllAccounts_NotificationsViewController
   @FXML private Button searchButton;
   @FXML private TextField searchTextField;
   @FXML private Button unbanButton;
+
   private Region root;
   private AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel;
 
-  public void init(
-      AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel,
-      Region root, WindowType windowType)
-  {
+  /**
+   * Initializes the view controller with the provided view model and root region.
+   *
+   * @param allAccountsNotificationsViewModel the view model for managing account and notification data.
+   * @param root the root region of the view.
+   * @param windowType the type of window to initialize.
+   */
+  public void init(AllAccounts_NotificationsViewModel allAccountsNotificationsViewModel, Region root, WindowType windowType) {
     this.root = root;
     this.allAccountsNotificationsViewModel = allAccountsNotificationsViewModel;
 
@@ -52,26 +59,29 @@ public class AllAccounts_NotificationsViewController
     reset(windowType);
   }
 
-  public void reset(WindowType windowType)
-  {
+  /**
+   * Resets the view based on the specified window type.
+   *
+   * @param windowType the type of window to reset.
+   */
+  public void reset(WindowType windowType) {
     allAccountsNotificationsViewModel.reset();
     notificationsTableView.getSelectionModel().clearSelection();
-    switch (windowType)
-    {
+    switch (windowType) {
       case NOTIFICATIONS -> setForNotifications();
       case ALL_ACCOUNTS -> setForAccounts();
     }
   }
 
-  private void setForNotifications()
-  {
+  /**
+   * Configures the view for displaying notifications.
+   */
+  private void setForNotifications() {
     tableViewVBox.getChildren().remove(0);
     setDataForNotificationTable();
     tableViewVBox.getChildren().add(notificationsTableView);
-    notificationsTableView.getSelectionModel().selectedItemProperty()
-        .addListener(
-            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedNotification(
-                newVal));
+    notificationsTableView.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedNotification(newVal));
     contentColumn.setPrefWidth(930);
     dateTimeColumn.setPrefWidth(120);
     tableViewVBox.setLayoutX(15);
@@ -79,29 +89,28 @@ public class AllAccounts_NotificationsViewController
     notificationsTableView.setPrefWidth(1050);
   }
 
-  private void setDataForNotificationTable()
-  {
-    notificationsTableView.setItems(
-        allAccountsNotificationsViewModel.getNotifications());
-    dateTimeColumn.setCellValueFactory(
-        cellData -> cellData.getValue().getDateTimeProperty());
-    contentColumn.setCellValueFactory(
-        cellData -> cellData.getValue().getContentProperty());
+  /**
+   * Sets the data for the notification table.
+   */
+  private void setDataForNotificationTable() {
+    notificationsTableView.setItems(allAccountsNotificationsViewModel.getNotifications());
+    dateTimeColumn.setCellValueFactory(cellData -> cellData.getValue().getDateTimeProperty());
+    contentColumn.setCellValueFactory(cellData -> cellData.getValue().getContentProperty());
     allAccountsNotificationsViewModel.setForNotifications();
   }
 
-  private void setForAccounts()
-  {
+  /**
+   * Configures the view for displaying accounts.
+   */
+  private void setForAccounts() {
     setAccountTableViewData();
     allAccountsNotificationsViewModel.setForAccounts();
 
     tableViewVBox.getChildren().remove(0);
-    accountTableView.setItems(
-        allAccountsNotificationsViewModel.getAllAccounts());
+    accountTableView.setItems(allAccountsNotificationsViewModel.getAllAccounts());
     tableViewVBox.getChildren().add(accountTableView);
     accountTableView.getSelectionModel().selectedItemProperty().addListener(
-        (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedAccount(
-            newVal));
+            (obs, oldVal, newVal) -> allAccountsNotificationsViewModel.setSelectedAccount(newVal));
     emailColumn.setPrefWidth(330);
     firstNameColumn.setPrefWidth(210);
     phoneColumn.setPrefWidth(100);
@@ -110,8 +119,10 @@ public class AllAccounts_NotificationsViewController
     accountTableView.setPrefWidth(800);
   }
 
-  private void initAccountTableView()
-  {
+  /**
+   * Initializes the account table view.
+   */
+  private void initAccountTableView() {
     this.accountTableView = new TableView<>();
 
     accountTableView.setPrefHeight(640);
@@ -119,78 +130,77 @@ public class AllAccounts_NotificationsViewController
     this.firstNameColumn = new TableColumn<>("First name");
     this.lastNameColumn = new TableColumn<>("Last Name");
     this.phoneColumn = new TableColumn<>("Phone");
-    accountTableView.getColumns()
-        .addAll(emailColumn, firstNameColumn, lastNameColumn, phoneColumn);
-
+    accountTableView.getColumns().addAll(emailColumn, firstNameColumn, lastNameColumn, phoneColumn);
   }
 
-  private void setAccountTableViewData()
-  {
-    accountTableView.setItems(
-        allAccountsNotificationsViewModel.getAllAccounts());
-    emailColumn.setCellValueFactory(
-        cellData -> cellData.getValue().getEmailProperty());
-    firstNameColumn.setCellValueFactory(
-        cellData -> cellData.getValue().getFirstNameProperty());
-    lastNameColumn.setCellValueFactory(
-        cellData -> cellData.getValue().getLastNameProperty());
-    phoneColumn.setCellValueFactory(
-        cellData -> cellData.getValue().getPhoneProperty());
+  /**
+   * Sets the data for the account table view.
+   */
+  private void setAccountTableViewData() {
+    accountTableView.setItems(allAccountsNotificationsViewModel.getAllAccounts());
+    emailColumn.setCellValueFactory(cellData -> cellData.getValue().getEmailProperty());
+    firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFirstNameProperty());
+    lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().getLastNameProperty());
+    phoneColumn.setCellValueFactory(cellData -> cellData.getValue().getPhoneProperty());
   }
 
-  public Region getRoot()
-  {
+  /**
+   * Gets the root region of the view.
+   *
+   * @return the root region.
+   */
+  public Region getRoot() {
     return root;
   }
 
-  @FXML void searchButtonPressed()
-  {
+  /**
+   * Handles the action of the search button being pressed.
+   */
+  @FXML
+  void searchButtonPressed() {
     allAccountsNotificationsViewModel.search();
     setAccountTableViewData();
   }
 
-  @FXML public void banButtonPressed()
-  {
+  /**
+   * Handles the action of the ban button being pressed.
+   */
+  @FXML
+  public void banButtonPressed() {
     allAccountsNotificationsViewModel.ban();
   }
 
-  @FXML public void unbanButtonPressed()
-  {
+  /**
+   * Handles the action of the unban button being pressed.
+   */
+  @FXML
+  public void unbanButtonPressed() {
     allAccountsNotificationsViewModel.unban();
   }
 
-  private void bindValues()
-  {
-    dateTimeColumn.textProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getFirstColumnNameProperty());
-    contentColumn.textProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getSecondColumnNameProperty());
-    errorLabel.textProperty().bindBidirectional(
-        this.allAccountsNotificationsViewModel.getErrorProperty());
-    searchTextField.textProperty().bindBidirectional(
-        this.allAccountsNotificationsViewModel.getSearchFieldProperty());
-    reasonTextArea.textProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getReasonProperty());
+  /**
+   * Binds values from the view model to the view components.
+   */
+  private void bindValues() {
+    dateTimeColumn.textProperty().bindBidirectional(allAccountsNotificationsViewModel.getFirstColumnNameProperty());
+    contentColumn.textProperty().bindBidirectional(allAccountsNotificationsViewModel.getSecondColumnNameProperty());
+    errorLabel.textProperty().bindBidirectional(this.allAccountsNotificationsViewModel.getErrorProperty());
+    searchTextField.textProperty().bindBidirectional(this.allAccountsNotificationsViewModel.getSearchFieldProperty());
+    reasonTextArea.textProperty().bindBidirectional(allAccountsNotificationsViewModel.getReasonProperty());
   }
 
-  private void bindVisibleProperty()
-  {
-    //visibility controlled from the view model
-    banButton.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    unbanButton.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    emailColumn.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    phoneColumn.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    reasonLabel.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    reasonTextArea.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    searchButton.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
-    searchTextField.visibleProperty().bindBidirectional(
-        allAccountsNotificationsViewModel.getAllFieldsVisibility());
+  /**
+   * Binds visibility properties from the view model to the view components.
+   */
+  private void bindVisibleProperty() {
+    // Visibility controlled from the view model
+    banButton.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    unbanButton.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    emailColumn.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    phoneColumn.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    reasonLabel.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    reasonTextArea.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    searchButton.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
+    searchTextField.visibleProperty().bindBidirectional(allAccountsNotificationsViewModel.getAllFieldsVisibility());
   }
 }

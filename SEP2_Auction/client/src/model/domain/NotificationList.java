@@ -4,35 +4,54 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NotificationList implements Serializable
-{
+/**
+ * The NotificationList class represents a list of notifications and provides methods
+ * to manage the notifications within the list. It implements Serializable for object serialization.
+ */
+public class NotificationList implements Serializable {
+
   ///////////////////////////////////////////////////////////////////
-  //do not change this number
-  @Serial private static final long serialVersionUID = 6529685098267757690L;
+  // Do not change this number
+  @Serial
+  private static final long serialVersionUID = 6529685098267757690L;
   //////////////////////////////////////////////////////////////////
+
   private final ArrayList<Notification> notifications;
 
-  public NotificationList()
-  {
+  /**
+   * Constructs a new NotificationList object.
+   * Initializes an empty list of notifications.
+   */
+  public NotificationList() {
     notifications = new ArrayList<>();
   }
 
-  public void addNotification(Notification notification)
-  {
+  /**
+   * Adds a notification to the list.
+   *
+   * @param notification the notification to add.
+   */
+  public void addNotification(Notification notification) {
     if (notification != null)
       notifications.add(notification);
   }
 
-  public Notification getNotification(int index)
-  {
+  /**
+   * Retrieves a notification by its index in the list.
+   *
+   * @param index the index of the notification to retrieve.
+   * @return the Notification at the specified index.
+   */
+  public Notification getNotification(int index) {
     return notifications.get(index);
   }
 
-  public int getSize()
-  {
+  /**
+   * Gets the number of notifications in the list.
+   *
+   * @return the size of the notification list.
+   */
+  public int getSize() {
     return notifications.size();
   }
 }
-
-
-

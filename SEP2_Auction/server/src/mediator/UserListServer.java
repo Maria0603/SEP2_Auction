@@ -16,16 +16,25 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class UserListServer
-    implements UserListRemote, RemoteSubject<String, Object>,
-    PropertyChangeListener
+/**
+ * The UserListServer class implements the UserListRemote and RemoteSubject interfaces,
+ * and serves as a remote server for managing users and their notifications.
+ */
+public class UserListServer implements UserListRemote, RemoteSubject<String, Object>, PropertyChangeListener
 {
   private final UserListModel model;
   private final PropertyChangeHandler<String, Object> property;
 
-  public UserListServer(UserListModel model,
-      ListenerSubjectInterface listenerSubject)
-      throws MalformedURLException, RemoteException
+  /**
+   * Constructs a UserListServer with the specified model and listener subject.
+   *
+   * @param model the user list model.
+   * @param listenerSubject the listener subject interface.
+   * @throws MalformedURLException if the provided URL is malformed.
+   * @throws RemoteException if there is an RMI error.
+   */
+  public UserListServer(UserListModel model, ListenerSubjectInterface listenerSubject)
+          throws MalformedURLException, RemoteException
   {
     this.model = model;
     property = new PropertyChangeHandler<>(this, true);
@@ -38,61 +47,124 @@ public class UserListServer
     startServer();
   }
 
-  private synchronized void startServer()
-      throws RemoteException, MalformedURLException
+  /**
+   * Starts the server and binds the UserListRemote object.
+   *
+   * @throws RemoteException if there is an RMI error.
+   * @throws MalformedURLException if the provided URL is malformed.
+   */
+  private synchronized void startServer() throws RemoteException, MalformedURLException
   {
     UnicastRemoteObject.exportObject(this, 0);
     Naming.rebind("UserListRemote", this);
   }
 
-  @Override public synchronized NotificationList getNotifications(
-      String receiver) throws RemoteException, SQLException
+  /**
+   * Retrieves the notifications for a specific receiver.
+   *
+   * @param receiver the email or identifier of the receiver.
+   * @return the list of notifications for the receiver.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized NotificationList getNotifications(String receiver) throws RemoteException, SQLException
   {
     return model.getNotifications(receiver);
   }
 
-  @Override public synchronized ArrayList<User> getAllUsers()
-      throws SQLException
+  /**
+   * Retrieves a list of all users.
+   *
+   * @return a list of all users.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized ArrayList<User> getAllUsers() throws SQLException
   {
     return model.getAllUsers();
   }
 
-  @Override public synchronized void banParticipant(String moderatorEmail,
-      String participantEmail, String reason)
-      throws RemoteException, SQLException
+  /**
+   * Bans a participant with a specified reason.
+   *
+   * @param moderatorEmail the email of the moderator performing the ban.
+   * @param participantEmail the email of the participant to be banned.
+   * @param reason the reason for the ban.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized void banParticipant(String moderatorEmail, String participantEmail, String reason)
+          throws RemoteException, SQLException
   {
     model.banParticipant(moderatorEmail, participantEmail, reason);
   }
 
-  @Override public synchronized String extractBanningReason(String email)
-      throws RemoteException, SQLException
+  /**
+   * Extracts the reason for banning a participant based on their email.
+   *
+   * @param email the email of the banned participant.
+   * @return the reason for the ban.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized String extractBanningReason(String email) throws RemoteException, SQLException
   {
     return model.extractBanningReason(email);
   }
 
-  @Override public synchronized void unbanParticipant(String moderatorEmail,
-      String participantEmail) throws RemoteException, SQLException
+  /**
+   * Unbans a participant.
+   *
+   * @param moderatorEmail the email of the moderator performing the unban.
+   * @param participantEmail the email of the participant to be unbanned.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized void unbanParticipant(String moderatorEmail, String participantEmail) throws RemoteException, SQLException
   {
     model.unbanParticipant(moderatorEmail, participantEmail);
   }
 
-  @Override public synchronized boolean addListener(
-      GeneralListener<String, Object> listener, String... propertyNames)
-      throws RemoteException
+  /**
+   * Adds a listener for specific property changes.
+   *
+   * @param listener the listener to be added.
+   * @param propertyNames the properties to listen for.
+   * @return true if the listener was added successfully, false otherwise.
+   * @throws RemoteException if there is an RMI error.
+   */
+  @Override
+  public synchronized boolean addListener(GeneralListener<String, Object> listener, String... propertyNames) throws RemoteException
   {
     return property.addListener(listener, propertyNames);
   }
 
-  @Override public synchronized boolean removeListener(
-      GeneralListener<String, Object> listener, String... propertyNames)
-      throws RemoteException
+  /**
+   * Removes a listener for specific property changes.
+   *
+   * @param listener the listener to be removed.
+   * @param propertyNames the properties to stop listening for.
+   * @return true if the listener was removed successfully, false otherwise.
+   * @throws RemoteException if there is an RMI error.
+   */
+  @Override
+  public synchronized boolean removeListener(GeneralListener<String, Object> listener, String... propertyNames) throws RemoteException
   {
     return property.removeListener(listener, propertyNames);
   }
 
-  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
+  /**
+   * Handles property change events and fires property change notifications.
+   *
+   * @param evt the property change event.
+   */
+  @Override
+  public synchronized void propertyChange(PropertyChangeEvent evt)
   {
-    property.firePropertyChange(evt.getPropertyName(),
-        String.valueOf(evt.getOldValue()), evt.getNewValue());
+    property.firePropertyChange(evt.getPropertyName(), String.valueOf(evt.getOldValue()), evt.getNewValue());
   }
 }

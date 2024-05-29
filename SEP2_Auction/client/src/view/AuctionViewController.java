@@ -17,8 +17,14 @@ import viewmodel.AuctionViewModel;
 import java.io.File;
 import java.util.Optional;
 
-public class AuctionViewController
-{
+/**
+ * Controller class for the auction view in the application. This class handles
+ * the UI interactions and bindings for the auction view, including displaying
+ * auction details, handling user actions for starting, bidding, and deleting
+ * auctions, and managing image imports.
+ */
+public class AuctionViewController {
+
   @FXML public TextField incomingBidTextField;
   @FXML private Label currentBidLabel;
   @FXML private Label bidLabel;
@@ -55,10 +61,16 @@ public class AuctionViewController
   private ViewHandler viewHandler;
   private FileChooser fileChooser;
 
-  // initializations and bindings
-  public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel,
-      Region root, WindowType windowType)
-  {
+  /**
+   * Initializes the controller with the necessary dependencies and sets up
+   * bindings for the view components.
+   *
+   * @param viewHandler the handler for managing view transitions
+   * @param auctionViewModel the view model for the auction
+   * @param root the root region of the view
+   * @param windowType the type of window to be displayed
+   */
+  public void init(ViewHandler viewHandler, AuctionViewModel auctionViewModel, Region root, WindowType windowType) {
     this.root = root;
     this.viewHandler = viewHandler;
     this.auctionViewModel = auctionViewModel;
@@ -71,18 +83,20 @@ public class AuctionViewController
     reset(windowType);
   }
 
-  public void reset(WindowType type)
-  {
+  /**
+   * Resets the view based on the specified window type.
+   *
+   * @param type the type of window to be displayed
+   */
+  public void reset(WindowType type) {
     auctionViewModel.reset();
-    switch (type)
-    {
+    switch (type) {
       case DISPLAY_AUCTION -> setForDisplay();
       case START_AUCTION -> setForStart();
     }
   }
 
-  private void setForStart()
-  {
+  private void setForStart() {
     auctionViewModel.setForStart();
     auctionViewModel.wipe();
 
@@ -93,145 +107,108 @@ public class AuctionViewController
     titleTextArea.requestFocus();
   }
 
-  private void setForDisplay()
-  {
+  private void setForDisplay() {
     if (!auctionViewModel.isModerator())
       anchorPane.setPrefHeight(680);
     else
       anchorPane.setPrefHeight(960);
   }
 
-  public void leaveAuctionView()
-  {
+  /**
+   * Leaves the current auction view.
+   */
+  public void leaveAuctionView() {
     auctionViewModel.leaveAuctionView();
   }
 
-  public Region getRoot()
-  {
+  /**
+   * Returns the root region of the view.
+   *
+   * @return the root region
+   */
+  public Region getRoot() {
     return root;
   }
 
-  @FXML void buyNowButtonPressed(ActionEvent event)
-  {
+  @FXML void buyNowButtonPressed(ActionEvent event) {
     auctionViewModel.buyout();
   }
 
-  @FXML void startAuctionButtonPressed(ActionEvent event)
-  {
+  @FXML void startAuctionButtonPressed(ActionEvent event) {
     auctionViewModel.startAuction();
     if (errorLabel.getText().isEmpty())
       viewHandler.openView(WindowType.DISPLAY_AUCTION);
   }
 
-  @FXML void backButtonPressed()
-  {
+  @FXML void backButtonPressed() {
     cancelButtonPressed();
   }
 
-  @FXML void cancelButtonPressed()
-  {
+  @FXML void cancelButtonPressed() {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Confirmation");
     alert.setHeaderText("Are you sure you want to leave?");
     Optional<ButtonType> result = alert.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK)
-    {
+    if (result.isPresent() && result.get() == ButtonType.OK) {
       leaveAuctionView();
       viewHandler.openView(WindowType.ALL_AUCTIONS);
     }
   }
 
-  @FXML void importButtonPressed()
-  {
+  @FXML void importButtonPressed() {
     imageImageView.setImage(null);
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Open Image File", "*png", "*jpg"));
 
     File file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 
-    if (file != null)
-    {
+    if (file != null) {
       Image image = new Image(file.toURI().toString(), -1, -1, true, true);
       imageImageView.setImage(image);
     }
   }
 
-  @FXML void placeBidButtonPressed(ActionEvent event)
-  {
+  @FXML void placeBidButtonPressed(ActionEvent event) {
     auctionViewModel.placeBid();
   }
 
-  public void deleteButtonPressed()
-  {
+  public void deleteButtonPressed() {
     auctionViewModel.deleteAuction();
-    if (errorLabel.getText().isEmpty() || errorLabel.getText()
-        .contains("closed"))
+    if (errorLabel.getText().isEmpty() || errorLabel.getText().contains("closed"))
       viewHandler.openView(WindowType.ALL_AUCTIONS);
   }
 
-  private void bindValues()
-  {
-    Bindings.bindBidirectional(idLabel.textProperty(),
-        this.auctionViewModel.getIdProperty(), new IntStringConverter());
-    headerLabel.textProperty()
-        .bindBidirectional(this.auctionViewModel.getHeaderProperty());
-    titleTextArea.textProperty()
-        .bindBidirectional(this.auctionViewModel.getTitleProperty());
-    descriptionTextArea.textProperty()
-        .bindBidirectional(this.auctionViewModel.getDescriptionProperty());
-    errorLabel.textProperty()
-        .bindBidirectional(this.auctionViewModel.getErrorProperty());
-    Bindings.bindBidirectional(incrementTextField.textProperty(),
-        this.auctionViewModel.getIncrementProperty(), new IntStringConverter());
-    reasonTextArea.textProperty()
-        .bindBidirectional(this.auctionViewModel.getReasonProperty());
-    Bindings.bindBidirectional(reservePriceTextField.textProperty(),
-        this.auctionViewModel.getReservePriceProperty(),
-        new IntStringConverter());
-    errorLabel.textProperty()
-        .bindBidirectional(this.auctionViewModel.getErrorProperty());
-    Bindings.bindBidirectional(timeTextField.textProperty(),
-        this.auctionViewModel.getTimeProperty(), new IntStringConverter());
-    timerCountdownLabel.textProperty()
-        .bindBidirectional(this.auctionViewModel.getTimerProperty());
-    Bindings.bindBidirectional(buyoutPriceTextField.textProperty(),
-        this.auctionViewModel.getBuyoutPriceProperty(),
-        new IntStringConverter());
-    Bindings.bindBidirectional(imageImageView.imageProperty(),
-        auctionViewModel.getImageProperty());
-    currentBidderLabel.textProperty()
-        .bindBidirectional(this.auctionViewModel.getCurrentBidderProperty());
+  private void bindValues() {
+    Bindings.bindBidirectional(idLabel.textProperty(), this.auctionViewModel.getIdProperty(), new IntStringConverter());
+    headerLabel.textProperty().bindBidirectional(this.auctionViewModel.getHeaderProperty());
+    titleTextArea.textProperty().bindBidirectional(this.auctionViewModel.getTitleProperty());
+    descriptionTextArea.textProperty().bindBidirectional(this.auctionViewModel.getDescriptionProperty());
+    errorLabel.textProperty().bindBidirectional(this.auctionViewModel.getErrorProperty());
+    Bindings.bindBidirectional(incrementTextField.textProperty(), this.auctionViewModel.getIncrementProperty(), new IntStringConverter());
+    reasonTextArea.textProperty().bindBidirectional(this.auctionViewModel.getReasonProperty());
+    Bindings.bindBidirectional(reservePriceTextField.textProperty(), this.auctionViewModel.getReservePriceProperty(), new IntStringConverter());
+    errorLabel.textProperty().bindBidirectional(this.auctionViewModel.getErrorProperty());
+    Bindings.bindBidirectional(timeTextField.textProperty(), this.auctionViewModel.getTimeProperty(), new IntStringConverter());
+    timerCountdownLabel.textProperty().bindBidirectional(this.auctionViewModel.getTimerProperty());
+    Bindings.bindBidirectional(buyoutPriceTextField.textProperty(), this.auctionViewModel.getBuyoutPriceProperty(), new IntStringConverter());
+    Bindings.bindBidirectional(imageImageView.imageProperty(), auctionViewModel.getImageProperty());
+    currentBidderLabel.textProperty().bindBidirectional(this.auctionViewModel.getCurrentBidderProperty());
 
-    Bindings.bindBidirectional(currentBidLabel.textProperty(),
-        this.auctionViewModel.getCurrentBidProperty(),
-        new IntStringConverter());
-    Bindings.bindBidirectional(incomingBidTextField.textProperty(),
-        this.auctionViewModel.getIncomingBidProperty(),
-        new IntStringConverter());
+    Bindings.bindBidirectional(currentBidLabel.textProperty(), this.auctionViewModel.getCurrentBidProperty(), new IntStringConverter());
+    Bindings.bindBidirectional(incomingBidTextField.textProperty(), this.auctionViewModel.getIncomingBidProperty(), new IntStringConverter());
 
-    sellerLabel.textProperty()
-        .bindBidirectional(auctionViewModel.getSellerProperty());
+    sellerLabel.textProperty().bindBidirectional(auctionViewModel.getSellerProperty());
   }
 
-  private void bindVisibleProperty()
-  {
-    importButton.visibleProperty()
-        .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
-    timeLabel.visibleProperty()
-        .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
-    timeTextField.visibleProperty()
-        .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
-    hoursLabel.visibleProperty()
-        .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
-    startAuctionButton.visibleProperty()
-        .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
-    cancelButton.visibleProperty()
-        .bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
+  private void bindVisibleProperty() {
+    importButton.visibleProperty().bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
+    timeLabel.visibleProperty().bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
+    timeTextField.visibleProperty().bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
+    hoursLabel.visibleProperty().bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
+    startAuctionButton.visibleProperty().bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
+    cancelButton.visibleProperty().bindBidirectional(this.auctionViewModel.getStartAuctionVisibility());
 
     // when startAuctionVisibility is true, invertedBinding will be false
-    BooleanBinding invertedBinding = Bindings.createBooleanBinding(
-        () -> !this.auctionViewModel.getStartAuctionVisibility().get(),
-        this.auctionViewModel.getStartAuctionVisibility());
+    BooleanBinding invertedBinding = Bindings.createBooleanBinding(() -> !this.auctionViewModel.getStartAuctionVisibility().get(), this.auctionViewModel.getStartAuctionVisibility());
 
     timerCountdownLabel.visibleProperty().bind(invertedBinding);
     currentBidderLabel.visibleProperty().bind(invertedBinding);
@@ -240,34 +217,22 @@ public class AuctionViewController
     placeBidButton.visibleProperty().bind(invertedBinding);
     buyNowButton.visibleProperty().bind(invertedBinding);
     //////////////////////////////////
-    somethingWrongLabel.visibleProperty()
-        .bind(this.auctionViewModel.getModeratorVisibility());
-    sellerTextLabel.visibleProperty()
-        .bind(this.auctionViewModel.getModeratorVisibility());
-    sellerLabel.visibleProperty()
-        .bind(this.auctionViewModel.getModeratorVisibility());
-    deleteButton.visibleProperty()
-        .bind(this.auctionViewModel.getModeratorVisibility());
-    reasonTextArea.visibleProperty()
-        .bind(this.auctionViewModel.getModeratorVisibility());
+    somethingWrongLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    sellerTextLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    sellerLabel.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    deleteButton.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
+    reasonTextArea.visibleProperty().bind(this.auctionViewModel.getModeratorVisibility());
     //////////////////////////////////
     incomingBidTextField.visibleProperty().bind(invertedBinding);
     currentBidTextLabel.visibleProperty().bind(invertedBinding);
     currentBidderTextLabel.visibleProperty().bind(invertedBinding);
   }
 
-  private void bindDisableProperty()
-  {
-    titleTextArea.disableProperty()
-        .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
-    descriptionTextArea.disableProperty()
-        .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
-    reservePriceTextField.disableProperty()
-        .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
-    buyoutPriceTextField.disableProperty()
-        .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
-    incrementTextField.disableProperty()
-        .bindBidirectional(auctionViewModel.getDisableAsInDisplay());
+  private void bindDisableProperty() {
+    titleTextArea.disableProperty().bindBidirectional(auctionViewModel.getDisableAsInDisplay());
+    descriptionTextArea.disableProperty().bindBidirectional(auctionViewModel.getDisableAsInDisplay());
+    reservePriceTextField.disableProperty().bindBidirectional(auctionViewModel.getDisableAsInDisplay());
+    buyoutPriceTextField.disableProperty().bindBidirectional(auctionViewModel.getDisableAsInDisplay());
+    incrementTextField.disableProperty().bindBidirectional(auctionViewModel.getDisableAsInDisplay());
   }
-
 }
