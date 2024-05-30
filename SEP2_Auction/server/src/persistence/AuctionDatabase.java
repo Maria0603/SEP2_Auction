@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class AuctionDatabase extends DatabasePersistence implements AuctionPersistence {
 
-  private static final String database = "run5";
+  private static final String database = "run7";
 
   /**
    * Constructs an AuctionDatabase object and initializes the database schema.

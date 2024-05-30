@@ -11,7 +11,8 @@ import java.time.LocalDate;
  * ViewModel for creating and managing login, account creation, profile display,
  * and password reset functionality.
  */
-public class CreateLoginViewModel {
+public class CreateLoginViewModel
+{
   private final StringProperty headerProperty;
   private final StringProperty firstNameProperty;
   private final StringProperty lastNameProperty;
@@ -40,10 +41,12 @@ public class CreateLoginViewModel {
 
   /**
    * Constructs a new CreateLoginViewModel with the given model and view state.
-   * @param model the user model
+   *
+   * @param model     the user model
    * @param viewState the view state
    */
-  public CreateLoginViewModel(UserModel model, ViewModelState viewState) {
+  public CreateLoginViewModel(UserModel model, ViewModelState viewState)
+  {
     this.viewState = viewState;
     this.model = model;
     headerProperty = new SimpleStringProperty();
@@ -78,7 +81,8 @@ public class CreateLoginViewModel {
   /**
    * Resets the properties to their default values.
    */
-  public void reset() {
+  public void reset()
+  {
     firstNameProperty.set("");
     lastNameProperty.set("");
     emailProperty.set("");
@@ -92,7 +96,8 @@ public class CreateLoginViewModel {
   /**
    * Sets the view state for creating a new account.
    */
-  public void setForCreate() {
+  public void setForCreate()
+  {
     viewState.setCreate();
     reset();
     login_createButtonVisibility.set(true);
@@ -116,24 +121,31 @@ public class CreateLoginViewModel {
   /**
    * Creates a new user based on the current properties.
    */
-  private void createUser() {
+  private void createUser()
+  {
     errorProperty.set("");
-    try {
-      String email = model.addUser(
-              firstNameProperty.get().trim(),
-              lastNameProperty.get().trim(),
-              emailProperty.get().trim(),
-              passwordProperty.get(),
-              repasswordProperty.get(),
-              phoneProperty.get().trim(),
-              birthDate.get()
-      );
-      viewState.setUserEmail(email);
-      viewState.setModerator(model.isModerator(email));
-    } catch (IllegalArgumentException e) {
+    try
+    {
+      if (firstNameProperty.get() == null || lastNameProperty.get() == null
+          || emailProperty.get() == null || emailProperty.get() == null
+          || passwordProperty.get() == null || phoneProperty.get() == null)
+        errorProperty.set("Empty fields");
+      else
+      {
+        String email = model.addUser(firstNameProperty.get().trim(),
+            lastNameProperty.get().trim(), emailProperty.get().trim(),
+            passwordProperty.get(), repasswordProperty.get(),
+            phoneProperty.get().trim(), birthDate.get());
+        viewState.setUserEmail(email);
+        viewState.setModerator(model.isModerator(email));
+      }
+    }
+    catch (IllegalArgumentException e)
+    {
       errorProperty.set(e.getMessage());
     }
-    if (errorProperty.get().isEmpty()) {
+    if (errorProperty.get().isEmpty())
+    {
       reset();
     }
   }
@@ -141,7 +153,8 @@ public class CreateLoginViewModel {
   /**
    * Sets the view state for logging in.
    */
-  public void setForLogin() {
+  public void setForLogin()
+  {
     viewState.setLogin();
     reset();
     login_createButtonVisibility.set(true);
@@ -164,16 +177,22 @@ public class CreateLoginViewModel {
   /**
    * Logs in the user based on the current properties.
    */
-  private void login() {
+  private void login()
+  {
     errorProperty.set("");
-    try {
-      String user = model.login(emailProperty.get().trim(), passwordProperty.get());
+    try
+    {
+      String user = model.login(emailProperty.get().trim(),
+          passwordProperty.get());
       viewState.setUserEmail(user);
       viewState.setModerator(model.isModerator(user));
-    } catch (IllegalArgumentException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       errorProperty.set(e.getMessage());
     }
-    if (errorProperty.get().isEmpty()) {
+    if (errorProperty.get().isEmpty())
+    {
       reset();
     }
   }
@@ -181,7 +200,8 @@ public class CreateLoginViewModel {
   /**
    * Sets the view state for resetting the password.
    */
-  public void setForResetPassword() {
+  public void setForResetPassword()
+  {
     reset();
     errorProperty.set("");
     headerProperty.set("Reset password");
@@ -206,19 +226,20 @@ public class CreateLoginViewModel {
   /**
    * Resets the user's password based on the current properties.
    */
-  private void resetPassword() {
+  private void resetPassword()
+  {
     errorProperty.set("");
-    try {
-      model.resetPassword(
-              viewState.getUserEmail(),
-              emailProperty.get(),
-              passwordProperty.get(),
-              repasswordProperty.get()
-      );
-    } catch (IllegalArgumentException e) {
+    try
+    {
+      model.resetPassword(viewState.getUserEmail(), emailProperty.get(),
+          passwordProperty.get(), repasswordProperty.get());
+    }
+    catch (IllegalArgumentException e)
+    {
       errorProperty.set(e.getMessage());
     }
-    if (errorProperty.get().isEmpty()) {
+    if (errorProperty.get().isEmpty())
+    {
       reset();
     }
   }
@@ -226,7 +247,8 @@ public class CreateLoginViewModel {
   /**
    * Sets the view state for displaying the user's profile.
    */
-  public void setForDisplayProfile() {
+  public void setForDisplayProfile()
+  {
     viewState.setDisplay();
 
     resetPasswordButtonText.set("Reset Password");
@@ -254,26 +276,34 @@ public class CreateLoginViewModel {
   /**
    * Displays the profile of the current user.
    */
-  private void displayProfile() {
-    try {
+  private void displayProfile()
+  {
+    try
+    {
       birthDate.set(null);
       User userToBeDisplayed;
-      if (viewState.isLookingAtModerator()) {
+      if (viewState.isLookingAtModerator())
+      {
         setForDisplayModeratorInfo();
         userToBeDisplayed = model.getModeratorInfo();
         viewState.setLookingAtModerator(false);
-      } else {
+      }
+      else
+      {
         userToBeDisplayed = model.getUser(viewState.getUserEmail());
       }
 
-      if (userToBeDisplayed != null) {
+      if (userToBeDisplayed != null)
+      {
         firstNameProperty.set(userToBeDisplayed.getFirstname());
         lastNameProperty.set(userToBeDisplayed.getLastname());
         emailProperty.set(userToBeDisplayed.getEmail());
         phoneProperty.set(userToBeDisplayed.getPhone());
         birthDate.set(userToBeDisplayed.getBirthday());
       }
-    } catch (IllegalArgumentException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       errorProperty.set(e.getMessage());
     }
   }
@@ -281,7 +311,8 @@ public class CreateLoginViewModel {
   /**
    * Sets the view state for displaying moderator information.
    */
-  private void setForDisplayModeratorInfo() {
+  private void setForDisplayModeratorInfo()
+  {
     birthdayVisibility.set(false);
     resetPasswordButtonVisibility.set(false);
     login_createButtonVisibility.set(false);
@@ -291,7 +322,8 @@ public class CreateLoginViewModel {
   /**
    * Sets the view state for editing the user's profile.
    */
-  public void setForEditProfile() {
+  public void setForEditProfile()
+  {
     viewState.setEdit();
 
     errorProperty.set("");
@@ -317,11 +349,15 @@ public class CreateLoginViewModel {
   /**
    * Deletes the current user's account based on the current properties.
    */
-  public void deleteAccount() {
+  public void deleteAccount()
+  {
     errorProperty.set("");
-    try {
+    try
+    {
       model.deleteAccount(viewState.getUserEmail(), passwordProperty.get());
-    } catch (IllegalArgumentException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       errorProperty.set(e.getMessage());
     }
   }
@@ -329,21 +365,27 @@ public class CreateLoginViewModel {
   /**
    * Edits the current user's information based on the current properties.
    */
-  private void edit() {
+  private void edit()
+  {
     errorProperty.set("");
-    try {
-      model.editInformation(
-              viewState.getUserEmail(),
-              firstNameProperty.get().trim(),
-              lastNameProperty.get().trim(),
-              emailProperty.get().trim(),
-              passwordProperty.get(),
-              phoneProperty.get().trim(),
-              birthDate.get()
-      );
-      if (!viewState.isModerator())
-        viewState.setUserEmail(emailProperty.get());
-    } catch (IllegalArgumentException e) {
+    try
+    {
+      if (firstNameProperty.get() == null || lastNameProperty.get() == null
+          || emailProperty.get() == null || emailProperty.get() == null
+          || passwordProperty.get() == null || phoneProperty.get() == null)
+        errorProperty.set("Empty fields");
+      else
+      {
+        model.editInformation(viewState.getUserEmail(),
+            firstNameProperty.get().trim(), lastNameProperty.get().trim(),
+            emailProperty.get().trim(), passwordProperty.get(),
+            phoneProperty.get().trim(), birthDate.get());
+        if (!viewState.isModerator())
+          viewState.setUserEmail(emailProperty.get());
+      }
+    }
+    catch (IllegalArgumentException e)
+    {
       errorProperty.set(e.getMessage());
     }
   }
@@ -351,7 +393,8 @@ public class CreateLoginViewModel {
   /**
    * Confirms the current action based on the view state.
    */
-  public void confirm() {
+  public void confirm()
+  {
     if (viewState.isResetPassword())
       resetPassword();
     else if (viewState.isCreate())
@@ -364,91 +407,113 @@ public class CreateLoginViewModel {
 
   // Getters for properties
 
-  public StringProperty getFirstNameProperty() {
+  public StringProperty getFirstNameProperty()
+  {
     return firstNameProperty;
   }
 
-  public StringProperty getLastNameProperty() {
+  public StringProperty getLastNameProperty()
+  {
     return lastNameProperty;
   }
 
-  public StringProperty getEmailProperty() {
+  public StringProperty getEmailProperty()
+  {
     return emailProperty;
   }
 
-  public StringProperty getPasswordProperty() {
+  public StringProperty getPasswordProperty()
+  {
     return passwordProperty;
   }
 
-  public StringProperty getRepasswordProperty() {
+  public StringProperty getRepasswordProperty()
+  {
     return repasswordProperty;
   }
 
-  public StringProperty getPhoneProperty() {
+  public StringProperty getPhoneProperty()
+  {
     return phoneProperty;
   }
 
-  public StringProperty getErrorProperty() {
+  public StringProperty getErrorProperty()
+  {
     return errorProperty;
   }
 
-  public ObjectProperty<LocalDate> getBirthDate() {
+  public ObjectProperty<LocalDate> getBirthDate()
+  {
     return birthDate;
   }
 
-  public BooleanProperty getEmailVisibility() {
+  public BooleanProperty getEmailVisibility()
+  {
     return emailVisibility;
   }
 
-  public BooleanProperty getInformationVisibility() {
+  public BooleanProperty getInformationVisibility()
+  {
     return informationVisibility;
   }
 
-  public BooleanProperty getResetPasswordVisibility() {
+  public BooleanProperty getResetPasswordVisibility()
+  {
     return resetPasswordVisibility;
   }
 
-  public BooleanProperty getBirthdayVisibility() {
+  public BooleanProperty getBirthdayVisibility()
+  {
     return birthdayVisibility;
   }
 
-  public StringProperty getLogin_createButtonText() {
+  public StringProperty getLogin_createButtonText()
+  {
     return login_createButtonText;
   }
 
-  public BooleanProperty getResetPasswordButtonVisibility() {
+  public BooleanProperty getResetPasswordButtonVisibility()
+  {
     return resetPasswordButtonVisibility;
   }
 
-  public BooleanProperty getLogin_createButtonVisibility() {
+  public BooleanProperty getLogin_createButtonVisibility()
+  {
     return login_createButtonVisibility;
   }
 
-  public StringProperty getEmailLabelText() {
+  public StringProperty getEmailLabelText()
+  {
     return emailLabelText;
   }
 
-  public StringProperty getResetPasswordButtonText() {
+  public StringProperty getResetPasswordButtonText()
+  {
     return resetPasswordButtonText;
   }
 
-  public BooleanProperty getCancelButtonVisibility() {
+  public BooleanProperty getCancelButtonVisibility()
+  {
     return cancelButtonVisibility;
   }
 
-  public StringProperty getHeaderProperty() {
+  public StringProperty getHeaderProperty()
+  {
     return headerProperty;
   }
 
-  public BooleanProperty getPasswordVisibility() {
+  public BooleanProperty getPasswordVisibility()
+  {
     return passwordVisibility;
   }
 
-  public BooleanProperty getDisableProperty() {
+  public BooleanProperty getDisableProperty()
+  {
     return disableProperty;
   }
 
-  public BooleanProperty getConfirmButtonVisibility() {
+  public BooleanProperty getConfirmButtonVisibility()
+  {
     return confirmButtonVisibility;
   }
 }

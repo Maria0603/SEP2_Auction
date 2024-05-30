@@ -171,6 +171,7 @@ public class UserProtectionProxy extends DatabasePersistence implements UserPers
     checkFirstName(firstname);
     checkLastName(lastname);
     ageValidation(birthday);
+    checkPhone(phone);
 
     if (database.validateForLogin(oldEmail, password))
     {

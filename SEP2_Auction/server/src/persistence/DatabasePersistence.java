@@ -14,7 +14,7 @@ public abstract class DatabasePersistence
   private MyDatabase database = new MyDatabase(DRIVER, URL, USER, PASSWORD);
 
   private static final String DRIVER = "org.postgresql.Driver";
-  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=run5";
+  private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=run7";
   private static final String USER = "postgres";
 
   // so the moderator just logs in, and then they can change their password
