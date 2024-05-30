@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class AuctionDatabase extends DatabasePersistence implements AuctionPersistence {
 
-  private static final String database = "run4";
+  private static final String database = "run5";
 
   /**
    * Constructs an AuctionDatabase object and initializes the database schema.
@@ -416,7 +416,7 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
    * @throws SQLException if a database access error occurs
    */
   private void insertModerator() throws SQLException {
-    String sqlInsertUser = "INSERT INTO \"user\"(user_email, password, phone_number, first_name, last_name) VALUES ('bob@bidhub', '1234', null, null, null);";
+    String sqlInsertUser = "INSERT INTO \"user\"(user_email, password, phone_number, first_name, last_name) VALUES ('bob@bidhub', '12345678', null, null, null);";
     super.getDatabase().update(sqlInsertUser);
     String sqlInsertModerator = "INSERT INTO moderator (moderator_email, personal_email) VALUES ('bob@bidhub', null);";
     super.getDatabase().update(sqlInsertModerator);
