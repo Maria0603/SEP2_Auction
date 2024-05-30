@@ -14,28 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!--
-  FXML Layout for AuctionView
-
-  This FXML file defines the user interface for viewing and interacting with auction details.
-  It includes elements for displaying auction information, editing auction details, and
-  performing actions like starting or deleting an auction.
-
-  Elements:
-    - ScrollPane: A scrollable container for the auction view.
-    - AnchorPane: A pane for anchoring the layout elements.
-    - VBox: A vertical box for organizing labels, text areas, and text fields.
-    - HBox: A horizontal box for organizing related UI elements horizontally.
-    - Label: Labels for displaying text and auction information.
-    - TextArea: Text areas for entering and displaying multiline text.
-    - TextField: Text fields for entering and displaying single line text.
-    - ImageView: An image view for displaying the auction image.
-    - Button: Buttons for performing actions like starting or deleting an auction.
-    - StackPane: A pane for stacking the image view.
-    - Insets: Padding for various elements to control spacing.
-    - Cursor: A cursor for indicating interactivity.
--->
-
 <ScrollPane hbarPolicy="NEVER" prefHeight="730.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
    <content>
       <AnchorPane fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="1086.0">
@@ -100,7 +78,7 @@
                               <Cursor fx:constant="TEXT" />
                            </cursor>
                         </TextField>
-                        <Label id="email_oldPasswordLabel" prefHeight="27.0" prefWidth="200.0" text="$">
+                        <Label id="email_oldPasswordLabel" prefHeight="27.0" prefWidth="200.0" text="\$">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -128,7 +106,7 @@
                               <Cursor fx:constant="TEXT" />
                            </cursor>
                         </TextField>
-                        <Label id="email_oldPasswordLabel" prefHeight="27.0" prefWidth="200.0" text="$">
+                        <Label id="email_oldPasswordLabel" prefHeight="27.0" prefWidth="200.0" text="\$">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -148,7 +126,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" prefHeight="26.0" prefWidth="200.0" promptText="> 0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" prefHeight="26.0" prefWidth="200.0" promptText="&gt; 0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -156,7 +134,7 @@
                               <Cursor fx:constant="TEXT" />
                            </cursor>
                         </TextField>
-                        <Label id="email_oldPasswordLabel" prefHeight="27.0" prefWidth="200.0" text="$">
+                        <Label id="email_oldPasswordLabel" prefHeight="27.0" prefWidth="200.0" text="\$">
                            <font>
                               <Font size="18.0" />
                            </font>

@@ -11,14 +11,10 @@ import java.util.Timer;
 
 public class ServerTimer implements Runnable, NamedPropertyChangeSubject, Serializable
 {
-  private int id;
-  private PropertyChangeSupport property;
+  private final int id;
+  private final PropertyChangeSupport property;
   Time start, end;
-  int count = 0;
-  ///////////////////////////////////////////////////////////////////
-  //do not change this number
-  //private static final long serialVersionUID = 6529685098267757690L;
-  //////////////////////////////////////////////////////////////////
+
   public ServerTimer(Time start, Time end, int id)
   {
     this.start = start;

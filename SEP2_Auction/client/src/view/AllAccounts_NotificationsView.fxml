@@ -11,22 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!--
-  FXML Layout for AllAccounts_NotificationsView
-
-  This FXML file defines the user interface for managing notifications and accounts,
-  including banning and unbanning users, and searching for accounts by email.
-
-  Elements:
-    - Pane: The root container for the layout.
-    - Button: Buttons for banning, unbanning users, and performing search.
-    - TextArea: A text area for entering the reason for banning a user.
-    - Label: Labels for the reason text area and displaying errors.
-    - VBox: A container for organizing the table view.
-    - TableView: A table for displaying notifications with columns for date/time, content, email, and phone.
-    - TextField: A text field for entering search queries.
--->
-
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="678.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AllAccounts_NotificationsViewController">
    <children>
       <Button fx:id="banButton" layoutX="14.0" layoutY="3.0" mnemonicParsing="false" onAction="#banButtonPressed" prefHeight="50.0" prefWidth="111.0" styleClass="button2" stylesheets="@../css/styling.css" text="Ban">
@@ -46,12 +30,12 @@
       <VBox fx:id="tableViewVBox" layoutX="286.0" layoutY="4.0">
          <children>
             <TableView fx:id="notificationsTableView" prefHeight="641.0" prefWidth="804.0">
-               <columns>
-                  <TableColumn fx:id="dateTimeColumn" prefWidth="181.60003662109375" text="First name" />
+              <columns>
+                <TableColumn fx:id="dateTimeColumn" prefWidth="181.60003662109375" text="First name" />
                   <TableColumn fx:id="contentColumn" prefWidth="153.5999755859375" text="Last name" />
                   <TableColumn fx:id="emailColumn" prefWidth="350.4000244140625" text="Email" />
                   <TableColumn fx:id="phoneColumn" prefWidth="120.0" text="Phone" />
-               </columns>
+              </columns>
             </TableView>
          </children>
       </VBox>

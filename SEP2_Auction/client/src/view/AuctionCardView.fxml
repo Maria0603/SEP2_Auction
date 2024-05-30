@@ -9,39 +9,24 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<!--
-  FXML Layout for AuctionCardView
-
-  This FXML file defines the user interface for an individual auction card
-  that displays auction details including title, current bid, end time, and an image.
-
-  Elements:
-    - Pane: The root container for the auction card layout with specified dimensions and styling.
-    - Label: Labels for displaying auction information such as title, current bid, end time, and auction ID.
-    - HBox: A horizontal box for containing the image view with specified dimensions and styling.
-    - ImageView: An image view for displaying the auction image.
-    - Insets: Padding for various elements to control spacing.
-    - Cursor: A hand cursor for interactivity.
--->
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#cardSelected" prefHeight="492.0" prefWidth="266.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #63c5ff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionCardViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#cardSelected" prefHeight="492.0" prefWidth="266.0" style="-fx-border-width: 0; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 5; -fx-background-color: #373A40;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionCardViewController">
    <children>
-      <Label fx:id="titleLabel" alignment="TOP_LEFT" layoutX="15.0" layoutY="376.0" prefHeight="108.0" prefWidth="242.0" text="Title with max 80 characters, meaning this many and not more than that........." wrapText="true">
+      <Label fx:id="titleLabel" alignment="TOP_LEFT" layoutX="15.0" layoutY="376.0" prefHeight="108.0" prefWidth="242.0" text="Title with max 80 characters, meaning this many and not more than that........." textFill="#eeeeee" wrapText="true">
          <font>
             <Font name="Monospaced Regular" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="currentBidLabel" layoutX="146.0" layoutY="349.0" prefHeight="27.0" prefWidth="123.0" text="currentBid">
+      <Label fx:id="currentBidLabel" layoutX="146.0" layoutY="349.0" prefHeight="27.0" prefWidth="123.0" text="currentBid" textFill="#eeeeee">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="endTimeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="151.0" layoutY="8.0" prefHeight="27.0" prefWidth="114.0" text="Ends: 18:45:89">
+      <Label fx:id="endTimeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="151.0" layoutY="8.0" prefHeight="27.0" prefWidth="114.0" text="Ends: 18:45:89" textFill="#eeeeee">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="12.0" layoutY="349.0" text="Current bid ($):">
+      <Label layoutX="12.0" layoutY="349.0" text="Current bid ($):" textFill="#eeeeee">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -61,12 +46,12 @@
             <Insets />
          </opaqueInsets>
       </HBox>
-      <Label contentDisplay="CENTER" layoutX="5.0" layoutY="8.0" prefHeight="27.0" prefWidth="20.0" text="ID:">
+      <Label contentDisplay="CENTER" layoutX="5.0" layoutY="8.0" prefHeight="27.0" prefWidth="20.0" text="ID:" textFill="#eeeeee">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="idLabel" contentDisplay="CENTER" layoutX="25.0" layoutY="8.0" prefHeight="27.0" prefWidth="114.0" text="ID label">
+      <Label fx:id="idLabel" contentDisplay="CENTER" layoutX="25.0" layoutY="8.0" prefHeight="27.0" prefWidth="114.0" text="ID label" textFill="#eeeeee">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

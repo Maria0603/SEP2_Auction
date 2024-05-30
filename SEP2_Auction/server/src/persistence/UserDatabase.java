@@ -474,7 +474,7 @@ public class UserDatabase extends DatabasePersistence implements UserPersistence
     }
     if (password.length() < 8)
     {
-      throw new SQLException("The password must be at least 3 characters long.");
+      throw new SQLException("The password must be at least 8 characters long.");
     }
     if (password.length() > 255)
       throw new SQLException("The password is too long.");

@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class AuctionDatabase extends DatabasePersistence implements AuctionPersistence {
 
-  private static final String database = "mathias";
+  private static final String database = "run4";
 
   /**
    * Constructs an AuctionDatabase object and initializes the database schema.
@@ -69,6 +69,8 @@ public class AuctionDatabase extends DatabasePersistence implements AuctionPersi
       LocalTime now = LocalTime.now();
       Time start = Time.valueOf(now);
       statement.setTime(10, start);
+      //Maybe you want to test the End:
+      //Time end = Time.valueOf(now.plusSeconds(auctionTime));
       Time end = Time.valueOf(now.plusHours(auctionTime));
       statement.setTime(11, end);
       statement.setString(12, seller);

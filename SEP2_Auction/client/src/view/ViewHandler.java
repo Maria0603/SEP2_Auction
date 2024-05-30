@@ -57,13 +57,8 @@ public class ViewHandler
     }
     currentScene.setRoot(root);
 
-    String title = "";
-    if (root.getUserData() != null)
-    {
-      title += root.getUserData();
-    }
-
-    primaryStage.setTitle(title);
+    primaryStage.setResizable(false);
+    primaryStage.setTitle("Auction system");
     primaryStage.setScene(currentScene);
     primaryStage.show();
   }
