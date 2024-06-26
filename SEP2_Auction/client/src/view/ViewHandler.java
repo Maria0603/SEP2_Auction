@@ -6,86 +6,125 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import viewmodel.ViewModelFactory;
 
-public class ViewHandler {
+/**
+ * The ViewHandler class is responsible for managing the different views in the application.
+ * It handles the opening and loading of various FXML files and their associated controllers.
+ */
+public class ViewHandler
+{
   private Stage primaryStage;
-  private Scene currentScene;
-  private ViewModelFactory viewModelFactory;
+  private final Scene currentScene;
+  private final ViewModelFactory viewModelFactory;
   private FixedPaneViewHandler fixedPaneViewController;
   private CreateLoginViewController createLoginViewController;
 
-  public ViewHandler(ViewModelFactory viewModelFactory) {
+  /**
+   * Constructs a ViewHandler with the specified ViewModelFactory.
+   *
+   * @param viewModelFactory the view model factory
+   */
+  public ViewHandler(ViewModelFactory viewModelFactory)
+  {
     this.viewModelFactory = viewModelFactory;
     currentScene = new Scene(new Region());
   }
 
-  public void start(Stage primaryStage) {
+  /**
+   * Starts the primary stage and opens the initial view.
+   *
+   * @param primaryStage the primary stage
+   */
+  public void start(Stage primaryStage)
+  {
     this.primaryStage = primaryStage;
     openView(WindowType.SIGN_UP);
   }
 
-  public void openView(WindowType type) {
+  /**
+   * Opens the specified view based on the WindowType.
+   *
+   * @param type the type of window to open
+   */
+  public void openView(WindowType type)
+  {
     Region root = null;
-    switch (type) {
-      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS, CREATED_AUCTIONS, DISPLAY_PROFILE -> {
-        root = loadFixedPaneView("FixedPaneView.fxml", type);
-      }
-      case SIGN_UP, LOG_IN -> {
-        root = loadCreateLoginView("CreateAccountEditProfileView.fxml", type);
-      }
-      default -> {
-        System.out.println("Unexpected value: " + type);
-      }
+    switch (type)
+    {
+      case START_AUCTION, DISPLAY_AUCTION, ALL_AUCTIONS, MY_AUCTIONS, DISPLAY_PROFILE ->
+              root = loadFixedPaneView("FixedPaneView.fxml", type);
+      case SIGN_UP, LOG_IN ->
+              root = loadCreateLoginView("CreateAccountEditProfileView.fxml", type);
     }
     currentScene.setRoot(root);
 
-    String title = "";
-    if (root.getUserData() != null) {
-      title += root.getUserData();
-    }
-
-    primaryStage.setTitle(title);
+    primaryStage.setResizable(false);
+    primaryStage.setTitle("Auction system");
     primaryStage.setScene(currentScene);
     primaryStage.show();
   }
 
-  public void closeView() {
-    primaryStage.close();
-  }
-
-  private Region loadFixedPaneView(String fxmlFile, WindowType windowType) {
-    if (fixedPaneViewController == null) {
-      try {
+  /**
+   * Loads the FixedPane view from the specified FXML file.
+   *
+   * @param fxmlFile the FXML file to load
+   * @param windowType the type of window to load
+   * @return the root region of the loaded view
+   */
+  private Region loadFixedPaneView(String fxmlFile, WindowType windowType)
+  {
+    if (fixedPaneViewController == null)
+    {
+      try
+      {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(fxmlFile));
         Region root = loader.load();
         fixedPaneViewController = loader.getController();
 
         fixedPaneViewController.init(this,
-            viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root,
-            windowType);
-      } catch (Exception e) {
+                viewModelFactory.getFixedPaneViewModel(), viewModelFactory, root,
+                windowType);
+      }
+      catch (Exception e)
+      {
         e.printStackTrace();
       }
-    } else {
+    }
+    else
+    {
       fixedPaneViewController.reset(windowType);
     }
     return fixedPaneViewController.getRoot();
   }
 
-  private Region loadCreateLoginView(String fxmlFile, WindowType windowType) {
-    if (createLoginViewController == null) {
-      try {
+  /**
+   * Loads the CreateLogin view from the specified FXML file.
+   *
+   * @param fxmlFile the FXML file to load
+   * @param windowType the type of window to load
+   * @return the root region of the loaded view
+   */
+  private Region loadCreateLoginView(String fxmlFile, WindowType windowType)
+  {
+    if (createLoginViewController == null)
+    {
+      try
+      {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(fxmlFile));
         Region root = loader.load();
         createLoginViewController = loader.getController();
 
         createLoginViewController.init(this,
-            viewModelFactory.getCreateLoginViewModel(), root, windowType);
-      } catch (Exception e) {
+                viewModelFactory.getCreateLoginViewModel(), root, windowType);
+      }
+      catch (Exception e)
+      {
         e.printStackTrace();
       }
-    } else {
+    }
+    else
+    {
       createLoginViewController.reset(windowType);
     }
     return createLoginViewController.getRoot();

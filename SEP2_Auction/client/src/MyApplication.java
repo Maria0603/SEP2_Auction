@@ -1,9 +1,10 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import mediator.AuctionClient;
-import model.AuctionModel;
-import model.AuctionModelManager;
-import model.CacheProxy;
+import mediator.AuctionListClient;
+import mediator.UserClient;
+import mediator.UserListClient;
+import model.*;
 import view.ViewHandler;
 import viewmodel.ViewModelFactory;
 
@@ -16,13 +17,19 @@ public class MyApplication extends Application
   {
     try
     {
-      AuctionModel model = new CacheProxy();
-      ViewModelFactory viewModelFactory = new ViewModelFactory(model);
+      AuctionModel auctionModel = new AuctionCacheProxy();
+      AuctionListModel auctionListModel = new AuctionListCacheProxy();
+      UserModel userModel = new UserCacheProxy();
+      UserListModel userListModel=new UserListCacheProxy();
+      ViewModelFactory viewModelFactory = new ViewModelFactory(auctionModel, auctionListModel, userModel, userListModel);
       ViewHandler view = new ViewHandler(viewModelFactory);
-      AuctionClient client = new AuctionClient();
+      new AuctionClient();
+      new AuctionListClient();
+      new UserClient();
+      new UserListClient();
       view.start(primaryStage);
     }
-    catch (IOException | SQLException e)
+    catch (IOException | IllegalArgumentException e)
     {
       e.printStackTrace();
     }

@@ -1,6 +1,7 @@
 package mediator;
 
 import model.*;
+import model.domain.*;
 import utility.observer.listener.GeneralListener;
 import utility.observer.subject.PropertyChangeHandler;
 import utility.observer.subject.RemoteSubject;
@@ -10,174 +11,174 @@ import java.beans.PropertyChangeListener;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
-public class AuctionServer
-    implements AuctionRemote, RemoteSubject<String, Object>,
-    PropertyChangeListener
+/**
+ * The AuctionServer class implements the AuctionRemote and RemoteSubject interfaces,
+ * and serves as a remote server for managing individual auctions.
+ */
+public class AuctionServer implements AuctionRemote, RemoteSubject<String, Object>, PropertyChangeListener
 {
-  private AuctionModel model;
-  private PropertyChangeHandler<String, Object> property;
+  private final AuctionModel model;
+  private final PropertyChangeHandler<String, Object> property;
 
-  public AuctionServer(AuctionModel model)
-      throws MalformedURLException, RemoteException
+  /**
+   * Constructs an AuctionServer with the specified model and listener subject.
+   *
+   * @param model the auction model.
+   * @param listenerSubject the listener subject interface.
+   * @throws MalformedURLException if the provided URL is malformed.
+   * @throws RemoteException if there is an RMI error.
+   */
+  public AuctionServer(AuctionModel model, ListenerSubjectInterface listenerSubject)
+          throws MalformedURLException, RemoteException
   {
     this.model = model;
     property = new PropertyChangeHandler<>(this, true);
 
-    model.addListener("Auction", this);
-    model.addListener("Time", this);
-    model.addListener("End", this);
-    model.addListener("Bid", this);
-    model.addListener("Notification", this);
-    model.addListener("Edit", this);
+    listenerSubject.addListener("End", this);
+    listenerSubject.addListener("Bid", this);
+    listenerSubject.addListener("DeleteAuction", this);
+    listenerSubject.addListener("Ban", this);
+    listenerSubject.addListener("Edit", this);
+    listenerSubject.addListener("DeleteAccount", this);
 
-    startRegistry();
     startServer();
   }
 
-  private void startRegistry()
-  {
-    try
-    {
-      Registry reg = LocateRegistry.createRegistry(1099);
-      System.out.println("Registry started...");
-    }
-    catch (RemoteException e)
-    {
-      e.printStackTrace();
-    }
-  }
-
-  private void startServer() throws RemoteException, MalformedURLException
+  /**
+   * Starts the server and binds the AuctionRemote object.
+   *
+   * @throws RemoteException if there is an RMI error.
+   * @throws MalformedURLException if the provided URL is malformed.
+   */
+  private synchronized void startServer() throws RemoteException, MalformedURLException
   {
     UnicastRemoteObject.exportObject(this, 0);
-    Naming.rebind("Connect", this);
+    Naming.rebind("AuctionRemote", this);
   }
 
-  @Override public synchronized Auction startAuction(String title, String description,
-      int reservePrice, int buyoutPrice, int minimumIncrement, int auctionTime,
-      byte[] imageData, String seller)
-      throws RemoteException, SQLException, ClassNotFoundException
+  /**
+   * Starts a new auction with the specified details.
+   *
+   * @param title the title of the auction.
+   * @param description the description of the auction.
+   * @param reservePrice the reserve price of the auction.
+   * @param buyoutPrice the buyout price of the auction.
+   * @param minimumIncrement the minimum increment for bids.
+   * @param auctionTime the duration of the auction in minutes.
+   * @param imageData the image data associated with the auction.
+   * @param seller the seller of the auction.
+   * @return the created Auction object.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   * @throws ClassNotFoundException if the class of a serialized object cannot be found.
+   */
+  @Override
+  public synchronized Auction startAuction(String title, String description, int reservePrice,
+                                           int buyoutPrice, int minimumIncrement, int auctionTime, byte[] imageData, String seller)
+          throws RemoteException, SQLException, ClassNotFoundException
   {
     return model.startAuction(title, description, reservePrice, buyoutPrice,
-        minimumIncrement, auctionTime, imageData, seller);
+            minimumIncrement, auctionTime, imageData, seller);
   }
 
-  @Override public synchronized Auction getAuction(int id)
-      throws RemoteException, SQLException
+  /**
+   * Retrieves an auction by its ID.
+   *
+   * @param id the identifier of the auction.
+   * @return the auction with the specified ID.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized Auction getAuction(int id) throws RemoteException, SQLException
   {
     return model.getAuction(id);
   }
 
-  @Override public synchronized AuctionList getOngoingAuctions()
-      throws RemoteException, SQLException
-  {
-    return model.getOngoingAuctions();
-  }
-
-
-  @Override public synchronized NotificationList getNotifications(String receiver)
-      throws RemoteException, SQLException
-  {
-    return model.getNotifications(receiver);
-  }
-
-  @Override public synchronized Bid placeBid(String bidder, int bidValue, int auctionId)
-      throws RemoteException, SQLException
+  /**
+   * Places a bid on a specified auction.
+   *
+   * @param bidder the email or identifier of the bidder.
+   * @param bidValue the value of the bid.
+   * @param auctionId the identifier of the auction.
+   * @return the placed Bid object.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
+  @Override
+  public synchronized Bid placeBid(String bidder, int bidValue, int auctionId) throws RemoteException, SQLException
   {
     return model.placeBid(bidder, bidValue, auctionId);
   }
 
+  /**
+   * Executes a buyout for a specified auction.
+   *
+   * @param bidder the email or identifier of the bidder.
+   * @param auctionId the identifier of the auction.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
   @Override
-  public synchronized String buyOut(String bidder, int auctionId)
-      throws RemoteException, SQLException {
-    try {
-      model.buyOut(bidder, auctionId);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return "Failed to process buyout";
-    }
-    return "Buyout successful!";
+  public synchronized void buyout(String bidder, int auctionId) throws RemoteException, SQLException
+  {
+    model.buyout(bidder, auctionId);
   }
 
+  /**
+   * Deletes an auction with the specified reason.
+   *
+   * @param moderatorEmail the email of the moderator requesting the deletion.
+   * @param auctionId the identifier of the auction.
+   * @param reason the reason for the deletion.
+   * @throws RemoteException if there is an RMI error.
+   * @throws SQLException if there is a database access error.
+   */
   @Override
-  public synchronized String addUser(String firstname, String lastname, String email, String password, String repeatedPassword, String phone, LocalDate birthday) throws SQLException {
-    return model.addUser(firstname,lastname,email,password, repeatedPassword, phone, birthday);
+  public synchronized void deleteAuction(String moderatorEmail, int auctionId, String reason) throws RemoteException, SQLException
+  {
+    model.deleteAuction(moderatorEmail, auctionId, reason);
   }
 
+  /**
+   * Adds a listener for specific property changes.
+   *
+   * @param listener the listener to be added.
+   * @param propertyNames the properties to listen for.
+   * @return true if the listener was added successfully, false otherwise.
+   * @throws RemoteException if there is an RMI error.
+   */
   @Override
-  public synchronized String login(String email, String password) throws SQLException {
-    System.out.println("AuctionServer: " + email + ", " + password);
-    return model.login(email,password);
-  }
-
-  @Override public synchronized AuctionList getPreviousBids(String bidder) throws SQLException
-  {
-    return model.getPreviousBids(bidder);
-  }
-
-  @Override public AuctionList getCreatedAuctions(String seller)
-      throws RemoteException, SQLException
-  {
-    return model.getCreatedAuctions(seller);
-  }
-
-  @Override public synchronized void resetPassword(String userEmail, String oldPassword,
-      String newPassword, String repeatPassword)
-      throws RemoteException, SQLException
-  {
-    model.resetPassword(userEmail, oldPassword, newPassword, repeatPassword);
-  }
-
-  @Override public synchronized User getUser(String email) throws RemoteException, SQLException
-  {
-    return model.getUser(email);
-  }
-
-  @Override public User getModeratorInfo() throws SQLException
-  {
-    return model.getModeratorInfo();
-  }
-
-  @Override public synchronized boolean isModerator(String email)
-      throws RemoteException, SQLException
-  {
-    return model.isModerator(email);
-  }
-
-  @Override public User editInformation(String oldEmail, String firstname,
-      String lastname, String email, String password, String phone,
-      LocalDate birthday) throws RemoteException, SQLException
-  {
-    return model.editInformation(oldEmail, firstname, lastname, email, password, phone, birthday);
-  }
-
-  @Override public AuctionList getAllAuctions() throws SQLException
-  {
-    return model.getAllAuctions();
-  }
-
-  @Override public synchronized boolean addListener(GeneralListener<String, Object> listener,
-      String... propertyNames) throws RemoteException
+  public synchronized boolean addListener(GeneralListener<String, Object> listener, String... propertyNames) throws RemoteException
   {
     return property.addListener(listener, propertyNames);
   }
 
-  @Override public synchronized boolean removeListener(
-      GeneralListener<String, Object> listener, String... propertyNames)
-      throws RemoteException
+  /**
+   * Removes a listener for specific property changes.
+   *
+   * @param listener the listener to be removed.
+   * @param propertyNames the properties to stop listening for.
+   * @return true if the listener was removed successfully, false otherwise.
+   * @throws RemoteException if there is an RMI error.
+   */
+  @Override
+  public synchronized boolean removeListener(GeneralListener<String, Object> listener, String... propertyNames) throws RemoteException
   {
     return property.removeListener(listener, propertyNames);
   }
 
-  @Override public synchronized void propertyChange(PropertyChangeEvent evt)
+  /**
+   * Handles property change events and fires property change notifications.
+   *
+   * @param evt the property change event.
+   */
+  @Override
+  public synchronized void propertyChange(PropertyChangeEvent evt)
   {
-    property.firePropertyChange(evt.getPropertyName(),
-        String.valueOf(evt.getOldValue()), evt.getNewValue());
+    property.firePropertyChange(evt.getPropertyName(), String.valueOf(evt.getOldValue()), evt.getNewValue());
   }
 }

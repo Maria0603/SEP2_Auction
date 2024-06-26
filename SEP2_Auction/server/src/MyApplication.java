@@ -1,11 +1,15 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
+import mediator.AuctionListServer;
 import mediator.AuctionServer;
-import model.AuctionModel;
-import model.AuctionModelManager;
+import mediator.UserListServer;
+import mediator.UserServer;
+import model.*;
 
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 
 public class MyApplication extends Application
@@ -16,8 +20,19 @@ public class MyApplication extends Application
   {
     try
     {
-      AuctionModel model = new AuctionModelManager();
-      server = new AuctionServer(model);
+      AuctionModel auctionModel = new AuctionModelManager();
+      AuctionListModel auctionListModel = new AuctionListModelManager();
+      UserModel userModel = new UserModelManager();
+      UserListModel userListModel = new UserListModelManager();
+      startRegistry();
+
+      ListenerSubjectInterface listenerSubject = new ListenerSubject(
+          auctionModel, auctionListModel, userModel, userListModel);
+
+      new AuctionServer(auctionModel, listenerSubject);
+      new AuctionListServer(auctionListModel, listenerSubject);
+      new UserServer(userModel, listenerSubject);
+      new UserListServer(userListModel, listenerSubject);
     }
     catch (MalformedURLException | RemoteException | ClassNotFoundException |
            SQLException e)
@@ -25,5 +40,18 @@ public class MyApplication extends Application
       e.printStackTrace();
     }
 
+  }
+
+  private void startRegistry()
+  {
+    try
+    {
+      Registry reg = LocateRegistry.createRegistry(1099);
+      System.out.println("Registry started...");
+    }
+    catch (RemoteException e)
+    {
+      e.printStackTrace();
+    }
   }
 }

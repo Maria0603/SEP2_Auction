@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="createAccount_editProfileAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1330.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CreateLoginViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1330.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CreateLoginViewController">
    <children>
       <VBox layoutX="-1.0" layoutY="105.0" prefHeight="408.0" prefWidth="1330.0">
          <children>
@@ -26,7 +20,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField id="email_oldPasswordTextField" fx:id="firstNameField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
+                  <TextField id="email_oldPasswordTextField" fx:id="firstNameField" prefHeight="26.0" prefWidth="600.0">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -46,7 +40,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField id="password_newPasswordTextField" fx:id="lastNameField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
+                  <TextField id="password_newPasswordTextField" fx:id="lastNameField" prefHeight="26.0" prefWidth="600.0">
                      <cursor>
                         <Cursor fx:constant="TEXT" />
                      </cursor>
@@ -63,7 +57,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField id="repeatPasswordTextField" fx:id="emailField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0">
+                  <TextField id="repeatPasswordTextField" fx:id="emailField" prefHeight="26.0" prefWidth="600.0">
                      <cursor>
                         <Cursor fx:constant="TEXT" />
                      </cursor>
@@ -80,7 +74,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField id="email_oldPasswordTextField" fx:id="phoneField" onAction="#onEnter" prefHeight="26.0" prefWidth="400.0">
+                  <TextField id="email_oldPasswordTextField" fx:id="phoneField" prefHeight="26.0" prefWidth="400.0" stylesheets="@../css/styling.css">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -100,7 +94,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <DatePicker fx:id="datePicker" onAction="#onEnter" />
+                  <DatePicker fx:id="datePicker" styleClass="button" stylesheets="@../css/styling.css" />
                </children>
             </HBox>
             <HBox prefHeight="50.0" prefWidth="818.0" />
@@ -114,7 +108,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <PasswordField fx:id="passwordField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0" />
+                  <PasswordField fx:id="passwordField" prefHeight="26.0" prefWidth="600.0" />
                </children>
             </HBox>
             <HBox prefHeight="50.0" prefWidth="818.0">
@@ -127,7 +121,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <PasswordField fx:id="repeatPasswordField" onAction="#onEnter" prefHeight="26.0" prefWidth="600.0" />
+                  <PasswordField fx:id="repeatPasswordField" prefHeight="26.0" prefWidth="600.0" />
                </children>
             </HBox>
          </children>
@@ -137,7 +131,7 @@
             <Font name="System Bold" size="23.0" />
          </font>
       </Label>
-      <Button id="resetPassword_loginButton" fx:id="confirmButton" alignment="CENTER" contentDisplay="CENTER" layoutX="78.0" layoutY="658.0" mnemonicParsing="false" onAction="#confirmButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Confirm" textAlignment="CENTER">
+      <Button id="resetPassword_loginButton" fx:id="confirmButton" alignment="CENTER" contentDisplay="CENTER" layoutX="78.0" layoutY="658.0" mnemonicParsing="false" onAction="#confirmButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Confirm" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
@@ -145,7 +139,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button id="cancel_createAccountButton" fx:id="cancelButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1104.0" layoutY="658.0" mnemonicParsing="false" onAction="#cancelButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Cancel" textAlignment="CENTER">
+      <Button id="cancel_createAccountButton" fx:id="cancelButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1104.0" layoutY="658.0" mnemonicParsing="false" onAction="#cancelButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Cancel" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
@@ -158,7 +152,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Button id="reset_createAccountButton" fx:id="resetPasswordButton" alignment="CENTER" contentDisplay="CENTER" layoutX="587.0" layoutY="658.0" mnemonicParsing="false" onAction="#resetPasswordButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Reset password" textAlignment="CENTER">
+      <Button id="reset_createAccountButton" fx:id="resetPasswordButton" alignment="CENTER" contentDisplay="CENTER" layoutX="587.0" layoutY="658.0" mnemonicParsing="false" onAction="#resetPasswordButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Reset password" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
@@ -166,7 +160,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button id="login_createAccountButton" fx:id="login_createAccountButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1104.0" layoutY="27.0" mnemonicParsing="false" onAction="#loginButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Login" textAlignment="CENTER">
+      <Button id="login_createAccountButton" fx:id="login_createAccountButton" alignment="CENTER" contentDisplay="CENTER" layoutX="1104.0" layoutY="27.0" mnemonicParsing="false" onAction="#loginButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Login" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>

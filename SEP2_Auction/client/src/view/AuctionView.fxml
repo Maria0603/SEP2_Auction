@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="auctionScrollPane" hbarPolicy="NEVER" prefHeight="730.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
+<ScrollPane hbarPolicy="NEVER" prefHeight="730.0" prefWidth="1102.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionViewController">
    <content>
       <AnchorPane fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="967.0" prefWidth="1086.0">
          <children>
@@ -73,7 +73,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
+                        <TextField id="repeatPasswordTextField" fx:id="reservePriceTextField" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -98,7 +98,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
+                        <TextField id="email_oldPasswordTextField" fx:id="buyoutPriceTextField" prefHeight="26.0" prefWidth="200.0" promptText="max. 2000000000">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -126,7 +126,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="&gt; 0">
+                        <TextField id="email_oldPasswordTextField" fx:id="incrementTextField" prefHeight="26.0" prefWidth="200.0" promptText="&gt; 0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -154,7 +154,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField id="email_oldPasswordTextField" fx:id="timeTextField" onAction="#onEnter" prefHeight="26.0" prefWidth="200.0" promptText="1 - 24">
+                        <TextField id="email_oldPasswordTextField" fx:id="timeTextField" prefHeight="26.0" prefWidth="200.0" promptText="1 - 24">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -176,7 +176,7 @@
                   <Font name="System Bold" size="23.0" />
                </font>
             </Label>
-            <Button id="resetPassword_loginButton" fx:id="startAuctionButton" alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="654.0" mnemonicParsing="false" onAction="#startAuctionButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Start auction" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="startAuctionButton" alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="654.0" mnemonicParsing="false" onAction="#startAuctionButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Start auction" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -199,7 +199,7 @@
                   <Font name="System Bold" size="26.0" />
                </font>
             </Label>
-            <Button id="resetPassword_loginButton" fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" layoutX="525.0" layoutY="728.0" mnemonicParsing="false" onAction="#deleteButtonPressed" prefHeight="40.0" prefWidth="157.0" text="Delete" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="deleteButton" alignment="CENTER" contentDisplay="CENTER" layoutX="525.0" layoutY="728.0" mnemonicParsing="false" onAction="#deleteButtonPressed" prefHeight="40.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Delete" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -224,7 +224,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Button id="resetPassword_loginButton" fx:id="buyNowButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#buyNowButtonPressed" prefHeight="40.0" prefWidth="157.0" text="Buy now" textAlignment="CENTER">
+                        <Button id="resetPassword_loginButton" fx:id="buyNowButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#buyNowButtonPressed" prefHeight="40.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Buy now" textAlignment="CENTER">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -268,7 +268,7 @@
                               <Insets right="30.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button id="resetPassword_loginButton" fx:id="placeBidButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#placeBidButtonPressed" prefHeight="40.0" prefWidth="157.0" text="Place bid" textAlignment="CENTER">
+                        <Button id="resetPassword_loginButton" fx:id="placeBidButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#placeBidButtonPressed" prefHeight="40.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Place bid" textAlignment="CENTER">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -283,13 +283,13 @@
                   </HBox>
                </children>
             </VBox>
-            <Label id="email_oldPasswordLabel" fx:id="sellerRateLabel" alignment="CENTER_RIGHT" layoutX="22.0" layoutY="654.0" prefHeight="27.0" prefWidth="200.0" text="Seller's rate:">
+            <Label id="email_oldPasswordLabel" fx:id="sellerTextLabel" alignment="CENTER_RIGHT" layoutX="22.0" layoutY="654.0" prefHeight="27.0" prefWidth="200.0" text="Seller:">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
             <TextArea fx:id="reasonTextArea" layoutX="80.0" layoutY="728.0" prefHeight="212.0" prefWidth="414.0" wrapText="true" />
-            <Button id="resetPassword_loginButton" fx:id="cancelButton" alignment="CENTER" contentDisplay="CENTER" layoutX="272.0" layoutY="654.0" mnemonicParsing="false" onAction="#cancelButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Cancel" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="cancelButton" alignment="CENTER" contentDisplay="CENTER" layoutX="272.0" layoutY="654.0" mnemonicParsing="false" onAction="#cancelButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Cancel" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -297,7 +297,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="backButton" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#backButtonPressed" prefHeight="50.0" prefWidth="157.0" text="Back" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#backButtonPressed" prefHeight="50.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Back" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -305,7 +305,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="resetPassword_loginButton" fx:id="importButton" alignment="CENTER" contentDisplay="CENTER" layoutX="804.0" layoutY="521.0" mnemonicParsing="false" onAction="#importButtonPressed" prefHeight="40.0" prefWidth="157.0" text="Import image" textAlignment="CENTER">
+            <Button id="resetPassword_loginButton" fx:id="importButton" alignment="CENTER" contentDisplay="CENTER" layoutX="804.0" layoutY="521.0" mnemonicParsing="false" onAction="#importButtonPressed" prefHeight="40.0" prefWidth="157.0" styleClass="button2" stylesheets="@../css/styling.css" text="Import image" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -318,7 +318,7 @@
                   <Font name="System Bold" size="23.0" />
                </font>
             </Label>
-            <Label id="email_oldPasswordLabel" fx:id="ratingLabel" layoutX="272.0" layoutY="655.0" prefHeight="27.0" prefWidth="201.0" text="ratingLabel">
+            <Label id="email_oldPasswordLabel" fx:id="sellerLabel" layoutX="272.0" layoutY="655.0" prefHeight="27.0" prefWidth="201.0" text="seller">
                <font>
                   <Font size="18.0" />
                </font>

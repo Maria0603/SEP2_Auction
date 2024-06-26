@@ -5,184 +5,215 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.GridPane;
-import model.Auction;
-import model.AuctionList;
-import model.AuctionModel;
-import utility.observer.javaobserver.NamedPropertyChangeSubject;
+import model.domain.Auction;
+import model.domain.AuctionList;
+import model.AuctionListModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.sql.SQLException;
 
-public class AllAuctionsViewModel
-    implements PropertyChangeListener, NamedPropertyChangeSubject {
-  private AuctionModel model;
-  private ViewModelState state;
-  private PropertyChangeSupport property;
-  @FXML
-  private ScrollPane allAuctionsScrollPane;
-  @FXML
-  private GridPane auctionsGrid;
+/**
+ * The AllAuctionsViewModel class is responsible for managing the data and actions
+ * related to displaying all auctions in the view.
+ */
+public class AllAuctionsViewModel implements PropertyChangeListener
+{
+  private final AuctionListModel model;
+  private final ViewModelState state;
 
-  @FXML
-  private StringProperty searchInputField;
-  @FXML
-  private ObservableList<Auction> auctionCards;
+  @FXML private StringProperty searchInputField;
+  @FXML private ObservableList<Auction> auctionCards;
 
-  public AllAuctionsViewModel(AuctionModel model, ViewModelState state) {
+  /**
+   * Constructs an AllAuctionsViewModel with the specified model and view model state.
+   *
+   * @param model the auction list model
+   * @param state the view model state
+   */
+  public AllAuctionsViewModel(AuctionListModel model, ViewModelState state)
+  {
     this.model = model;
     this.state = state;
 
-    property = new PropertyChangeSupport(this);
-
     model.addListener("Auction", this);
-    model.addListener("End", this);
 
     auctionCards = FXCollections.observableArrayList();
     searchInputField = new SimpleStringProperty();
-    // fillAuctionCardsWithCache();
     fillAuctionCards();
   }
 
-  private void fillAuctionCardsWithCache() {
-    AuctionList list = this.getOngoingAuctions();
-    for (int i = 0; i < list.getSize(); i++) {
-      auctionCards.add(list.getAuction(i));
-    }
-  }
-
-  public AuctionList getOngoingAuctions() {
-    try {
+  /**
+   * Gets the list of ongoing auctions.
+   *
+   * @return the list of ongoing auctions
+   */
+  public AuctionList getOngoingAuctions()
+  {
+    try
+    {
       return model.getOngoingAuctions();
-    } catch (SQLException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  public AuctionList getAllAuctions() {
-    try {
-      return model.getAllAuctions();
-    } catch (SQLException e) {
+  /**
+   * Gets the list of all auctions.
+   *
+   * @return the list of all auctions
+   */
+  public AuctionList getAllAuctions()
+  {
+    try
+    {
+      return model.getAllAuctions(state.getUserEmail());
+    }
+    catch (IllegalArgumentException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  public AuctionList getCreatedAuctions() {
-    try {
-      System.out.println("created auctions from" + state.getUserEmail());
+  /**
+   * Gets the list of auctions created by the user.
+   *
+   * @return the list of created auctions
+   */
+  public AuctionList getCreatedAuctions()
+  {
+    try
+    {
       return model.getCreatedAuctions(state.getUserEmail());
-    } catch (SQLException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  public ObservableList<Auction> searchAuctions() {
+  /**
+   * Searches for auctions that match the search input field.
+   *
+   * @return the list of matching auctions
+   */
+  public ObservableList<Auction> searchAuctions()
+  {
     AuctionList upToDateCards = getAuctionListByState();
-    String mask = searchInputField.get().trim();
+    String mask = searchInputField.get();
+    if (mask == null || mask.isEmpty())
+      return null;
 
     ObservableList<Auction> result = FXCollections.observableArrayList();
 
-    for (int i = 0; i < upToDateCards.getSize(); i++) {
+    for (int i = 0; i < upToDateCards.getSize(); i++)
+    {
       Auction auction = upToDateCards.getAuction(i);
 
-      if (auction.isMatchesSearchMask(mask)) {
+      if (auction.isMatchesSearchMask(mask))
+      {
         result.add(auction);
       }
     }
     return result;
   }
 
-  public AuctionList getPreviousBids() {
-    try {
+  /**
+   * Gets the list of previous bids made by the user.
+   *
+   * @return the list of previous bids
+   */
+  public AuctionList getPreviousBids()
+  {
+    try
+    {
       return model.getPreviousBids(state.getUserEmail());
-    } catch (SQLException e) {
+    }
+    catch (IllegalArgumentException e)
+    {
       e.printStackTrace();
     }
     return null;
   }
 
-  public void fillAuctionCards() {
+  /**
+   * Fills the auction cards list based on the current state.
+   */
+  public void fillAuctionCards()
+  {
     auctionCards.clear();
-    AuctionList list;
+    AuctionList list = getAuctionListByState();
+    if (list != null)
+    {
+      for (int i = 0; i < list.getSize(); i++)
+      {
+        auctionCards.add(list.getAuction(i));
+      }
+    }
+  }
 
-    if (state.getAllAuctions()) {
+  /**
+   * Gets the auction list based on the current state.
+   *
+   * @return the auction list
+   */
+  private AuctionList getAuctionListByState()
+  {
+    AuctionList list = new AuctionList();
+    if (state.getAllAuctions())
+    {
       if (state.isModerator())
         list = getAllAuctions();
       else
         list = getOngoingAuctions();
-      if (list != null) {
-        for (int i = 0; i < list.getSize(); i++) {
-          auctionCards.add(list.getAuction(i));
-        }
-      }
-    } else if (state.getBids()) {
-      list = getPreviousBids();
-      if (list != null) {
-        for (int i = 0; i < list.getSize(); i++) {
-          auctionCards.add(list.getAuction(i));
-        }
-      }
-    } else if (state.getCreatedAuctions()) {
-      list = getCreatedAuctions();
-      if (list != null) {
-        for (int i = 0; i < list.getSize(); i++) {
-          auctionCards.add(list.getAuction(i));
-        }
-      }
     }
-  }
-
-  private AuctionList getAuctionListByState() {
-    AuctionList list = new AuctionList();
-    if (state.getAllAuctions()) {
-      list = getOngoingAuctions();
-
-    } else if (state.getBids()) {
+    else if (state.getBids())
+    {
       list = getPreviousBids();
-
-    } else if (state.getCreatedAuctions()) {
-      list = this.getOngoingAuctions();
-
+    }
+    else if (state.getCreatedAuctions())
+    {
+      list = getCreatedAuctions();
     }
     return list;
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-    switch (evt.getPropertyName()) {
-      case "Auction":
-        if (state.getAllAuctions())
-          auctionCards.add((Auction) evt.getNewValue());
-        property.firePropertyChange(evt);
-        break;
-      case "End":
-        property.firePropertyChange(evt);
-    }
-  }
-
-  public ObservableList<Auction> getAuctionCards() {
+  /**
+   * Gets the list of auction cards.
+   *
+   * @return the list of auction cards
+   */
+  public ObservableList<Auction> getAuctionCards()
+  {
     return auctionCards;
   }
 
-  public StringProperty getSearchInputField() {
+  /**
+   * Gets the search input field property.
+   *
+   * @return the search input field property
+   */
+  public StringProperty getSearchInputField()
+  {
     return searchInputField;
   }
 
-  @Override
-  synchronized public void addListener(String propertyName,
-      PropertyChangeListener listener) {
-    property.addPropertyChangeListener(propertyName, listener);
-  }
-
-  @Override
-  public synchronized void removeListener(String propertyName,
-      PropertyChangeListener listener) {
-    property.removePropertyChangeListener(propertyName, listener);
+  /**
+   * Handles property change events for auctions.
+   *
+   * @param evt the property change event
+   */
+  @Override public void propertyChange(PropertyChangeEvent evt)
+  {
+    if (evt.getPropertyName().equals("Auction"))
+    {
+      if (state.getAllAuctions())
+        auctionCards.add((Auction) evt.getNewValue());
+    }
   }
 }
